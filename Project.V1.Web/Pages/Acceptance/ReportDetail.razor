@@ -1,0 +1,340 @@
+﻿@page "/acceptance/report/{id}"
+@layout MainLayoutAcceptance
+
+<PageTitlePat Title="SMP (Acceptance) - Report Detail" />
+
+<style type="text/css">
+    .custom-font {
+        font-size: 13px;
+        font-weight: 400;
+        color: rgba(0,0,0,0.42);
+        padding-top: 0px;
+    }
+
+    .validation-message {
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    #toast_type .e-toast-icon.e-icons {
+        height: auto;
+        font-size: 30px;
+    }
+
+    .toast-icons.e-success::before {
+        content: "\e701";
+    }
+
+    .toast-icons.e-error::before {
+        content: "\e700";
+    }
+
+    .toast-icons.e-info::before {
+        content: "\e704";
+    }
+
+    .toast-icons.e-warning::before {
+        content: "\e703";
+    }
+
+    #toast_types {
+        text-align: center;
+    }
+
+    @@font-face {
+        font-family: 'Toast_icons';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .toast-icons {
+        font-family: 'Toast_icons' !important;
+        speak: none;
+        font-size: 55px;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    textarea {
+        height: 65px;
+        resize: none !important;
+    }
+
+    .bg-pink {
+        background-color: pink !important;
+        color: black !important;
+    }
+</style>
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/celltower.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4 text-white" style="padding: 4rem 2rem;">
+        Site Acceptance Report Detail
+    </div>
+</div>
+
+<BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+@if (RequestModel == null)
+{
+    <PageLoading />
+}
+else
+{
+    <div class="col-md-12 row px-4" style="">
+        @if (RequestModel.SSVReport != null)
+        {
+            <div class="col-md-3">
+                <a target="_blank" href="Documents/@((RequestModel.SSVReportIsWaiver) ? "Waiver": "SSV")/@RequestModel.SSVReport" class="btn btn-warning"><i class="fas @((RequestModel.SSVReportIsWaiver) ? "fa-envelope": "fa-file-excel")"></i> @((RequestModel.SSVReportIsWaiver) ? "Waiver Email": "SSV Report")</a>
+            </div>
+        }
+        @if (RequestModel.BulkuploadPath != null)
+        {
+            <div class="col-md-3">
+                <a target="_blank" href="Documents/Bulk/@RequestModel.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i> Batch Upload File</a>
+            </div>
+        }
+    </div>
+
+    <EditForm Model="@RequestModel">
+        <ObjectGraphDataAnnotationsValidator />
+        <div class="col-md-12" style="">
+            <div class="col-md 12 row">
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="TechTypeModel" DataSource="@TechTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Technology" style="font-size: 10px;" @bind-Value="RequestModel.TechTypeId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.TechTypeId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Site ID" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SiteId)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.SiteId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Site Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SiteName)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.SiteName)" />
+                    </div>
+                </div>
+
+                @if (RequestModel.TechTypeId != TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
+                {
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="BSC/RNC" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.RNCBSC)">
+                            </SfTextBox>
+                            <ValidationMessage For="@(() => RequestModel.RNCBSC)" />
+                        </div>
+                    </div>
+                }
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="RegionViewModel" DataSource="@Regions" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Region" style="font-size: 10px;" @bind-Value="RequestModel.RegionId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.RegionId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="SummerConfigModel" DataSource="@SummerConfigs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.SummerConfigId)" />
+                    </div>
+                </div>
+                @*<div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Placeholder="Frequency Band" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.FrequencyBand)">
+                            </SfTextBox>
+                            <ValidationMessage For="@(() => RequestModel.FrequencyBand)" />
+                        </div>
+                    </div>*@
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Software" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SoftwareVersion)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.SoftwareVersion)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.SpectrumId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Bandwidth (MHz)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Bandwidth)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.Bandwidth)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Latitude" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Latitude)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.Latitude)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Longitude" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Longitude)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.Longitude)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="AntennaMakeModel" DataSource="@AntennaMakes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.AntennaMakeId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="AntennaTypeModel" DataSource="@AntennaTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaTypeId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.AntennaTypeId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Antenna Height(M)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.AntennaHeight)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.AntennaHeight)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Antenna Azimuth" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.AntennaAzimuth)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.AntennaAzimuth)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="M Tilt" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.MTilt)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.MTilt)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="E Tilt" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.ETilt)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.ETilt)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="BaseBandModel" DataSource="@Basebands" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Baseband" style="font-size: 10px;" @bind-Value="RequestModel.BasebandId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.BasebandId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList TItem="RRUTypeModel" DataSource="@RRUTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="RRU Type" style="font-size: 10px;" @bind-Value="RequestModel.RRUTypeId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.RRUTypeId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Power (w)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Power)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.Power)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDropDownList Enabled="false" TItem="ProjectTypeModel" DataSource="@ProjectTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                        Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
+                            <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.ProjectTypeId)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Project Year" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.ProjectYear)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.ProjectYear)" />
+                    </div>
+                </div>
+                @if (RequestModel.TechTypeId == TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
+                {
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="RRU Power (w)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.RRUPower)">
+                            </SfTextBox>
+                            <ValidationMessage For="@(() => RequestModel.RRUPower)" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="CSFB status GSM" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.CSFBStatusGSM)">
+                            </SfTextBox>
+                            <ValidationMessage For="@(() => RequestModel.CSFBStatusGSM)" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="CSFB Status WCDMA" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.CSFBStatusWCDMA)">
+                            </SfTextBox>
+                            <ValidationMessage For="@(() => RequestModel.CSFBStatusWCDMA)" />
+                        </div>
+                    </div>
+
+                }
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDatePicker Enabled="false" Placeholder="Site Integrated Date" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.IntegratedDate)">
+                        </SfDatePicker>
+                        <ValidationMessage For="@(() => RequestModel.IntegratedDate)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDatePicker Enabled="false" Placeholder="Date Submitted" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateSubmitted)">
+                        </SfDatePicker>
+                        <ValidationMessage For="@(() => RequestModel.DateSubmitted)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDatePicker Enabled="false" Placeholder="Date Created" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateCreated)">
+                        </SfDatePicker>
+                        <ValidationMessage For="@(() => RequestModel.DateCreated)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}

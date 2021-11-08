@@ -1,0 +1,92 @@
+﻿@using System.Security.Claims; 
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="dashboard">Site Management Portal</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <AuthorizeView>
+            <Authorized>
+                @if (User.HasClaim(e => e.Type == "Can:ManageAccess"))
+                {
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="dashboard" Match="NavLinkMatch.All">
+                            <span class="oi oi-home" aria-hidden="true"></span> Dashboard
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link expand-menu" style="cursor: pointer;" @onclick="() => expandNESICTRequestSubNav = !expandNESICTRequestSubNav">
+                            <span class="oi oi-cog" aria-hidden="true"></span>
+                            <span class="w-100 d-flex flex-row align-items-center">
+                                Manage
+                                @if (!expandNESICTRequestSubNav)
+                                {
+                                    <i class="oi oi-chevron-right text-right ml-auto"></i>
+                                }
+                                else
+                                {
+                                    <i class="oi oi-chevron-bottom text-right ml-auto"></i>
+                                }
+                            </span>
+                        </NavLink>
+                        <ul class="nav flex-column">
+                            @if (expandNESICTRequestSubNav)
+                            {
+                                <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="access" Match="NavLinkMatch.All">
+                                        <span class="oi oi-task" aria-hidden="true"></span> Access
+                                    </NavLink>
+                                </li>
+
+                            }
+                        </ul>
+                    </li>
+                }
+                <li class="nav-item px-3 pb-0">
+                    <NavLink class="nav-link" href="identity/account/logout" Match="NavLinkMatch.All">
+                        <span class="oi oi-power-standby" aria-hidden="true"></span>
+                        <span class="w-100 d-flex flex-row align-items-center">
+                            Logout
+                        </span>
+                    </NavLink>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item px-3 pb-0">
+                    <NavLink class="nav-link" href="identity/account/login" Match="NavLinkMatch.All">
+                        <span class="oi oi-power-standby" aria-hidden="true"></span>
+                        <span class="w-100 d-flex flex-row align-items-center">
+                            Login
+                        </span>
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool expandNESICTRequestSubNav;
+    [Inject] protected IUserAuthentication UserAuth { get; set; }
+    [Inject] protected NavigationManager NavMan { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    public ClaimsPrincipal User { get; set; }
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = (await AuthenticationStateTask).User;
+    }
+}

@@ -1,0 +1,24 @@
+﻿@page "/access-denied"
+
+<PageTitlePat Title="@($"SMP - Access Denied")" />
+
+
+<div class="col-sm-12 m-0 p-0 px-4">
+    <Breadcrumb Paths="@Paths" />
+    <header>
+        <h1 class="text-danger">Access Denied</h1>
+        <p class="text-danger">You do not have access to this resource.</p>
+    </header>
+</div>
+
+@code {
+    public List<PathInfo> Paths { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Paths = new()
+        {
+                new PathInfo { Name = "Access Denied", Link = "access-denied" },
+            };
+    }
+}

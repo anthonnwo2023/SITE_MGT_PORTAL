@@ -1,0 +1,35 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+
+@using System.Net.Http
+@using Microsoft.Extensions.Configuration;
+
+@attribute [IgnoreAntiforgeryToken]
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IConfiguration configuration
+@{
+    ViewData["Title"] = "Logging out...";
+}
+
+<p class="display-4 pt-4 pl-3">Logging out, please wait...</p>
+
+
+@functions {
+    public async Task<IActionResult> OnPost()
+    {
+        if (SignInManager.IsSignedIn(User))
+        {
+            await SignInManager.SignOutAsync();
+        }
+
+        return Redirect("~/");
+    }
+}
+
+
+<script>
+    (() => {
+        document.getElementById('logoutForm').submit();
+    })()
+</script>

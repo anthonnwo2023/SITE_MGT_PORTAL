@@ -1,0 +1,68 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="dashboard">Equipment Ordering</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="eq-ordering" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Dashboard
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="eq-ordering/report" Match="NavLinkMatch.All">
+                <span class="oi oi-bar-chart" aria-hidden="true"></span> Report
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link expand-menu" style="cursor: pointer;" @onclick="() => expandNESICTRequestSubNav = !expandNESICTRequestSubNav">
+                <span class="oi oi-cog" aria-hidden="true"></span>
+                <span class="w-100 d-flex flex-row align-items-center">
+                    Manage
+                    @if (!expandNESICTRequestSubNav)
+                    {
+                        <i class="oi oi-chevron-right text-right ml-auto"></i>
+                    }
+                    else
+                    {
+                        <i class="oi oi-chevron-bottom text-right ml-auto"></i>
+                    }
+                </span>
+            </NavLink>
+            <ul class="nav flex-column">
+                @if (expandNESICTRequestSubNav)
+                {
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="eq-ordering/access" Match="NavLinkMatch.All">
+                            <span class="oi oi-task" aria-hidden="true"></span> Access
+                        </NavLink>
+                    </li>
+
+                }
+            </ul>
+        </li>
+        <li class="nav-item px-3 pb-0">
+            <NavLink class="nav-link" href="identity/account/logout" Match="NavLinkMatch.All">
+                <span class="oi oi-power-standby" aria-hidden="true"></span>
+                <span class="w-100 d-flex flex-row align-items-center">
+                    Logout
+                </span>
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool expandNESICTRequestSubNav;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

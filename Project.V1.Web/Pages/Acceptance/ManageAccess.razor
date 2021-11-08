@@ -1,0 +1,314 @@
+﻿@page "/acceptance/access"
+@layout MainLayoutAcceptance
+
+<PageTitlePat Title="SMP - Manage Access" />
+
+<style type="text/css">
+    .miniTable {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    #UserTable, #UserTable_header_table {
+        /*table-layout: unset !important;*/
+    }
+</style>
+
+<div class="px-4">
+    <BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body px-2">
+                    <!-- Row -->
+                    <div class="row" style="margin-right: 0px; margin-left:0px;">
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                @*<a href="access/vendor/create" class="btn btn-sm w-auto btn-primary">Create Vendor</a>*@
+                                <span class="border float-right px-3 font-weight-bold">Vendors</span>
+                            </p>
+                            @if (Vendors != null)
+                            {
+                                <SfGrid DataSource="@Vendors" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_Vendor">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "VendorModel")' OnActionComplete='e => ActionComplete(e, "VendorModel")' TValue="VendorModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(VendorModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(VendorModel.Name)" HeaderText="Vendor Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(VendorModel.MailList)" HeaderText="Mail List" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(VendorModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(VendorModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="120">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                @*@if (Context.HttpContext.User.Identity.Name == "adekadey" || Context.HttpContext.User.Identity.Name == "anthonnwo" || Context.HttpContext.User.Identity.Name == "kehindad")
+                                    {*@
+                                @*<a href="access/role/create" class="btn btn-sm w-auto btn-primary">Create Role</a>*@
+                                @*}*@
+                                <span class="border float-right px-3 font-weight-bold">Roles</span>
+                            </p>
+                            @if (IdentityRoles != null)
+                            {
+                        <SfGrid DataSource="@IdentityRoles" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_IdentityRole">
+                            <GridPageSettings PageSize="5"></GridPageSettings>
+                            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                            <GridEvents OnActionBegin='e => ActionBegin(e, "IdentityRole")' OnActionComplete='e => ActionComplete(e, "IdentityRole")' TValue="ExpandoObject"></GridEvents>
+                            <GridColumns>
+                                <GridColumn Field="Id" Visible="false" IsPrimaryKey="true">
+                                </GridColumn>
+                                <GridColumn Field="Name" HeaderText="Role Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                </GridColumn>
+                                <GridColumn Field="Permissions" Visible="false" HeaderText="Permissions" TextAlign="TextAlign.Left">
+                                    <EditTemplate>
+                                        <div class="form-group col-md-12 mt-2">
+                                            <PatCheckboxList TItem="ClaimViewModel" ItemListTitle="Permissions" TValue="bool" ListOfItems="@RoleClaims" SelectedValues="@SelectedRolePermissions" TextField="@(e => e.ClaimName)"
+                                                             ValueField="@(e => e.IsSelected)"></PatCheckboxList>
+                                        </div>
+                                    </EditTemplate>
+                                </GridColumn>                                
+                                <GridColumn HeaderText="Manage Records" Width="300">
+                                    <GridCommandColumns>
+                                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                    </GridCommandColumns>
+                                </GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                @*@if (Context.HttpContext.User.Identity.Name == "adekadey" || Context.HttpContext.User.Identity.Name == "anthonnwo" || Context.HttpContext.User.Identity.Name == "kehindad")
+                                    {*@
+                                @*<a href="access/claim/create" class="btn btn-sm w-auto btn-primary">Create Claim</a>*@
+                                @*}*@
+                                <span class="border float-right px-3 font-weight-bold">Claims</span>
+                            </p>
+                            @if (ClaimModels != null)
+                            {
+                                <SfGrid DataSource="@ClaimModels" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_Claim">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "ClaimViewModel")' OnActionComplete='e => ActionComplete(e, "ClaimViewModel")' TValue="ClaimViewModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(ClaimViewModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ClaimViewModel.ClaimName)" HeaderText="Claim Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ClaimViewModel.ClaimValue)" HeaderText="Claim Value" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ClaimViewModel.CategoryId)" HeaderText="Category" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            <Template>
+                                                @{
+                                                    var claim = (context as ClaimViewModel);
+                                                    <span>@ClaimCategories.First(x => x.Id == claim.CategoryId).Name</span>
+                                                }
+                                            </Template>
+                                            <EditTemplate>
+                                                <SfDropDownList ID="CategoryId" TItem="ClaimCategoryModel" TValue="string" @bind-Value="@((context as ClaimViewModel).CategoryId)"
+                                                                DataSource="@ClaimCategories" Placeholder="Select Category...">
+                                                    <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+                                                </SfDropDownList>
+                                            </EditTemplate>
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ClaimViewModel.IsActive)" HeaderText="Active?" Width="100" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="120">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                @*@if (Context.HttpContext.User.Identity.Name == "adekadey" || Context.HttpContext.User.Identity.Name == "anthonnwo" || Context.HttpContext.User.Identity.Name == "kehindad")
+                                    {*@
+                                @*<a href="access/claim/category/create" class="btn btn-sm w-auto btn-primary">Create Claim Category</a>*@
+                                @*}*@
+                                <span class="border float-right px-3 font-weight-bold">Claim Categories</span>
+                            </p>
+                            @if (ClaimCategories != null)
+                            {
+                                <SfGrid DataSource="@ClaimCategories" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_ClaimCategory">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "ClaimCategoryModel")' OnActionComplete='e => ActionComplete(e, "ClaimCategoryModel")' TValue="ClaimCategoryModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(ClaimCategoryModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ClaimCategoryModel.Name)" HeaderText="Category Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ClaimCategoryModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ClaimCategoryModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="150">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-12 mt-3 miniTable">
+                            <p class="d-flex">
+                                @*<a href="access/user/create" class="btn btn-sm w-auto btn-warning">Create User</a>*@
+                                <span class="border float-right px-3 font-weight-bold">Users</span>
+                            </p>
+                            <div class="col-md-12 p-0">
+                                @if (ApplicationUsers != null)
+                                {
+                                    <SfGrid ID="UserTable" DataSource="@ApplicationUsers" AllowPaging="true" AllowSorting="true" AllowTextWrap="true"
+                                            Toolbar="@ToolbarItems" @ref="Grid_User" ShowColumnChooser="true">
+                                        <GridPageSettings PageSize="5"></GridPageSettings>
+                                        <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+                                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                        <GridEvents OnActionBegin='e => ActionBegin(e, "ApplicationUser")' OnActionComplete='e => ActionComplete(e, "ApplicationUser")' TValue="ExpandoObject"></GridEvents>
+                                        <GridColumns>
+                                            <GridColumn Field="Id" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
+                                            </GridColumn>
+                                            <GridColumn Field="UserName" Visible="false" HeaderText="Username" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="Fullname" HeaderText="Fullname" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="PhoneNumber" HeaderText="Phone Number" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true, Number=true })">
+                                            </GridColumn>
+                                            <GridColumn Field="Email" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true, Email=true })">
+                                            </GridColumn>
+                                            <GridColumn Field="JobTitle" Visible="false" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="Department" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="Roles" HeaderText="Roles" TextAlign="TextAlign.Left">
+                                                <Template>
+                                                    @{
+                                                        var user = (context as ExpandoObject);
+
+                                                        var userRoles = IdentityRoles.Where(x => (((dynamic)user).Roles as string[]).Contains(((dynamic)x).Id as string)).ToList();
+                                                        var roleNames = userRoles.Select(x => ((dynamic)x).Name as string).ToArray();
+
+                                                        <span>@(string.Join(" - ", roleNames))</span>
+                                                    }
+                                                </Template>
+                                                <EditTemplate>
+                                                    <SfMultiSelect TValue="string[]" TItem="ExpandoObject" AllowCustomValue="false" AllowFiltering="false" @bind-Value="@SelectedUserRoles"
+                                                                   Placeholder="Roles" Mode="VisualMode.CheckBox" DataSource="@IdentityRoles" FloatLabelType="@FloatLabelType.Auto">
+                                                        <MultiSelectFieldSettings Value="Id" Text="Name"></MultiSelectFieldSettings>
+                                                    </SfMultiSelect>
+                                                </EditTemplate>
+                                            </GridColumn>
+                                            <GridColumn Field="Projects" HeaderText="Projects" TextAlign="TextAlign.Left">
+                                                <Template>
+                                                    @{
+                                                        var user = (context as ExpandoObject);
+
+                                                        var userProjects = (((dynamic)user).Projects as List<ClaimViewModel>).Select(x => x.ClaimName).ToList();
+                                                        <span>@(string.Join(" - ", userProjects))</span>
+                                                    }
+                                                </Template>
+                                                <EditTemplate>
+                                                    <SfMultiSelect TValue="string[]" TItem="ClaimViewModel" AllowCustomValue="false" AllowFiltering="false" @bind-Value="@SelectedUserProjects"
+                                                                   Placeholder="Projects" Mode="VisualMode.CheckBox" DataSource="@ProjectClaims" FloatLabelType="@FloatLabelType.Auto">
+                                                        <MultiSelectFieldSettings Value="Id" Text="ClaimName"></MultiSelectFieldSettings>
+                                                    </SfMultiSelect>
+                                                </EditTemplate>
+                                            </GridColumn>
+                                            <GridForeignColumn Field=VendorId HeaderText="Vendor" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Vendors" EditType="EditType.DropDownEdit">
+                                            </GridForeignColumn>
+                                            <GridColumn Field="Password" Visible="false" HeaderText="Password" TextAlign="TextAlign.Left">
+                                                <EditTemplate>
+                                                    <SfTextBox Placeholder="Password" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(SelectedUserPassword)" Type="InputType.Password">
+                                                    </SfTextBox>
+                                                    <ValidationMessage For="@(() => SelectedUserPassword)" />
+                                                </EditTemplate>
+                                            </GridColumn>
+                                            <GridColumn Field="ConfirmPassword"  Visible="false" HeaderText="Confirm Password" TextAlign="TextAlign.Left">
+                                                <EditTemplate>
+                                                    <SfTextBox Placeholder="Confirm Password" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(ConfirmPassword)" Type="InputType.Password">
+                                                    </SfTextBox>
+                                                    <ValidationMessage For="@(() => ConfirmPassword)" />
+                                                </EditTemplate>
+                                            </GridColumn>
+                                            <GridColumn Field="IsActive" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="LastLoginDate" HeaderText="Last Login" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                        Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                            </GridColumn>
+                                            <GridColumn Field="DateCreated" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                        Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                            </GridColumn>
+                                            <GridColumn HeaderText="Manage Records" Width="150">
+                                                <GridCommandColumns>
+                                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                                </GridCommandColumns>
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                }
+                                else
+                                {
+                                    <PageLoading MarginTop="10" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

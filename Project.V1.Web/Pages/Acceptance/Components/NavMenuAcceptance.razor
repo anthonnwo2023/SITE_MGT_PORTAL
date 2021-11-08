@@ -1,0 +1,138 @@
+﻿@using Project.V1.DLL.Interface;
+@using Project.V1.DLL.Services.Interfaces;
+@using Project.V1.DLL.Helpers
+@using System.Security.Claims;
+@implements IDisposable
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="dashboard">Site Acceptance</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="acceptance" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Dashboard
+            </NavLink>
+        </li>
+        @if (Principal.HasClaim(x => x.Type == "Can:AddRequest"))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="acceptance/request" Match="NavLinkMatch.All">
+                    <span class="oi oi-battery-empty" aria-hidden="true"></span> New Request
+                </NavLink>
+            </li>
+        }
+        @if (Principal.HasClaim(x => x.Type == "Can:ReworkRequest"))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="acceptance/worklist" Match="NavLinkMatch.Prefix">
+                    <span class="oi oi-box" aria-hidden="true"></span> My Worklist <span class="e-badge ml-2">@RejectedWorklistCount</span>
+                </NavLink>
+            </li>
+        }
+        @if (Principal.HasClaim(x => x.Type == "Can:UpdateRequest"))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="acceptance/engineer/worklist" Match="NavLinkMatch.Prefix">
+                    <span class="oi oi-box" aria-hidden="true"></span> Engineer Worklist <span class="e-badge ml-2">@EngineerWorklistCount</span>
+                </NavLink>
+            </li>
+        }
+
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="acceptance/report" Match="NavLinkMatch.All">
+                <span class="oi oi-bar-chart" aria-hidden="true"></span> Report
+            </NavLink>
+        </li>
+        @if (Principal.HasClaim(x => x.Type == "Can:ManageSetupSA"))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link expand-menu" style="cursor: pointer;" @onclick="() => expandNESICTRequestSubNav = !expandNESICTRequestSubNav">
+                    <span class="oi oi-cog" aria-hidden="true"></span>
+                    <span class="w-100 d-flex flex-row align-items-center">
+                        Manage
+                        @if (!expandNESICTRequestSubNav)
+                        {
+                            <i class="oi oi-chevron-right text-right ml-auto"></i>
+                        }
+                        else
+                        {
+                            <i class="oi oi-chevron-bottom text-right ml-auto"></i>
+                        }
+                    </span>
+                </NavLink>
+                <ul class="nav flex-column">
+                    @if (expandNESICTRequestSubNav)
+                    {
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="acceptance/setup" Match="NavLinkMatch.All">
+                                <span class="oi oi-task" aria-hidden="true"></span> Setup
+                            </NavLink>
+                        </li>
+
+                    }
+                </ul>
+            </li>
+        }
+
+        <li class="nav-item px-3 pb-0">
+            <NavLink class="nav-link" href="identity/account/logout" Match="NavLinkMatch.All">
+                <span class="oi oi-power-standby" aria-hidden="true"></span>
+                <span class="w-100 d-flex flex-row align-items-center">
+                    Logout
+                </span>
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool expandNESICTRequestSubNav;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private int RejectRequestCount { get; set; }
+    public ClaimsPrincipal Principal { get; set; }
+    public ApplicationUser User { get; set; }
+    [Inject] protected IUser IUser { get; set; }
+    [Inject] AppState AppState { get; set; }
+    public int RejectedWorklistCount { get; set; }
+    public int EngineerWorklistCount { get; set; }
+
+    [Inject] protected IRequest IRequest { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AppState.OnChange += CalStateChanged;
+
+        Principal = (await AuthenticationStateTask).User;
+        User = await IUser.GetUserByUsername(Principal.Identity.Name);
+
+        AppState.TriggerRequestRecount();
+
+        await Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        AppState.OnChange -= CalStateChanged;
+    }
+
+    private void CalStateChanged()
+    {
+        RejectedWorklistCount = (LoginObject.Request.Get(x => x.Requester.Username == User.UserName && x.Status == "Rejected").GetAwaiter().GetResult()).Count;
+        EngineerWorklistCount = (User.Regions.Count <= 0) ? 0 : (LoginObject.Request.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId) && x.Status != "Rejected" && x.Status != "Accepted").GetAwaiter().GetResult()).Count;
+
+        InvokeAsync(StateHasChanged);
+    }
+}

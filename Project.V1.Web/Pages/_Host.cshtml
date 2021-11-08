@@ -1,0 +1,60 @@
+﻿@page "/"
+@namespace Project.V1.Web.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SMP</title>
+    <base href="~/" />
+    @*<link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="~/images/favicon.ico" />
+    <link href="Project.V1.Web.styles.css" rel="stylesheet" />
+    <link href="_content/Syncfusion.Blazor/styles/material.css" rel="stylesheet" />
+    @*<link href="~/lib/datatables/media/css/jquery.dataTables.css" rel="stylesheet" />*@
+
+    <script src="~/lib/jquery/jquery.js"></script>
+    <style type="text/css">
+        .zoom {
+            zoom: 1.0;
+            -moz-transform: scale(1);
+            -moz-transform-origin: 0 0;
+        }
+    </style>
+</head>
+<body class="">
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script type="text/javascript">
+        setTitle = (title) => { document.title = title; }
+
+            //setTimeout(function () {
+            //    $(document).ready(function () {
+            //        $('table').DataTable();
+            //    });
+            //}, 500);
+    </script>
+    @*<script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>*@
+    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>

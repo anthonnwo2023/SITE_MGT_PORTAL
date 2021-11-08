@@ -1,0 +1,74 @@
+﻿@using System.Linq.Expressions
+@typeparam TItem
+
+
+@if (Multiple)
+{
+    <select multiple class="_fieldCssClasses" value="@Value" @onchange="HandleInput">
+        @foreach (var item in Data)
+        {
+            var Text = TextField?.Invoke(item);
+            var Value = ValueField?.Invoke(item).ToString();
+
+            if (SelectedValues.Contains(Value))
+            {
+                <option selected="selected" value="@Text">@Text</option>
+            }
+            else
+            {
+                <option value="@Value">@Text</option>
+            }
+        }
+    </select>
+}
+else
+{
+    <select class="_fieldCssClasses" value="@Value" @onchange="HandleInput">
+        @foreach (var item in Data)
+        {
+
+            var Text = TextField?.Invoke(item);
+            var Value = ValueField?.Invoke(item).ToString();
+
+            if (SelectedValues.Contains(Value))
+            {
+                <option selected="selected" value="@Text">@Text</option>
+            }
+            else
+            {
+                <option value="@Value">@Text</option>
+            }
+        }
+    </select>
+}
+
+@code {
+    private FieldIdentifier _fieldIdentifier;
+    private string _fieldCssClasses => CascadedEditContext?.FieldCssClass(_fieldIdentifier) ?? "";
+
+    [CascadingParameter] private EditContext CascadedEditContext { get; set; }
+
+    [Parameter] public string Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<string>> ValueExpression { get; set; }
+    [Parameter] public IEnumerable<TItem> Data { get; set; }
+    // The field to be shown adjacent to checkbox
+    [Parameter] public Func<TItem, string> TextField { get; set; }
+    // The Value which checkbox will return when checked
+    [Parameter] public Func<TItem, object> ValueField { get; set; }
+    // The array which contains the list of selected checkboxs
+    [Parameter] public List<string> SelectedValues { get; set; }
+    [Parameter] public bool Multiple { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _fieldIdentifier = FieldIdentifier.Create(ValueExpression);
+    }
+
+    private async Task HandleInput(ChangeEventArgs args)
+    {
+        await ValueChanged.InvokeAsync(args.Value.ToString());
+        CascadedEditContext?.NotifyFieldChanged(_fieldIdentifier);
+    }
+
+}

@@ -1,0 +1,32 @@
+﻿@typeparam TItem
+@typeparam TValue
+
+<style type="text/css">
+    .form-check-input {
+        position: absolute !important;
+        margin-top: .3rem !important;
+        margin-left: -1.25rem !important;
+    }
+</style>
+
+<div style="@Style" class="@Class">
+    <div class="e-float-text e-label-top d-block font-weight-bold mb-2">@ItemListTitle</div>
+    @if (ListOfItems != null)
+    {
+        foreach (var item in ListOfItems)
+        {
+            var Text = TextField?.Invoke(item);
+            var Value = ValueField?.Invoke(item).ToString();
+
+            var isSelected = (SelectedValues != null) ? SelectedValues.Select(x => ((dynamic)x).Id).ToList().Contains(((dynamic)item).Id) : false;
+
+            <div class="form-check">
+                <input class="form-check-input" id="@($"{nameof(TItem)}{ListOfItems.IndexOf(item)}")" checked="@isSelected" type="checkbox"
+                       @onchange="e => (CheckboxChanged(e, item))" style="margin-top: 0px !important;" />
+                <label class="form-check-label" for="">@Text</label>
+            </div>
+        }
+    }
+    @ChildContent
+</div>
+@*@onchange="eventArgs => { CheckboxClicked(Value, eventArgs.Value); }"*@

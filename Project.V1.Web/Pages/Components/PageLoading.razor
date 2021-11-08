@@ -1,0 +1,19 @@
+﻿<div class="spinner" style="
+        left: @(MarginLeft)%;
+        top: @(MarginTop)%;
+        height: @(Height)px;
+        width: @(Width)px;
+        border: @(BorderSize)px solid silver;
+        border-top: @(BorderSize)px solid @(BorderTopColor);
+"></div>
+
+@code
+{
+    [Parameter] public string MarginTop { get; set; } = "40";
+    [Parameter] public string Height { get; set; } = "60";
+    [Parameter] public string Width { get; set; } = "60";
+    [Parameter] public string MarginLeft { get; set; } = "50";
+    [Parameter] public string BorderSize { get; set; } = "10";
+    [Parameter] public string BorderTopColor { get; set; } = "#ffc72c";
+    //[Parameter] public string BorderTopColor { get; set; } = "#337AB7";
+}

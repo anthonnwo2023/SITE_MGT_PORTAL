@@ -1,0 +1,60 @@
+﻿@page "/access/vendor/edit/{id}"
+@page "/access/vendor/create"
+
+<PageTitlePat Title="@($"SMP - {@PageText} Vendor")" />
+
+<div class="px-4">
+    <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    @if (VendorModel == null)
+    {
+        <PageLoading MarginLeft="45" />
+    }
+    else
+    {
+        <EditForm Model="@VendorModel" OnValidSubmit="HandleValidSubmit" class="">
+            @*<ObjectGraphDataAnnotationsValidator />*@ @*Microsoft.AspNetCore.Components.DataAnnotations.Validation*@
+            <FluentValidator></FluentValidator>
+            @*<div class="">
+                    <DataAnnotationsValidator />
+                </div>*@
+            @*<div class="col-md-12">
+                    <ValidationSummary />
+                </div>*@
+            <div class="col-md-12">
+                <SfToast CssClass="e-toast-danger" ID="toast_default" @ref="ToastObj" Title="Error Notification" Timeout="5000" Icon="e-circle_info"
+                         ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+                    <ToastPosition X="@ToastPosition"></ToastPosition>
+                    <ToastTemplates>
+                        <Template>
+                            <div>
+                                <div id='toastEmail_template'>
+                                    <div class='e-toast-template'>
+                                        <div class='e-toast-message'>
+                                            <div class='e-toast-title'>@ToastTitle</div>
+                                            <div class='e-toast-content'>@ToastContent</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Template>
+                    </ToastTemplates>
+                </SfToast>
+            </div>
+            <div class="form-group">
+                <SfTextBox Placeholder="Vendor Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(VendorModel.Name)">
+                </SfTextBox>
+                <ValidationMessage For="@(() => VendorModel.Name)" />
+            </div>
+            <div class="col-md-12 p-0">
+                <div class="form-group">
+                    <div class="col-sm-12 p-0 mt-4">
+                        <SfButton Disabled="@DisableCreateButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
+                                  IconPosition="IconPosition.Right">@BtnText</SfButton>
+                                <span> | </span>
+                                <a href="access">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+</div>

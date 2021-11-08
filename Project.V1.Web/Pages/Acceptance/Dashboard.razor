@@ -1,0 +1,151 @@
+﻿@page "/acceptance"
+@layout MainLayoutAcceptance
+@using Syncfusion.Blazor.PivotView
+
+<PageTitlePat Title="SMP (Acceptance) - Dashboard" />
+
+<BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+<style>
+
+    /*Value Cells*/
+    .e-pivotview .e-valuescontent {
+        text-align: center !important;
+    }
+
+    /*Columns Headers*/
+    .e-pivotview .e-columnsheader {
+        text-align: center !important;
+    }
+
+    /*Rows Headers*/
+    .e-pivotview .e-rowsheader {
+        text-align: center !important;
+    }
+
+    /*Summary Cells*/
+    .e-pivotview .e-summary {
+        text-align: center !important;
+    }
+
+    .e-pivotview .e-headercell {
+        background-color: #ffcb05 !important;
+        text-align: center;
+    }
+
+    .e-pivotview .e-headertext {
+        text-align: center !important;
+    }
+
+    .e-scrollbar {
+        display: none !important;
+    }
+
+    .e-pivotview .e-rowsheader {
+        background-color: #1b6ec2 !important;
+    }
+
+    .e-pivotview .e-summary:not(.e-gtot) {
+        background-color: pink !important;
+    }
+
+    .e-pivotview .e-gtot {
+        background-color: black !important;
+        color: #ffffff !important;
+    }
+
+    .e-pivotview .e-stackedheadercelldiv, .e-pivotview .e-headertext, .e-pivotview .e-rowsheader .e-cellvalue {
+        color: #ffffff !important;
+    }
+</style>
+
+<SfDatePicker TValue="DateTime" @bind-Value="@DateData" Format="d.M.yyyy" Width="10em">
+    <DatePickerEvents TValue="DateTime" ValueChange="SetMyDate"></DatePickerEvents>
+</SfDatePicker>
+
+
+@if (DailyRequests == null)
+{
+    <PageLoading />
+}
+else
+{
+    var dateString = (DateIsToday) ? $"Today - {DateData.Date.ToString("d")}" : $"on {DateData.Date.ToString("d")}";
+
+    <h6 class="display-6 my-3">Total Acceptance @dateString </h6>
+
+    <SfPivotView TValue="AcceptanceDTO" AllowExcelExport="true" EnableVirtualization="true" Width="100%"
+                 EnableValueSorting="true" ShowTooltip="false">
+        <PivotViewDataSourceSettings DataSource="@DailyRequests" EnableSorting="false" ShowColumnGrandTotals="false" ShowAggregationOnValueField="false"
+                                     ShowHeaderWhenEmpty="true">
+            <PivotViewColumns>
+                <PivotViewColumn Name="Spectrum"></PivotViewColumn>
+            </PivotViewColumns>
+            <PivotViewRows>
+                <PivotViewRow Name="Vendor"></PivotViewRow>
+            </PivotViewRows>
+            <PivotViewValues>
+                <PivotViewValue Name="AcceptanceCount" Caption="Acceptance By Vendor"></PivotViewValue>
+            </PivotViewValues>
+        </PivotViewDataSourceSettings>
+        @*<PivotViewDisplayOption View=View.Chart></PivotViewDisplayOption>
+            <PivotChartSettings Title="Daily Acceptance">
+                <PivotChartSeries Type=ChartSeriesType.Column></PivotChartSeries>
+            </PivotChartSettings>*@
+        <PivotViewGridSettings AllowResizing="false" AutoFit="false" AllowTextWrap="true"></PivotViewGridSettings>
+    </SfPivotView>
+}
+
+@if (MonthlyProjectTypeRequests == null)
+{
+    <PageLoading />
+}
+else
+{
+    var dateString = (DateWthMth) ? $"in {DateData.Date.ToString("MMMM yyyy")}" : $"in {DateData.Date.ToString("MMMM yyyy")}";
+
+<h6 class="display-6 my-3">Project Type: Total Acceptance @dateString </h6>
+
+    <SfPivotView TValue="AcceptanceDTO" AllowExcelExport="true" EnableVirtualization="true" Width="100%" Height="500"
+                 EnableValueSorting="true" ShowTooltip="false">
+        <PivotViewDataSourceSettings DataSource="@MonthlyProjectTypeRequests" EnableSorting="false" ShowGrandTotals="false">
+            <PivotViewColumns>
+                <PivotViewColumn Name="Spectrum"></PivotViewColumn>
+            </PivotViewColumns>
+            <PivotViewRows>
+                <PivotViewRow Name="ProjectType"></PivotViewRow>
+            </PivotViewRows>
+            <PivotViewValues>
+                <PivotViewValue Name="AcceptanceCount" Caption="Acceptance By Project Type"></PivotViewValue>
+            </PivotViewValues>
+        </PivotViewDataSourceSettings>
+        <PivotViewGridSettings RowHeight="50" AllowResizing="false" AutoFit="false" AllowTextWrap="true"></PivotViewGridSettings>
+    </SfPivotView>
+}
+
+@if (MonthlyRequests == null)
+{
+    <PageLoading />
+}
+else
+{
+    var dateString = (DateWthMth) ? $"in {DateData.Date.ToString("MMMM yyyy")}" : $"in {DateData.Date.ToString("MMMM yyyy")}";
+
+<h6 class="display-6 my-3">Vendor: Total Acceptance @dateString </h6>
+
+    <SfPivotView TValue="AcceptanceDTO" AllowExcelExport="true" EnableVirtualization="true" Width="100%" Height="500"
+                 EnableValueSorting="true" ShowTooltip="false">
+        <PivotViewDataSourceSettings DataSource="@MonthlyRequests" EnableSorting="false" ShowColumnGrandTotals="false">
+            <PivotViewColumns>
+                <PivotViewColumn Name="Spectrum"></PivotViewColumn>
+            </PivotViewColumns>
+            <PivotViewRows>
+                <PivotViewRow Name="Vendor"></PivotViewRow>
+            </PivotViewRows>
+            <PivotViewValues>
+                <PivotViewValue Name="AcceptanceCount" Caption="Acceptance By Vendor"></PivotViewValue>
+            </PivotViewValues>
+        </PivotViewDataSourceSettings>
+        <PivotViewGridSettings AllowResizing="false" AutoFit="false" AllowTextWrap="true"></PivotViewGridSettings>
+    </SfPivotView>
+}

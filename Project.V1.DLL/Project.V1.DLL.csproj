@@ -1,0 +1,101 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\**" />
+    <Compile Remove="Extensions\**" />
+    <Compile Remove="Helpers\**" />
+    <Compile Remove="Migrations\**" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="Services\Interfaces\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Services\Interfaces\**" />
+    <None Remove="Data\**" />
+    <None Remove="Extensions\**" />
+    <None Remove="Helpers\**" />
+    <None Remove="Migrations\**" />
+    <None Remove="Models\**" />
+    <None Remove="Services\Interfaces\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="RequestActions\CompletedState.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Helpers\ADHelper.cs" />
+    <Compile Include="Helpers\AppState.cs" />
+    <Compile Include="Helpers\ClaimsExtension.cs" />
+    <Compile Include="Helpers\Factory.cs" />
+    <Compile Include="Helpers\HelperLogin.cs" />
+    <Compile Include="Helpers\LoginModelObject.cs" />
+    <Compile Include="Helpers\RoleManagerExtension.cs" />
+    <Compile Include="Helpers\UserManagerExtension.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\IAntennaMake.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\IAntennaType.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\IRRUType.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\IBaseBand.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\IProjectType.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\ISpectrum.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\IRegion.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\ISummerConfig.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\ITechType.cs" />
+    <Compile Include="Services\Interfaces\IClaim.cs" />
+    <Compile Include="Services\Interfaces\IClaimCategory.cs" />
+    <Compile Include="Services\Interfaces\ILTERequest.cs" />
+    <Compile Include="Services\Interfaces\IRequest.cs" />
+    <Compile Include="Services\Interfaces\IRequestAction.cs" />
+    <Compile Include="Services\Interfaces\IUser.cs" />
+    <Compile Include="Services\Interfaces\IVendor.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Cron\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="MailKit" Version="2.15.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="5.21.3" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.3" />
+    <PackageReference Include="PPioli.FluentValidation.Blazor" Version="5.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="7.1.0" />
+    <PackageReference Include="Serilog.Exceptions.EntityFrameworkCore" Version="7.1.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="4.1.2" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
+    <PackageReference Include="Serilog.Formatting.Elasticsearch" Version="8.4.1" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="System.DirectoryServices" Version="5.0.0" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Project.V1.Data\Project.V1.Data.csproj" />
+    <ProjectReference Include="..\Project.V1.Lib\Project.V1.Lib.csproj" />
+    <ProjectReference Include="..\Project.V1.Models\Project.V1.Models.csproj" />
+  </ItemGroup>
+</Project>

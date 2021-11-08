@@ -1,0 +1,138 @@
+﻿@page "/access/user/edit/{id}"
+@page "/access/user/create"
+
+<PageTitlePat Title="@($"SMP - {@PageText} User")" />
+
+<div class="px-4">
+    <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    @if (ApplicationUserModel == null)
+    {
+        <PageLoading MarginLeft="55" />
+    }
+    else
+    {
+        <EditForm Model="@Input" OnValidSubmit="HandleValidSubmit" class="row">
+            <ObjectGraphDataAnnotationsValidator /> @*Microsoft.AspNetCore.Components.DataAnnotations.Validation*@
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <SfToast CssClass="e-toast-danger" ID="toast_default" @ref="ToastObj" Title="Error Notification" Timeout="5000" Icon="e-circle_info"
+                             ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+                        <ToastPosition X="@ToastPosition"></ToastPosition>
+                        <ToastTemplates>
+                            <Template>
+                                <div>
+                                    <div id='toastEmail_template'>
+                                        <div class='e-toast-template'>
+                                            <div class='e-toast-message'>
+                                                <div class='e-toast-title'>@ToastTitle</div>
+                                                <div class='e-toast-content'>@ToastContent</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Template>
+                        </ToastTemplates>
+                    </SfToast>
+                </div>
+                <div class="row">
+                    <DataAnnotationsValidator />
+                    <div class="form-group col-md-4">
+                        <label for="UserName" class="control-label">Username</label>
+                        @if (Id != null)
+                        {
+                            <InputText readonly="readonly" id="UserName" class="form-control" @bind-Value="Input.UserName" />
+                        }
+                        else
+                        {
+                            <InputText id="UserName" class="form-control" @bind-Value="Input.UserName" />
+                            <ValidationMessage For="@(() => Input.UserName)" />
+                        }
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="Fullname" class="control-label">Fullname</label>
+                        <InputText id="Fullname" class="form-control" @bind-Value="Input.Fullname" />
+                        <ValidationMessage For="@(() => Input.Fullname)" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="PhoneNumber" class="control-label">Phone Number</label>
+                        <InputText id="PhoneNumber" class="form-control" @bind-Value="Input.PhoneNumber" />
+                        <ValidationMessage For="@(() => Input.PhoneNumber)" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="Email" class="control-label">Email</label>
+                        <InputText id="Email" class="form-control" @bind-Value="Input.Email" />
+                        <ValidationMessage For="@(() => Input.Email)" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="Department" class="control-label">Department</label>
+                        <InputText id="Department" class="form-control" @bind-Value="Input.Department" />
+                        <ValidationMessage For="@(() => Input.Department)" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="VendorId" class="control-label">Vendor</label>
+                        <select id="VendorId" class="form-control" value="@Input.VendorId" @onchange="TogglePasswordValidation">
+                            <option value="">Select Vendor...</option>
+                            @foreach (var vendor in Vendors)
+                            {
+                                <option value="@vendor.Id">@vendor.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => Input.VendorId)" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="RoleId" class="control-label">Role</label>
+                        <SfMultiSelect TValue="string[]" TItem="IdentityRole" AllowCustomValue="false" AllowFiltering="false" @bind-Value="Input.SelectedRoles"
+                                       Placeholder="e.g. User" Mode="VisualMode.CheckBox" DataSource="@Roles">
+                            <MultiSelectFieldSettings Value="Id" Text="Name"></MultiSelectFieldSettings>
+                        </SfMultiSelect>
+                        @*<Blazorise.Select TValue="string" Multiple="true" SelectedValuesChanged="ToggleRoleClaimSelection" SelectedValues="@Input.Roles">
+                            @foreach (var role in Roles)
+                            {
+                                <Blazorise.SelectItem Value="@role.Id">@role.Name</Blazorise.SelectItem>
+                            }
+                        </Blazorise.Select>*@
+                        @*<CustomInputSelect TItem="IdentityRole" Multiple=true Data="@Roles" TextField="(e => e.Id)" ValueField="(e => e.Name)" SelectedValues="@ActiveRoles" @bind-Value="@ToggleRoleClaimSelection" />*@
+
+                        <ValidationMessage For="@(() => Input.SelectedRoles)" />
+                    </div>
+                    <br clear="all" />
+                    <div class="form-group col-md-4">
+                        <label for="Password" class="control-label">Password</label>
+                        <InputText type="password" id="Password" class="form-control" @bind-Value="Input.Password" />
+                        <ValidationMessage For="@(() => Input.Password)" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="InputText.ConfirmPassword" class="control-label">Confirm Password</label>
+                        <InputText type="password" id="InputText.ConfirmPassword" class="form-control" @bind-Value="Input.ConfirmPassword" />
+                        <ValidationMessage For="@(() => Input.ConfirmPassword)" />
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        @*<div class="font-weight-bold" style="font-size: 16px;">Manage User Claims</div>*@
+                        <div class="row">
+                            @foreach (var claims in UserClaims)
+                            {
+                                <div class="col-md-4">
+                                    <div class="font-weight-bold mb-2 mt-3" style="font-size: 12px;border-bottom: 0px solid #ccc;">@claims.Category</div>
+                                    @foreach (var claim in claims.Claims)
+                                    {
+                                        <DisplayClaimCheckbox Index="claims.Claims.IndexOf(claim)" Claim="claim" OnClaimSelection="ClaimSelectionChanged"></DisplayClaimCheckbox>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="col-sm-12 p-0 mt-4">
+                        <SfButton Disabled="@DisableCreateButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
+                                  IconPosition="IconPosition.Right">@BtnText</SfButton>
+                                <span> | </span>
+                                <a href="access"> Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+</div>

@@ -1,0 +1,54 @@
+﻿@page "/access/claim/category/delete/{id}"
+
+<PageTitlePat Title="@($"SMP - Delete Role")" />
+<Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+
+<div class="px-4">
+    <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    @if (ClaimCategoryModel == null)
+    {
+        <PageLoading />
+    }
+    else
+    {
+        <div class="">
+            <div class="row">
+                <!-- Column -->
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Row -->
+                            <div class="d-flex flex-column" style="margin-right: 0px; margin-left:0px;">
+                                <h1>Details</h1>
+
+                                <div>
+                                    <h4>Claim</h4>
+                                    <hr />
+                                    <dl class="row">
+                                        <dt class="col-sm-2">
+                                            Name
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ClaimCategoryModel.Name
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            Date Created
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ClaimCategoryModel.DateCreated
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div>
+                                    <button class="btn btn-danger" href="access/user/edit/@ClaimCategoryModel.Id" @onclick="HandleDeleteClaim">Delete <i class="fa fa-trash"></i></button> <span> | </span>
+                                    <a href="access">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

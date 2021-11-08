@@ -1,0 +1,88 @@
+﻿<style type="text/css">
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+        color: #fff !important;
+        background-color: #1b6ec2;
+    }
+</style>
+
+<AuthorizeView>
+    <Authorized>
+        <nav class="navbar navbar-expand-lg navbar-light bg-transparent w-100" style="background-color: #ffcb05;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"><img src="images/logo.png" alt="logo" style="width: 40px" class="mr-auto" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav-pills navbar-nav ml-auto mb-2 mb-lg-0">
+                        @if (CanManageAccess)
+                        {
+                            <li class="nav-item active float-left">
+                                <NavLink class="nav-link text-dark px-3" href="dashboard" Match="NavLinkMatch.All">
+                                    Home
+                                </NavLink>
+                            </li>
+                        }
+
+                        @if (ProjectClaims != null)
+                        {
+                            foreach (var project in ProjectClaims)
+                            {
+                                var claimNameChunk = project.ClaimName.Split(' ').ToList().Select(x => x.Substring(0, 1).ToUpper());
+                                var abbr = string.Join("", claimNameChunk);
+
+                                <li class="nav-item float-left">
+                                    <NavLink class="nav-link text-dark px-3" href="@GetAppLink(abbr)" Match="NavLinkMatch.Prefix">
+                                        @GetAppName(abbr)
+                                    </NavLink>
+                                </li>
+                            }
+                        }
+                        @*<li class="nav-item float-left">
+                                <NavLink class="nav-link text-dark" href="acceptance" Match="NavLinkMatch.Prefix">
+                                    Site Acceptance
+                                </NavLink>
+                            </li>
+                            <li class="nav-item float-left">
+                                <NavLink class="nav-link text-dark" href="holistic" Match="NavLinkMatch.Prefix">
+                                    Holistic Site
+                                </NavLink>
+                            </li>
+                            <li class="nav-item float-left">
+                                <NavLink class="nav-link text-dark" href="live" Match="NavLinkMatch.Prefix">
+                                    Live Site
+                                </NavLink>
+                            </li>
+                            <li class="nav-item float-left">
+                                <NavLink class="nav-link text-dark" href="eq-matching" Match="NavLinkMatch.Prefix">
+                                    Equipment Matching
+                                </NavLink>
+                            </li>
+                            <li class="nav-item float-left">
+                                <NavLink class="nav-link text-dark" href="eq-ordering" Match="NavLinkMatch.Prefix">
+                                    Equipmnet Ordering
+                                </NavLink>
+                            </li>*@
+                        <li class="nav-item float-left">
+                            <NavLink class="nav-link text-dark px-3" href="profile" Match="NavLinkMatch.All">
+                                Hello, @context.User.Identity.Name!
+                            </NavLink>
+                        </li>
+                        @*<li class="nav-item pb-0">
+                                <NavLink class="nav-link text-dark px-3" href="identity/account/logout" Match="NavLinkMatch.All">
+                                    Logout
+                                </NavLink>
+                            </li>*@
+                    </ul>
+                    @*<form method="post" action="identity/account/logout">
+                            <button type="submit" class="nav-link btn btn-link">Log out</button>
+                        </form>*@
+                </div>
+            </div>
+        </nav>
+    </Authorized>
+    <NotAuthorized>
+        @*<a href="Identity/Account/Register">Register</a>
+            <a href="Identity/Account/Login">Log in</a>*@
+    </NotAuthorized>
+</AuthorizeView>

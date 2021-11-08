@@ -1,0 +1,101 @@
+﻿@page "/access/user/delete/{id}"
+@page "/access/user/detail/{id}"
+
+<PageTitlePat Title="@($"SMP - {@PageText} User")" />
+
+
+<div class="px-4">
+    <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    @if (ApplicationUserModel == null)
+    {
+        <PageLoading />
+    }
+    else
+    {
+        <div class="">
+            <div class="row">
+                <!-- Column -->
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Row -->
+                            <div class="d-flex flex-column" style="margin-right: 0px; margin-left:0px;">
+                                <h1>Details</h1>
+
+                                <div>
+                                    <h4>User</h4>
+                                    <hr />
+                                    <dl class="row">
+                                        <dt class="col-sm-2">
+                                            Fullname
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ApplicationUserModel.Fullname
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            Phone Number
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ApplicationUserModel.PhoneNumber
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            Email
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ApplicationUserModel.Email
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            Role
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @{
+                                                var role = "";
+                                                //foreach (var item in ApplicationUserModel.Roles)
+                                                //{
+                                                //    role += item.Name + " - ";
+                                                //}
+
+                                                //role = role.TrimEnd(new char[] { ' ', '-' });
+                                            }
+
+                                            @role
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            Vendor
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ApplicationUserModel.Vendor.Name
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            Last Login Date
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ApplicationUserModel.LastLoginDate
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            Date Created
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            @ApplicationUserModel.DateCreated
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div>
+                                    @if (ShowDeleteButton)
+                                    {
+                                        <button class="btn btn-danger" @onclick="HandleDeleteUser">Delete <i class="fa fa-paper-plane"></i></button> <span> | </span>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-primary" href="access/user/edit/@ApplicationUserModel.Id">Edit <i class="fa fa-paper-plane"></i></a> <span> | </span>
+                                    }
+                                    <a href="access">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

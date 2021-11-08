@@ -1,0 +1,87 @@
+﻿@page "/access/role/edit/{id}"
+@page "/access/role/create"
+
+<PageTitlePat Title="@($"SMP - {@PageText} Role")" />
+
+@*@attribute [Authorize]
+    @attribute [Authorize(Roles = "managger, engineer")]
+    @attribute [Authorize(Policy = "NESICTPolicy")]*@
+<div class="px-4">
+    <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    @if (IdentityRole == null)
+    {
+        <PageLoading />
+    }
+    else
+    {
+        <EditForm Model="@IdentityRole" OnValidSubmit="HandleValidSubmit" class="">
+            <ObjectGraphDataAnnotationsValidator /> @*Microsoft.AspNetCore.Components.DataAnnotations.Validation*@
+        <div class="row">
+            <div class="col-md-12">
+                <SfToast CssClass="e-toast-danger" ID="toast_default" @ref="ToastObj" Title="Error Notification" Timeout="5000" Icon="e-circle_info"
+                         ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+                    <ToastPosition X="@ToastPosition"></ToastPosition>
+                    <ToastTemplates>
+                        <Template>
+                            <div>
+                                <div id='toastEmail_template'>
+                                    <div class='e-toast-template'>
+                                        <div class='e-toast-message'>
+                                            <div class='e-toast-title'>@ToastTitle</div>
+                                            <div class='e-toast-content'>@ToastContent</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Template>
+                    </ToastTemplates>
+                </SfToast>
+            </div>
+            <div class="col-md-12">
+                <ValidationSummary />
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <SfTextBox Placeholder="Role Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(IdentityRole.Name)">
+                    </SfTextBox>
+                    <ValidationMessage For="@(() => IdentityRole.Name)" />
+                </div>
+            </div>
+            <div class="col-md-8 mb-3">
+                @*<div class="font-weight-bold" style="font-size: 16px;">Manage User Claims</div>*@
+                <div class="row">
+                    @foreach (var claims in RoleClaims)
+                    {
+                        <div class="col-md-4">
+                            <div class="font-weight-bold mb-2 mt-3" style="font-size: 12px;border-bottom: 0px solid #ccc;">@claims.Category</div>
+                            @foreach (var claim in claims.Claims)
+                            {
+                                <DisplayClaimCheckbox Index="claims.Claims.IndexOf(claim)" Claim="claim" OnClaimSelection="ClaimSelectionChanged"></DisplayClaimCheckbox>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="col-sm-12 p-0 mt-4">
+                        <SfButton Disabled="@DisableCreateButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
+                                  IconPosition="IconPosition.Right">@BtnText</SfButton>
+                                <span> | </span>
+                                <a href="access">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </EditForm>
+            }
+</div>
+@*Only checks if the user is authenticated*@
+@*<AuthorizeView>
+        <Authorized>
+
+        </Authorized>
+        <NotAuthorized>
+
+        </NotAuthorized>
+    </AuthorizeView>*@

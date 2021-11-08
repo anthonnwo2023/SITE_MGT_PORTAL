@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+
+<style type="text/css">
+    .top-row
+    {
+        height: unset !important;
+    }
+</style>
+
+<div class="page vh-100">
+    <div class="sidebar zoom h-auto">
+        <NavMenu />
+    </div>
+
+    <div class="main zoom overflow-auto">
+        <div class="top-row auth">
+            <LoginDisplay />
+            @*<a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>*@
+        </div>
+
+        <div class="content px-0">
+            @Body
+        </div>
+    </div>
+</div>
+
+
+@*@code {
+    private bool expandNESICTRequestSubNav;
+}*@

@@ -1,0 +1,80 @@
+﻿@page "/access/claim/category/edit/{id}"
+@page "/access/claim/category/create"
+
+<PageTitlePat Title="@($"SMP - {@PageText} Role")" />
+
+@*@attribute [Authorize]
+    @attribute [Authorize(Roles = "managger, engineer")]
+    @attribute [Authorize(Policy = "NESICTPolicy")]*@
+<div class="px-4">
+    <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    @if (ClaimCategoryModel == null)
+    {
+        <PageLoading />
+    }
+    else
+    {
+        <EditForm Model="@ClaimCategoryModel" OnValidSubmit="HandleValidSubmit" class="">
+            <ObjectGraphDataAnnotationsValidator /> @*Microsoft.AspNetCore.Components.DataAnnotations.Validation*@
+            <div class="row">
+                <div class="col-md-12">
+                    <SfToast CssClass="e-toast-danger" ID="toast_default" @ref="ToastObj" Title="Error Notification" Timeout="5000" Icon="e-circle_info"
+                             ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+                        <ToastPosition X="@ToastPosition"></ToastPosition>
+                        <ToastTemplates>
+                            <Template>
+                                <div>
+                                    <div id='toastEmail_template'>
+                                        <div class='e-toast-template'>
+                                            <div class='e-toast-message'>
+                                                <div class='e-toast-title'>@ToastTitle</div>
+                                                <div class='e-toast-content'>@ToastContent</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Template>
+                        </ToastTemplates>
+                    </SfToast>
+                </div>
+                <div class="col-md-12">
+                    <ValidationSummary />
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <SfTextBox Placeholder="Category Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(ClaimCategoryModel.Name)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => ClaimCategoryModel.Name)" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <SfDateTimePicker Placeholder="Date Created" Readonly="true" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(ClaimCategoryModel.DateCreated)">
+                        </SfDateTimePicker>
+                        <ValidationMessage For="@(() => ClaimCategoryModel.DateCreated)" />
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-sm-12 p-0 mt-4">
+                            <SfButton Disabled="@DisableCreateButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
+                                      IconPosition="IconPosition.Right">@BtnText</SfButton>
+                                    <span> | </span>
+                                    <a href="access">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+</div>
+
+@*Only checks if the user is authenticated*@
+@*<AuthorizeView>
+        <Authorized>
+
+        </Authorized>
+        <NotAuthorized>
+
+        </NotAuthorized>
+    </AuthorizeView>*@

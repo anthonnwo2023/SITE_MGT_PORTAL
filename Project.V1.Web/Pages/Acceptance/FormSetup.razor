@@ -1,0 +1,387 @@
+﻿@page "/acceptance/setup"
+@layout MainLayoutAcceptance
+
+<PageTitlePat Title="SMP (Acceptance) - Request Setup" />
+
+<style type="text/css">
+    .miniTable {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    .e-dlg-overlay {
+        opacity: .8 !important;
+    }
+
+    #UserTable, #UserTable_header_table {
+        /*table-layout: unset !important;*/
+    }
+</style>
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/worklist.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4" style="padding: 4rem 2rem;">
+        Site Acceptance Setup
+    </div>
+</div>
+
+<div>
+    <BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body px-2">
+                    <!-- Row -->
+                    <div class="row" style="margin-right: 0px; margin-left:0px;">
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                <span class="border float-right px-3 font-weight-bold">Regions</span>
+                            </p>
+                            @if (Regions != null)
+                            {
+                                <SfGrid DataSource="@Regions" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_Region">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "RegionViewModel")' OnActionComplete='e => ActionComplete(e, "RegionViewModel")' TValue="RegionViewModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(RegionViewModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(RegionViewModel.Name)" HeaderText="Region" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(RegionViewModel.Abbr)" HeaderText="Abbr" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(RegionViewModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(RegionViewModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="120">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                <span class="border float-right px-3 font-weight-bold">Antenna Makes</span>
+                            </p>
+                            @if (AntennaMakes != null)
+                            {
+                                <SfGrid DataSource="@AntennaMakes" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_AntennaMake">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "AntennaMakeModel")' OnActionComplete='e => ActionComplete(e, "AntennaMakeModel")' TValue="AntennaMakeModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(AntennaMakeModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(AntennaMakeModel.Name)" HeaderText="Antenna Make" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(AntennaMakeModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(AntennaMakeModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="120">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                <span class="border float-right px-3 font-weight-bold">Antenna Types</span>
+                            </p>
+                            @if (AntennaTypes != null)
+                            {
+                                <SfGrid DataSource="@AntennaTypes" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_AntennaType">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "AntennaTypeModel")' OnActionComplete='e => ActionComplete(e, "AntennaTypeModel")' TValue="AntennaTypeModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(AntennaTypeModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(AntennaTypeModel.Name)" HeaderText="Antenna Type" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(AntennaTypeModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(AntennaTypeModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="120">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                <span class="border float-right px-3 font-weight-bold">Spectrums / Technology Split</span>
+                            </p>
+                            @if (Spectrums != null)
+                            {
+                                <SfGrid DataSource="@Spectrums" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_Spectrum">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "SpectrumViewModel")' OnActionComplete='e => ActionComplete(e, "SpectrumViewModel")' TValue="SpectrumViewModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(SpectrumViewModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(SpectrumViewModel.Name)" HeaderText="Spectrum/Technology Split" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridForeignColumn Field="@nameof(SpectrumViewModel.TechTypeId)" HeaderText="Technology" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit">
+                                        </GridForeignColumn>
+                                        <GridColumn Field="@nameof(SpectrumViewModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(SpectrumViewModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="120">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                <span class="border float-right px-3 font-weight-bold">Summer Configs</span>
+                            </p>
+                            @if (SummerConfigs != null)
+                            {
+                                <SfGrid DataSource="@SummerConfigs" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_SummerConfig">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "SummerConfigModel")' OnActionComplete='e => ActionComplete(e, "SummerConfigModel")' TValue="SummerConfigModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(SummerConfigModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(SummerConfigModel.Name)" HeaderText="Summer Config" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(SummerConfigModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(SummerConfigModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="120">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                <span class="border float-right px-3 font-weight-bold">Project Types</span>
+                            </p>
+                            @if (ProjectTypes != null)
+                            {
+                                <SfGrid DataSource="@ProjectTypes" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_ProjectType">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "ProjectTypeModel")' OnActionComplete='e => ActionComplete(e, "ProjectTypeModel")' TValue="ProjectTypeModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(ProjectTypeModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ProjectTypeModel.Name)" HeaderText="Project Type" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ProjectTypeModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(ProjectTypeModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="150">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                <span class="border float-right px-3 font-weight-bold">Technology Types</span>
+                            </p>
+                            @if (TechTypes != null)
+                            {
+                                <SfGrid DataSource="@TechTypes" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_TechType">
+                                    <GridPageSettings PageSize="5"></GridPageSettings>
+                                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEvents OnActionBegin='e => ActionBegin(e, "TechTypeModel")' OnActionComplete='e => ActionComplete(e, "TechTypeModel")' TValue="TechTypeModel"></GridEvents>
+                                    <GridColumns>
+                                        <GridColumn Field="@nameof(TechTypeModel.Id)" Visible="false" IsPrimaryKey="true">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(TechTypeModel.Name)" HeaderText="Technology" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(TechTypeModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(TechTypeModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                        </GridColumn>
+                                        <GridColumn HeaderText="Manage Records" Width="150">
+                                            <GridCommandColumns>
+                                                <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                            </GridCommandColumns>
+                                        </GridColumn>
+                                    </GridColumns>
+                                </SfGrid>
+                            }
+                            else
+                            {
+                                <PageLoading MarginTop="10" />
+                            }
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                @*<a href="access/user/create" class="btn btn-sm w-auto btn-warning">Create User</a>*@
+                                <span class="border float-right px-3 font-weight-bold">BaseBands</span>
+                            </p>
+                            <div class="col-md-12 p-0">
+                                @if (BaseBands != null)
+                                {
+                                    <SfGrid DataSource="@BaseBands" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_BaseBand">
+                                        <GridPageSettings PageSize="5"></GridPageSettings>
+                                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                        <GridEvents OnActionBegin='e => ActionBegin(e, "BaseBandModel")' OnActionComplete='e => ActionComplete(e, "BaseBandModel")' TValue="BaseBandModel"></GridEvents>
+                                        <GridColumns>
+                                            <GridColumn Field="@nameof(BaseBandModel.Id)" Visible="false" IsPrimaryKey="true">
+                                            </GridColumn>
+                                            <GridColumn Field="@nameof(BaseBandModel.Name)" HeaderText="Baseband" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridForeignColumn Field="@nameof(BaseBandModel.VendorId)" HeaderText="Vendor" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Vendors" EditType="EditType.DropDownEdit">
+                                            </GridForeignColumn>
+                                            <GridColumn Field="@nameof(BaseBandModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="@nameof(BaseBandModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                        Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                            </GridColumn>
+                                            <GridColumn HeaderText="Manage Records" Width="150">
+                                                <GridCommandColumns>
+                                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                                </GridCommandColumns>
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                }
+                                else
+                                {
+                                    <PageLoading MarginTop="10" />
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                @*<a href="access/user/create" class="btn btn-sm w-auto btn-warning">Create User</a>*@
+                                <span class="border float-right px-3 font-weight-bold">RRU Types</span>
+                            </p>
+                            <div class="col-md-12 p-0">
+                                @if (RRUTypes != null)
+                                {
+                                    <SfGrid DataSource="@RRUTypes" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_RRUType">
+                                        <GridPageSettings PageSize="5"></GridPageSettings>
+                                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                        <GridEvents OnActionBegin='e => ActionBegin(e, "RRUTypeModel")' OnActionComplete='e => ActionComplete(e, "RRUTypeModel")' TValue="RRUTypeModel"></GridEvents>
+                                        <GridColumns>
+                                            <GridColumn Field="@nameof(RRUTypeModel.Id)" Visible="false" IsPrimaryKey="true">
+                                            </GridColumn>
+                                            <GridColumn Field="@nameof(RRUTypeModel.Name)" HeaderText="Baseband" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridForeignColumn Field="@nameof(RRUTypeModel.VendorId)" HeaderText="Vendor" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Vendors" EditType="EditType.DropDownEdit">
+                                            </GridForeignColumn>
+                                            <GridColumn Field="@nameof(RRUTypeModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="@nameof(RRUTypeModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                        Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                            </GridColumn>
+                                            <GridColumn HeaderText="Manage Records" Width="150">
+                                                <GridCommandColumns>
+                                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                                </GridCommandColumns>
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                }
+                                else
+                                {
+                                    <PageLoading MarginTop="10" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

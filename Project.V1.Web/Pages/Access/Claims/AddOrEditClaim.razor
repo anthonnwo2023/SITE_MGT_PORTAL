@@ -1,0 +1,89 @@
+﻿@page "/access/claim/edit/{id}"
+@page "/access/claim/create"
+
+<PageTitlePat Title="@($"SMP - {@PageText} Claim")" />
+
+@*@attribute [Authorize]
+    @attribute [Authorize(Roles = "managger, engineer")]
+    @attribute [Authorize(Policy = "NESICTPolicy")]*@
+<div class="px-4">
+    <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    @if (ClaimModel == null)
+    {
+        <PageLoading />
+    }
+    else
+    {
+        <EditForm Model="@ClaimModel" OnValidSubmit="HandleValidSubmit" class="">
+            <ObjectGraphDataAnnotationsValidator /> @*Microsoft.AspNetCore.Components.DataAnnotations.Validation*@
+            <div class="row">
+                <div class="col-md-12">
+                    <SfToast CssClass="e-toast-danger" ID="toast_default" @ref="ToastObj" Title="Error Notification" Timeout="5000" Icon="e-circle_info"
+                             ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+                        <ToastPosition X="@ToastPosition"></ToastPosition>
+                        <ToastTemplates>
+                            <Template>
+                                <div>
+                                    <div id='toastEmail_template'>
+                                        <div class='e-toast-template'>
+                                            <div class='e-toast-message'>
+                                                <div class='e-toast-title'>@ToastTitle</div>
+                                                <div class='e-toast-content'>@ToastContent</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Template>
+                        </ToastTemplates>
+                    </SfToast>
+                </div>
+                <div class="col-md-12">
+                    <ValidationSummary />
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <SfTextBox Placeholder="Claim Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(ClaimModel.ClaimName)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => ClaimModel.ClaimName)" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <SfTextBox Placeholder="Claim Type" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(ClaimModel.ClaimValue)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => ClaimModel.ClaimValue)" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <SfDropDownList TValue="string" TItem="ClaimCategoryModel" Placeholder="Claim Category" DataSource="@ClaimCategories" FloatLabelType="@FloatLabelType.Auto"
+                                        @bind-Value="@SelectedCategory">
+                            <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => ClaimModel.Category)" />
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-sm-12 p-0 mt-4">
+                            <SfButton Disabled="@DisableCreateButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
+                                      IconPosition="IconPosition.Right">@BtnText</SfButton>
+                                    <span> | </span>
+                                    <a href="access">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+</div>
+
+@*Only checks if the user is authenticated*@
+@*<AuthorizeView>
+        <Authorized>
+
+        </Authorized>
+        <NotAuthorized>
+
+        </NotAuthorized>
+    </AuthorizeView>*@

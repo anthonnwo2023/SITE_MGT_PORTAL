@@ -1,0 +1,47 @@
+﻿@page "/dashboard"
+
+
+<PageTitlePat Title="SMP - Dashboard" />
+
+<style type="text/css">
+    img.card-img-top {
+        /*max-height: 192px;*/
+    }
+</style>
+
+
+<div class="col-sm-12 m-0 p-0 px-4">
+    <Breadcrumb Paths="@Paths" OnAuthenticationCheck="AuthenticationCheck" />
+    <div class="row">
+        <div class="col-lg-9 row">
+            @if (ProjectClaims != null)
+            {
+                var width = (ProjectClaims.Count <= 3) ? (100 / ((ProjectClaims.Count > 0) ? ProjectClaims.Count : 1)) - (ProjectClaims.Count + 2) : 30;
+
+                foreach (var project in ProjectClaims)
+                {
+                    if (project.ClaimName.ToLower().Contains("equipment "))
+                        continue;
+
+                    var claimNameChunk = project.ClaimName.Split(' ').ToList().Select(x => x.Substring(0, 1).ToUpper());
+                    var abbr = string.Join("", claimNameChunk);
+
+                    <div class="card ml-3 mr-4 mb-4 float-left" style="width: @($"{width}%"); cursor: pointer;" @onclick='() => LoadLinkData(abbr)'>
+                        <img src="@(GetAppImage(abbr))" class="card-img-top" alt="app-image">
+                        <div class="card-body">
+                            <h5 class="card-title">@GetAppName(abbr)</h5>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="col-lg-3 border-left">
+            <img src="@AppImage" class="card-img-top mb-4" alt="app-image">
+            <p class="display-6">
+                @AppDescription
+            </p>
+            <a href="@AppLink" style="display: @AppButtonVisible" class="btn btn-primary">Go to <strong>@AppName</strong></a>
+        </div>
+    </div>
+</div>
+

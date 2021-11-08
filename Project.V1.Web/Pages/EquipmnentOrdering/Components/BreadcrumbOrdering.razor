@@ -1,0 +1,23 @@
+﻿<div class="">
+    <div class="row page-titles" style="">
+        <div class="col-sm-12 align-self-center">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
+                @for (int i = Paths.Count - 1; i >= 0; i--)
+                {
+                    @if (i == 0)
+                    {
+                        <li class="breadcrumb-item active">@Paths[i].Name</li>
+                    }
+                    else
+                    {
+                        <li class="breadcrumb-item"><a href="@Paths[i].Link">@Paths[i].Name</a></li>
+                    }
+                }
+            </ol>
+        </div>
+        @*<div>
+                <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+            </div>*@
+    </div>
+</div>
