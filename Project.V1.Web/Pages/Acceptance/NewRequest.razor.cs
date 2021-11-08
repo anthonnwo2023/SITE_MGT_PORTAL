@@ -291,10 +291,10 @@ namespace Project.V1.Web.Pages.Acceptance
             Spectrums = await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive);
         }
 
-        public async Task OnVendorChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, VendorModel> args)
-        {
-            //RRUTypes = await IRRUType.Get(x => x.VendorId == args.Value && x.IsActive);
-        }
+        //public async Task OnVendorChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, VendorModel> args)
+        //{
+        //    //RRUTypes = await IRRUType.Get(x => x.VendorId == args.Value && x.IsActive);
+        //}
 
         public class LTEInputModel
         {
@@ -654,15 +654,58 @@ namespace Project.V1.Web.Pages.Acceptance
 
         private bool ValidateRow(RequestViewModel request)
         {
-            return IsFKValid(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper(), AntennaMakes)
-                && IsFKValid(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper(), AntennaTypes)
-                && IsFKValid(x => x.Name.ToUpper() == request.BasebandId.ToUpper(), Basebands)
-                && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes)
-                && IsFKValid(x => x.Name.ToUpper() == request.RegionId.ToUpper(), Regions)
-                && IsFKValid(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper(), SummerConfigs)
-                && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper(), Spectrums)
-                && IsFKValid(x => x.Name.ToUpper() == request.TechTypeId.ToUpper(), TechTypes)
-                && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes);
+            bool result = IsFKValid(x => x.Name.ToUpper() == request.TechTypeId.ToUpper(), TechTypes)
+            && IsFKValid(x => x.Name.ToUpper() == request.RegionId.ToUpper(), Regions)
+            && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper(), Spectrums)
+            && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes)
+            && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes); 
+
+            if(request.SummerConfigId != null)
+            {
+                result = result
+                    && IsFKValid(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper(), SummerConfigs);
+            }
+
+            //if(request.RRUTypeId != null)
+            //{
+            //    result = result
+            //        && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes);
+            //}
+
+            if(request.BasebandId != null)
+            {
+                result = result
+                    && IsFKValid(x => x.Name.ToUpper() == request.BasebandId.ToUpper(), Basebands);
+            }
+
+            if(request.AntennaMakeId != null)
+            {
+                result = result
+                    && IsFKValid(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper(), AntennaMakes);
+            }
+
+            if(request.RETConfigured != null)
+            {
+                result = result
+                    && IsFKValid(x => x.Name.ToUpper() == request.RETConfigured.ToUpper(), BoolDrops);
+            }
+
+            if(request.AntennaTypeId != null)
+            {
+                result = result
+                    && IsFKValid(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper(), AntennaTypes);
+            }
+
+            if (RequestModel.TechTypeId != TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
+            {
+                if (request.CarrierAggregation != null)
+                {
+                    result = result
+                        && IsFKValid(x => x.Name.ToUpper() == request.CarrierAggregation.ToUpper(), BoolDrops);
+                }
+            }
+
+            return result;
         }
 
         private bool IsFKValid<T>(Func<T, bool> whereExpression, List<T> collection) where T : class

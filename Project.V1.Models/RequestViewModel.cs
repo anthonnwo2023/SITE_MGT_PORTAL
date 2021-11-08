@@ -47,14 +47,14 @@ namespace Project.V1.Models
         [ExcelColumnName("Longitude")]
         public string Longitude { get; set; }
 
-        [Required]
+        //[Required]
         [ExcelColumnName("Antenna Make")]
         public string AntennaMakeId { get; set; }
 
         [ForeignKey(nameof(AntennaMakeId))]
         public virtual AntennaMakeModel AntennaMake { get; set; }
 
-        [Required]
+        //[Required]
         [ExcelColumnName("Antenna Type")]
         public string AntennaTypeId { get; set; }
 
@@ -73,7 +73,7 @@ namespace Project.V1.Models
         [ExcelColumnName("E Tilt")]
         public string ETilt { get; set; }
 
-        [Required]
+        //[Required]
         [ExcelColumnName("Baseband")]
         public string BasebandId { get; set; }
 
@@ -128,7 +128,7 @@ namespace Project.V1.Models
 
         public string EngineerRejectReport { get; set; }
 
-        [Required]
+        //[Required]
         [ExcelColumnName("Summer Config")]
         public string SummerConfigId { get; set; }
 
