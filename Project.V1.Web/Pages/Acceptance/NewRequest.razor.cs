@@ -627,19 +627,19 @@ namespace Project.V1.Web.Pages.Acceptance
 
                             if (ValidateRow(request) == false)
                             {
-                                BulkUploadError = $"Invalid Excel Template uploaded. Foreign Key Mismatch on row:  {dt.Rows.IndexOf(row) + 1}, col: {BulkUploadColumnError}";
+                                BulkUploadError = $"Invalid Excel Template uploaded. Foreign Key Mismatch/Error on row:  {dt.Rows.IndexOf(row) + 1}, col: {BulkUploadColumnError}";
                                 break;
                             }
 
-                            request.AntennaMakeId = AntennaMakes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper())?.Id;
-                            request.AntennaTypeId = AntennaTypes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper())?.Id;
-                            request.BasebandId = Basebands.FirstOrDefault(x => x.Name.ToUpper() == request.BasebandId.ToUpper())?.Id;
-                            request.ProjectTypeId = ProjectTypes.FirstOrDefault(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper())?.Id;
-                            request.RegionId = Regions.FirstOrDefault(x => x.Name.ToUpper() == request.RegionId.ToUpper())?.Id;
-                            request.SummerConfigId = SummerConfigs.FirstOrDefault(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper())?.Id;
-                            request.TechTypeId = TechTypes.FirstOrDefault(x => x.Name.ToUpper() == request.TechTypeId.ToUpper())?.Id;
-                            request.SpectrumId = Spectrums.FirstOrDefault(x => x.Name.ToUpper() == request.SpectrumId.ToUpper())?.Id;
-                            request.RRUTypeId = RRUTypes.FirstOrDefault(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper())?.Id;
+                            request.AntennaMakeId = (request.AntennaMakeId != null) ? AntennaMakes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper())?.Id : request.AntennaMakeId;
+                            request.AntennaTypeId = (request.AntennaTypeId != null) ? AntennaTypes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper())?.Id : request.AntennaTypeId;
+                            request.BasebandId = (request.BasebandId != null) ? Basebands.FirstOrDefault(x => x.Name.ToUpper() == request.BasebandId.ToUpper())?.Id : request.BasebandId;
+                            request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper())?.Id : request.ProjectTypeId;
+                            request.RegionId = (request.RegionId != null) ? Regions.FirstOrDefault(x => x.Name.ToUpper() == request.RegionId.ToUpper())?.Id : request.RegionId;
+                            request.SummerConfigId = (request.SummerConfigId != null) ? SummerConfigs.FirstOrDefault(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper())?.Id : request.SummerConfigId;
+                            request.TechTypeId = (request.TechTypeId != null) ? TechTypes.FirstOrDefault(x => x.Name.ToUpper() == request.TechTypeId.ToUpper())?.Id : request.TechTypeId;
+                            request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper() == request.SpectrumId.ToUpper())?.Id : request.SpectrumId;
+                            request.RRUTypeId = (request.RRUTypeId != null) ? RRUTypes.FirstOrDefault(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper())?.Id : request.RRUTypeId;
 
                             requests.Add(request);
                         }
@@ -659,6 +659,13 @@ namespace Project.V1.Web.Pages.Acceptance
             && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper(), Spectrums)
             && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes)
             && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes); 
+
+            if(request.SiteName == null)
+            {
+
+                BulkUploadColumnError = "Site Name";
+                result = false;
+            }
 
             if(request.SummerConfigId != null)
             {
@@ -747,9 +754,12 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 if (request.TechTypeId == TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
                 {
-                    request.RRUPower = LTEInput.RRUPower;
-                    request.CSFBStatusGSM = LTEInput.CSFDStatusGSM;
-                    request.CSFBStatusWCDMA = LTEInput.CSFDStatusWCDMA;
+                    if(!BulkWaiverUploadSelected)
+                    {
+                        request.RRUPower = LTEInput.RRUPower;
+                        request.CSFBStatusGSM = LTEInput.CSFDStatusGSM;
+                        request.CSFBStatusWCDMA = LTEInput.CSFDStatusWCDMA;
+                    }
                 }
 
                 if (await IRequest.CreateRequest(request))

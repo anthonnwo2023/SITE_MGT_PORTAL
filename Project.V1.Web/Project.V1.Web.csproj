@@ -67,6 +67,7 @@
 
   <ItemGroup>
     <Folder Include="Documents\EReport\" />
+    <Folder Include="Documents\" />
   </ItemGroup>
 
 </Project>

@@ -13,12 +13,16 @@ using System;
 using System.Linq;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Lib.Services;
+using Project.V1.Web.Shared;
+using Project.V1.Lib.Extensions;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
     public partial class Report
     {
         public List<PathInfo> Paths { get; set; }
+        [Inject] protected IUserAuthentication UserAuth { get; set; }
+        [Inject] protected NavigationManager NavMan { get; set; }
         [Inject] public IHttpContextAccessor Context { get; set; }
         [Inject] public ICLogger Logger { get; set; }
         [Inject] protected IRequest IRequest { get; set; }
@@ -104,6 +108,12 @@ namespace Project.V1.Web.Pages.Acceptance
             {
                 try
                 {
+                    if (!await UserAuth.IsAutorizedForAsync("Can:ViewReport"))
+{
+                        NavMan.NavigateTo("access-denied");
+                        return;
+                    }
+
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
                     Vendor = await IVendor.GetById(x => x.Id == User.VendorId);

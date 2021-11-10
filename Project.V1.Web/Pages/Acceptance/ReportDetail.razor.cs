@@ -100,7 +100,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                     if (Id != null)
                     {
-                        if (!await UserAuth.IsAutorizedForAsync("Can:UpdateRequest"))
+                        if (!await UserAuth.IsAutorizedForAsync("Can:ViewReport"))
                         {
                             NavMan.NavigateTo("access-denied");
                             return;

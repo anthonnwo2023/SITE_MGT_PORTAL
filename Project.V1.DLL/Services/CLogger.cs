@@ -15,7 +15,7 @@ namespace Project.V1.Lib.Services
         public CLogger(IConfiguration configuration)
         {
             HttpContextAccessor httpContextAccessor = new();
-            LoggedInUser = httpContextAccessor.HttpContext.User.Identity.Name;
+            LoggedInUser = httpContextAccessor.HttpContext?.User.Identity.Name;
 
             Configuration = configuration;
             Log.Logger = HelperFunctions.GetSerilogLogger();

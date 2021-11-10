@@ -1,6 +1,7 @@
 ﻿using ExcelDataReader;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Project.V1.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -72,6 +73,10 @@ namespace Project.V1.Lib.Helpers.Excel
             };
 
             dt.ConvertColumnTypeTo("Site Id", raw => raw.ToString());
+            dt.ConvertColumnTypeTo("Longitude", raw => raw.ToString());
+            dt.ConvertColumnTypeTo("Latitude", raw => raw.ToString());
+            dt.ConvertColumnTypeTo("Antenna Height - (M)", raw => raw.ToString());
+            dt.ConvertColumnTypeTo("Antenna Azimuth", raw => raw.ToString());
 
             return (dt, ete);
         }
@@ -293,8 +298,9 @@ namespace Project.V1.Lib.Helpers.Excel
                     //}
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                Log.Error(ex, ex.Message);
             }
         }
 
