@@ -2,6 +2,7 @@
 @using Project.V1.DLL.Services.Interfaces;
 @using Project.V1.DLL.Helpers
 @using System.Security.Claims;
+@using Serilog
 @implements IDisposable
 
 <div class="top-row pl-4 navbar navbar-dark">
@@ -100,6 +101,7 @@
     public ApplicationUser User { get; set; }
     [Inject] protected IUser IUser { get; set; }
     [Inject] AppState AppState { get; set; }
+    [Inject] protected NavigationManager NavMan { get; set; }
     public int RejectedWorklistCount { get; set; }
     public int EngineerWorklistCount { get; set; }
 
@@ -113,14 +115,34 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AppState.OnChange += CalStateChanged;
+        try
+        {
+            AppState.OnChange += CalStateChanged;
 
-        Principal = (await AuthenticationStateTask).User;
-        User = await IUser.GetUserByUsername(Principal.Identity.Name);
+            Principal = (await AuthenticationStateTask).User;
 
-        AppState.TriggerRequestRecount();
+            if (Principal.Identity.Name != null)
+            {
+                User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-        await Task.CompletedTask;
+                AppState.TriggerRequestRecount();
+            }
+            else
+            {
+                string returnUrl = Uri.EscapeDataString(NavMan.ToBaseRelativePath(NavMan.Uri));
+                returnUrl = (returnUrl == "access-denied" || returnUrl.Contains("logout")) ? null : returnUrl;
+
+                NavMan.NavigateTo($"Identity/Account/Login?returnUrl={returnUrl}", forceLoad: true);
+
+                return;
+            }
+
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+        }
     }
 
     public void Dispose()

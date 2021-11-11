@@ -23,10 +23,30 @@
 
     <script src="~/lib/jquery/jquery.js"></script>
     <style type="text/css">
-        .zoom {
+       !important.zoom {
             zoom: 1.0;
             -moz-transform: scale(1);
             -moz-transform-origin: 0 0;
+        }
+
+        .e-input[disabled], .e-input-group .e-input[disabled], .e-input-group.e-control-wrapper .e-input[disabled], .e-input-group.e-disabled, .e-input-group.e-control-wrapper.e-disabled, .e-float-input input[disabled], .e-float-input.e-control-wrapper input[disabled], .e-float-input textarea[disabled], .e-float-input.e-control-wrapper textarea[disabled], .e-float-input.e-disabled, .e-float-input.e-control-wrapper.e-disabled {
+            -webkit-text-fill-color: rgba(0,0,0,0.82) !important;
+            color: rgba(0,0,0,0.82) !important;
+        }
+
+        label.e-float-text, .e-float-input:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-float-input.e-control-wrapper:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-float-input.e-bigger:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-float-input.e-control-wrapper.e-bigger:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-bigger .e-float-input:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-bigger .e-float-input.e-control-wrapper:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-float-input.e-small:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-float-input.e-control-wrapper.e-small:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-small .e-float-input:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-small .e-float-input.e-control-wrapper:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-float-input.e-small.e-bigger:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-float-input.e-control-wrapper.e-small.e-bigger:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-bigger .e-float-input.e-small:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom, .e-bigger .e-float-input.e-control-wrapper.e-small:not(.e-error):not(.e-input-focus) input:not(:focus):valid ~ label.e-float-text.e-label-bottom {
+            color: rgba(0,0,0,0.82) !important;
+        }
+
+        .e-float-input:not(.e-error):not(.e-input-focus):not(.e-disabled) input:not(:focus):not(:valid) ~ label.e-float-text:not(.e-label-top), .e-float-input:not(.e-error):not(.e-input-focus) textarea:not(:focus):not(:valid) ~ label.e-float-text:not(.e-label-top), .e-float-input.e-control-wrapper:not(.e-error):not(.e-input-focus):not(.e-disabled) input:not(:focus):not(:valid) ~ label.e-float-text:not(.e-label-top) {
+            color: rgba(0,0,0,0.82) !important;
+        }
+
+        .custom-font {
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(0,0,0,0.82) !important;
+            padding-top: 0px;
         }
     </style>
 </head>

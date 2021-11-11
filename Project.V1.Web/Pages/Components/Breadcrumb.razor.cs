@@ -19,10 +19,12 @@ namespace Project.V1.Web.Pages.Components
         {
             if (!await UserAuth.IsAuthenticatedAsync())
             {
-                string returnUrl = NavMan.ToBaseRelativePath(NavMan.Uri);
                 string rt = string.Empty;
+                string returnUrl = NavMan.ToBaseRelativePath(NavMan.Uri);
 
-                if (returnUrl.Length > 0)
+                returnUrl = (returnUrl == "access-denied" || returnUrl.Contains("logout")) ? null : returnUrl;
+
+                if (!string.IsNullOrEmpty(returnUrl))
                 {
                     rt = $"?returnUrl={returnUrl}";
                 }

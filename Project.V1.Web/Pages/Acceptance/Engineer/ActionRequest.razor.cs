@@ -317,12 +317,13 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                 requestClass.EngineerAssigned.PhoneNo = User.PhoneNumber;
                 requestClass.EngineerAssigned.IsApproved = (Input.Status == "Accepted");
                 requestClass.EngineerAssigned.ApproverComment = Input.Comment;
-                requestClass.EngineerAssigned.DateApproved = (Input.Status == "Accepted") ? DateTimeOffset.UtcNow.DateTime : DateTime.MinValue;
                 requestClass.EngineerAssigned.DateAssigned = DateTimeOffset.UtcNow.DateTime;
                 requestClass.Status = Input.Status;
 
                 if (requestClass.EngineerAssigned.IsApproved)
                 {
+                    requestClass.EngineerAssigned.DateApproved = (requestClass.EngineerAssigned.DateApproved == DateTime.MinValue) ? DateTimeOffset.UtcNow.DateTime : requestClass.EngineerAssigned.DateApproved;
+
                     requests.Accept(requestClass, variables);
 
                     return true;

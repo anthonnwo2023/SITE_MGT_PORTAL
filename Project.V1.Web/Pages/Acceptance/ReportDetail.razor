@@ -258,7 +258,7 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfDropDownList TItem="RRUTypeModel" DataSource="@RRUTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                        <SfDropDownList Enabled="false" TItem="RRUTypeModel" DataSource="@RRUTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                                         Placeholder="RRU Type" style="font-size: 10px;" @bind-Value="RequestModel.RRUTypeId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
@@ -332,6 +332,13 @@ else
                         <SfDatePicker Enabled="false" Placeholder="Date Created" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateCreated)">
                         </SfDatePicker>
                         <ValidationMessage For="@(() => RequestModel.DateCreated)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfDatePicker Enabled="false" Placeholder="Date Accepted" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.EngineerAssigned.DateApproved)">
+                        </SfDatePicker>
+                        <ValidationMessage For="@(() => RequestModel.EngineerAssigned.DateApproved)" />
                     </div>
                 </div>
             </div>

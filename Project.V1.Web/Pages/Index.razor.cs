@@ -19,10 +19,11 @@ namespace Project.V1.Web.Pages
         protected override async Task OnInitializedAsync()
         {
             string returnUrl = Uri.EscapeDataString(NavMan.ToBaseRelativePath(NavMan.Uri));
+            returnUrl = (returnUrl == "access-denied" || returnUrl.Contains("logout")) ? null : returnUrl;
 
             if (await UserAuth.IsAuthenticatedAsync())
             {
-                NavMan.NavigateTo($"dashboard", forceLoad: true);
+                NavMan.NavigateTo($"dashboard");
                 return;
             }
 
