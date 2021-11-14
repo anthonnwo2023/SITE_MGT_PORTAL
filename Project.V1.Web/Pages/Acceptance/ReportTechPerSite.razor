@@ -1,0 +1,67 @@
+﻿@page "/acceptance/reports/site-technology"
+@layout MainLayoutAcceptance
+
+<PageTitlePat Title="SMP (Acceptance) - Report" />
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/worklist.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4" style="padding: 4rem 2rem;">
+        Total Technology Per Site Report
+    </div>
+</div>
+
+<BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+<style type="text/css">
+    .miniTable {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    #UserTable, #UserTable_header_table {
+        /*table-layout: unset !important;*/
+    }
+
+    .e-dlg-overlay {
+        opacity: .8 !important;
+    }
+</style>
+
+@if (RequestsGroup == null)
+{
+    <PageLoading />
+}
+else
+{
+    <SfGrid ID="ReportGroupTable" DataSource="@RequestsGroup" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" AllowFiltering="true"
+            Toolbar="@ToolbarItems" @ref="Grid_RequestGroup" ShowColumnChooser="true" AllowExcelExport="true">
+        <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModel"></GridEvents>
+        <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+        <GridPageSettings PageSize="10"></GridPageSettings>
+        <GridSearchSettings></GridSearchSettings>
+        <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+        <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
+        <GridColumns>
+            <GridColumn Field="@nameof(RequestViewModel.SiteId)" HeaderText="Site Id" TextAlign="TextAlign.Left"
+                        FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModel.SiteName)" HeaderText="Site Name" TextAlign="TextAlign.Left"
+                        FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModel.RegionId)" HeaderText="Region" TextAlign="TextAlign.Left"
+                        FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrums" TextAlign="TextAlign.Left"
+                        FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="TechTypes" TextAlign="TextAlign.Left"
+                        FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModel.BasebandId)" HeaderText="Vendor" TextAlign="TextAlign.Left"
+                        FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+
+    <div class="my-4"></div>
+
+}

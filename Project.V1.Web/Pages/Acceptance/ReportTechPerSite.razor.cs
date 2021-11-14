@@ -18,7 +18,7 @@ using Project.V1.Lib.Extensions;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
-    public partial class Report
+    public partial class ReportTechPerSite
     {
         public List<PathInfo> Paths { get; set; }
         [Inject] protected IUserAuthentication UserAuth { get; set; }
@@ -63,47 +63,13 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Paths = new()
             {
-                new PathInfo { Name = $"Report", Link = "acceptance/reports/general" },
+                new PathInfo { Name = $"Technology Per Site Report", Link = "acceptance/reports/site-technology" },
                 new PathInfo { Name = $"Acceptance", Link = "acceptance" },
             };
         }
 
         public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
         {
-            if (args.Item.Id == "ReportTable_excelexport") //Id is combination of Grid's ID and itemname
-            {
-                var hiddenCols = new string[] {
-                    "RNC/BSC",
-                    "Spectrum",
-                    "Bandwidth",
-                    "Latitude",
-                    "Longitude",
-                    "Antenna Make",
-                    "Antenna Type",
-                    "Antenna Height",
-                    "M Tilt",
-                    "E Tilt",
-                    "Baseband",
-                    "RRU Type",
-                    "Power - (w)",
-                    "Project Type",
-                    "Project Year",
-                    "Summer Config",
-                    "Software Version",
-                    "RRU Power - (w)",
-                    "CSFB Status GSM",
-                    "CSFB Status WCDMA",
-                    "RET Configured",
-                    "Carrier Aggregation",
-                    "Date Integrated",
-                    "Date Submitted",
-                };
-
-                await Grid_Request.ShowColumnsAsync(hiddenCols);
-                await Grid_Request.ExcelExport();
-                await Grid_Request.HideColumnsAsync(hiddenCols);
-            }
-
             if (args.Item.Id == "ReportGroupTable_excelexport") //Id is combination of Grid's ID and itemname
             {
                 //var hiddenCols = new string[] {
@@ -144,34 +110,27 @@ namespace Project.V1.Web.Pages.Acceptance
             {
                 try
                 {
-                    if (!await UserAuth.IsAutorizedForAsync("Can:ViewReport"))
-{
-                        NavMan.NavigateTo("access-denied");
-                        return;
-                    }
-
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
                     Vendor = await IVendor.GetById(x => x.Id == User.VendorId);
 
-                    Requests = await IRequest.Get(x => x.Requester.VendorId == User.VendorId, x => x.OrderByDescending(y => y.DateCreated));
-
-                    if (Vendor.Name == "MTN Nigeria")
+                    if (!await UserAuth.IsAutorizedForAsync("Can:ViewReportTPS") || Vendor.Name != "MTN Nigeria")
                     {
-                        Requests = await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId), x => x.OrderByDescending(y => y.DateCreated));
+                        NavMan.NavigateTo("access-denied");
+                        return;
                     }
 
-                    TechTypes = await ITechType.Get(x => x.IsActive);
-                    Regions = await IRegion.Get(x => x.IsActive);
-                    Spectrums = await ISpectrum.Get(x => x.IsActive);
-                    AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
-                    AntennaTypes = await IAntennaType.Get(x => x.IsActive);
-                    Basebands = await IBaseband.Get(x => x.IsActive);
-                    RRUTypes = await IRRUType.Get(x => x.IsActive);
-                    ProjectTypes = await IProjectType.Get(x => x.IsActive);
-                    SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
+                    //TechTypes = await ITechType.Get(x => x.IsActive);
+                    //Regions = await IRegion.Get(x => x.IsActive);
+                    //Spectrums = await ISpectrum.Get(x => x.IsActive);
+                    //AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
+                    //AntennaTypes = await IAntennaType.Get(x => x.IsActive);
+                    //Basebands = await IBaseband.Get(x => x.IsActive);
+                    //RRUTypes = await IRRUType.Get(x => x.IsActive);
+                    //ProjectTypes = await IProjectType.Get(x => x.IsActive);
+                    //SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
 
-                    RequestsGroup = Requests.GroupBy(x => x.SiteId)
+                    RequestsGroup = (await IRequest.Get(null, x => x.OrderByDescending(y => y.DateCreated))).GroupBy(x => x.SiteId)
                         .Select(x => new RequestViewModel
                         {
                             SiteId = x.Key,
@@ -179,7 +138,7 @@ namespace Project.V1.Web.Pages.Acceptance
                             RegionId = x.Select(x => x.Region.Name).First(),
                             SpectrumId = string.Join(", ", x.Select(x => x.Spectrum.Name).Distinct()),
                             TechTypeId = string.Join(", ", x.Select(x => x.TechType.Name).Distinct()),
-                            BasebandId = string.Join(", ", x.Select(y => y.Requester.Name)),
+                            BasebandId = string.Join(", ", x.Select(y => y.Requester.Vendor.Name).Distinct()),
                         }).ToList();
                 }
                 catch (Exception ex)

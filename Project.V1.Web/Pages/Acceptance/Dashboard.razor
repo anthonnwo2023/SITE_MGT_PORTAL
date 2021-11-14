@@ -74,10 +74,58 @@ else
 
     <h6 class="display-6 my-3">Total Acceptance @dateString </h6>
 
-    <SfPivotView TValue="AcceptanceDTO" AllowExcelExport="true" EnableVirtualization="true" Width="100%"
-                 EnableValueSorting="true" ShowTooltip="false">
+    @*<SfButton OnClick="@calc" IsPrimary="true">Calculated Field</SfButton>*@
+
+    <SfPivotView @ref="pivot" TValue="AcceptanceDTO" AllowExcelExport="true" EnableVirtualization="true" Width="100%"
+             EnableValueSorting="true" ShowTooltip="false" AllowCalculatedField="true" AllowDrillThrough="true">
+        <PivotViewTemplates>
+            <CellTemplate>
+                @{
+                    var data = (context as AxisSet);
+                    if (data != null)
+                    {
+                        if (data.Axis == "value" && (string)data.ColumnHeaders == "3G PHY")
+                        {
+                            var value = 0;
+
+                            if (data.RowIndex == 5)
+                            {
+                                value = this.DailyRequests.Count(x => x.UMTSPhyCount == 1);
+                            }
+                            else
+                            {
+                                value = this.DailyRequests.Where(x => x.Vendor == (string)data.RowHeaders).Count(x => x.UMTSPhyCount == 1);
+                            }
+
+                            @value
+                        }
+
+                        else if (data.Axis == "value" && (string)data.ColumnHeaders == "4G PHY")
+                        {
+                            var value = 0;
+
+                            if (data.RowIndex == 5)
+                            {
+                                value = this.DailyRequests.Count(x => x.LTEPhyCount == 1);
+                            }
+                            else
+                            {
+                                value = this.DailyRequests.Where(x => x.Vendor == (string)data.RowHeaders).Count(x => x.LTEPhyCount == 1);
+                            }
+
+                            @value
+                        }
+
+                        else
+                        {
+                            @data.FormattedText
+                        }
+                    }
+                }
+            </CellTemplate>
+        </PivotViewTemplates>
         <PivotViewDataSourceSettings DataSource="@DailyRequests" EnableSorting="false" ShowColumnGrandTotals="false" ShowAggregationOnValueField="false"
-                                     ShowHeaderWhenEmpty="true">
+                                 ShowHeaderWhenEmpty="true">
             <PivotViewColumns>
                 <PivotViewColumn Name="Spectrum"></PivotViewColumn>
             </PivotViewColumns>
@@ -87,12 +135,16 @@ else
             <PivotViewValues>
                 <PivotViewValue Name="AcceptanceCount" Caption="Acceptance By Vendor"></PivotViewValue>
             </PivotViewValues>
+            <PivotViewFormatSettings>
+                <PivotViewFormatSetting Name="UMTSPhyCount" Format="N"></PivotViewFormatSetting>
+                <PivotViewFormatSetting Name="LTEPhyCount" Format="N"></PivotViewFormatSetting>
+            </PivotViewFormatSettings>
         </PivotViewDataSourceSettings>
         @*<PivotViewDisplayOption View=View.Chart></PivotViewDisplayOption>
             <PivotChartSettings Title="Daily Acceptance">
-                <PivotChartSeries Type=ChartSeriesType.Column></PivotChartSeries>
+            <PivotChartSeries Type=ChartSeriesType.Column></PivotChartSeries>
             </PivotChartSettings>*@
-        <PivotViewGridSettings AllowResizing="false" AutoFit="false" AllowTextWrap="true"></PivotViewGridSettings>
+        <PivotViewGridSettings AllowResizing="false" AutoFit="false" AllowTextWrap="true" AllowSelection="true"></PivotViewGridSettings>
     </SfPivotView>
 }
 
@@ -104,10 +156,56 @@ else
 {
     var dateString = (DateWthMth) ? $"in {DateData.Date.ToString("MMMM yyyy")}" : $"in {DateData.Date.ToString("MMMM yyyy")}";
 
-<h6 class="display-6 my-3">Project Type: Total Acceptance @dateString </h6>
+    <h6 class="display-6 my-3">Project Type: Total Acceptance @dateString </h6>
 
     <SfPivotView TValue="AcceptanceDTO" AllowExcelExport="true" EnableVirtualization="true" Width="100%" Height="500"
-                 EnableValueSorting="true" ShowTooltip="false">
+             EnableValueSorting="true" ShowTooltip="false">
+        <PivotViewTemplates>
+            <CellTemplate>
+                @{
+                    var data = (context as AxisSet);
+                    if (data != null)
+                    {
+                        if (data.Axis == "value" && (string)data.ColumnHeaders == "3G PHY")
+                        {
+                            var value = 0;
+
+                            if (data.RowIndex == 5)
+                            {
+                                value = this.MonthlyProjectTypeRequests.Count(x => x.UMTSPhyCount == 1);
+                            }
+                            else
+                            {
+                                value = this.MonthlyProjectTypeRequests.Where(x => x.ProjectType == (string)data.RowHeaders).Count(x => x.UMTSPhyCount == 1);
+                            }
+
+                            @value
+                        }
+
+                        else if (data.Axis == "value" && (string)data.ColumnHeaders == "4G PHY")
+                        {
+                            var value = 0;
+
+                            if (data.RowIndex == 5)
+                            {
+                                value = this.MonthlyProjectTypeRequests.Count(x => x.LTEPhyCount == 1);
+                            }
+                            else
+                            {
+                                value = this.MonthlyProjectTypeRequests.Where(x => x.ProjectType == (string)data.RowHeaders).Count(x => x.LTEPhyCount == 1);
+                            }
+
+                            @value
+                        }
+
+                        else
+                        {
+                            @data.FormattedText
+                        }
+                    }
+                }
+            </CellTemplate>
+        </PivotViewTemplates>
         <PivotViewDataSourceSettings DataSource="@MonthlyProjectTypeRequests" EnableSorting="false" ShowGrandTotals="false">
             <PivotViewColumns>
                 <PivotViewColumn Name="Spectrum"></PivotViewColumn>
@@ -118,6 +216,10 @@ else
             <PivotViewValues>
                 <PivotViewValue Name="AcceptanceCount" Caption="Acceptance By Project Type"></PivotViewValue>
             </PivotViewValues>
+            <PivotViewFormatSettings>
+                <PivotViewFormatSetting Name="UMTSPhyCount" Format="N"></PivotViewFormatSetting>
+                <PivotViewFormatSetting Name="LTEPhyCount" Format="N"></PivotViewFormatSetting>
+            </PivotViewFormatSettings>
         </PivotViewDataSourceSettings>
         <PivotViewGridSettings RowHeight="50" AllowResizing="false" AutoFit="false" AllowTextWrap="true"></PivotViewGridSettings>
     </SfPivotView>
@@ -131,10 +233,56 @@ else
 {
     var dateString = (DateWthMth) ? $"in {DateData.Date.ToString("MMMM yyyy")}" : $"in {DateData.Date.ToString("MMMM yyyy")}";
 
-<h6 class="display-6 my-3">Vendor: Total Acceptance @dateString </h6>
+    <h6 class="display-6 my-3">Vendor: Total Acceptance @dateString </h6>
 
     <SfPivotView TValue="AcceptanceDTO" AllowExcelExport="true" EnableVirtualization="true" Width="100%" Height="500"
-                 EnableValueSorting="true" ShowTooltip="false">
+             EnableValueSorting="true" ShowTooltip="false">
+        <PivotViewTemplates>
+            <CellTemplate>
+                @{
+                    var data = (context as AxisSet);
+                    if (data != null)
+                    {
+                        if (data.Axis == "value" && (string)data.ColumnHeaders == "3G PHY")
+                        {
+                            var value = 0;
+
+                            if (data.RowIndex == 5)
+                            {
+                                value = this.MonthlyRequests.Count(x => x.UMTSPhyCount == 1);
+                            }
+                            else
+                            {
+                                value = this.MonthlyRequests.Where(x => x.Vendor == (string)data.RowHeaders).Count(x => x.UMTSPhyCount == 1);
+                            }
+
+                            @value
+                        }
+
+                        else if (data.Axis == "value" && (string)data.ColumnHeaders == "4G PHY")
+                        {
+                            var value = 0;
+
+                            if (data.RowIndex == 5)
+                            {
+                                value = this.MonthlyRequests.Count(x => x.LTEPhyCount == 1);
+                            }
+                            else
+                            {
+                                value = this.MonthlyRequests.Where(x => x.Vendor == (string)data.RowHeaders).Count(x => x.LTEPhyCount == 1);
+                            }
+
+                            @value
+                        }
+
+                        else
+                        {
+                            @data.FormattedText
+                        }
+                    }
+                }
+            </CellTemplate>
+        </PivotViewTemplates>
         <PivotViewDataSourceSettings DataSource="@MonthlyRequests" EnableSorting="false" ShowColumnGrandTotals="false">
             <PivotViewColumns>
                 <PivotViewColumn Name="Spectrum"></PivotViewColumn>
@@ -145,7 +293,13 @@ else
             <PivotViewValues>
                 <PivotViewValue Name="AcceptanceCount" Caption="Acceptance By Vendor"></PivotViewValue>
             </PivotViewValues>
+            <PivotViewFormatSettings>
+                <PivotViewFormatSetting Name="UMTSPhyCount" Format="N"></PivotViewFormatSetting>
+                <PivotViewFormatSetting Name="LTEPhyCount" Format="N"></PivotViewFormatSetting>
+            </PivotViewFormatSettings>
         </PivotViewDataSourceSettings>
         <PivotViewGridSettings AllowResizing="false" AutoFit="false" AllowTextWrap="true"></PivotViewGridSettings>
     </SfPivotView>
 }
+
+<div class="my-4"></div>

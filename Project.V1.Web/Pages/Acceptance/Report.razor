@@ -1,4 +1,4 @@
-﻿@page "/acceptance/report"
+﻿@page "/acceptance/reports/general"
 @layout MainLayoutAcceptance
 
 <PageTitlePat Title="SMP (Acceptance) - Report" />
@@ -32,8 +32,7 @@
 }
 else
 {
-    <SfGrid ID="ReportTable" DataSource="@Requests" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" AllowFiltering="true"
-            Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true" AllowExcelExport="true">
+    <SfGrid ID="ReportTable" DataSource="@Requests" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" AllowFiltering="true" Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true" AllowExcelExport="true">
         <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModel"></GridEvents>
         <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
         <GridPageSettings PageSize="10"></GridPageSettings>
@@ -187,4 +186,6 @@ else
             </GridColumn>
         </GridColumns>
     </SfGrid>
+
+    <div class="my-4"></div>
 }

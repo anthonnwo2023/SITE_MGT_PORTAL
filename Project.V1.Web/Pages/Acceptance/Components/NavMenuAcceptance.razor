@@ -45,9 +45,35 @@
         }
 
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="acceptance/report" Match="NavLinkMatch.All">
-                <span class="oi oi-bar-chart" aria-hidden="true"></span> Report
+            <NavLink class="nav-link expand-menu" style="cursor: pointer;" @onclick="() => expandNESICTReportSubNav = !expandNESICTReportSubNav">
+                <span class="oi oi-bar-chart" aria-hidden="true"></span>
+                <span class="w-100 d-flex flex-row align-items-center">
+                    Reports
+                    @if (!expandNESICTReportSubNav)
+                    {
+                        <i class="oi oi-chevron-right text-right ml-auto"></i>
+                    }
+                    else
+                    {
+                        <i class="oi oi-chevron-bottom text-right ml-auto"></i>
+                    }
+                </span>
             </NavLink>
+            <ul class="nav flex-column">
+                @if (expandNESICTReportSubNav)
+                {
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="acceptance/reports/general" Match="NavLinkMatch.All">
+                            <span class="fas fa-chart-bar mr-2" aria-hidden="true"></span> General
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="acceptance/reports/site-technology" Match="NavLinkMatch.All">
+                            <span class="fas fa-chart-bar mr-2" aria-hidden="true"></span> Technology Per Site
+                        </NavLink>
+                    </li>
+                }
+            </ul>
         </li>
         @if (Principal.HasClaim(x => x.Type == "Can:ManageSetupSA"))
         {
@@ -93,6 +119,7 @@
 
 @code {
     private bool collapseNavMenu = true;
+    private bool expandNESICTReportSubNav;
     private bool expandNESICTRequestSubNav;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;

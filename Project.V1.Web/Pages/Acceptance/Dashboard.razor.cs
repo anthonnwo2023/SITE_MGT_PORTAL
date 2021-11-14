@@ -43,17 +43,19 @@ namespace Project.V1.Web.Pages.Acceptance
 
         //public List<string> ToolbarItems = new() { "Search" };
 
-        public string total3GPS = "\"" + "Sum(Amount)" + "\"" + "+" + "\"" + "Sum(Sold)" + "\"";
-        public string total4GPS = "\"" + "Sum(Amount)" + "\"" + "+" + "\"" + "Sum(Sold)" + "\"";
+        public string total3GPS = "\"(" + "\"" + "Spectrum" + "\"" + "==" + "\"" + "3G" + "\"" + "||" + "\"" + "Spectrum" + "\"" + "==" + "\"" + "U900" + "\"" + "||" + "\"" + "Spectrum" + "\"" + "==" + "\"" + "Multi Sector" + "\"" + ") ? 1 : 0";
+        public string total4GPS = "\"(" + "\"" + "Spectrum" + "\"" + "==" + "\"" + "L700" + "\"" + "||" + "\"" + "Spectrum" + "\"" + "==" + "\"" + "L800" + "\"" + "||" + "\"" + "Spectrum" + "\"" + "==" + "\"" + "L1800" + "||" + "\"" + "Spectrum" + "\"" + "==" + "\"" + "L2600" + "\"" + ") ? 1 : 0";
 
         public SfPivotView<AcceptanceDTO> pivot;
 
-        public class AcceptanceDTO
+        public record AcceptanceDTO
         {
             public string Vendor { get; set; }
             public string TechType { get; set; }
             public string Spectrum { get; set; }
             public int AcceptanceCount { get; set; }
+            public int UMTSPhyCount { get; set; }
+            public int LTEPhyCount { get; set; }
             public string ProjectType { get; set; }
         }
 
@@ -160,6 +162,8 @@ namespace Project.V1.Web.Pages.Acceptance
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "800M", ProjectType = projectType });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "1800M", ProjectType = projectType });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "2600M", ProjectType = projectType });
+                requests.Add(new AcceptanceDTO { UMTSPhyCount = 0, Spectrum = "3G PHY", ProjectType = projectType });
+                requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", ProjectType = projectType });
             }
 
             int firstDatOfMth = 1;
@@ -186,9 +190,10 @@ namespace Project.V1.Web.Pages.Acceptance
                                     ProjectType = GetProjectTypeName(x.ProjectType.Name),
                                     TechType = x.TechType.Name,
                                     Spectrum = GetSpectrumName(x.Spectrum.Name),
-                                    AcceptanceCount = 1
-                                })
-                                .ToList());
+                                    AcceptanceCount = 1,
+                                    UMTSPhyCount = GetPhysicalTechCount("3G", x.Spectrum.Name),
+                                    LTEPhyCount = GetPhysicalTechCount("4G", x.Spectrum.Name),
+                                }).ToList());
 
             return requests;
         }
@@ -207,6 +212,8 @@ namespace Project.V1.Web.Pages.Acceptance
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "800M", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "1800M", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "2600M", Vendor = vendor.Name });
+                requests.Add(new AcceptanceDTO { UMTSPhyCount = 0, Spectrum = "3G PHY", Vendor = vendor.Name });
+                requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", Vendor = vendor.Name });
             }
 
             int firstDatOfMth = 1;
@@ -224,7 +231,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
             DateWthMth = DateData.Date >= MinDateTime && DateData.Date < MaxDateTime;
 
-            await GetDailyRequest(MinDateTime, MaxDateTime);
+            await GetRequests(MinDateTime, MaxDateTime);
 
             requests.AddRange(VendorRequests.Select(x => new AcceptanceDTO
             {
@@ -232,13 +239,39 @@ namespace Project.V1.Web.Pages.Acceptance
                 ProjectType = GetProjectTypeName(x.ProjectType.Name),
                 TechType = x.TechType.Name,
                 Spectrum = GetSpectrumName(x.Spectrum.Name),
-                AcceptanceCount = 1
+                AcceptanceCount = 1,
+                UMTSPhyCount = GetPhysicalTechCount("3G", x.Spectrum.Name),
+                LTEPhyCount = GetPhysicalTechCount("4G", x.Spectrum.Name),
             }).ToList());
 
             return requests;
         }
 
-        private async Task GetDailyRequest(DateTime MinDateTime, DateTime MaxDateTime)
+        public void calc(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+        {
+            this.pivot.CreateCalculatedFieldDialogAsync();
+        }
+
+        private static int GetPhysicalTechCount(string techType, string spectrum)
+        {
+            if (techType == "3G")
+                return spectrum switch
+                {
+                    ("U2100" or "U900" or "Multi Site") => 1,
+                    _ => 0
+                };
+
+            if (techType == "4G")
+                return spectrum switch
+                {
+                    ("L700" or "L800" or "L1800" or "L2600") => 1,
+                    _ => 0
+                };
+
+            return 0;
+        }
+
+        private async Task GetRequests(DateTime MinDateTime, DateTime MaxDateTime)
         {
             VendorRequests = await IRequest.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
