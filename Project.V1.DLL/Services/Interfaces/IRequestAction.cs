@@ -13,6 +13,7 @@ namespace Project.V1.DLL.Services.Interfaces
         void SetTransitionState(RequestStateBase<T> newState);
 
         void Accept(T request, Dictionary<string, object> variables);
+        void Cancel(T request, Dictionary<string, object> variables);
         void Reject(T request, Dictionary<string, object> variables, string reason);
         void Rework(T request, Dictionary<string, object> variables);
 

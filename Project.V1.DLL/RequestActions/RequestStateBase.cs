@@ -27,6 +27,11 @@ namespace Project.V1.DLL.RequestActions
             Log.Information("Cannot accept this request. " + JsonConvert.SerializeObject(request));
         }
 
+        public virtual void Cancel(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        {
+            Log.Information("Cannot cancel this request. " + JsonConvert.SerializeObject(request));
+        }
+
         public virtual void Reject(IRequestAction<T> request, T requests, Dictionary<string, object> variables, string reason)
         {
             Log.Information("Cannot reject this request. " + JsonConvert.SerializeObject(request));

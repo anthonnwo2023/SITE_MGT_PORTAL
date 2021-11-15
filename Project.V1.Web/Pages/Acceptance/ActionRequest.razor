@@ -97,7 +97,7 @@ else
 {
     <div class="col-md-12">
         <SfToast CssClass="@ToastCss" ID="toast_default" @ref="ToastObj" Timeout="10000" Icon="e-circle_info"
-                 ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+             ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
             <ToastPosition X="@ToastPosition"></ToastPosition>
         </SfToast>
     </div>
@@ -128,7 +128,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="TechTypeModel" DataSource="@TechTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Technology" style="font-size: 10px;" @bind-Value="RequestModel.TechTypeId">
+                                    Placeholder="Technology" style="font-size: 10px;" @bind-Value="RequestModel.TechTypeId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             <DropDownListEvents TValue="string" TItem="TechTypeModel" ValueChange="OnTechChange"></DropDownListEvents>
                         </SfDropDownList>
@@ -163,7 +163,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="RegionViewModel" DataSource="@Regions" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Region" style="font-size: 10px;" @bind-Value="RequestModel.RegionId">
+                                    Placeholder="Region" style="font-size: 10px;" @bind-Value="RequestModel.RegionId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.RegionId)" />
@@ -172,19 +172,19 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="SummerConfigModel" DataSource="@SummerConfigs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
+                                    Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.SummerConfigId)" />
                     </div>
                 </div>
                 @*<div class="col-md-3 mt-3">
-            <div class="form-group">
-                <SfTextBox Placeholder="Frequency Band" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.FrequencyBand)">
-                </SfTextBox>
-                <ValidationMessage For="@(() => RequestModel.FrequencyBand)" />
-            </div>
-        </div>*@
+                    <div class="form-group">
+                    <SfTextBox Placeholder="Frequency Band" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.FrequencyBand)">
+                    </SfTextBox>
+                    <ValidationMessage For="@(() => RequestModel.FrequencyBand)" />
+                    </div>
+                    </div>*@
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfTextBox Placeholder="Software" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SoftwareVersion)">
@@ -195,7 +195,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
+                                    Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.SpectrumId)" />
@@ -225,7 +225,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="AntennaMakeModel" DataSource="@AntennaMakes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
+                                    Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.AntennaMakeId)" />
@@ -234,7 +234,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="AntennaTypeModel" DataSource="@AntennaTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaTypeId">
+                                    Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaTypeId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.AntennaTypeId)" />
@@ -271,7 +271,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="BaseBandModel" DataSource="@Basebands" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Baseband" style="font-size: 10px;" @bind-Value="RequestModel.BasebandId">
+                                    Placeholder="Baseband" style="font-size: 10px;" @bind-Value="RequestModel.BasebandId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.BasebandId)" />
@@ -280,7 +280,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="RRUTypeModel" DataSource="@RRUTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="RRU Type" style="font-size: 10px;" @bind-Value="RequestModel.RRUTypeId">
+                                    Placeholder="RRU Type" style="font-size: 10px;" @bind-Value="RequestModel.RRUTypeId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.RRUTypeId)" />
@@ -296,7 +296,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="ProjectTypeModel" DataSource="@ProjectTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
+                                    Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.ProjectTypeId)" />
@@ -337,7 +337,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="RET Configured" style="font-size: 10px;" @bind-Value="RequestModel.RETConfigured">
+                                    Placeholder="RET Configured" style="font-size: 10px;" @bind-Value="RequestModel.RETConfigured">
                             <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.RETConfigured)" />
@@ -346,26 +346,26 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                        Placeholder="Carrier Aggregation" style="font-size: 10px;" @bind-Value="RequestModel.CarrierAggregation">
+                                    Placeholder="Carrier Aggregation" style="font-size: 10px;" @bind-Value="RequestModel.CarrierAggregation">
                             <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.CarrierAggregation)" />
                     </div>
                 </div>
                 @*<div class="col-md-3 mt-3">
-            <div class="form-group">
-                <SfDatePicker Placeholder="Site Integrated Date" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.IntegratedDate)">
-                </SfDatePicker>
-                <ValidationMessage For="@(() => RequestModel.IntegratedDate)" />
-            </div>
-        </div>
-        <div class="col-md-3 mt-3">
-            <div class="form-group">
-                <SfDatePicker Enabled="false" Placeholder="Date Submitted" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateSubmitted)">
-                </SfDatePicker>
-                <ValidationMessage For="@(() => RequestModel.DateSubmitted)" />
-            </div>
-        </div>*@
+                    <div class="form-group">
+                    <SfDatePicker Placeholder="Site Integrated Date" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.IntegratedDate)">
+                    </SfDatePicker>
+                    <ValidationMessage For="@(() => RequestModel.IntegratedDate)" />
+                    </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                    <SfDatePicker Enabled="false" Placeholder="Date Submitted" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateSubmitted)">
+                    </SfDatePicker>
+                    <ValidationMessage For="@(() => RequestModel.DateSubmitted)" />
+                    </div>
+                    </div>*@
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDatePicker Enabled="false" Placeholder="Date Created" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateCreated)">
@@ -384,7 +384,7 @@ else
                     <div class="form-group">
                         <label for="filePath" class="col-form-label custom-font" style="">@((WaiverUploadSelected) ? "Waiver Email" : "SSV Report")</label>
                         <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx")" MinFileSize="1000" MaxFileSize=15000000 AutoUpload="true" CssClass=""
-                                    @ref="SF_Uploader" @bind-Value="RequestModel.SSVReport">
+                                @ref="SF_Uploader" @bind-Value="RequestModel.SSVReport">
                             <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileUploadChange(e, "SSV")'></UploaderEvents>
                         </SfUploader>
                         <ValidationMessage For="@(() => RequestModel.SSVReport)" />
@@ -426,7 +426,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDatePicker Enabled="false" CssClass="bg-pink text-dark pl-1" Placeholder="Engineer Rejection Date" FloatLabelType="@FloatLabelType.Auto"
-                                      @bind-Value="@(RequestModel.EngineerAssigned.DateAssigned)">
+                                  @bind-Value="@(RequestModel.EngineerAssigned.DateAssigned)">
                         </SfDatePicker>
                     </div>
                 </div>
@@ -434,11 +434,19 @@ else
                     <div class="form-group">
                         <div class="col-sm-12 p-0 mt-3">
                             <SfButton Disabled="@DisableCreateButton" CssClass="px-2 py-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
-                                      IconPosition="IconPosition.Right">@BtnText</SfButton>
-                                </div>
-                            </div>
+                                  IconPosition="IconPosition.Right">@BtnText</SfButton>
                         </div>
                     </div>
                 </div>
-            </EditForm>
-        }
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <div class="col-sm-12 p-0 mt-3 text-right">
+                            <SfButton OnClick="HsndleCancelRequest" CssClass="px-2 py-2" type="button" IsPrimary="false" IconCss="@CancelIconCss"
+                                  IconPosition="IconPosition.Right">Cancel Request</SfButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}

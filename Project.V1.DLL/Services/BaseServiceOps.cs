@@ -31,6 +31,8 @@ namespace Project.V1.Lib.Services
 
         public void Accept(T request, Dictionary<string, object> variables) => _state.Accept(this, request, variables);
 
+        public void Cancel(T request, Dictionary<string, object> variables) => _state.Cancel(this, request, variables);
+
         public void Reject(T request, Dictionary<string, object> variables, string reason) => _state.Reject(this, request, variables, reason);
 
         public void Rework(T request, Dictionary<string, object> variables) => _state.Rework(this, request, variables);

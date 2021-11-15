@@ -62,6 +62,7 @@ namespace Project.V1.Web.Pages.Acceptance
         public string BtnText { get; set; } = "Update Request";
         public string RequestStatus { get; set; }
         public string BulkUploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
+        public string CancelIconCss { get; set; } = "fas fa-times ml-2";
 
         public bool WaiverUploadSelected { get; set; }
         public bool SSVUploadSelected { get; set; } = true;
@@ -247,6 +248,56 @@ namespace Project.V1.Web.Pages.Acceptance
             }
         }
 
+        protected async Task HsndleCancelRequest()
+        {
+            var variables = new Dictionary<string, object> { { "User", User.UserName }, { "App", "acceptance" } };
+
+            try
+            {
+                CancelIconCss = "fas fa-spin fa-spinner ml-2";
+
+                RequestModel.Status = RequestStatus;
+
+                await IRequest.SetState(RequestModel);
+
+                RequestModel.Status = "Cancelled";
+
+                if (ProcessAction(RequestModel, variables, IRequest))
+                {
+                    AppState.TriggerRequestRecount();
+                    ToastContent = "Request cancelled successfully.";
+
+                    await Task.Delay(200);
+
+                    SuccessBtnOnClick();
+                    NavMan.NavigateTo("acceptance/worklist");
+
+                    return;
+                }
+
+                AppState.TriggerRequestRecount();
+                ToastContent = "An error occurred, request could not be updated.";
+
+                CancelIconCss = "fas fa-times ml-2";
+
+                await Task.Delay(200);
+
+                ErrorBtnOnClick();
+            }
+            catch (Exception ex)
+            {
+                CancelIconCss = "fas fa-times ml-2";
+
+                string msg = ex.InnerException?.Message ?? ex.Message;
+
+                ToastContent = $"An error has occurred. {msg}";
+                await Task.Delay(200);
+                ErrorBtnOnClick();
+
+                Logger.LogError("Error cancelling request. ", new { }, ex);
+            }
+        }
+
         protected async Task HandleValidSubmit()
         {
             var variables = new Dictionary<string, object> { { "User", User.UserName }, { "App", "acceptance" } };
@@ -294,6 +345,8 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 await IRequest.SetState(RequestModel);
 
+                RequestModel.Status = "Reworked";
+
                 if (ProcessAction(RequestModel, variables, IRequest))
                 {
                     AppState.TriggerRequestRecount();
@@ -336,11 +389,21 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             try
             {
-                requestClass.Status = "Reworked";
+                if(requestClass.Status == "Cancelled")
+                {
+                    requests.Cancel(requestClass, variables);
 
-                requests.Rework(requestClass, variables);
+                    return true;
+                }
 
-                return true;
+                if (requestClass.Status == "Reworked")
+                {
+                    requests.Rework(requestClass, variables);
+
+                    return true;
+                }
+
+                return false;
             }
             catch
             {

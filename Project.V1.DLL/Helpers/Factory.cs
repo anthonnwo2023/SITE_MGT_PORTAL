@@ -46,6 +46,11 @@ namespace Project.V1.DLL.Helpers
                 ["Accepted"] = (requestType) =>
                 {
                     return "AcceptedState`1";
+                },
+
+                ["Cancelled"] = (requestType) =>
+                {
+                    return "CancelledState`1";
                 }
             };
 

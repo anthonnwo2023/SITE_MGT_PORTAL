@@ -247,11 +247,6 @@ namespace Project.V1.Web.Pages.Acceptance
             return requests;
         }
 
-        public void calc(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
-        {
-            this.pivot.CreateCalculatedFieldDialogAsync();
-        }
-
         private static int GetPhysicalTechCount(string techType, string spectrum)
         {
             if (techType == "3G")

@@ -39,7 +39,6 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
 
         List<RequestViewModel> Requests { get; set; }
-        List<RequestViewModel> RequestsGroup { get; set; }
         List<RegionViewModel> Regions { get; set; }
         List<TechTypeModel> TechTypes { get; set; }
         List<SpectrumViewModel> Spectrums { get; set; }
@@ -170,17 +169,6 @@ namespace Project.V1.Web.Pages.Acceptance
                     RRUTypes = await IRRUType.Get(x => x.IsActive);
                     ProjectTypes = await IProjectType.Get(x => x.IsActive);
                     SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
-
-                    RequestsGroup = Requests.GroupBy(x => x.SiteId)
-                        .Select(x => new RequestViewModel
-                        {
-                            SiteId = x.Key,
-                            SiteName = x.Select(x => x.SiteName).First(),
-                            RegionId = x.Select(x => x.Region.Name).First(),
-                            SpectrumId = string.Join(", ", x.Select(x => x.Spectrum.Name).Distinct()),
-                            TechTypeId = string.Join(", ", x.Select(x => x.TechType.Name).Distinct()),
-                            BasebandId = string.Join(", ", x.Select(y => y.Requester.Name)),
-                        }).ToList();
                 }
                 catch (Exception ex)
                 {
