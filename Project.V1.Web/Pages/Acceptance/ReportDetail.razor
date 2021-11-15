@@ -70,6 +70,15 @@
         background-color: pink !important;
         color: black !important;
     }
+
+    .custom-label {
+        color: rgba(0,0,0,0.84) !important;
+        font-size: 13px !important;
+    }
+
+    .e-input[disabled], .e-input-group .e-input[disabled], .e-input-group.e-control-wrapper .e-input[disabled], .e-input-group.e-disabled, .e-input-group.e-control-wrapper.e-disabled, .e-float-input input[disabled], .e-float-input.e-control-wrapper input[disabled], .e-float-input textarea[disabled], .e-float-input.e-control-wrapper textarea[disabled], .e-float-input.e-disabled, .e-float-input.e-control-wrapper.e-disabled {
+        -webkit-text-fill-color: rgba(0,0,0,0.82) !important;
+    }
 </style>
 
 <div class="col-sm-12 m-0 p-0" style="background: url('images/celltower.jpg'); background-size: cover; background-position: center right;">
@@ -97,6 +106,17 @@ else
         {
             <div class="col-md-3">
                 <a target="_blank" href="Documents/Bulk/@RequestModel.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i> Batch Upload File</a>
+            </div>
+        }
+        <div class="col-md-3">
+            <label class="custom-label e-label-top d-block">Unique Id</label>
+            <span class="custom-label e-label-top d-block">@RequestModel.UniqueId</span>
+        </div>
+        @if (RequestModel.BulkBatchNumber != null)
+        {
+            <div class="col-md-3">
+                <label class="custom-label e-label-top d-block">Batch No.</label>
+                <span class="custom-label e-label-top d-block">@RequestModel.BulkBatchNumber</span>
             </div>
         }
     </div>
