@@ -193,12 +193,20 @@ namespace Project.V1.Lib.Services
 
         public async Task<ApplicationUser> GetUserByUsername(string Username, bool isActive = true)
         {
-            if (isActive == false)
+            try
             {
-                return await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
-            }
+                if (isActive == false)
+                {
+                    return await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
+                }
 
-            return await _userManager.Users.Include(x => x.Regions).Where(x => x.IsActive == true).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
+                return await _userManager.Users.Include(x => x.Regions).Where(x => x.IsActive == true).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, new { }, ex);
+                return new ApplicationUser();
+            }            
         }
 
         public async Task<ApplicationUser> GetUserById(string UserId)

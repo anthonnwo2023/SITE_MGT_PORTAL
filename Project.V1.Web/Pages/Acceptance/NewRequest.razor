@@ -8,7 +8,7 @@
     .custom-font {
         font-size: 13px;
         font-weight: 400;
-        color: rgba(0,0,0,0.42);
+        color: rgba(0,0,0,0.82);
         padding-top: 0px;
     }
 
@@ -78,9 +78,10 @@
 else
 {
     <div class="col-md-12">
-        <SfToast CssClass="@ToastCss" ID="toast_default" @ref="ToastObj" Timeout="10000" Icon="e-circle_info"
-                 ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+        <SfToast CssClass="@ToastCss" ID="toast_default" @ref="ToastObj" Timeout=0 Icon="e-circle_info"
+             ShowCloseButton="true" NewestOnTop="true">
             <ToastPosition X="@ToastPosition"></ToastPosition>
+            <ToastEvents OnClick="@OnToastClickHandler"></ToastEvents>
         </SfToast>
     </div>
 
@@ -106,7 +107,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="TechTypeModel" DataSource="@TechTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Technology" style="font-size: 10px;" @bind-Value="RequestModel.TechTypeId">
+                                    Placeholder="Technology" style="font-size: 10px;" @bind-Value="RequestModel.TechTypeId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                                 <DropDownListEvents TValue="string" TItem="TechTypeModel" ValueChange="OnTechChange"></DropDownListEvents>
                             </SfDropDownList>
@@ -141,7 +142,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="RegionViewModel" DataSource="@Regions" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Region" style="font-size: 10px;" @bind-Value="RequestModel.RegionId">
+                                    Placeholder="Region" style="font-size: 10px;" @bind-Value="RequestModel.RegionId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.RegionId)" />
@@ -150,18 +151,18 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="SummerConfigModel" DataSource="@SummerConfigs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
+                                    Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.SummerConfigId)" />
                         </div>
                     </div>
                     @*<div class="col-md-3 mt-3">
-                            <div class="form-group">
-                                <SfTextBox Placeholder="Frequency Band" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.FrequencyBand)">
-                                </SfTextBox>
-                                <ValidationMessage For="@(() => RequestModel.FrequencyBand)" />
-                            </div>
+                        <div class="form-group">
+                        <SfTextBox Placeholder="Frequency Band" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.FrequencyBand)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.FrequencyBand)" />
+                        </div>
                         </div>*@
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
@@ -173,7 +174,8 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
+                                    Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
+                                <DropDownListEvents TValue="string" TItem="SpectrumViewModel" ValueChange="OnSpectrumChange"></DropDownListEvents>
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.SpectrumId)" />
@@ -203,7 +205,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="AntennaMakeModel" DataSource="@AntennaMakes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Antenna Make" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
+                                    Placeholder="Antenna Make" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.AntennaMakeId)" />
@@ -212,7 +214,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="AntennaTypeModel" DataSource="@AntennaTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaTypeId">
+                                    Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaTypeId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.AntennaTypeId)" />
@@ -249,7 +251,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="BaseBandModel" DataSource="@Basebands" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Baseband" style="font-size: 10px;" @bind-Value="RequestModel.BasebandId">
+                                    Placeholder="Baseband" style="font-size: 10px;" @bind-Value="RequestModel.BasebandId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.BasebandId)" />
@@ -258,7 +260,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="RRUTypeModel" DataSource="@RRUTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="RRU Type" style="font-size: 10px;" @bind-Value="RequestModel.RRUTypeId">
+                                    Placeholder="RRU Type" style="font-size: 10px;" @bind-Value="RequestModel.RRUTypeId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.RRUTypeId)" />
@@ -274,7 +276,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="ProjectTypeModel" DataSource="@ProjectTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
+                                    Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.ProjectTypeId)" />
@@ -314,7 +316,7 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDropDownList TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                            Placeholder="RET Configured" style="font-size: 10px;" @bind-Value="RequestModel.RETConfigured">
+                                    Placeholder="RET Configured" style="font-size: 10px;" @bind-Value="RequestModel.RETConfigured">
                                 <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
                             </SfDropDownList>
                             <ValidationMessage For="@(() => RequestModel.RETConfigured)" />
@@ -325,7 +327,7 @@ else
                         <div class="col-md-3 mt-3">
                             <div class="form-group">
                                 <SfDropDownList TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                                Placeholder="Carrier Aggregation" style="font-size: 10px;" @bind-Value="RequestModel.CarrierAggregation">
+                                    Placeholder="Carrier Aggregation" style="font-size: 10px;" @bind-Value="RequestModel.CarrierAggregation">
                                     <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
                                 </SfDropDownList>
                                 <ValidationMessage For="@(() => RequestModel.CarrierAggregation)" />
@@ -335,17 +337,17 @@ else
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
                             <SfDatePicker Placeholder="Site Integrated Date" Min='@MinDateTime' Max='@MaxDateTime' FloatLabelType="@FloatLabelType.Auto"
-                                          @bind-Value="@(RequestModel.IntegratedDate)">
+                                  @bind-Value="@(RequestModel.IntegratedDate)">
                             </SfDatePicker>
                             <ValidationMessage For="@(() => RequestModel.IntegratedDate)" />
                         </div>
                     </div>
                     @*<div class="col-md-3 mt-3">
-                            <div class="form-group">
-                                <SfDatePicker Enabled="false" Placeholder="Date Submitted" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateSubmitted)">
-                                </SfDatePicker>
-                                <ValidationMessage For="@(() => RequestModel.DateSubmitted)" />
-                            </div>
+                        <div class="form-group">
+                        <SfDatePicker Enabled="false" Placeholder="Date Submitted" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateSubmitted)">
+                        </SfDatePicker>
+                        <ValidationMessage For="@(() => RequestModel.DateSubmitted)" />
+                        </div>
                         </div>*@
                     <div class="col-md-3">
                         <div class="form-group text-right">
@@ -357,9 +359,9 @@ else
                         </div>
                         <div class="form-group">
                             <label for="filePath" class="col-form-label custom-font" style="">@((WaiverUploadSelected) ? "Waiver Email" : "SSV Report")</label>
-                            <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx")" MinFileSize="1000" MaxFileSize=15000000 AutoUpload="true" CssClass=""
-                                        @ref="SF_Uploader" @bind-Value="RequestModel.SSVReport">
-                                <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileUploadChange(e, "SSV", 0)'></UploaderEvents>
+                            <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx")" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+                                @ref="SF_Uploader" @bind-Value="RequestModel.SSVReport">
+                                <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileSSVUploadChange(e, "SSV")'></UploaderEvents>
                             </SfUploader>
                             <ValidationMessage For="@(() => RequestModel.SSVReport)" />
                         </div>
@@ -367,8 +369,8 @@ else
                     <div class="col-md-3 mt-3 ml-auto">
                         <div class="form-group">
                             <div class="col-sm-12 p-0 mt-4">
-                                <SfButton Disabled="@DisableSEButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
-                                          IconPosition="IconPosition.Right">Create Request</SfButton>
+                                <SfButton Disabled="@DisableSEButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@SEUploadIconCss"
+                                  IconPosition="IconPosition.Right">Create Request</SfButton>
                             </div>
                         </div>
                     </div>
@@ -384,7 +386,7 @@ else
                 <div class="col-md-12 row">
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
-                            <SfNumericTextBox Min="1" Max="100" Placeholder="No. of Sites" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(Input.BUSiteCount)">
+                            <SfNumericTextBox Min="1" Max="@MaxFileCount" Placeholder="No. of Sites" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(Input.BUSiteCount)">
                                 <NumericTextBoxEvents TValue="int" ValueChange="@HandleInput"></NumericTextBoxEvents>
                             </SfNumericTextBox>
                             <ValidationMessage For="@(() => Input.BUSiteCount)" />
@@ -402,46 +404,115 @@ else
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">Bulk Acceptance Upload</label>
-                            <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx" MinFileSize="1000" MaxFileSize=15000000 AutoUpload="true" CssClass=""
-                                        @ref="SFBulkAcceptance_Uploader" @bind-Value="Input.BUSSVReport">
-                                <UploaderEvents OnClear="OnClear" OnRemove="@OnRemove" ValueChange='e => OnFileUploadChange(e, "Bulk", 0)'></UploaderEvents>
+                            <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+                                @ref="SFBulkAcceptance_Uploader" @bind-Value="Input.BUSSVReport">
+                                <UploaderEvents OnClear="OnClearToNull" OnRemove="@OnRemoveToNull" ValueChange='e => OnFileUploadChange(e, "Bulk", 0)'></UploaderEvents>
                             </SfUploader>
                             <ValidationMessage For="@(() => Input.BUSSVReport)" />
                         </div>
                     </div>
-                    @if (BulkWaiverUploadSelected)
-                    {
-                        <div class="col-md-3 mt-3">
-                            <div class="form-group">
-                                <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">Waiver Email</label>
-                                <SfUploader @ref="SF_WaiverUploader" AllowMultiple="false" Multiple="false" AllowedExtensions=".msg, .eml" MinFileSize="1000" MaxFileSize=15000000 AutoUpload="true" CssClass=""
-                                            @bind-Value="WaiverUpload">
-                                    <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileUploadChange(e, "Waiver", 1)'></UploaderEvents>
-                                </SfUploader>
-                                <ValidationMessage For="@(() => WaiverUpload)" />
+                    <div class="col-md-12 mt-3" style="display:@((BulkWaiverUploadSelected) ? "none": "block")">
+                        <fieldset class="py-3 px-3 border pb-2">
+                            <legend style="font-size:12px">Bulk SSV Upload Properties</legend>
+                            <div class="d-flex flex-row">
+                                <div class="col-md-3" style="font-size:12px">Count: <span>@(TotalFileCount)</span>/@MaxFileCount</div>
+                                <div class="col-md-3 text-right ml-auto" style="font-size:12px">Size: <span class="text-@((TotalFileSize > @MaxUploadFileSize) ? "danger" : "dark")">@($"{TotalFileSize:0.00}")</span>/@(MaxUploadFileSize)MB</div>
                             </div>
+                        </fieldset>
+                        <div class="form-group mt-1">
+                            <SfUploader AllowMultiple="true" Multiple="true" AllowedExtensions=".xls, .xlsx, .ppt, .pptx" MinFileSize="1000"
+                                MaxFileSize="@MaxFileSize" AutoUpload="true" CssClass="" @ref="SFBulkASSV_Uploader">
+                                <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileSSVUploadChange(e, "SSV")'></UploaderEvents>
+                            </SfUploader>
+                            <ValidationMessage For="@(() => Input.BUSSVReport)" />
                         </div>
-                    }
-                    @foreach (var element in UploadedRequestFiles.Where(x => x.UploadType == "SSV").Select((item, index) => (item, index)))
-                    {
+                    </div>
+                    <div class="col-md-12 mt-3" style="display:@((!BulkWaiverUploadSelected) ? "none": "block")">
+                        <div class="form-group">
+                            <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">Waiver Email</label>
+                            <SfUploader @ref="SF_WaiverUploader" AllowMultiple="false" Multiple="false" AllowedExtensions=".msg, .eml" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+                                @bind-Value="WaiverUpload">
+                                <UploaderEvents OnClear="OnClearToNull" OnRemove="OnRemoveToNull" ValueChange='e => OnFileUploadChange(e, "Waiver", 1)'></UploaderEvents>
+                            </SfUploader>
+                            <ValidationMessage For="@(() => WaiverUpload)" />
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-3" style="display:@((BulkRequestRRUCount <= 0) ? "none": "block")">
+                        <fieldset class="py-3 px-3 border pb-2">
+                            <legend style="font-size:12px">RRU SSV Uploads</legend>
+                            @if (BulkRequestRRUData != null)
+                            {
+                                <table class="table table-striped table-bordered">
+
+                                    <thead class="thead-light">
+                                        <tr class="custom-font">
+                                            <th>Technology</th>
+                                            <th>Site Name</th>
+                                            <th>Site Id</th>
+                                            <th>Spectrum </th>
+                                            <th>Region</th>
+                                            <th style="font-size: 12px;">(* filename contains e.g. T1000_2G_RRU MOD)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            foreach (var element in BulkRequestRRUData.Select((item, index) => (item, index)))
+                                            {
+                                                var item = element.item;
+
+                                                <tr class="custom-font">
+                                                    <td>@TechTypes.FirstOrDefault(x => x.Id == item.TechTypeId)?.Name</td>
+                                                    <td>@item.SiteName</td>
+                                                    <td>@item.SiteId</td>
+                                                    <td>@Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId)?.Name</td>
+                                                    <td>@Regions.FirstOrDefault(x => x.Id == item.RegionId)?.Name</td>
+                                                    <td class="w-25">
+                                                        <SfUploader @ref="@BulkUploadRRUSSVFiles[element.index]" AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx, .ppt, .pptx" MinFileSize="1000"
+                                                MaxFileSize="@MaxFileSize" AutoUpload="true" CssClass="" HtmlAttributes="@htmlattributeFileUpload">
+                                                            <UploaderEvents OnClear="OnClearRRU" OnRemove="OnRemoveRRU" ValueChange='e => OnFileSSVRRUUploadChange(e, "SSV")'></UploaderEvents>
+                                                        </SfUploader>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </fieldset>
+                    </div>
+                    @*@if (BulkWaiverUploadSelected)
+                        {
+                        <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                        <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">Waiver Email</label>
+                        <SfUploader @ref="SF_WaiverUploader" AllowMultiple="false" Multiple="false" AllowedExtensions=".msg, .eml" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+                        @bind-Value="WaiverUpload">
+                        <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileUploadChange(e, "Waiver", 1)'></UploaderEvents>
+                        </SfUploader>
+                        <ValidationMessage For="@(() => WaiverUpload)" />
+                        </div>
+                        </div>
+                        }
+                        @foreach (var element in UploadedRequestFiles.Where(x => x.UploadType == "SSV").Select((item, index) => (item, index)))
+                        {
                         var item = element.item;
 
                         <div class="col-md-3 mt-3" style="display:@((BulkWaiverUploadSelected) ? "none": "block")">
-                            <div class="form-group">
-                                <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">@((item.UploadIsSSV) ? "SSV Report" : "Waiver Email") in Row Order - @(item.Index-1)</label>
-                                <SfUploader @ref="@BulkUploadFiles[element.index]" AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx" MinFileSize="1000" MaxFileSize=15000000 AutoUpload="true" CssClass=""
-                                            @bind-Value="item.Filename">
-                                    <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileUploadChange(e, "SSV", item.Index)'></UploaderEvents>
-                                </SfUploader>
-                                <ValidationMessage For="@(() => item.Filename)" />
-                            </div>
+                        <div class="form-group">
+                        <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">@((item.UploadIsSSV) ? "SSV Report" : "Waiver Email") in Row Order - @(item.Index-1)</label>
+                        <SfUploader @ref="@BulkUploadFiles[element.index]" AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+                        @bind-Value="item.Filename">
+                        <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileUploadChange(e, "SSV", item.Index)'></UploaderEvents>
+                        </SfUploader>
+                        <ValidationMessage For="@(() => item.Filename)" />
                         </div>
-                    }
+                        </div>
+                        }*@
                     <div class="col-md-12">
                         <div class="form-group">
                             <div class="col-sm-12 p-0 mt-4">
                                 <SfButton Disabled="@DisableBUButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@BulkUploadIconCss"
-                                          IconPosition="IconPosition.Right">Create Request</SfButton>
+                                  IconPosition="IconPosition.Right">Create Request</SfButton>
                             </div>
                         </div>
                     </div>

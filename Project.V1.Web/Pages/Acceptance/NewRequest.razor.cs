@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Project.V1.Lib.Interfaces;
 using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Helpers.Excel;
 using Project.V1.DLL.Interface;
-using Project.V1.Lib.Services;
 using Project.V1.Models;
 using Syncfusion.Blazor.Inputs;
 using Syncfusion.Blazor.Notifications;
@@ -21,10 +19,9 @@ using System.Threading.Tasks;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Helpers;
-using System.Linq.Expressions;
-using System.Dynamic;
 using Microsoft.AspNetCore.Components.Web;
 using Syncfusion.Blazor.SplitButtons;
+using Project.V1.Lib.Services;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -67,11 +64,14 @@ namespace Project.V1.Web.Pages.Acceptance
         public string PageText { get; set; } = "Create";
         public string BtnText { get; set; } = "Create Request";
         public string BulkUploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
+        public string SEUploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
 
         private string BulkUploadColumnError { get; set; }
         private string BulkUploadError { get; set; }
         private string SaveError { get; set; }
-        private List<SfUploader> BulkUploadFiles = new();
+
+        public double MaxFileSize { get; set; } = 25000000;
+        public List<SfUploader> BulkUploadRRUSSVFiles = new();
         public List<FilesManager> UploadedRequestFiles { get; set; } = new();
         public List<FileStream> Filestreams { get; set; }
         public List<UploadFiles> UploadFiles { get; set; }
@@ -79,6 +79,7 @@ namespace Project.V1.Web.Pages.Acceptance
         public string FilePath { get; set; }
         public string UploadFileName { get; set; }
         public bool DisableSEButton { get; set; } = true;
+        public bool IsRRUType { get; set; } = false;
         public bool DisableBUButton { get; set; } = true;
         public DateTime MaxDateTime { get; set; }
         public DateTime MinDateTime { get; set; }
@@ -99,10 +100,19 @@ namespace Project.V1.Web.Pages.Acceptance
         protected SfUploader SF_WaiverUploader { get; set; }
         public string WaiverUpload { get; set; }
         protected SfUploader SFBulkAcceptance_Uploader { get; set; }
+        protected SfUploader SFBulkASSV_Uploader { get; set; }
         protected SfToast ToastObj { get; set; }
         protected bool SingleEntrySelected { get; set; }
         protected bool BulkUploadSelected { get; set; }
-
+        public List<RequestViewModel> BulkRequestRRUData { get; set; }
+        public int BulkRequestRRUCount { get; set; } = 0;
+        public (string error, List<RequestViewModel> requests) BulkUploadData { get; set; }
+        public string BulkUploadPath { get; set; }
+        public double TotalFileCount { get; set; } = 0;
+        public int MaxFileCount { get; set; } = 50;
+        public double TotalFileSize { get; set; } = 0;
+        public double MaxUploadFileSize { get; set; } = 350;
+        
         public List<BoolDropDown> BoolDrops { get; set; } = new()
         {
             new BoolDropDown { Name = "Yes" },
@@ -120,6 +130,11 @@ namespace Project.V1.Web.Pages.Acceptance
             new ToastModel { Title = "Success!", Content = "Your message has been sent successfully.", CssClass = "e-toast-success", Icon = "e-success toast-icons" },
             new ToastModel { Title = "Error!", Content = "A problem has been occurred while submitting your data.", CssClass = "e-toast-danger", Icon = "e-error toast-icons" },
             new ToastModel { Title = "Information!", Content = "Please read the comments carefully.", CssClass = "e-toast-info", Icon = "e-info toast-icons" }
+        };
+
+        Dictionary<string, object> htmlattributeFileUpload = new Dictionary<string, object>()
+        {
+           { "padding", "5px 2px 5px 2px" },
         };
 
         protected override void OnInitialized()
@@ -145,11 +160,39 @@ namespace Project.V1.Web.Pages.Acceptance
             await this.ToastObj.Show(Toast[2]);
         }
 
-        private void ResetUpload(string filename)
+        private void ResetUpload(Syncfusion.Blazor.Inputs.FileInfo file)
         {
-            var nameCompare = Path.GetFileNameWithoutExtension(filename);
-            var fname = (nameCompare.Length > 3) ? Path.GetFileNameWithoutExtension(filename.Split('(')[0]) : Path.GetFileNameWithoutExtension(filename);
-            FilesManager uploaderToClear = UploadedRequestFiles.Where(x => x.Filename != null).FirstOrDefault(x => x.Filename.Contains(fname));
+            var nameCompare = Path.GetFileNameWithoutExtension(file.Name).RemoveSpecialCharacters();
+            var fname = (nameCompare.Length > 3) ? Path.GetFileNameWithoutExtension(file.Name.Split('(')[0]).RemoveSpecialCharacters() : Path.GetFileNameWithoutExtension(file.Name).RemoveSpecialCharacters();
+            FilesManager uploaderToClear = UploadedRequestFiles.Where(x => x.Filename != null && x.UploadType == "SSV").FirstOrDefault(x => x.Filename.Contains(fname));
+
+            if (uploaderToClear != null)
+            {
+                if (File.Exists(uploaderToClear.UploadPath))
+                {
+                    uploaderToClear.Filestream.Close();
+                    uploaderToClear.UploadFile.Stream.Close();
+
+                    File.Delete(uploaderToClear.UploadPath);
+                }
+
+                UploadedRequestFiles.Remove(uploaderToClear);
+
+                ResetSSVIndex().Wait();
+                EnableDisableActionButton();
+            }
+        }
+
+        private void ResetUploadToNull(Syncfusion.Blazor.Inputs.FileInfo file)
+        {
+            var nameCompare = Path.GetFileNameWithoutExtension(file.Name).RemoveSpecialCharacters();
+            var fname = (nameCompare.Length > 3) ? Path.GetFileNameWithoutExtension(file.Name.Split('(')[0].Trim()).RemoveSpecialCharacters() : Path.GetFileNameWithoutExtension(file.Name.Trim()).RemoveSpecialCharacters();
+
+            var a = UploadedRequestFiles.Where(x => x.Filename != null && x.UploadType != "SSV");
+            var b = a.FirstOrDefault(x => x.Filename.Contains(fname));
+
+
+            FilesManager uploaderToClear = UploadedRequestFiles.Where(x => x.Filename != null && x.UploadType != "SSV").FirstOrDefault(x => x.Filename.Contains(fname));
 
             if (uploaderToClear != null)
             {
@@ -166,70 +209,94 @@ namespace Project.V1.Web.Pages.Acceptance
                 uploaderToClear.UploadFile = null;
                 uploaderToClear.UploadPath = null;
 
-                //if (SingleEntrySelected)
-                //{
-                //    DisableSEButton = true;
-                //}
+                if (uploaderToClear.UploadType == "Bulk")
+                {
+                    BulkRequestRRUData = null;
+                    BulkRequestRRUCount = 0;
 
-                //if (BulkUploadSelected && uploaderToClear.UploadPath == "Bulk")
-                //{
-                //    DisableBUButton = true;
-                //}
+                    for (int i = 0; i < UploadedRequestFiles.Count; i++)
+                    {
+                        if(UploadedRequestFiles[i].Filename != null)
+                        {
+                            if (UploadedRequestFiles[i].Filename.Contains("RRU MOD"))
+                            {
+                                UploadedRequestFiles.Remove(UploadedRequestFiles[i]);
+                            }
+                        }
+                    }
+                }
+
                 EnableDisableActionButton();
             }
         }
 
+        public void OnToastClickHandler(ToastClickEventArgs args)
+        {
+            args.ClickToClose = true;
+        }
+
+        private void OnClearRRU(ClearingEventArgs args)
+        {
+            if (args.FilesData.Count > 0)
+                ResetUpload(args.FilesData.First());
+        }
+
+        private void OnRemoveRRU(RemovingEventArgs args)
+        {
+            if (args.FilesData.Count > 0)
+                ResetUpload(args.FilesData.First());
+        }
+
         private void OnClear(ClearingEventArgs args)
         {
-            //if (SingleEntrySelected)
-            //{
-            //    DisableSEButton = true;
-            //}
-            //if (BulkUploadSelected)
-            //{
-            //    DisableBUButton = true;
-            //}
-
-            //foreach (var file in UploadedRequestFiles)
-            //{
-            //    if (File.Exists(file.UploadPath))
-            //    {
-            //        file.Filestream.Close();
-            //        file.UploadFile.Stream.Close();
-
-            //        File.Delete(file.UploadPath);
-            //    }
-            //}
-
-            //UploadedRequestFiles.RemoveAt(UploadedRequestFiles.FindIndex(x => x.Filename.Contains(args.FilesData.First()?.Name)));
             if (args.FilesData.Count > 0)
-                ResetUpload(args.FilesData.First()?.Name);
+                ResetUpload(args.FilesData.First());
+
+            TotalFileCount--;
+            TotalFileSize -= args.FilesData.Sum(x => x.Size) / (1024 * 1024);
         }
 
         private void OnRemove(RemovingEventArgs args)
         {
             if (args.FilesData.Count > 0)
-                ResetUpload(args.FilesData.First()?.Name);
+                ResetUpload(args.FilesData.First());
+
+            TotalFileCount--;
+            TotalFileSize -= args.FilesData.Sum(x => x.Size) / (1024 * 1024);
+        }
+
+        private void OnRemoveToNull(RemovingEventArgs args)
+        {
+            if (args.FilesData.Count > 0)
+                ResetUploadToNull(args.FilesData.First());
+        }
+
+        private void OnClearToNull(ClearingEventArgs args)
+        {
+            if (args.FilesData.Count > 0)
+                ResetUploadToNull(args.FilesData.First());
         }
 
         private async Task InitializeForm()
         {
+            TotalFileCount = 0;
+            TotalFileSize = 0;
             Principal = (await AuthenticationStateTask).User;
             User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
             BulkWaiverUploadSelected = false;
 
-            Regions = await IRegion.Get(x => x.IsActive);
-            SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
-            ProjectTypes = await IProjectType.Get(x => x.IsActive);
-            RRUTypes = await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId);
-            TechTypes = await ITechType.Get(x => x.IsActive);
-            AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
-            AntennaTypes = await IAntennaType.Get(x => x.IsActive);
+            Regions = (await IRegion.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
+            SummerConfigs = (await ISummerConfig.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
+            ProjectTypes = (await IProjectType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
+            RRUTypes = (await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
+            TechTypes = (await ITechType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
+            AntennaMakes = (await IAntennaMake.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
+            AntennaTypes = (await IAntennaType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             Spectrums = new();
             Basebands = (Principal.IsInRole("Super Admin"))
-                ? await IBaseBand.Get(x => x.IsActive)
-                : await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId);
+                ? (await IBaseBand.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList()
+                : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
 
             RequestModel = new();
             Input = new();
@@ -237,17 +304,20 @@ namespace Project.V1.Web.Pages.Acceptance
             RequestModel.IntegratedDate = DateTime.Now;
 
             UploadedRequestFiles = new();
-            BulkUploadFiles = new();
+            BulkRequestRRUData = null;
+            BulkRequestRRUCount = 0;
 
             UploadedRequestFiles.AddRange(InitializeUploadFiles());
-            BulkUploadFiles.Add(new SfUploader());
+
+            EnableDisableActionButton();
         }
 
         private void ReInitializeRequest(MouseEventArgs args)
         {
             Input.BUSiteCount = 1;
+            TotalFileCount = 0;
+            TotalFileSize = 0;
             UploadedRequestFiles = new();
-            BulkUploadFiles = new();
             BulkWaiverUploadSelected = false;
 
             if (BulkUploadSelected)
@@ -262,7 +332,6 @@ namespace Project.V1.Web.Pages.Acceptance
                     UploadType = "SSV",
                 });
             }
-            BulkUploadFiles.Add(new SfUploader());
 
             EnableDisableActionButton();
 
@@ -272,7 +341,7 @@ namespace Project.V1.Web.Pages.Acceptance
         private static List<FilesManager> InitializeUploadFiles()
         {
             List<FilesManager> filesManagers = new();
-            List<string> initialUploadTypes = new() { "Bulk", "Waiver", "SSV" };
+            List<string> initialUploadTypes = new() { "Bulk", "Waiver" };
 
             for (int i = 0; i < initialUploadTypes.Count; i++)
             {
@@ -286,9 +355,107 @@ namespace Project.V1.Web.Pages.Acceptance
             return filesManagers;
         }
 
+        private async Task ResetSSVIndex()
+        {
+            int i = 2;
+
+            try
+            {
+                UploadedRequestFiles.Where(x => x.UploadType == "SSV").ToList().ForEach((ssv) =>
+                {
+                    if (File.Exists(ssv.UploadPath))
+                    {
+                        if (ssv.Filestream.CanSeek)
+                        {
+                            ssv.Filestream.Close();
+                            ssv.UploadFile.Stream.Close();
+                        }
+
+                        File.Delete(ssv.UploadPath);
+                    }
+
+                    ssv.Index = i;
+
+                    i++;
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message, new { }, ex);
+            }
+
+            await Task.CompletedTask;
+        }
+
+        private async Task RemoveSSVLeavingRRUs()
+        {
+            try
+            {
+                foreach (var ssv in UploadedRequestFiles.ToList())
+                {
+                    if (ssv.UploadType == "SSV" && !ssv.Filename.Contains("RRU"))
+                    {
+                        if (File.Exists(ssv.UploadPath))
+                        {
+                            if (ssv.Filestream.CanSeek)
+                            {
+                                ssv.Filestream.Close();
+                                ssv.UploadFile.Stream.Close();
+                            }
+
+                            File.Delete(ssv.UploadPath);
+                        }
+
+                        UploadedRequestFiles.Remove(ssv);
+                    }
+                }
+
+                await ResetSSVIndex();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message, new { }, ex);
+            }
+
+            await Task.CompletedTask;
+        }
+
         public async Task OnTechChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, TechTypeModel> args)
         {
-            Spectrums = await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive);
+            try
+            {
+                IsRRUType = false;
+                Spectrums = (await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive)).OrderBy(x => x.Name).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message, new { }, ex);
+            }
+
+            EnableDisableActionButton();
+        }
+
+        public async Task OnSpectrumChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, SpectrumViewModel> args)
+        {
+            var specturm = Spectrums.FirstOrDefault(x => x.Id == args.Value)?.Name;
+
+            if (specturm == null)
+            {
+                IsRRUType = false;
+            }
+            else
+            {
+                IsRRUType = false;
+
+                if (specturm.Contains("RRU"))
+                {
+                    IsRRUType = true;
+                }
+            }
+
+            EnableDisableActionButton();
+
+            await Task.CompletedTask;
         }
 
         //public async Task OnVendorChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, VendorModel> args)
@@ -326,35 +493,36 @@ namespace Project.V1.Web.Pages.Acceptance
 
         protected void HandleInput<T>(T args)
         {
-            int result = ((dynamic)args).Value;
+            //int result = ((dynamic)args).Value;
 
-            int uploadCount = ((dynamic)args).PreviousValue;// UploadedRequestFiles.Count(x => x.UploadType == "SSV");
+            //int uploadCount = ((dynamic)args).PreviousValue;// UploadedRequestFiles.Count(x => x.UploadType == "SSV");
 
-            if (result < uploadCount)
-            {
-                var count = uploadCount - result;
-                for (var i = 1; i <= count; i++)
-                {
-                    UploadedRequestFiles.Remove(UploadedRequestFiles.OrderByDescending(x => x.Index).First());
-                    BulkUploadFiles.RemoveAt(BulkUploadFiles.Count - 1);
-                }
-            }
-            if (result > uploadCount)
-            {
-                var count = result - uploadCount;
+            //if (result < uploadCount)
+            //{
+            //    var count = uploadCount - result;
+            //    for (var i = 1; i <= count; i++)
+            //    {
+            //        UploadedRequestFiles.Remove(UploadedRequestFiles.OrderByDescending(x => x.Index).First());
+            //        BulkUploadFiles.RemoveAt(BulkUploadFiles.Count - 1);
+            //    }
+            //}
 
-                for (var i = 1; i <= count; i++)
-                {
-                    FilesManager file = new()
-                    {
-                        Index = uploadCount + 1 + i,
-                        UploadType = "SSV",
-                    };
+            //if (result > uploadCount)
+            //{
+            //    var count = result - uploadCount;
 
-                    UploadedRequestFiles.Add(file);
-                    BulkUploadFiles.Add(new SfUploader());
-                }
-            }
+            //    for (var i = 1; i <= count; i++)
+            //    {
+            //        FilesManager file = new()
+            //        {
+            //            Index = uploadCount + 1 + i,
+            //            UploadType = "SSV",
+            //        };
+
+            //        UploadedRequestFiles.Add(file);
+            //        BulkUploadFiles.Add(new SfUploader());
+            //    }
+            //}
 
             EnableDisableActionButton();
         }
@@ -405,7 +573,6 @@ namespace Project.V1.Web.Pages.Acceptance
         protected async Task HandleValidSubmit(EditContext context)
         {
             bool isValid = context.Validate();
-            BulkUploadIconCss = "fas fa-spin fa-spinner ml-2";
 
             var variables = new Dictionary<string, object> { { "User", User.UserName }, { "App", "acceptance" } };
 
@@ -413,16 +580,22 @@ namespace Project.V1.Web.Pages.Acceptance
             {
                 if (SingleEntrySelected)
                 {
+                    DisableSEButton = true;
+                    SEUploadIconCss = "fas fa-spin fa-spinner ml-2";
                     FilesManager ssvReport = UploadedRequestFiles.OrderBy(x => x.Index).FirstOrDefault(x => x.UploadType == "SSV");
 
-                    if (!ssvReport.Filename.ToLower().Contains(RequestModel.SiteId.ToLower()))
+                    if (ssvReport?.Filename != null)
                     {
-                        throw new Exception("Site Id does not match the uploaded document", new Exception("Site Id does not match the uploaded document"));
+                        if (!ssvReport.Filename.ToLower().Contains(RequestModel.SiteId.ToLower()))
+                        {
+                            throw new Exception("Site Id does not match the uploaded document", new Exception("Site Id does not match the uploaded document"));
+                        }
                     }
 
                     if (await SaveSingleRequest(RequestModel, ssvReport, true))
                     {
                         await IRequest.SetCreateState(RequestModel, variables);
+                        SEUploadIconCss = "fas fa-paper-plane ml-2";
                     }
                     else
                     {
@@ -432,93 +605,101 @@ namespace Project.V1.Web.Pages.Acceptance
                 if (BulkUploadSelected)
                 {
                     DisableBUButton = true;
+                    BulkUploadIconCss = "fas fa-spin fa-spinner ml-2";
                     WaiverUploadSelected = BulkWaiverUploadSelected;
                     Spectrums = await ISpectrum.Get(x => x.IsActive);
 
-                    FilesManager acceptanceUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Bulk");
+                    //FilesManager acceptanceUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Bulk");
 
-                    string ext = Path.GetExtension(acceptanceUpload.UploadFile.FileInfo.Name);
-                    bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
+                    //string ext = Path.GetExtension(acceptanceUpload.UploadFile.FileInfo.Name);
+                    //bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
 
-                    (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension, acceptanceUpload, true);
+                    //(string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension, acceptanceUpload, true);
+                    //(string uploadResp, string filePath, string uploadError) = ("", "", "");
 
-                    if (uploadResp.Length == 0 && uploadError.Length == 0)
+                    //if (uploadResp.Length == 0 && uploadError.Length == 0)
+                    //{
+
+                    //}
+                    (string error, List<RequestViewModel> requests) = BulkUploadData;
+
+                    if (error.Length > 0)
                     {
-                        (string error, List<RequestViewModel> requests) = await ProcessUpload(acceptanceUpload.UploadPath);
+                        throw new Exception(error, new Exception(error));
+                    }
 
-                        if (error.Length > 0)
+                    if (Input.BUSiteCount == requests.Count)
+                    {
+                        foreach (RequestViewModel request in requests)
                         {
-                            throw new Exception(error, new Exception(error));
-                        }
+                            var spectrumName = Spectrums.FirstOrDefault(x => x.Id == request.SpectrumId).Name;
 
-                        if (Input.BUSiteCount == requests.Count)
-                        {
-                            foreach (RequestViewModel request in requests)
+                            var checkName = (spectrumName.Contains("RRU")) ? $"{request.SiteId.ToUpper()}" : $"{request.SiteId.ToUpper()}_{spectrumName.ToUpper()}";
+
+                            if (!BulkWaiverUploadSelected)
                             {
-                                if (!BulkWaiverUploadSelected)
-                                {
-                                    var uploadFile = UploadedRequestFiles.Where(x => x.UploadType == "SSV").OrderBy(x => x.Index).ElementAt(requests.IndexOf(request));
+                                var uploadFile = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "SSV" && x.Filename.Contains(checkName));
 
-                                    if (!uploadFile.Filename.ToLower().Contains(request.SiteId.ToLower()))
-                                    {
-                                        throw new Exception("Site Id does not match the uploaded document", new Exception("Site Id does not match the uploaded document"));
-                                    }
+                                if (uploadFile?.Filename == null && !spectrumName.Contains("RRU"))
+                                {
+                                    throw new Exception($"No SSV document uploaded to match for {checkName}. Please try again.", new Exception("No SSV document uploaded to match for {checkName}. Please try again."));
                                 }
                             }
-
-                            var batchNumber = HelperFunctions.GenerateIDUnique("SA-BN");
-
-                            foreach (RequestViewModel request in requests)
-                            {
-                                FilesManager uploadFile = new();
-
-                                if (BulkWaiverUploadSelected)
-                                {
-                                    uploadFile = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Waiver");
-                                }
-                                else
-                                {
-                                    uploadFile = UploadedRequestFiles.Where(x => x.UploadType == "SSV").OrderBy(x => x.Index).ElementAt(requests.IndexOf(request));
-                                }
-
-                                request.BulkuploadPath = Path.GetFileName(filePath);
-                                request.BulkBatchNumber = batchNumber;
-                                var toClose = true;
-
-                                if (BulkWaiverUploadSelected && ((requests.IndexOf(request) + 1) != requests.Count))
-                                {
-                                    toClose = false;
-                                }
-
-                                if (await SaveSingleRequest(request, uploadFile, toClose))
-                                {
-                                    await BulkUploadFiles[requests.IndexOf(request)].ClearAll();
-                                }
-                                else
-                                {
-                                    throw new Exception(SaveError, new Exception(SaveError));
-                                }
-                            }
-
-                            await IRequest.SetCreateState(requests, variables);
                         }
-                        else
+
+                        var batchNumber = HelperFunctions.GenerateIDUnique("SA-BN");
+
+                        foreach (RequestViewModel request in requests)
                         {
-                            await SFBulkAcceptance_Uploader.ClearAll();
+                            FilesManager uploadFile = new();
+                            var spectrumName = Spectrums.FirstOrDefault(x => x.Id == request.SpectrumId).Name;
+                            var TechTypeName = TechTypes.FirstOrDefault(x => x.Id == request.TechTypeId).Name;
+                            var checkName = (spectrumName.Contains("RRU")) ? $"{request.SiteId.ToUpper()}_{TechTypeName}_RRU_MOD" : $"{request.SiteId.ToUpper()}_{spectrumName.ToUpper()}";
 
-
-                            if (BulkUploadError == null)
+                            if (BulkWaiverUploadSelected)
                             {
-                                throw new Exception("Site count does not match number of uploaded SSV Report", new Exception("Site count does not match number of uploaded  SSV Report"));
+                                uploadFile = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Waiver");
                             }
                             else
                             {
-                                BulkUploadIconCss = "fas fa-paper-plane ml-2";
-                                ToastContent = BulkUploadError;
-                                await Task.Delay(200);
-
-                                ErrorBtnOnClick();
+                                uploadFile = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "SSV" && x.Filename.Contains(checkName));
                             }
+
+                            request.BulkuploadPath = Path.GetFileName(BulkUploadPath);
+                            request.BulkBatchNumber = batchNumber;
+                            var toClose = true;
+
+                            if (BulkWaiverUploadSelected && ((requests.IndexOf(request) + 1) != requests.Count))
+                            {
+                                toClose = false;
+                            }
+
+                            if (!await SaveSingleRequest(request, uploadFile, toClose))
+                            {
+                                throw new Exception(SaveError, new Exception(SaveError));
+                            }
+                        }
+
+                        await SFBulkASSV_Uploader.ClearAllAsync();
+                        await IRequest.SetCreateState(requests, variables);
+                    }
+                    else
+                    {
+                        await SFBulkAcceptance_Uploader.ClearAll();
+                        await SFBulkASSV_Uploader.ClearAll();
+
+
+                        if (BulkUploadError == null)
+                        {
+                            throw new Exception("No of Site Count does not match number of records uploaded", new Exception("No of Site Count does not match number of records uploaded"));
+                        }
+                        else
+                        {
+                            BulkUploadIconCss = "fas fa-paper-plane ml-2";
+                            ToastContent = BulkUploadError;
+                            await Task.Delay(200);
+
+                            ErrorBtnOnClick();
                         }
                     }
                 }
@@ -526,10 +707,13 @@ namespace Project.V1.Web.Pages.Acceptance
                 AppState.TriggerRequestRecount();
 
                 await InitializeForm();
+                IsRRUType = false;
                 EnableDisableActionButton();
             }
             catch (Exception ex)
             {
+                BulkUploadIconCss = "fas fa-paper-plane ml-2";
+
                 if (SingleEntrySelected)
                 {
                     await SF_Uploader.ClearAll();
@@ -537,25 +721,17 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 if (BulkUploadSelected)
                 {
-                    await SFBulkAcceptance_Uploader.ClearAll();
+                    await SFBulkAcceptance_Uploader.ClearAllAsync();
                     if (BulkWaiverUploadSelected)
-                        await SF_WaiverUploader.ClearAll();
-
-                    for (int i = 0; i < BulkUploadFiles.Count; i++)
-                    {
-                        var filename = UploadedRequestFiles.Where(x => x.UploadType == "SSV").OrderBy(x => x.Index).ElementAt(i).Filename;
-                        if (filename != null)
-                            ResetUpload(filename);
-                        await BulkUploadFiles[i].ClearAll();
-                    }
+                        await SF_WaiverUploader.ClearAllAsync();
+                    else
+                        await SFBulkASSV_Uploader.ClearAllAsync();
 
                     StateHasChanged();
                 }
 
                 //await InitializeForm();
                 EnableDisableActionButton();
-
-                BulkUploadIconCss = "fas fa-paper-plane ml-2";
 
                 string msg = ex.InnerException?.Message ?? ex.Message;
 
@@ -638,7 +814,7 @@ namespace Project.V1.Web.Pages.Acceptance
                             request.RegionId = (request.RegionId != null) ? Regions.FirstOrDefault(x => x.Name.ToUpper() == request.RegionId.ToUpper())?.Id : request.RegionId;
                             request.SummerConfigId = (request.SummerConfigId != null) ? SummerConfigs.FirstOrDefault(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper())?.Id : request.SummerConfigId;
                             request.TechTypeId = (request.TechTypeId != null) ? TechTypes.FirstOrDefault(x => x.Name.ToUpper() == request.TechTypeId.ToUpper())?.Id : request.TechTypeId;
-                            request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper() == request.SpectrumId.ToUpper())?.Id : request.SpectrumId;
+                            request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechTypeId == request.TechTypeId)?.Id : request.SpectrumId;
                             request.RRUTypeId = (request.RRUTypeId != null) ? RRUTypes.FirstOrDefault(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper())?.Id : request.RRUTypeId;
 
                             requests.Add(request);
@@ -656,18 +832,18 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             bool result = IsFKValid(x => x.Name.ToUpper() == request.TechTypeId.ToUpper(), TechTypes)
             && IsFKValid(x => x.Name.ToUpper() == request.RegionId.ToUpper(), Regions)
-            && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper(), Spectrums)
+            && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechType.Name == request.TechTypeId, Spectrums)
             && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes)
-            && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes); 
+            && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes);
 
-            if(request.SiteName == null)
+            if (request.SiteName == null)
             {
 
                 BulkUploadColumnError = "Site Name";
                 result = false;
             }
 
-            if(request.SummerConfigId != null)
+            if (request.SummerConfigId != null)
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper(), SummerConfigs);
@@ -679,25 +855,25 @@ namespace Project.V1.Web.Pages.Acceptance
             //        && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes);
             //}
 
-            if(request.BasebandId != null)
+            if (request.BasebandId != null)
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.BasebandId.ToUpper(), Basebands);
             }
 
-            if(request.AntennaMakeId != null)
+            if (request.AntennaMakeId != null)
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper(), AntennaMakes);
             }
 
-            if(request.RETConfigured != null)
+            if (request.RETConfigured != null)
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.RETConfigured.ToUpper(), BoolDrops);
             }
 
-            if(request.AntennaTypeId != null)
+            if (request.AntennaTypeId != null)
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper(), AntennaTypes);
@@ -754,7 +930,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 if (request.TechTypeId == TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
                 {
-                    if(!BulkWaiverUploadSelected)
+                    if (!BulkWaiverUploadSelected)
                     {
                         request.RRUPower = LTEInput.RRUPower;
                         request.CSFBStatusGSM = LTEInput.CSFDStatusGSM;
@@ -782,33 +958,42 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             try
             {
-                if (file?.UploadFile == null)
+                var spectrum = Spectrums.FirstOrDefault(x => x.Id == request.SpectrumId).Name;
+
+                if (file?.UploadFile == null && !spectrum.Contains("RRU MOD"))
                 {
                     SaveError = "Missing SSV Report";
                     return false;
                 }
 
-                string ext = Path.GetExtension(file.UploadFile.FileInfo.Name);
-                bool isWaiver = (SingleEntrySelected) ? WaiverUploadSelected : BulkWaiverUploadSelected;
-                bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, isWaiver);
-
-                (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension, file, toClose);
-
-                request.SSVReport = Path.GetFileName(filePath);
-
-                if (uploadResp.Length != 0 || uploadError.Length != 0)
+                if (file?.UploadFile != null)
                 {
-                    File.Delete(UploadPath);
-                    await SF_Uploader.ClearAll();
+                    string ext = Path.GetExtension(file.UploadFile.FileInfo.Name);
+                    bool isWaiver = (SingleEntrySelected) ? WaiverUploadSelected : BulkWaiverUploadSelected;
+                    bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, isWaiver);
 
-                    BulkUploadIconCss = "fas fa-paper-plane ml-2";
+                    (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension, file, toClose);
 
-                    ToastContent = $"An error has occurred. SSV Report/Waiver could not be uploaded.";
-                    await Task.Delay(1000);
+                    request.SSVReport = Path.GetFileName(filePath);
 
-                    ErrorBtnOnClick();
+                    if (uploadResp.Length != 0 || uploadError.Length != 0)
+                    {
+                        File.Delete(UploadPath);
 
-                    return false;
+                        if (!BulkUploadSelected)
+                            await SF_Uploader.ClearAll();
+                        else
+                            await SFBulkASSV_Uploader.ClearAll();
+
+                        BulkUploadIconCss = "fas fa-paper-plane ml-2";
+
+                        ToastContent = $"An error has occurred. SSV Report/Waiver could not be uploaded.";
+                        await Task.Delay(1000);
+
+                        ErrorBtnOnClick();
+
+                        return false;
+                    }
                 }
 
                 if (await SaveRequest(request))
@@ -828,8 +1013,9 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 return false;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex.Message, new { }, ex);
                 return false;
             }
         }
@@ -909,14 +1095,100 @@ namespace Project.V1.Web.Pages.Acceptance
                     file.UploadIsSSV = type == "SSV";
                     file.UploadIsWaiver = type == "Waiver";
                 }
+
+                if (type == "Bulk")
+                {
+                    bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
+                    Spectrums = await ISpectrum.Get(x => x.IsActive);
+
+                    (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension, file, true);
+
+                    if (uploadResp.Length == 0 && uploadError.Length == 0)
+                    {
+                        BulkUploadPath = filePath;
+                        BulkUploadData = await ProcessUpload(file.UploadPath);
+
+                        var RRUSpectrums = Spectrums.Where(y => y.Name.Contains("RRU")).Select(x => x.Id).ToList();
+
+                        BulkRequestRRUData = BulkUploadData.requests.Where(x => RRUSpectrums.Contains(x.SpectrumId)).ToList();
+                        BulkRequestRRUCount = BulkRequestRRUData.Count();
+
+                        foreach (var item in BulkRequestRRUData)
+                        {
+                            BulkUploadRRUSSVFiles.Add(new SfUploader());
+                        }
+                    }
+                    else
+                    {
+                        await SFBulkAcceptance_Uploader.ClearAllAsync();
+                        BulkUploadIconCss = "fas fa-paper-plane ml-2";
+                        ToastContent = $"{uploadResp} {uploadError}";
+                        await Task.Delay(200);
+
+                        ErrorBtnOnClick();
+                    }
+
+                }
             }
-            else
+            //else
+            //{
+            //    UploadedRequestFiles.Add(new FilesManager
+            //    {
+            //        Filestream = new(UploadPath, FileMode.Create, FileAccess.Write),
+            //        Index = uploadIndex,
+            //        Filename = UploadFileName,
+            //        UploadFile = UploadFile,
+            //        UploadPath = UploadPath,
+            //        UploadType = type,
+            //        UploadIsSSV = type == "SSV",
+            //        UploadIsWaiver = type == "Waiver",
+            //    });
+            //}
+
+            EnableDisableActionButton();
+
+            return await Task.Run(() => true);
+        }
+
+        private async Task<bool> OnFileSSVUploadChange(UploadChangeEventArgs args, string type)
+        {
+            List<UploadFiles> UploadFiles = args.Files;
+            var a = (await SFBulkASSV_Uploader.GetFilesDataAsync()).Count;
+            var fileLength = args.Files.Count + (await SFBulkASSV_Uploader.GetFilesDataAsync()).Count;
+            var b = args.Files.Sum(x => x.FileInfo.Size) / (1024 * 1024);
+
+            if (b > MaxUploadFileSize || a > MaxFileCount)
             {
+                await SFBulkASSV_Uploader.CancelAsync();
+
+                return false;
+            }
+
+            string pathBuilt = Path.Combine(Directory.GetCurrentDirectory(), $"Documents\\{type}\\");
+
+            if (!Directory.Exists(pathBuilt))
+            {
+                Directory.CreateDirectory(pathBuilt);
+            }
+
+            TotalFileCount = args.Files.Count;
+            TotalFileSize = args.Files.Sum(x => x.FileInfo.Size) / (1024 * 1024);
+            //StateHasChanged();
+
+            await RemoveSSVLeavingRRUs();
+
+            foreach (var UploadFile in UploadFiles)
+            {
+                string ext = Path.GetExtension(UploadFile.FileInfo.Name);
+                var filenameWOSpecialXters = Path.GetFileNameWithoutExtension(UploadFile.FileInfo.Name).RemoveSpecialCharacters();
+                UploadFileName = "SA_" + filenameWOSpecialXters + "_" + DateTime.Now.AddHours(1).ToString() + ext;
+                UploadPath = Path.Combine(pathBuilt, UploadFileName.RemoveSpecialCharacters());
+
                 UploadedRequestFiles.Add(new FilesManager
                 {
-                    Filestream = new(UploadPath, FileMode.Create, FileAccess.Write),
-                    Index = uploadIndex,
-                    Filename = UploadFileName,
+                    Filestream = new(UploadPath.RemoveSpecialCharacters(), FileMode.Create, FileAccess.Write),
+                    Index = UploadedRequestFiles.Count,
+                    Filename = UploadFileName.RemoveSpecialCharacters(),
                     UploadFile = UploadFile,
                     UploadPath = UploadPath,
                     UploadType = type,
@@ -930,11 +1202,44 @@ namespace Project.V1.Web.Pages.Acceptance
             return await Task.Run(() => true);
         }
 
+        private async Task<bool> OnFileSSVRRUUploadChange(UploadChangeEventArgs args, string type)
+        {
+            UploadFiles UploadFile = args.Files.First();
+
+            string pathBuilt = Path.Combine(Directory.GetCurrentDirectory(), $"Documents\\{type}\\");
+
+            if (!Directory.Exists(pathBuilt))
+            {
+                Directory.CreateDirectory(pathBuilt);
+            }
+
+            string ext = Path.GetExtension(UploadFile.FileInfo.Name);
+            var filenameWOSpecialXters = Path.GetFileNameWithoutExtension(UploadFile.FileInfo.Name).RemoveSpecialCharacters();
+            UploadFileName = "SA_" + filenameWOSpecialXters + "_" + DateTime.Now.AddHours(1).ToString() + ext;
+            UploadPath = Path.Combine(pathBuilt, UploadFileName.RemoveSpecialCharacters());
+
+            UploadedRequestFiles.Add(new FilesManager
+            {
+                Filestream = new(UploadPath.RemoveSpecialCharacters(), FileMode.Create, FileAccess.Write),
+                Index = UploadedRequestFiles.Count,
+                Filename = UploadFileName.RemoveSpecialCharacters(),
+                UploadFile = UploadFile,
+                UploadPath = UploadPath,
+                UploadType = type,
+                UploadIsSSV = type == "SSV",
+                UploadIsWaiver = type == "Waiver",
+            });
+
+            EnableDisableActionButton();
+
+            return await Task.Run(() => true);
+        }
+
         private void TriggerActionButton(ChangeEventArgs args)
         {
             EnableDisableActionButton();
 
-            ClearUploadFile();
+            //ClearUploadFile();
         }
 
         private void ClearUploadFile()
@@ -955,7 +1260,7 @@ namespace Project.V1.Web.Pages.Acceptance
             var ssvUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "SSV");
             DisableSEButton = true;
 
-            if (SingleEntrySelected && ssvUpload?.UploadFile != null)
+            if (SingleEntrySelected && (ssvUpload?.UploadFile != null || IsRRUType))
             {
                 DisableSEButton = false;
             }
@@ -964,12 +1269,20 @@ namespace Project.V1.Web.Pages.Acceptance
                 var disable = true;
                 var bulkUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Bulk");
                 var waiverUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Waiver");
+                var ssvUploadCount = UploadedRequestFiles.Count(x => x.UploadType == "SSV" && !x.Filename.Contains("RRU"));
+                var items = (BulkWaiverUploadSelected) ? UploadedRequestFiles.Where(c => c.UploadType == "SSV" || c.UploadType == "Waiver")
+                    : UploadedRequestFiles.Where(c => c.UploadType == "SSV");
 
-                foreach (var item in UploadedRequestFiles.Where(c => c.UploadType == "SSV"))
+                foreach (var item in items)
                 {
                     if (BulkWaiverUploadSelected && waiverUpload.UploadFile != null)
                     {
                         disable = false;
+                        break;
+                    }
+                    else if (!BulkWaiverUploadSelected && (Input.BUSiteCount - BulkRequestRRUCount) != ssvUploadCount)
+                    {
+                        disable = true;
                         break;
                     }
                     else
@@ -991,7 +1304,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     disable = true;
                 }
 
-                if (bulkUpload.UploadFile == null)
+                if (bulkUpload?.UploadFile == null)
                 {
                     disable = true;
                 }
@@ -1003,6 +1316,23 @@ namespace Project.V1.Web.Pages.Acceptance
         public void Dispose()
         {
             //AppState.OnChange -= CalStateChanged;
+            Task.Run(async () =>
+            {
+                if (SF_Uploader != null)
+                {
+                    await SF_Uploader.ClearAllAsync();
+                }
+                if (SFBulkAcceptance_Uploader != null)
+                {
+                    await SFBulkAcceptance_Uploader.ClearAllAsync();
+                }
+                if (SFBulkASSV_Uploader != null)
+                {
+                    await SFBulkASSV_Uploader.ClearAllAsync();
+                }
+                await InitializeForm();
+            });
+
             GC.SuppressFinalize(this);
         }
     }

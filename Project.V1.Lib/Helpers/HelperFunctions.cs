@@ -66,7 +66,7 @@ namespace Project.V1.Lib.Helpers
             Regex regex = new("[ ]{2,}", options);
             str = regex.Replace(str, " ");
 
-            string[] roqueCharacters = { "`", "¬", "|", "!", "\"", "\\", "#", "^", "&", "*", "_", "(", ")", "[", "]", "{", "}", "+", "=", ";", ":", "<", ">", "/", "?", "~" };
+            string[] roqueCharacters = { "`", "¬", "|", "!", "\"", "\\", "#", "^", "&", "*", "_", "(", ")", "[", "]", "{", "}", "+", "=", ";", ":", "<", ">", "/", "?", "~", " " };
 
             rogueChars ??= roqueCharacters;
 

@@ -99,8 +99,13 @@ else
     <div class="col-md-12 row px-4" style="">
         @if (RequestModel.SSVReport != null)
         {
+            var ppts = new List<string> { ".ppt", ".pptx" };
+
+            var ssvExt = Path.GetExtension(RequestModel.SSVReport);
+            var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
+
             <div class="col-md-3">
-                <a target="_blank" href="Documents/@((RequestModel.SSVReportIsWaiver) ? "Waiver" : "SSV")/@RequestModel.SSVReport" class="btn btn-warning"><i class="fas @((RequestModel.SSVReportIsWaiver) ? "fa-envelope" : "fa-file-excel")"></i> @((RequestModel.SSVReportIsWaiver) ? "Waiver Email" : "SSV Report")</a>
+                <a target="_blank" href="Documents/@((RequestModel.SSVReportIsWaiver) ? "Waiver" : "SSV")/@RequestModel.SSVReport" class="btn btn-warning"><i class="fas @((RequestModel.SSVReportIsWaiver) ? "fa-envelope" : icon)"></i> @((RequestModel.SSVReportIsWaiver) ? "Waiver Email" : "SSV Report")</a>
             </div>
         }
         @if (RequestModel.BulkuploadPath != null)
@@ -195,7 +200,7 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfDropDownList Enabled="false" TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                        <SfDropDownList Enabled="@(RequestModel.SpectrumId == null)" TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                                     Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>

@@ -64,6 +64,8 @@ namespace Project.V1.Web.Pages.Acceptance
         public string BulkUploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
         public string CancelIconCss { get; set; } = "fas fa-times ml-2";
 
+
+        public double MaxFileSize { get; set; } = 25000000;
         public bool WaiverUploadSelected { get; set; }
         public bool SSVUploadSelected { get; set; } = true;
         protected SfButtonGroup SingleSelector { get; set; }

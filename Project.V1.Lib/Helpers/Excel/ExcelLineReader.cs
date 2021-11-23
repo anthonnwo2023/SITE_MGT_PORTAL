@@ -141,7 +141,7 @@ namespace Project.V1.Lib.Helpers.Excel
             if (isWaiver)
                 return (ext == ".msg" || ext == ".eml");
 
-            return (ext == ".xlsx" || ext == ".xls");
+            return (ext == ".xlsx" || ext == ".xls" || ext == ".ppt" || ext == ".pptx");
         }
 
         private static List<string> GetDataTableHeaders(System.Data.DataTable dt)
