@@ -171,6 +171,15 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
+                        <SfDropDownList TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                Placeholder="State" style="font-size: 10px;" @bind-Value="RequestModel.State">
+                            <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                        <ValidationMessage For="@(() => RequestModel.State)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
                         <SfDropDownList TItem="SummerConfigModel" DataSource="@SummerConfigs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                                     Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
@@ -225,7 +234,7 @@ else
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDropDownList TItem="AntennaMakeModel" DataSource="@AntennaMakes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                                    Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
+                                    Placeholder="Antenna Make" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
                             <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                         </SfDropDownList>
                         <ValidationMessage For="@(() => RequestModel.AntennaMakeId)" />
@@ -304,8 +313,9 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfTextBox Placeholder="Project Year" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.ProjectYear)">
-                        </SfTextBox>
+                        <SfNumericTextBox Placeholder="Project Year" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.ProjectYear)"
+                             Format="####" Max="@(DateTime.Now.Year)" Min="@(DateTime.Now.AddYears(-3).Year)" ShowSpinButton="true">
+                            </SfNumericTextBox>
                         <ValidationMessage For="@(() => RequestModel.ProjectYear)" />
                     </div>
                 </div>

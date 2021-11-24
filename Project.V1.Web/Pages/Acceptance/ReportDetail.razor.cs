@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static Project.V1.Web.Pages.Acceptance.NewRequest;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -57,6 +58,20 @@ namespace Project.V1.Web.Pages.Acceptance
         public List<BaseBandModel> Basebands { get; set; }
         public RequestViewModel RequestModel { get; set; }
         public string RequestStatus { get; set; }
+
+        private static readonly string[] States = new string[]
+{
+            "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti",
+            "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara","Lagos", "Nasarawa", "Niger",
+            "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
+};
+
+        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x }).ToList();
+
+        public class NigerianState
+        {
+            public string Name { get; set; }
+        }
 
         protected override void OnInitialized()
         {

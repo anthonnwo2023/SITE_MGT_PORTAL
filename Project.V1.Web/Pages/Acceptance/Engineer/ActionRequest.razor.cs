@@ -20,6 +20,7 @@ using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.DLL.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using Project.V1.DLL.Helpers;
+using static Project.V1.Web.Pages.Acceptance.NewRequest;
 
 namespace Project.V1.Web.Pages.Acceptance.Engineer
 {
@@ -122,10 +123,22 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
             new ProjectStatus { Name = "Reject", Status = "Rejected" }
         };
 
+        public class NigerianState
+        {
+            public string Name { get; set; }
+        }
+
         public ActionReason Reason { get; set; } = new()
         {
             Id = Guid.NewGuid().ToString(),
-        };
+        }; private static readonly string[] States = new string[]
+         {
+            "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti",
+            "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara","Lagos", "Nasarawa", "Niger",
+            "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
+         };
+
+        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x }).ToList();
 
         private async void ErrorBtnOnClick()
         {
@@ -174,7 +187,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
             Regions = await IRegion.Get(x => x.IsActive);
             SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
             ProjectTypes = await IProjectType.Get(x => x.IsActive);
-            RRUTypes = await IRRUType.Get(x => x.IsActive);
+            RRUTypes = (User.Vendor.Name == "MTN Nigeria") ? (await IRRUType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
             TechTypes = await ITechType.Get(x => x.IsActive);
             AntennaTypes = await IAntennaType.Get(x => x.IsActive);
             AntennaMakes = await IAntennaMake.Get(x => x.IsActive);

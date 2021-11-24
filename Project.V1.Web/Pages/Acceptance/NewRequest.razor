@@ -150,6 +150,15 @@ else
                     </div>
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
+                            <SfDropDownList TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                    Placeholder="State" style="font-size: 10px;" @bind-Value="RequestModel.State">
+                                <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                            <ValidationMessage For="@(() => RequestModel.State)" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
                             <SfDropDownList TItem="SummerConfigModel" DataSource="@SummerConfigs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                                     Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
                                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
@@ -284,8 +293,10 @@ else
                     </div>
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
-                            <SfTextBox Placeholder="Project Year" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.ProjectYear)">
-                            </SfTextBox>
+                            <SfNumericTextBox Placeholder="Project Year" FloatLabelType="@FloatLabelType.Auto"  @bind-Value="RequestModel.ProjectYear"
+                            Format="#0" Max="@(DateTime.Now.Year)" Min="@(DateTime.Now.AddYears(-3).Year)" ShowSpinButton="true" >
+                                @*<NumericTextBoxEvents TValue="double?" ValueChange="@SEProjectYear"></NumericTextBoxEvents>*@
+                            </SfNumericTextBox>
                             <ValidationMessage For="@(() => RequestModel.ProjectYear)" />
                         </div>
                     </div>

@@ -20,6 +20,7 @@ using System.ComponentModel.DataAnnotations;
 using Project.V1.DLL.Helpers;
 using Syncfusion.Blazor.SplitButtons;
 using Project.V1.Lib.Services;
+using static Project.V1.Web.Pages.Acceptance.NewRequest;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -95,6 +96,15 @@ namespace Project.V1.Web.Pages.Acceptance
             new ToastModel { Title = "Information!", Content = "Please read the comments carefully.", CssClass = "e-toast-info", Icon = "e-info toast-icons" }
         };
 
+        private static readonly string[] States = new string[]
+        {
+            "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti",
+            "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara","Lagos", "Nasarawa", "Niger",
+            "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
+        };
+
+        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x }).ToList();
+
         public List<BoolDropDown> BoolDrops { get; set; } = new()
         {
             new BoolDropDown { Name = "Yes" },
@@ -102,6 +112,11 @@ namespace Project.V1.Web.Pages.Acceptance
         };
 
         public class BoolDropDown
+        {
+            public string Name { get; set; }
+        }
+
+        public class NigerianState
         {
             public string Name { get; set; }
         }
@@ -189,7 +204,7 @@ namespace Project.V1.Web.Pages.Acceptance
             Regions = await IRegion.Get(x => x.IsActive);
             SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
             ProjectTypes = await IProjectType.Get(x => x.IsActive);
-            RRUTypes = await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId);
+            RRUTypes = (User.Vendor.Name == "MTN Nigeria") ? (await IRRUType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
             TechTypes = await ITechType.Get(x => x.IsActive);
             AntennaTypes = await IAntennaType.Get(x => x.IsActive);
             AntennaMakes = await IAntennaMake.Get(x => x.IsActive);

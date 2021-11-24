@@ -25,6 +25,10 @@ namespace Project.V1.Models
         public string SiteName { get; set; }
 
         [Required]
+        [ExcelColumnName("State")]
+        public string State { get; set; }
+
+        [Required]
         [ExcelColumnName("Region")]
         public string RegionId { get; set; }
 
@@ -114,7 +118,7 @@ namespace Project.V1.Models
         public virtual ProjectTypeModel ProjectType { get; set; }
 
         [ExcelColumnName("Project Year")]
-        public string ProjectYear { get; set; }
+        public double ProjectYear { get; set; }
 
         public string Status { get; set; }
 
