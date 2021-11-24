@@ -147,7 +147,6 @@ namespace Project.V1.Models
         [ExcelColumnName("Integrated Date")]
         public DateTime IntegratedDate { get; set; }
 
-        [ExcelColumnName("Date Submitted")]
         public DateTime DateSubmitted { get; set; }
 
         public DateTime DateCreated { get; set; }

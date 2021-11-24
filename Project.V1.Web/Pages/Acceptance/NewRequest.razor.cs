@@ -784,7 +784,7 @@ namespace Project.V1.Web.Pages.Acceptance
                             "Technology", "Site Id", "Site Name", "RNC/BSC", "Region", "Spectrum", "Bandwidth (MHz)", "Latitude", "Longitude",
                             "Antenna Make", "Antenna Type", "Antenna Height - (M)", "Antenna Azimuth", "M Tilt", "E Tilt", "Baseband", "RRU TYPE", "Power - (w)",
                             "Project Type", "Project Year", "Summer Config", "Software", "RRU Power - (w)", "CSFB Status GSM", "CSFB Status WCDMA",
-                            "Integrated Date", "Date Submitted", "RET Configured", "Carrier Aggregation", "State"
+                            "Integrated Date", "RET Configured", "Carrier Aggregation", "State"
                         }
                     };
 
