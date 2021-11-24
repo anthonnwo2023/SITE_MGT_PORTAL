@@ -63,7 +63,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    Requests = (await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId) && x.Status != "Rejected" && x.Status != "Accepted")).OrderByDescending(x => x.DateCreated).ToList();
+                    Requests = await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId) && x.Status != "Rejected" && x.Status != "Accepted", x => x.OrderByDescending(y => y.DateCreated));
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
                 }

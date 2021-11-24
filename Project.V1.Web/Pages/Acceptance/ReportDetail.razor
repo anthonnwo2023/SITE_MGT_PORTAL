@@ -312,7 +312,8 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfNumericTextBox Enabled="false" Placeholder="Project Year" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.ProjectYear)">
+                        <SfNumericTextBox Enabled="false" Placeholder="Project Year" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.ProjectYear)"
+                            Format="#0" Max="@(DateTime.Now.Year)" Min="@(DateTime.Now.AddYears(-3).Year)" ShowSpinButton="true" >
                         </SfNumericTextBox>
                         <ValidationMessage For="@(() => RequestModel.ProjectYear)" />
                     </div>
