@@ -22,6 +22,7 @@ using Project.V1.DLL.Helpers;
 using Microsoft.AspNetCore.Components.Web;
 using Syncfusion.Blazor.SplitButtons;
 using Project.V1.Lib.Services;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -112,7 +113,7 @@ namespace Project.V1.Web.Pages.Acceptance
         public int MaxFileCount { get; set; } = 50;
         public double TotalFileSize { get; set; } = 0;
         public double MaxUploadFileSize { get; set; } = 350;
-        
+
         public List<BoolDropDown> BoolDrops { get; set; } = new()
         {
             new BoolDropDown { Name = "Yes" },
@@ -216,7 +217,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                     for (int i = 0; i < UploadedRequestFiles.Count; i++)
                     {
-                        if(UploadedRequestFiles[i].Filename != null)
+                        if (UploadedRequestFiles[i].Filename != null)
                         {
                             if (UploadedRequestFiles[i].Filename.Contains("RRU MOD"))
                             {
@@ -324,14 +325,14 @@ namespace Project.V1.Web.Pages.Acceptance
             {
                 UploadedRequestFiles.AddRange(InitializeUploadFiles());
             }
-            if (SingleEntrySelected)
-            {
-                UploadedRequestFiles.Add(new FilesManager
-                {
-                    Index = 0,
-                    UploadType = "SSV",
-                });
-            }
+            //if (SingleEntrySelected)
+            //{
+            //    UploadedRequestFiles.Add(new FilesManager
+            //    {
+            //        Index = 0,
+            //        UploadType = "SSV",
+            //    });
+            //}
 
             EnableDisableActionButton();
 
@@ -584,12 +585,19 @@ namespace Project.V1.Web.Pages.Acceptance
                     SEUploadIconCss = "fas fa-spin fa-spinner ml-2";
                     FilesManager ssvReport = UploadedRequestFiles.OrderBy(x => x.Index).FirstOrDefault(x => x.UploadType == "SSV");
 
-                    if (ssvReport?.Filename != null)
+                    var spectrumName = Spectrums.FirstOrDefault(x => x.Id == RequestModel.SpectrumId).Name;
+                    var TechTypeName = TechTypes.FirstOrDefault(x => x.Id == RequestModel.TechTypeId).Name;
+                    var checkName = (spectrumName.Contains("RRU")) ? $"{RequestModel.SiteId.ToUpper()}_{TechTypeName}_RRU_MOD" : $"{RequestModel.SiteId.ToUpper()}_{spectrumName.ToUpper()}";
+
+
+                    if (ssvReport?.Filename != null && !ssvReport.Filename.Contains(checkName))
                     {
-                        if (!ssvReport.Filename.ToLower().Contains(RequestModel.SiteId.ToLower()))
-                        {
-                            throw new Exception("Site Id does not match the uploaded document", new Exception("Site Id does not match the uploaded document"));
-                        }
+                        throw new Exception("Site Id does not match the uploaded SSV document", new Exception("Site Id does not match the uploaded SSV document"));
+                    }
+
+                    if (ssvReport?.Filename == null && !spectrumName.Contains("RRU"))
+                    {
+                        throw new Exception("Please upload SSV document", new Exception("Please upload SSV document"));
                     }
 
                     if (await SaveSingleRequest(RequestModel, ssvReport, true))
@@ -680,7 +688,7 @@ namespace Project.V1.Web.Pages.Acceptance
                             }
                         }
 
-                        await SFBulkASSV_Uploader.ClearAllAsync();
+                        //await SFBulkASSV_Uploader.ClearAllAsync();
                         await IRequest.SetCreateState(requests, variables);
                     }
                     else
@@ -712,15 +720,16 @@ namespace Project.V1.Web.Pages.Acceptance
             }
             catch (Exception ex)
             {
-                BulkUploadIconCss = "fas fa-paper-plane ml-2";
-
                 if (SingleEntrySelected)
                 {
+                    SEUploadIconCss = "fas fa-paper-plane ml-2";
                     await SF_Uploader.ClearAll();
                 }
 
                 if (BulkUploadSelected)
                 {
+                    BulkUploadIconCss = "fas fa-paper-plane ml-2";
+
                     await SFBulkAcceptance_Uploader.ClearAllAsync();
                     if (BulkWaiverUploadSelected)
                         await SF_WaiverUploader.ClearAllAsync();
@@ -1045,15 +1054,18 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             try
             {
-                await Task.Run(() => bufile.UploadFile.Stream.WriteTo(bufile.Filestream));
-
-                if (toClose)
+                return await Task.Run<(string, string)>(() =>
                 {
-                    bufile.Filestream.Close();
-                    bufile.UploadFile.Stream.Close();
-                }
+                    bufile.UploadFile.Stream.WriteTo(bufile.Filestream);
 
-                return ("", bufile.UploadPath);
+                    if (toClose)
+                    {
+                        bufile.Filestream.Close();
+                        bufile.UploadFile.Stream.Close();
+                    }
+
+                    return ("", bufile.UploadPath);
+                });
             }
             catch (Exception ex)
             {
@@ -1111,7 +1123,7 @@ namespace Project.V1.Web.Pages.Acceptance
                         var RRUSpectrums = Spectrums.Where(y => y.Name.Contains("RRU")).Select(x => x.Id).ToList();
 
                         BulkRequestRRUData = BulkUploadData.requests.Where(x => RRUSpectrums.Contains(x.SpectrumId)).ToList();
-                        BulkRequestRRUCount = BulkRequestRRUData.Count();
+                        BulkRequestRRUCount = BulkRequestRRUData.Count;
 
                         foreach (var item in BulkRequestRRUData)
                         {
@@ -1153,16 +1165,27 @@ namespace Project.V1.Web.Pages.Acceptance
         private async Task<bool> OnFileSSVUploadChange(UploadChangeEventArgs args, string type)
         {
             List<UploadFiles> UploadFiles = args.Files;
-            var a = (await SFBulkASSV_Uploader.GetFilesDataAsync()).Count;
-            var fileLength = args.Files.Count + (await SFBulkASSV_Uploader.GetFilesDataAsync()).Count;
-            var b = args.Files.Sum(x => x.FileInfo.Size) / (1024 * 1024);
 
-            if (b > MaxUploadFileSize || a > MaxFileCount)
+            if (!SingleEntrySelected)
             {
-                await SFBulkASSV_Uploader.CancelAsync();
+                var a = (await SFBulkASSV_Uploader.GetFilesDataAsync()).Count;
+                var fileLength = args.Files.Count + (await SFBulkASSV_Uploader.GetFilesDataAsync()).Count;
+                var b = args.Files.Sum(x => x.FileInfo.Size) / (1024 * 1024);
 
-                return false;
+                if (b > MaxUploadFileSize || a > MaxFileCount)
+                {
+                    await SFBulkASSV_Uploader.CancelAsync();
+
+                    return false;
+                }
+
+                TotalFileCount = args.Files.Count;
+                TotalFileSize = args.Files.Sum(x => x.FileInfo.Size) / (1024 * 1024);
+                StateHasChanged();
+
+                //await RemoveSSVLeavingRRUs();
             }
+
 
             string pathBuilt = Path.Combine(Directory.GetCurrentDirectory(), $"Documents\\{type}\\");
 
@@ -1171,12 +1194,6 @@ namespace Project.V1.Web.Pages.Acceptance
                 Directory.CreateDirectory(pathBuilt);
             }
 
-            TotalFileCount = args.Files.Count;
-            TotalFileSize = args.Files.Sum(x => x.FileInfo.Size) / (1024 * 1024);
-            //StateHasChanged();
-
-            await RemoveSSVLeavingRRUs();
-
             foreach (var UploadFile in UploadFiles)
             {
                 string ext = Path.GetExtension(UploadFile.FileInfo.Name);
@@ -1184,17 +1201,22 @@ namespace Project.V1.Web.Pages.Acceptance
                 UploadFileName = "SA_" + filenameWOSpecialXters + "_" + DateTime.Now.AddHours(1).ToString() + ext;
                 UploadPath = Path.Combine(pathBuilt, UploadFileName.RemoveSpecialCharacters());
 
-                UploadedRequestFiles.Add(new FilesManager
+                var ssvExists = UploadedRequestFiles.Where(x => x.Filename != null).Any(c => c.Filename.Contains(Path.GetFileNameWithoutExtension(UploadFile.FileInfo.Name).RemoveSpecialCharacters()));
+
+                if (!ssvExists)
                 {
-                    Filestream = new(UploadPath.RemoveSpecialCharacters(), FileMode.Create, FileAccess.Write),
-                    Index = UploadedRequestFiles.Count,
-                    Filename = UploadFileName.RemoveSpecialCharacters(),
-                    UploadFile = UploadFile,
-                    UploadPath = UploadPath,
-                    UploadType = type,
-                    UploadIsSSV = type == "SSV",
-                    UploadIsWaiver = type == "Waiver",
-                });
+                    UploadedRequestFiles.Add(new FilesManager
+                    {
+                        Filestream = new(UploadPath, FileMode.Create, FileAccess.Write),
+                        Index = UploadedRequestFiles.Count,
+                        Filename = Path.GetFileName(UploadPath),
+                        UploadFile = UploadFile,
+                        UploadPath = UploadPath,
+                        UploadType = type,
+                        UploadIsSSV = type == "SSV",
+                        UploadIsWaiver = type == "Waiver",
+                    });
+                }
             }
 
             EnableDisableActionButton();
@@ -1220,9 +1242,9 @@ namespace Project.V1.Web.Pages.Acceptance
 
             UploadedRequestFiles.Add(new FilesManager
             {
-                Filestream = new(UploadPath.RemoveSpecialCharacters(), FileMode.Create, FileAccess.Write),
+                Filestream = new(UploadPath, FileMode.Create, FileAccess.Write),
                 Index = UploadedRequestFiles.Count,
-                Filename = UploadFileName.RemoveSpecialCharacters(),
+                Filename = Path.GetFileName(UploadPath),
                 UploadFile = UploadFile,
                 UploadPath = UploadPath,
                 UploadType = type,
