@@ -33,7 +33,7 @@
 else
 {
     <SfGrid ID="RejectedRequestTable" DataSource="@Requests" AllowPaging="true" AllowSorting="true" AllowTextWrap="true"
-            Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
+        Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
         <GridPageSettings PageSize="8"></GridPageSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
         <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
@@ -46,8 +46,9 @@ else
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModel.SiteId)" HeaderText="Site Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
-            <GridColumn Field="@nameof(RequestViewModel.SiteName)" HeaderText="Site Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true, Email=true })">
-            </GridColumn>
+            <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit"
+                           FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridForeignColumn>
             @*<GridColumn Field="@nameof(RequestViewModel.FrequencyBand)" HeaderText="Frequency Band" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                 </GridColumn>*@
             @*<GridColumn Field="@nameof(RequestViewModel.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
@@ -59,41 +60,56 @@ else
             <GridColumn Field="@nameof(RequestViewModel.Status)" HeaderText="Status" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
-                        Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">
+                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">
             </GridColumn>
             <GridColumn HeaderText="Bulk" Width="100">
                 <Template>
                     @{
-                        var request = (context as RequestViewModel);
+                    var request = (context as RequestViewModel);
 
-                        if (request.BulkuploadPath != null)
+                    if (request.BulkuploadPath != null)
+                    {
+                        <a title="Uploaded Bulk" target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
+                    }
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="SSV" Width="80">
+            <Template>
+                @{
+                    var request = (context as RequestViewModel);
+
+                    if (request.SSVReport != null)
+                    {
+                        var ext = Path.GetExtension(request.SSVReport);
+                        var title = ext switch
                         {
-                            <a target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
-                        }
-                    }
-                </Template>
-            </GridColumn>
-            <GridColumn HeaderText="SSV" Width="80">
-                <Template>
-                    @{
-                        var request = (context as RequestViewModel);
+                            ".xls" or ".xlsx" or ".ppt" or ".pptx" => "SSV Report",
+                            ".eml" or ".msg" => "Waiver Email",
+                            _ => ""
+                        };
 
-                        if (request.SSVReport != null)
-                        {
-                            <a target="_blank" href="Documents/@((request.SSVReportIsWaiver) ? "Waiver": "SSV")/@request.SSVReport" class="btn btn-warning"><i class="fas fa-fw @((request.SSVReportIsWaiver) ? "fa-envelope": "fa-file-excel")"></i></a>
-                        }
-                    }
-                </Template>
-            </GridColumn>
-            <GridColumn HeaderText="" Width="80">
-                <Template>
-                    @{
-                        var request = (context as RequestViewModel);
+                        var ppts = new List<string> { ".ppt", ".pptx" };
 
-                        <a href="acceptance/engineer/worklist/@request.Id" class="btn btn-warning"><i class="fas fa-bars"></i></a>
+                        var ssvExt = Path.GetExtension(request.SSVReport);
+                        var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
+
+                        <a title="@title" target="_blank" href="Documents/@((request.SSVReportIsWaiver) ? "Waiver": "SSV")/@request.SSVReport" class="btn btn-warning">
+                            <i class="fas fa-fw @((request.SSVReportIsWaiver) ? "fa-envelope": icon)"></i>
+                        </a>
                     }
-                </Template>
-            </GridColumn>
-        </GridColumns>
-    </SfGrid>
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="" Width="80">
+            <Template>
+                @{
+                    var request = (context as RequestViewModel);
+
+                    <a title="Action Requesst" href="acceptance/engineer/worklist/@request.Id" class="btn btn-warning"><i class="fas fa-bars"></i></a>
+                }
+            </Template>
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
 }

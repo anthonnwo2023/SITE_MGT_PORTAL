@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using Project.V1.Data;
@@ -9,9 +10,10 @@ using Project.V1.Data;
 namespace Project.V1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211125115659_UniqueSite-IDSpectrum")]
+    partial class UniqueSiteIDSpectrum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -637,8 +639,8 @@ namespace Project.V1.Data.Migrations
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(450)");
 
-                    b.Property<double>("TowerHeight")
-                        .HasColumnType("BINARY_DOUBLE");
+                    b.Property<string>("TowerHeight")
+                        .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<string>("UniqueId")
                         .HasColumnType("NVARCHAR2(2000)");

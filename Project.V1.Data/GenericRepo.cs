@@ -117,7 +117,7 @@ namespace Project.V1.Data
             }
         }
 
-        public async Task<bool> CreateRequest(T item)
+        public async Task<(bool, string)> CreateRequest(T item)
         {
             try
             {
@@ -128,13 +128,11 @@ namespace Project.V1.Data
 
                 await _context.SaveChangesAsync();
 
-                return true;
+                return (true, "");
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
-
-                return false;
+                return (false, (ex.InnerException.Message.Contains("unique")) ? $"Duplicate entry already exists" : ex.Message);
             }
         }
 

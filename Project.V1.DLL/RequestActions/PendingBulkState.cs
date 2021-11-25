@@ -55,7 +55,7 @@ namespace Project.V1.DLL.RequestActions
                     {
                         Name = "Hello " + user.Fullname,
                         Title = "Notification of New Request - See Below Request Details",
-                        Greetings = $"NWG NAPO Site Acceptance Request : <font color='blue'><b>New Bulk Request</b></font> - See Details below:",
+                        Greetings = $"Site Acceptance Request : <font color='blue'><b>New Bulk Request</b></font> - See Details below:",
                         Comment = "",
                         BodyType = "",
                         M2Uname = user.UserName.ToLower().Trim(),
@@ -77,15 +77,12 @@ namespace Project.V1.DLL.RequestActions
                     {
                         Name = "Hello RF Team",
                         Title = "Notification of New Request for approval - See Below Request Details",
-                        Greetings = $"NWG NAPO Site Acceptance Request : <font color='blue'><b>New Bulk Request</b></font> - See Details below:",
+                        Greetings = $"Site Acceptance Request : <font color='blue'><b>New Bulk Request</b></font> - See Details below:",
                         Comment = "",
                         BodyType = "",
                         M2Uname = "",// requests.Manager.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist",
-                        To = new List<SenderBody>
-                        {
-                            new SenderBody { Name = "#RF Planning", Address = "#rfplanning.ng@mtn.com" },
-                        },
+                        To = new(),
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         },

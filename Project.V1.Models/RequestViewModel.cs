@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Project.V1.Models
 {
     [Table("TBL_RFACCEPT_REQUESTS")]
+    [Index(new string[] { nameof(SiteId), nameof(SpectrumId) }, IsUnique = true)]
     public class RequestViewModel : IDisposable
     {
         [Key]
@@ -46,10 +48,10 @@ namespace Project.V1.Models
         public virtual SpectrumViewModel Spectrum { get; set; }
 
         [ExcelColumnName("Latitude")]
-        public string Latitude { get; set; }
+        public double Latitude { get; set; }
 
         [ExcelColumnName("Longitude")]
-        public string Longitude { get; set; }
+        public double Longitude { get; set; }
 
         //[Required]
         [ExcelColumnName("Antenna Make")]
@@ -65,8 +67,11 @@ namespace Project.V1.Models
         [ForeignKey(nameof(AntennaTypeId))]
         public virtual AntennaTypeModel AntennaType { get; set; }
 
-        [ExcelColumnName("Antenna Height - (M)")]
+        [ExcelColumnName("Antenna Height")]
         public string AntennaHeight { get; set; }
+
+        [ExcelColumnName("Tower Height - (M)")]
+        public double TowerHeight { get; set; }
 
         [ExcelColumnName("Antenna Azimuth")]
         public string AntennaAzimuth { get; set; }

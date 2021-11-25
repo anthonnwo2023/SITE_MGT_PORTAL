@@ -65,7 +65,7 @@ namespace Project.V1.Models
 	                    <meta charset='utf-8'>
 	                    <meta content='IE=edge' http-equiv='X-UA-Compatible'>
 	                    <meta content='width=device-width, initial-scale=1' name='viewport'>
-	                    <title>IP Security Workflow</title>
+	                    <title>Workflow Notification</title>
                         <!--[if gte mso 9]>
                             <xml>
                             <o:OfficeDocumentSettings>
@@ -103,7 +103,7 @@ namespace Project.V1.Models
                                                     <tr>
                                                         <td align=left valign=top>
                                                             <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
-                                                                <br /><p>" + Name + @",</p><br />
+                                                                <p><br />" + Name + @",</p><br />
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -112,10 +112,10 @@ namespace Project.V1.Models
                                                             <p> 
                                                                 <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
                                                             </p>
-                                                            <p>" + Greetings + @"
+                                                            <p><br />" + Greetings + @"
                                                             <p>" + AssignedUpdateBody + @"
                                                             Click <a href='https://ojtssapp1/nms/Identity/Account/Login'> HERE</a> to login and view requests </span></p><p>
-                                                            </b></span></p><p><span style='font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>Thank you.<br><b> NWG IP Security Team</b><br><b>
+                                                            </b></span></p><p><span style='font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>Thank you.<br><b> Technical Systems Support (TSS) Team</b><br><b>
                                                             NOTE: This email Message is auto-generated, Please do not reply to the email address</b></p></td></tr><tr><td height=5 align=left valign=top  bgcolor=#FACD58>
                                                         </td>
                                                     </tr>
@@ -153,7 +153,7 @@ namespace Project.V1.Models
                          <meta charset='utf-8'>
                          <meta content='IE=edge' http-equiv='X-UA-Compatible'>
                          <meta content='width=device-width, initial-scale=1' name='viewport'>
-                         <title>IP Security Workflow</title>
+                         <title>Workflow Notification</title>
                         <!--[if gte mso 9]>
                             <xml>
                             <o:OfficeDocumentSettings>
@@ -191,7 +191,7 @@ namespace Project.V1.Models
                                                         <tr>
                                                             <td align=left valign=top>
                                                                 <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
-                                                                    <br /><p>" + Name + @",</p>
+                                                                    <br /><p>" + Name + @",<br /></p>
                                                                 </span>
                                                             </td>
                                                         </tr>
@@ -200,22 +200,21 @@ namespace Project.V1.Models
                                                                 <p> 
                                                                     <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
                                                                 </p>
-                                                                <p>" + MessageTitle + @"</p>
-                                                                <b><p>" + Greetings + @"</p></b>
+                                                                <p><b>" + Greetings + @"</b></p>
                                                                 <p> Unique Id : <b>" + ((dynamic)Request).UniqueId + @"</b></p>
-                                                                <p> Request : <b>" + ((dynamic)Request).Requester.Name + @" </b></p>
-                                                                <p> Email Address : <b>" + ((dynamic)Request).Requester.Email + @" </b></p>
+                                                                <p> Requester : <b>" + ((dynamic)Request).Requester.Name + @" </b></p>
+                                                                <p> Email : <b>" + ((dynamic)Request).Requester.Email + @" </b></p>
                                                                 <p> Request Type : <b>" + ((string)((dynamic)Request).RequestType) + @" </b></p>
                                                                 <p> Date Created : <b>" + ((dynamic)Request).DateCreated + @" </b></p>
                                                                 <p> Approval Status : <b>" + ((dynamic)Request).Status + @" </b></p>
                                                                 <p> " + Comment + @"</p>
                                                                 <p> Click <a href='" + RequestLink + @"'> HERE</a> to login and view request</p>
-                                                                <p> Kindly contact NWG IP Security team for further clarification </p>
+                                                                <p> Kindly contact TSS team for further clarification </p>
                                                                 <p>
                                                                     </b></span>
                                                                 </p>
                                                                 <p>
-                                                                    <span style='font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>Thank you.<br><br> NWG IP Security Team<br><br>
+                                                                    <span style='font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>Thank you.<br><br> Technical Systems Support Team<br><br>
                                                                     <b align=center valign=middle height=15  bgcolor=#FFFFFF>NOTE: This email Message is auto-generated, Please do not reply to the email address</b>
                                                                 </p>
                                                             </td>
@@ -255,7 +254,7 @@ namespace Project.V1.Models
                          <meta charset='utf-8'>
                          <meta content='IE=edge' http-equiv='X-UA-Compatible'>
                          <meta content='width=device-width, initial-scale=1' name='viewport'>
-                         <title>IP Security Workflow</title>
+                         <title>Workflow Notification</title>
                         <!--[if gte mso 9]>
                             <xml>
                             <o:OfficeDocumentSettings>
@@ -293,7 +292,7 @@ namespace Project.V1.Models
                                                         <tr>
                                                             <td align=left valign=top>
                                                                 <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
-                                                                    <br /><p>" + Name + @",</p><br />
+                                                                    <br /><p>" + Name + @",<br /></p><br />
                                                                 </span>
                                                             </td>
                                                         </tr>
@@ -301,8 +300,7 @@ namespace Project.V1.Models
                                                             <td align=left valign=top>
                                                                 <p> 
                                                                     <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
-                                                                </p>
-                                                                <p>" + MessageTitle + @"</p>
+                                                                </p>                                                                
                                                                 <b><p>" + Greetings + @"</p></b>
                                                                 <p> Batch Number : <b>" + Request.BatchNumber + @"</b></p>
                                                                 <p> Request Count : <b>" + Request.RequestCount + @" </b></p>
@@ -311,12 +309,12 @@ namespace Project.V1.Models
                                                                 <p> Approval Status : <b>" + Request.Status + @" </b></p>
                                                                 <p> " + Comment + @"</p>
                                                                 <p> Click <a href='" + RequestLink + @"'> HERE</a> to login and view request</p>
-                                                                <p> Kindly contact NWG NAPO TSS team for further clarification </p>
+                                                                <p> Kindly contact TSS team for further clarification </p>
                                                                 <p>
                                                                     </b></span>
                                                                 </p>
                                                                 <p>
-                                                                    <span style='font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>Thank you.<br><br> NWG IP Security Team<br><br>
+                                                                    <span style='font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>Thank you.<br><br> Technical Systems Support (TSS) Team<br><br>
                                                                     <b align='center' valign='middle' height='15'  bgcolor='#FFFFFF'>NOTE: This email Message is auto-generated, Please do not reply to the email address</b>
                                                                 </p>
                                                             </td>

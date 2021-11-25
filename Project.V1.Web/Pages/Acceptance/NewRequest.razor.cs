@@ -122,7 +122,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
         private static readonly string[] States = new string[]
         {
-            "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti",  
+            "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti",
             "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara","Lagos", "Nasarawa", "Niger",
             "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
         };
@@ -649,6 +649,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                     //}
                     (string error, List<RequestViewModel> requests) = BulkUploadData;
+                    var errorRequests = new List<RequestViewModel>();
 
                     if (error.Length > 0)
                     {
@@ -703,12 +704,17 @@ namespace Project.V1.Web.Pages.Acceptance
 
                             if (!await SaveSingleRequest(request, uploadFile, toClose))
                             {
-                                throw new Exception(SaveError, new Exception(SaveError));
+                                //throw new Exception(SaveError, new Exception(SaveError));
+                                //await Task.Delay(1000);
+
+                                //ErrorBtnOnClick();
+                                errorRequests.Add(request);
                             }
                         }
 
                         //await SFBulkASSV_Uploader.ClearAllAsync();
-                        await IRequest.SetCreateState(requests, variables);
+                        if ((requests.Count - errorRequests.Count) > 0)
+                            await IRequest.SetCreateState(requests, variables);
                     }
                     else
                     {
@@ -751,14 +757,26 @@ namespace Project.V1.Web.Pages.Acceptance
 
                     await SFBulkAcceptance_Uploader.ClearAllAsync();
                     if (BulkWaiverUploadSelected)
+                    {
                         await SF_WaiverUploader.ClearAllAsync();
+
+                        if (BulkRequestRRUCount > 0)
+                        {
+                            BulkUploadRRUSSVFiles.ForEach(async file =>
+                            {
+                                await file.ClearAllAsync();
+                            });
+                        }
+
+                    }
                     else
                         await SFBulkASSV_Uploader.ClearAllAsync();
 
                     StateHasChanged();
+
+                    await InitializeForm();
                 }
 
-                //await InitializeForm();
                 EnableDisableActionButton();
 
                 string msg = ex.InnerException?.Message ?? ex.Message;
@@ -782,7 +800,7 @@ namespace Project.V1.Web.Pages.Acceptance
                         Headers = new List<string>
                         {
                             "Technology", "Site Id", "Site Name", "RNC/BSC", "Region", "Spectrum", "Bandwidth (MHz)", "Latitude", "Longitude",
-                            "Antenna Make", "Antenna Type", "Antenna Height - (M)", "Antenna Azimuth", "M Tilt", "E Tilt", "Baseband", "RRU TYPE", "Power - (w)",
+                            "Antenna Make", "Antenna Type", "Antenna Height", "Tower Height - (M)", "Antenna Azimuth", "M Tilt", "E Tilt", "Baseband", "RRU TYPE", "Power - (w)",
                             "Project Type", "Project Year", "Summer Config", "Software", "RRU Power - (w)", "CSFB Status GSM", "CSFB Status WCDMA",
                             "Integrated Date", "RET Configured", "Carrier Aggregation", "State"
                         }
@@ -971,18 +989,28 @@ namespace Project.V1.Web.Pages.Acceptance
                     }
                 }
 
-                if (await IRequest.CreateRequest(request))
+                var (isCreated, errorMsg) = await IRequest.CreateRequest(request);
+
+                if (isCreated)
                 {
                     ToastContent = "Request Submitted successfully.";
                     return true;
                 }
 
-                ToastContent = $"An error has occurred. Request could not be created.";
+                ToastContent = $"Request could not be created. {errorMsg}";
+                await Task.Delay(1000);
+
+                ErrorBtnOnClick();
                 return false;
             }
             catch (Exception ex)
             {
                 ToastContent = (ex.InnerException.Message.Contains("unique")) ? "Duplicate entry found" : $"An error has occurred. {ex.Message}";
+
+                await Task.Delay(1000);
+
+                ErrorBtnOnClick();
+
                 return false;
             }
         }
@@ -1040,15 +1068,17 @@ namespace Project.V1.Web.Pages.Acceptance
                 }
 
                 BulkUploadIconCss = "fas fa-paper-plane ml-2";
-                await Task.Delay(1000);
-
-                ErrorBtnOnClick();
 
                 return false;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message, new { }, ex);
+                ToastContent = $"An error has occurred. {ex.Message}.";
+                await Task.Delay(1000);
+
+                ErrorBtnOnClick();
+
                 return false;
             }
         }
@@ -1192,7 +1222,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 Logger.LogError(ex.Message, new { }, ex);
 
                 return false;
-            }            
+            }
         }
 
         private async Task<bool> OnFileSSVUploadChange(UploadChangeEventArgs args, string type)
@@ -1293,8 +1323,6 @@ namespace Project.V1.Web.Pages.Acceptance
         private void TriggerActionButton(ChangeEventArgs args)
         {
             EnableDisableActionButton();
-
-            //ClearUploadFile();
         }
 
         private void ClearUploadFile()

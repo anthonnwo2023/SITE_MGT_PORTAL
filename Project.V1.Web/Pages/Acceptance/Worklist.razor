@@ -46,8 +46,9 @@ else
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModel.SiteId)" HeaderText="Site Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
-            <GridColumn Field="@nameof(RequestViewModel.SiteName)" HeaderText="Site Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true, Email=true })">
-            </GridColumn>
+            <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit"
+                           FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridForeignColumn>
             @*<GridColumn Field="@nameof(RequestViewModel.FrequencyBand)" HeaderText="Frequency Band" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                 </GridColumn>*@
             @*<GridColumn Field="@nameof(RequestViewModel.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
@@ -68,7 +69,7 @@ else
 
                     if (request.BulkuploadPath != null)
                     {
-                        <a target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
+                        <a title="Uploaded Bulk" target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
                     }
                 }
             </Template>
@@ -80,12 +81,20 @@ else
 
                     if (request.SSVReport != null)
                     {
+                        var ext = Path.GetExtension(request.SSVReport);
+                        var title = ext switch
+                        {
+                            ".xls" or ".xlsx" or ".ppt" or ".pptx" => "SSV Report",
+                            ".eml" or ".msg" => "Waiver Email",
+                            _ => ""
+                        };
+
                         var ppts = new List<string> { ".ppt", ".pptx" };
 
                         var ssvExt = Path.GetExtension(request.SSVReport);
                         var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
 
-                        <a target="_blank" href="Documents/SSV/@request.SSVReport" class="btn btn-warning">
+                        <a title="@title" target="_blank" href="Documents/SSV/@request.SSVReport" class="btn btn-warning">
                             <i class="fas fa-fw @((request.SSVReportIsWaiver) ? "fa-envelope": icon)"></i>
                         </a>
                     }
@@ -97,7 +106,7 @@ else
                 @{
                     var request = (context as RequestViewModel);
 
-                    <a href="acceptance/worklist/@request.Id" class="btn btn-warning"><i class="fas fa-bars"></i></a>
+                    <a title="Action Requesst" href="acceptance/worklist/@request.Id" class="btn btn-warning"><i class="fas fa-bars"></i></a>
                 }
             </Template>
         </GridColumn>

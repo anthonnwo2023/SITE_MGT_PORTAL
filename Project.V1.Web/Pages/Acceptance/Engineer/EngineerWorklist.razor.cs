@@ -28,11 +28,13 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
         [Inject] protected IRequest IRequest { get; set; }
         [Inject] protected IRegion IRegion { get; set; }
         [Inject] protected ITechType ITechType { get; set; }
+        [Inject] protected ISpectrum ISpectrum { get; set; }
         [Inject] protected IUser IUser { get; set; }
 
         public List<RequestViewModel> Requests { get; set; }
         public List<RegionViewModel> Regions { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
+        public List<SpectrumViewModel> Spectrums { get; set; }
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
 
@@ -62,14 +64,17 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
 
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
+                    var userRegionIds = User.Regions.Select(x => x.Id);
 
-                    Requests = await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId) && x.Status != "Rejected" && x.Status != "Accepted", x => x.OrderByDescending(y => y.DateCreated));
+                    Requests = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && x.Status != "Rejected" && x.Status != "Accepted")).OrderByDescending(x => x.DateCreated).ToList();
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
+                    Spectrums = await ISpectrum.Get(x => x.IsActive);
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError($"Error loading rejected requests", new { }, ex);
+                    StateHasChanged();
                 }
             }
         }

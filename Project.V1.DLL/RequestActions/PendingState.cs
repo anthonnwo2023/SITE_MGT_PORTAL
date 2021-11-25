@@ -72,8 +72,6 @@ namespace Project.V1.DLL.RequestActions
                         }
                     };
 
-                    emailObj.To.AddRange(regionEngineers);
-
                     return emailObj;
                 },
 
@@ -83,15 +81,12 @@ namespace Project.V1.DLL.RequestActions
                     {
                         Name = "Hello RF Team",
                         Title = "Notification of New Request for approval - See Below Request Details",
-                        Greetings = $"NWG NAPO Site Acceptance Request : <font color='blue'><b>New Request</b></font> - See Details below:",
+                        Greetings = $"Site Acceptance Request : <font color='blue'><b>New Request</b></font> - See Details below:",
                         Comment = "",
                         BodyType = "",
                         M2Uname = "", // requests.Manager.Username.ToLower().Trim(),
-                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist/{request.Id}",
-                        To = new List<SenderBody>
-                        {
-                            new SenderBody { Name = "#RF Planning", Address = "#rfplanning.ng@mtn.com" },
-                        },
+                        To = new(),
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist/{request.Id}",                        
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         }

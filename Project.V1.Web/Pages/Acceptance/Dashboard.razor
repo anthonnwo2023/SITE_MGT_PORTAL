@@ -89,7 +89,7 @@ else
                         {
                             var value = 0;
 
-                            if (data.RowIndex == 5)
+                            if ((string)data.RowHeaders == "")
                             {
                                 value = this.DailyRequests.Count(x => x.UMTSPhyCount == 1);
                             }
@@ -105,7 +105,7 @@ else
                         {
                             var value = 0;
 
-                            if (data.RowIndex == 5)
+                            if ((string)data.RowHeaders == "")
                             {
                                 value = this.DailyRequests.Count(x => x.LTEPhyCount == 1);
                             }
@@ -169,33 +169,15 @@ else
                     {
                         if (data.Axis == "value" && (string)data.ColumnHeaders == "3G PHY")
                         {
-                            var value = 0;
-
-                            if (data.RowIndex == 5)
-                            {
-                                value = this.MonthlyProjectTypeRequests.Count(x => x.UMTSPhyCount == 1);
-                            }
-                            else
-                            {
-                                value = this.MonthlyProjectTypeRequests.Where(x => x.ProjectType == (string)data.RowHeaders).Count(x => x.UMTSPhyCount == 1);
-                            }
-
+                            var value = this.MonthlyProjectTypeRequests.Where(x => x.ProjectType == (string)data.RowHeaders).Count(x => x.UMTSPhyCount == 1);
+                            
                             @value
                         }
 
                         else if (data.Axis == "value" && (string)data.ColumnHeaders == "4G PHY")
                         {
-                            var value = 0;
-
-                            if (data.RowIndex == 5)
-                            {
-                                value = this.MonthlyProjectTypeRequests.Count(x => x.LTEPhyCount == 1);
-                            }
-                            else
-                            {
-                                value = this.MonthlyProjectTypeRequests.Where(x => x.ProjectType == (string)data.RowHeaders).Count(x => x.LTEPhyCount == 1);
-                            }
-
+                            var value = this.MonthlyProjectTypeRequests.Where(x => x.ProjectType == (string)data.RowHeaders).Count(x => x.LTEPhyCount == 1);
+                            
                             @value
                         }
 
@@ -248,7 +230,7 @@ else
                         {
                             var value = 0;
 
-                            if (data.RowIndex == 5)
+                            if ((string)data.RowHeaders == "")
                             {
                                 value = this.MonthlyRequests.Count(x => x.UMTSPhyCount == 1);
                             }
@@ -263,8 +245,8 @@ else
                         else if (data.Axis == "value" && (string)data.ColumnHeaders == "4G PHY")
                         {
                             var value = 0;
-
-                            if (data.RowIndex == 5)
+                            
+                            if ((string)data.RowHeaders == "")
                             {
                                 value = this.MonthlyRequests.Count(x => x.LTEPhyCount == 1);
                             }

@@ -170,7 +170,7 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfDropDownList TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                        <SfDropDownList Enabled="false" TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                                 Placeholder="State" style="font-size: 10px;" @bind-Value="RequestModel.State">
                             <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
                         </SfDropDownList>
@@ -218,15 +218,17 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfTextBox Enabled="false" Placeholder="Latitude" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Latitude)">
-                        </SfTextBox>
+                        <SfNumericTextBox Enabled="false" Placeholder="Latitude" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Latitude)"
+                            Format="###.#####">
+                        </SfNumericTextBox>
                         <ValidationMessage For="@(() => RequestModel.Latitude)" />
                     </div>
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfTextBox Enabled="false" Placeholder="Longitude" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Longitude)">
-                        </SfTextBox>
+                        <SfNumericTextBox Enabled="false" Placeholder="Longitude" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Longitude)"
+                            Format="###.#####">
+                        </SfNumericTextBox>
                         <ValidationMessage For="@(() => RequestModel.Longitude)" />
                     </div>
                 </div>
@@ -250,9 +252,16 @@ else
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfTextBox Enabled="false" Placeholder="Antenna Height(M)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.AntennaHeight)">
+                        <SfTextBox Enabled="false" Placeholder="Antenna Height" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.AntennaHeight)">
                         </SfTextBox>
                         <ValidationMessage For="@(() => RequestModel.AntennaHeight)" />
+                    </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfNumericTextBox Enabled="false" Placeholder="Tower Height (M)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.TowerHeight)">
+                        </SfNumericTextBox>
+                        <ValidationMessage For="@(() => RequestModel.TowerHeight)" />
                     </div>
                 </div>
                 <div class="col-md-3 mt-3">

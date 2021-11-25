@@ -18,68 +18,77 @@ namespace Project.V1.Lib.Helpers.Excel
     {
         public static (System.Data.DataTable DT, ExcelTransactionError Error) ToDataTable<T>(T RequestObj, string excelExcelFilePath, string userFullname) where T : class
         {
-            System.Data.DataTable dt = new();
-            ExcelTransactionError ete = new();
-
-            if (!ValidateExcelDocument(RequestObj, excelExcelFilePath))
+            try
             {
-                ete = new ExcelTransactionError
+                System.Data.DataTable dt = new();
+                ExcelTransactionError ete = new();
+
+                if (!ValidateExcelDocument(RequestObj, excelExcelFilePath))
                 {
-                    ErrorType = "Invalid Document Type",
-                    ErrorDesc = "Uploaded file type not supported. Please upload only .xls and .xlsx files.",
-                    CreatedBy = userFullname,
-                    DateCreated = DateTimeOffset.UtcNow.DateTime
-                };
+                    ete = new ExcelTransactionError
+                    {
+                        ErrorType = "Invalid Document Type",
+                        ErrorDesc = "Uploaded file type not supported. Please upload only .xls and .xlsx files.",
+                        CreatedBy = userFullname,
+                        DateCreated = DateTimeOffset.UtcNow.DateTime
+                    };
 
-                return (dt, ete);
-            }
-
-            // System.Text.Encoding.CodePages
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            using FileStream fileStream = new(excelExcelFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using StreamReader streamReader = new(fileStream, Encoding.UTF8);
-            using IExcelDataReader reader = ExcelReaderFactory.CreateReader(fileStream);
-
-            dt = reader.AsDataSet(new ExcelDataSetConfiguration()
-            {
-                ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
-                {
-                    UseHeaderRow = true,
-                    EmptyColumnNamePrefix = "Column"
+                    return (dt, ete);
                 }
-            }).Tables[0];
 
-            if (!IsAllowedHeaders(((dynamic)RequestObj).Headers, GetDataTableHeaders(dt)))
-            {
-                dt = new System.Data.DataTable();
+                // System.Text.Encoding.CodePages
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                using FileStream fileStream = new(excelExcelFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using StreamReader streamReader = new(fileStream, Encoding.UTF8);
+                using IExcelDataReader reader = ExcelReaderFactory.CreateReader(fileStream);
+
+                dt = reader.AsDataSet(new ExcelDataSetConfiguration()
+                {
+                    ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                    {
+                        UseHeaderRow = true,
+                        EmptyColumnNamePrefix = "Column"
+                    }
+                }).Tables[0];
+
+                if (!IsAllowedHeaders(((dynamic)RequestObj).Headers, GetDataTableHeaders(dt)))
+                {
+                    dt = new System.Data.DataTable();
+                    ete = new ExcelTransactionError
+                    {
+                        ErrorType = "Excel Header Mismatch",
+                        ErrorDesc = "The column headers in the excel does not match the expected columns",
+                        CreatedBy = userFullname,
+                        DateCreated = DateTimeOffset.UtcNow.DateTime
+                    };
+
+                    return (dt, ete);
+                }
+
                 ete = new ExcelTransactionError
                 {
-                    ErrorType = "Excel Header Mismatch",
-                    ErrorDesc = "The column headers in the excel does not match the expected columns",
+                    ErrorType = "",
+                    ErrorDesc = "All good!",
                     CreatedBy = userFullname,
                     DateCreated = DateTimeOffset.UtcNow.DateTime
                 };
 
+                dt.ConvertColumnTypeTo("Site Id", raw => raw.ToString());
+                dt.ConvertColumnTypeTo("Longitude", raw => Convert.ToDouble(raw));
+                dt.ConvertColumnTypeTo("Latitude", raw => Convert.ToDouble(raw));
+                dt.ConvertColumnTypeTo("Antenna Height", raw => raw.ToString());
+                dt.ConvertColumnTypeTo("Tower Height - (M)", raw => Convert.ToDouble(raw));
+                dt.ConvertColumnTypeTo("State", raw => raw.ToString().UpperCaseFirst());
+                dt.ConvertColumnTypeTo("Antenna Azimuth", raw => raw.ToString());
+                dt.ConvertColumnTypeTo("Project Year", raw => Convert.ToDouble(raw));
+
                 return (dt, ete);
             }
-
-            ete = new ExcelTransactionError
+            catch
             {
-                ErrorType = "",
-                ErrorDesc = "All good!",
-                CreatedBy = userFullname,
-                DateCreated = DateTimeOffset.UtcNow.DateTime
-            };
-
-            dt.ConvertColumnTypeTo("Site Id", raw => raw.ToString());
-            dt.ConvertColumnTypeTo("Longitude", raw => raw.ToString());
-            dt.ConvertColumnTypeTo("Latitude", raw => raw.ToString());
-            dt.ConvertColumnTypeTo("Antenna Height - (M)", raw => raw.ToString());
-            dt.ConvertColumnTypeTo("Antenna Azimuth", raw => raw.ToString());
-            dt.ConvertColumnTypeTo("Project Year", raw => Convert.ToDouble(raw));
-
-            return (dt, ete);
+                throw;
+            }            
         }
 
         private static ExcelDataSetConfiguration GetExcelDataSetConfig()

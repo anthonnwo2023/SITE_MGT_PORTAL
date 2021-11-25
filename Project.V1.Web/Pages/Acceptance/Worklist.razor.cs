@@ -13,6 +13,7 @@ using Project.V1.DLL.Services.Interfaces.FormSetup;
 using System.Linq;
 using Project.V1.Web.Shared;
 using Project.V1.Lib.Extensions;
+using Project.V1.Lib.Services;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -26,10 +27,12 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] protected IRequest IRequest { get; set; }
         [Inject] protected IRegion IRegion { get; set; }
         [Inject] protected ITechType ITechType { get; set; }
+        [Inject] protected ISpectrum ISpectrum { get; set; }
 
         List<RequestViewModel> Requests { get; set; } = new();
         List<RegionViewModel> Regions { get; set; }
         List<TechTypeModel> TechTypes { get; set; }
+        public List<SpectrumViewModel> Spectrums { get; set; }
         public ClaimsPrincipal Principal { get; set; }
 
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
@@ -62,6 +65,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     Requests = (await IRequest.Get(x => x.Requester.Username == Principal.Identity.Name && x.Status == "Rejected")).OrderByDescending(x => x.EngineerAssigned.DateApproved).ToList();
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
+                    Spectrums = await ISpectrum.Get(x => x.IsActive);
                 }
                 catch (Exception ex)
                 {
