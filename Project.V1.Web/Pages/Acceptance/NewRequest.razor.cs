@@ -1008,7 +1008,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 if (request.TechTypeId == TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
                 {
-                    if (!BulkWaiverUploadSelected)
+                    if (SingleEntrySelected)
                     {
                         request.RRUPower = LTEInput.RRUPower;
                         request.CSFBStatusGSM = LTEInput.CSFDStatusGSM;
@@ -1231,7 +1231,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                             var RRUSpectrums = Spectrums.Where(y => y.Name.Contains("RRU")).Select(x => x.Id).ToList();
 
-                            BulkRequestRRUData = BulkUploadData.requests.Where(x => RRUSpectrums.Contains(x.SpectrumId) && BulkRequestInvalidData.Contains(x)).ToList();
+                            BulkRequestRRUData = BulkUploadData.requests.Where(x => RRUSpectrums.Contains(x.SpectrumId) && !BulkRequestInvalidData.Contains(x)).ToList();
                             BulkRequestRRUCount = BulkRequestRRUData.Count;
 
                             foreach (var item in BulkRequestRRUData)
@@ -1382,7 +1382,7 @@ namespace Project.V1.Web.Pages.Acceptance
             var ssvUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "SSV");
             DisableSEButton = true;
 
-            if (SingleEntrySelected && SingleEntryValid &&(ssvUpload?.UploadFile != null || IsRRUType))
+            if (SingleEntrySelected && SingleEntryValid && (ssvUpload?.UploadFile != null || IsRRUType))
             {
                 DisableSEButton = false;
             }
