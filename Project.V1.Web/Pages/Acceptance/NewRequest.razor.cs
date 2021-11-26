@@ -104,8 +104,10 @@ namespace Project.V1.Web.Pages.Acceptance
         protected SfUploader SFBulkASSV_Uploader { get; set; }
         protected SfToast ToastObj { get; set; }
         protected bool SingleEntrySelected { get; set; }
+        protected bool SingleEntryValid { get; set; }
         protected bool BulkUploadSelected { get; set; }
         public List<RequestViewModel> BulkRequestRRUData { get; set; }
+        public List<RequestViewModel> BulkRequestInvalidData { get; set; } = new();
         public int BulkRequestRRUCount { get; set; } = 0;
         public (string error, List<RequestViewModel> requests) BulkUploadData { get; set; }
         public string BulkUploadPath { get; set; }
@@ -151,6 +153,19 @@ namespace Project.V1.Web.Pages.Acceptance
         {
            { "padding", "5px 2px 5px 2px" },
         };
+
+        private async Task CheckIfSEValid()
+        {
+            if (RequestModel.SiteId != null && RequestModel.SpectrumId != null)
+            {
+                SingleEntryValid = await IRequest.GetValidRequest(RequestModel);
+
+                if (!SingleEntryValid)
+                {
+                    BulkRequestInvalidData.Add(RequestModel);
+                }
+            }
+        }
 
         protected override void OnInitialized()
         {
@@ -242,6 +257,16 @@ namespace Project.V1.Web.Pages.Acceptance
                 }
 
                 EnableDisableActionButton();
+            }
+        }
+
+        private void CloseDialog()
+        {
+            BulkRequestInvalidData = new();
+
+            if (SingleEntrySelected && !SingleEntryValid)
+            {
+                RequestModel.SpectrumId = null;
             }
         }
 
@@ -465,6 +490,8 @@ namespace Project.V1.Web.Pages.Acceptance
             }
             else
             {
+                await CheckIfSEValid();
+
                 IsRRUType = false;
 
                 if (specturm.Contains("RRU"))
@@ -1190,9 +1217,21 @@ namespace Project.V1.Web.Pages.Acceptance
                                 return false;
                             }
 
+                            var (Valid, Invalid) = await IRequest.GetValidRequests(BulkUploadData.requests);
+                            BulkUploadData = ("", Valid.ToList());
+                            BulkRequestInvalidData = Invalid.ToList();
+                            Input.BUSiteCount = BulkUploadData.requests.Count;
+
+                            if (Invalid.Any())
+                            {
+                                //EnableDisableActionButton();
+
+                                //return false;
+                            }
+
                             var RRUSpectrums = Spectrums.Where(y => y.Name.Contains("RRU")).Select(x => x.Id).ToList();
 
-                            BulkRequestRRUData = BulkUploadData.requests.Where(x => RRUSpectrums.Contains(x.SpectrumId)).ToList();
+                            BulkRequestRRUData = BulkUploadData.requests.Where(x => RRUSpectrums.Contains(x.SpectrumId) && BulkRequestInvalidData.Contains(x)).ToList();
                             BulkRequestRRUCount = BulkRequestRRUData.Count;
 
                             foreach (var item in BulkRequestRRUData)
@@ -1343,7 +1382,7 @@ namespace Project.V1.Web.Pages.Acceptance
             var ssvUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "SSV");
             DisableSEButton = true;
 
-            if (SingleEntrySelected && (ssvUpload?.UploadFile != null || IsRRUType))
+            if (SingleEntrySelected && SingleEntryValid &&(ssvUpload?.UploadFile != null || IsRRUType))
             {
                 DisableSEButton = false;
             }
@@ -1381,6 +1420,12 @@ namespace Project.V1.Web.Pages.Acceptance
                         }
                     }
                 }
+
+                if (BulkUploadData.requests != null)
+                    if (BulkUploadData.requests.Count == 0)
+                    {
+                        disable = true;
+                    }
 
                 if (BulkWaiverUploadSelected && waiverUpload.UploadFile == null)
                 {

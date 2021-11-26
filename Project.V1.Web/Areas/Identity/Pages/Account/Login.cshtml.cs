@@ -80,7 +80,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
                 TempData["IsLoggingIn"] = true;
 
                 // Clear the existing external cookie to ensure a clean login process
-                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+                //await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
                 //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
