@@ -1211,7 +1211,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                                 EnableDisableActionButton(IsRRUType);
 
-                                ToastContent = $"No Valid Request found! {BulkUploadData.error}";
+                                ToastContent = $"No Valid Request found! {BulkUploadData.error} {BulkUploadError}";
                                 await Task.Delay(200);
 
                                 ErrorBtnOnClick();
