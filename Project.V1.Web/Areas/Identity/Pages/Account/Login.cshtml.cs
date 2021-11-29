@@ -209,23 +209,13 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
         private static string GetRedirectUrl(string role)
         {
-            string uri = "acceptance";
+            string uri = "acceptance/request";
 
-            List<string> Admin = new()
+            uri = role switch
             {
-                "Super Admin",
-                "Admin"
-            };
-
-            List<string> Engineer = new()
-            {
-                "Engineer"
-            };
-
-            uri = Admin.Contains(role) switch
-            {
-                true => "dashboard",
-                _ => (Engineer.Contains(role) ? "dashboard" : uri),
+                "Engineer" => "acceptance",
+                "Admin" or "Super Admin" => "dashboard",
+                _ => uri,
             };
 
             return uri;

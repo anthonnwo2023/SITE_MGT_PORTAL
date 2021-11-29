@@ -1211,7 +1211,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                                 EnableDisableActionButton(IsRRUType);
 
-                                ToastContent = "No Valid Request found!";
+                                ToastContent = $"No Valid Request found! {BulkUploadData.error}";
                                 await Task.Delay(200);
 
                                 ErrorBtnOnClick();
@@ -1230,6 +1230,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                                 //return false;
                                 ShowInvalidDialog = true;
+                                StateHasChanged();
                             }
 
                             var RRUSpectrums = Spectrums.Where(y => y.Name.Contains("RRU")).Select(x => x.Id).ToList();
