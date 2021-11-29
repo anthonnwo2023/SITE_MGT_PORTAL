@@ -105,6 +105,7 @@ namespace Project.V1.Web.Pages.Acceptance
         protected SfToast ToastObj { get; set; }
         protected bool SingleEntrySelected { get; set; }
         protected bool SingleEntryValid { get; set; }
+        protected bool ShowInvalidDialog { get; set; }
         protected bool BulkUploadSelected { get; set; }
         public List<RequestViewModel> BulkRequestRRUData { get; set; }
         public List<RequestViewModel> BulkRequestInvalidData { get; set; } = new();
@@ -209,7 +210,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 UploadedRequestFiles.Remove(uploaderToClear);
 
                 ResetSSVIndex().Wait();
-                EnableDisableActionButton();
+                EnableDisableActionButton(IsRRUType);
             }
         }
 
@@ -256,13 +257,13 @@ namespace Project.V1.Web.Pages.Acceptance
                     }
                 }
 
-                EnableDisableActionButton();
+                EnableDisableActionButton(IsRRUType);
             }
         }
 
         private void CloseDialog()
         {
-            BulkRequestInvalidData = new();
+            ShowInvalidDialog = false;
 
             if (SingleEntrySelected && !SingleEntryValid)
             {
@@ -349,7 +350,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
             UploadedRequestFiles.AddRange(InitializeUploadFiles());
 
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
         }
 
         private void ReInitializeRequest(MouseEventArgs args)
@@ -373,7 +374,7 @@ namespace Project.V1.Web.Pages.Acceptance
             //    });
             //}
 
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
 
             StateHasChanged();
         }
@@ -477,7 +478,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 Logger.LogError(ex.Message, new { }, ex);
             }
 
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
         }
 
         public async Task OnSpectrumChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, SpectrumViewModel> args)
@@ -500,7 +501,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 }
             }
 
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
 
             await Task.CompletedTask;
         }
@@ -571,7 +572,7 @@ namespace Project.V1.Web.Pages.Acceptance
             //    }
             //}
 
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
         }
 
         protected async Task AuthenticationCheck(bool isAuthenticated)
@@ -768,14 +769,14 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 await InitializeForm();
                 IsRRUType = false;
-                EnableDisableActionButton();
+                EnableDisableActionButton(IsRRUType);
             }
             catch (Exception ex)
             {
                 if (SingleEntrySelected)
                 {
                     SEUploadIconCss = "fas fa-paper-plane ml-2";
-                    await SF_Uploader.ClearAll();
+                    //await SF_Uploader.ClearAll();
                 }
 
                 if (BulkUploadSelected)
@@ -804,7 +805,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     await InitializeForm();
                 }
 
-                EnableDisableActionButton();
+                EnableDisableActionButton(IsRRUType);
 
                 string msg = ex.InnerException?.Message ?? ex.Message;
 
@@ -986,6 +987,7 @@ namespace Project.V1.Web.Pages.Acceptance
             try
             {
                 request.Id = Guid.NewGuid().ToString();
+                request.SiteId = request.SiteId.ToUpper();
                 request.DateCreated = DateTime.Now;
                 request.DateSubmitted = DateTime.Now;
                 request.Status = "Pending";
@@ -1207,9 +1209,9 @@ namespace Project.V1.Web.Pages.Acceptance
                             {
                                 await SFBulkAcceptance_Uploader.ClearAllAsync();
 
-                                EnableDisableActionButton();
+                                EnableDisableActionButton(IsRRUType);
 
-                                ToastContent = BulkUploadError;
+                                ToastContent = "No Valid Request found!";
                                 await Task.Delay(200);
 
                                 ErrorBtnOnClick();
@@ -1224,9 +1226,10 @@ namespace Project.V1.Web.Pages.Acceptance
 
                             if (Invalid.Any())
                             {
-                                //EnableDisableActionButton();
+                                //EnableDisableActionButton(IsRRUType);
 
                                 //return false;
+                                ShowInvalidDialog = true;
                             }
 
                             var RRUSpectrums = Spectrums.Where(y => y.Name.Contains("RRU")).Select(x => x.Id).ToList();
@@ -1252,7 +1255,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     }
                 }
 
-                EnableDisableActionButton();
+                EnableDisableActionButton(IsRRUType);
 
                 return true;
             }
@@ -1321,7 +1324,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 }
             }
 
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
 
             return await Task.Run(() => true);
         }
@@ -1354,31 +1357,24 @@ namespace Project.V1.Web.Pages.Acceptance
                 UploadIsWaiver = type == "Waiver",
             });
 
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
 
             return await Task.Run(() => true);
         }
 
         private void TriggerActionButton(ChangeEventArgs args)
         {
-            EnableDisableActionButton();
+            EnableDisableActionButton(IsRRUType);
         }
 
-        private void ClearUploadFile()
+        private void IsSEValid(bool SEValid)
         {
-            FilesManager file = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Waiver");
-
-            if (file != null)
-            {
-                file.Filestream = null;
-                file.Filename = null;
-                file.UploadFile = null;
-                file.UploadPath = null;
-            }
+            SingleEntryValid = SEValid;
         }
 
-        private void EnableDisableActionButton()
+        private void EnableDisableActionButton(bool IsSERRUType)
         {
+            IsRRUType = IsSERRUType;
             var ssvUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "SSV");
             DisableSEButton = true;
 
