@@ -28,7 +28,7 @@ namespace Project.V1.Lib.Services
 
             try
             {
-                return await Task.FromResult(!_context.Requests.Any(x => x.SiteId == item.SiteId && x.SpectrumId == item.SpectrumId));
+                return await Task.FromResult(!_context.Requests.Any(x => x.SiteId.ToUpper() == item.SiteId.ToUpper() && x.SpectrumId == item.SpectrumId));
             }
             catch (Exception ex)
             {

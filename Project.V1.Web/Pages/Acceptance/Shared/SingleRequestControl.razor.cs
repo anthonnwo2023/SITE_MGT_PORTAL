@@ -21,13 +21,14 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Parameter] public bool ShouldEnable { get; set; }
         //[Parameter] public bool DisableSEButton { get; set; }
         //[Parameter] public string SEUploadIconCss { get; set; }
-        [Parameter] public List<SpectrumViewModel> Spectrums { get; set; }
+        public List<SpectrumViewModel> Spectrums { get; set; }
         [Parameter] public RequestViewModel RequestModel { get; set; }
         [Parameter] public EventCallback<bool> CheckValid { get; set; }
         [Parameter] public List<FilesManager> UploadedRequestFiles { get; set; }
         [Parameter] public EventCallback<bool> OnCheckValidButton { get; set; }
         [Parameter] public EventCallback<ClearingEventArgs> OnClear { get; set; }
         [Parameter] public EventCallback<RemovingEventArgs> OnRemove { get; set; }
+        [Parameter] public EventCallback<List<SpectrumViewModel>> TechChanged { get; set; }
         [Parameter] public EventCallback<UploadChangeEventArgs> OnFileSSVUploadChange { get; set; }
 
 
@@ -142,17 +143,14 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
 
         private async Task CheckIfSEValid()
         {
-            if(RequestModel.SiteId == null)
+            if(RequestModel.SiteId == null || RequestModel.SpectrumId == null)
                 await CheckValid.InvokeAsync(false);
 
             if (RequestModel.SiteId != null && RequestModel.SpectrumId != null)
             {
-                var SingleEntryValid = await IRequest.GetValidRequest(RequestModel);
+                RequestModel.SiteId = RequestModel.SiteId.ToUpper();
 
-                if (!SingleEntryValid)
-                {
-                    BulkRequestInvalidData.Add(RequestModel);
-                }
+                var SingleEntryValid = await IRequest.GetValidRequest(RequestModel);
 
                 await CheckValid.InvokeAsync(SingleEntryValid);
             }
@@ -166,6 +164,8 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             {
                 IsRRUType = false;
                 Spectrums = (await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive)).OrderBy(x => x.Name).ToList();
+
+                await TechChanged.InvokeAsync(Spectrums);
             }
             catch (Exception ex)
             {
