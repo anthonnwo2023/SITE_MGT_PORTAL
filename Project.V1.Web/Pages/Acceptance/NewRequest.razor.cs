@@ -1089,7 +1089,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                 if (isCreated)
                 {
-                    ToastContent = "Request Submitted successfully.";
+                    ToastContent = $"Request Submitted successfully {request.SiteId} - {Spectrums.FirstOrDefault(x => x.Id == request.SpectrumId)?.Name}.";
                     return true;
                 }
 

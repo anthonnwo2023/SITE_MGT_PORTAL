@@ -74,6 +74,11 @@
         font-weight: normal;
         line-height: normal;
     }
+    .dialog-header-custom
+    {
+        font-weight: 600;
+        font-size: 14px;
+    }
 </style>
 
 <div class="col-sm-12 m-0 p-0" style="background: url('images/celltower.jpg'); background-size: cover; background-position: center right;">
@@ -92,7 +97,7 @@ else
 {
     <SfDialog Width="420px" ShowCloseIcon="true" IsModal="true" Visible="ShowInvalidDialog">
         <DialogTemplates>
-            <Header> Entry(s) below already exists and can not be <br> submitted. </Header>
+            <Header><p class="dialog-header-custom text-danger">Entry(s) below already exists and can not be <br> submitted. </p></Header>
             <Content> 
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -112,6 +117,38 @@ else
                                     <td>@item.SiteId</td>
                                     <td>@(Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId).Name)</td>
                                 </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <p class="text-success dialog-header-custom">See Valid Entry(s) below</p>                
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Site Id</th>
+                            <th>Spectrum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if(BulkUploadData.requests != null && ShowInvalidDialog)
+                            {
+                                if(BulkUploadData.requests.Any())
+                                    foreach(var item in BulkUploadData.requests)
+                                    {
+                                        <tr>
+                                            <td>@(BulkUploadData.requests.IndexOf(item) + 1)</td>
+                                            <td>@item.SiteId</td>
+                                            <td>@(Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId).Name)</td>
+                                        </tr>
+                                    }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3">No valid entry found.</td>
+                                    </tr>
+                                }
                             }
                         }
                     </tbody>

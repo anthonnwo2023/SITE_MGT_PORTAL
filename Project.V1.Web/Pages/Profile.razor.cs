@@ -25,7 +25,7 @@ namespace Project.V1.Web.Pages
 
         protected bool IsUpdateSuccessful { get; set; } = false;
         protected bool ShowUpdateNotification { get; set; } = false;
-        public ApplicationUser UserData { get; set; } = new();
+        public ApplicationUser UserData { get; set; }
 
         public List<PathInfo> Paths { get; set; }
         public string UserType { get; set; }

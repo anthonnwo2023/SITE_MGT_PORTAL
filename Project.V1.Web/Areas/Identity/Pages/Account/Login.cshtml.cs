@@ -77,7 +77,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
                 returnUrl ??= Url.Content("~/");
 
-                VendorList = new SelectList(await _vendor.Get(), "Id", "Name");
+                VendorList = new SelectList(await _vendor.Get(x => x.IsActive), "Id", "Name");
                 TempData["IsLoggingIn"] = true;
 
                 // Clear the existing external cookie to ensure a clean login process

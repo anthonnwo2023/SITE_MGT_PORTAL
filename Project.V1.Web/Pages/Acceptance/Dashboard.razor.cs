@@ -181,23 +181,10 @@ namespace Project.V1.Web.Pages.Acceptance
 
             DateWthMth = DateData.Date >= MinDateTime && DateData.Date < MaxDateTime;
 
-            var a = (await IRequest.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
-                                && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
-                                && !x.Spectrum.Name.Contains("RRU")))
-                                .Select(x => new AcceptanceDTO
-                                {
-                                    Vendor = x.Requester.Vendor.Name,
-                                    ProjectType = GetProjectTypeName(x.ProjectType.Name),
-                                    TechType = x.TechType.Name,
-                                    Spectrum = GetSpectrumName(x.Spectrum.Name),
-                                    AcceptanceCount = 1,
-                                    UMTSPhyCount = GetPhysicalTechCount("3G", x.Spectrum.Name),
-                                    LTEPhyCount = GetPhysicalTechCount("4G", x.Spectrum.Name),
-                                }).ToList();
-
             requests.AddRange((await IRequest.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
-                                && !x.Spectrum.Name.Contains("RRU")))
+                                && !x.Spectrum.Name.Contains("RRU")
+                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
                                 .Select(x => new AcceptanceDTO
                                 {
                                     Vendor = x.Requester.Vendor.Name,
