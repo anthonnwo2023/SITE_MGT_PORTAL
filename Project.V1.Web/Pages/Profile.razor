@@ -42,6 +42,10 @@
                         <small class="text-muted p-t-10 db">Phone</small>
                         <h6>@UserData.PhoneNumber</h6>
                     </div>
+                    <div class="@clasI pull-left" id="Phone">
+                        <small class="text-muted p-t-10 db">Vendor</small>
+                        @*<h6>@UserData.Vendor.Name</h6>*@
+                    </div>
                     <div class="@clasI pull-left" id="Dept">
                         <small class="text-muted p-t-10 db">Department</small>
                         <h6>@UserData.Department</h6>
@@ -58,7 +62,7 @@
         @if (UserData.UserType == WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("External")))
         {
             <div class="col-lg-8 col-xlg-9 col-md-7" id="ChangePassword">
-                <div class="card">
+                <div class="card border-0">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs profile-tab" role="tablist">
                         <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#profile" role="tab" aria-expanded="true">Settings</a> </li>
