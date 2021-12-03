@@ -19,7 +19,6 @@ namespace Project.V1.Lib.Services.Login
     {
         public async Task<SignInResponse> DoLogin(string username, string password, string vendorId)
         {
-            LoginObject.InitObjects();
             Log.Logger = HelperFunctions.GetSerilogLogger();
 
             Log.Information("Internal login process. ", new { Username = username, Vendor = vendorId, UserType = "Internal" });

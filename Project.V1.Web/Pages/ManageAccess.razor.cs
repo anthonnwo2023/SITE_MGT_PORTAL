@@ -69,13 +69,13 @@ namespace Project.V1.Web.Pages
         //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
-        public string SelectedUserPassword { get; set; }
+        public string SelectedUserPassword { get; set; } = "Network@55555";
 
         //[RequiredWhen(nameof(ShouldRequirePassword), true, AllowEmptyStrings = false, ErrorMessage = "Password is required for vendor accounts.")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare(nameof(SelectedUserPassword), ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; } = "Network@55555";
 
         protected SfGrid<VendorModel> Grid_Vendor { get; set; }
         protected SfGrid<ExpandoObject> Grid_IdentityRole { get; set; }
@@ -107,12 +107,14 @@ namespace Project.V1.Web.Pages
 
         private readonly CancellationTokenSource cts = new();
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             Paths = new()
             {
                 new PathInfo { Name = "Manage Access", Link = "access" },
             };
+
+            await Task.CompletedTask;
         }
 
         private async Task DoReset<T>(T data, string model)
@@ -788,71 +790,76 @@ namespace Project.V1.Web.Pages
             {
                 try
                 {
-                    if (!await UserAuth.IsAutorizedForAsync("Can:ManageAccess"))
+                    await InvokeAsync(async () =>
                     {
-                        NavMan.NavigateTo("access-denied");
-                        return;
-                    }
+                        if (!await UserAuth.IsAutorizedForAsync("Can:ManageAccess"))
+                        {
+                            NavMan.NavigateTo("access-denied");
+                            return;
+                        }
 
-                    Principal = (await AuthenticationStateTask).User;
-                    ApplicationUser userData = await IUser.GetUserByUsername(Principal.Identity.Name);
+                        Principal = (await AuthenticationStateTask).User;
+                        ApplicationUser userData = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    Vendors = await IVendor.Get();
-                    Regions = await IRegion.Get();
-                    StateHasChanged();
+                        Vendors = await IVendor.Get();
+                        Regions = await IRegion.Get();
+                        StateHasChanged();
 
-                    RoleClaims = (await Claim.Get(x => x.IsActive)).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name).Select(x => new ClaimListManager
-                    {
-                        Category = x.Key,
-                        Claims = x.ToList().FormatClaimSelection()
-                    }).ToList().SelectMany(x => x.Claims).ToList();
+                        RoleClaims = (await Claim.Get(x => x.IsActive)).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name).Select(async x => new ClaimListManager
+                        {
+                            Category = x.Key,
+                            Claims = await x.ToList().FormatClaimSelection()
+                        }).SelectMany(x => (x.GetAwaiter().GetResult()).Claims).ToList();
 
-                    IdentityRoles = Role.Roles.ToList().Select(x =>
-                    {
-                        dynamic d = new ExpandoObject();
-                        d.Id = x.Id;
-                        d.Name = x.Name;
-                        d.NormalizedName = x.NormalizedName;
-                        d.ConcurrencyStamp = x.ConcurrencyStamp;
+                        var ActiveClaims = await Claim.Get(y => y.IsActive);
 
-                        List<ClaimListManager> roleClaims = (Claim.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name != "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                        IdentityRoles = await Task.FromResult((await Role.Roles.ToListAsync()).Select(x =>
+                        {
+                            dynamic d = new ExpandoObject();
+                            d.Id = x.Id;
+                            d.Name = x.Name;
+                            d.NormalizedName = x.NormalizedName;
+                            d.ConcurrencyStamp = x.ConcurrencyStamp;
+
+                            List<ClaimListManager> roleClaims = ActiveClaims.Where(z => z.Category.Name != "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                            {
+                                Category = u.Key,
+                                Claims = u.ToList().FormatClaimSelection(x)
+                            }).ToList();
+
+                            d.Permissions = roleClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
+
+                            return d;
+                        }).Cast<ExpandoObject>().ToList());
+
+                        ClaimModels = (await IClaim.Get()).OrderBy(x => x.ClaimName).ToList();
+                        ClaimCategories = (await IClaimCategory.Get()).ToList();
+
+                        UserClaims = ActiveClaims.Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                         {
                             Category = u.Key,
-                            Claims = u.ToList().FormatClaimSelection(x)
+                            Claims = u.ToList().FormatClaimSelection().GetAwaiter().GetResult()
                         }).ToList();
 
-                        d.Permissions = roleClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
+                        ProjectClaims = UserClaims.SelectMany(x => x.Claims).ToList();
 
-                        return d;
-                    }).Cast<ExpandoObject>().ToList<ExpandoObject>();
-
-                    ClaimModels = (await IClaim.Get()).OrderBy(x => x.ClaimName).ToList();
-                    ClaimCategories = (await IClaimCategory.Get()).ToList();
-
-                    UserClaims = (await Claim.Get(y => y.IsActive)).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
-                    {
-                        Category = u.Key,
-                        Claims = u.ToList().FormatClaimSelection()
-                    }).ToList();
-
-                    ProjectClaims = UserClaims.SelectMany(x => x.Claims).ToList();
-
-                    StateHasChanged();
-                    ApplicationUsers = await IUser.GetUsers();
-                    ApplicationUsers.ForEach((user) =>
-                    {
-                        VendorModel mtnVendor = Vendors.First(y => y.Name == "MTN Nigeria");
-
-                        user.IsMTNUser = mtnVendor == null || !(mtnVendor.Id == user.VendorId);
-                        user.Roles = (IUser.GetUserRolesId(user).GetAwaiter().GetResult()).ToArray();
-                        List<ClaimListManager> userClaims = (Claim.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                        StateHasChanged();
+                        ApplicationUsers = await IUser.GetUsers();
+                        ApplicationUsers.ForEach((user) =>
                         {
-                            Category = u.Key,
-                            Claims = u.ToList().FormatClaimSelection(user)
-                        }).ToList();
+                            VendorModel mtnVendor = Vendors.First(y => y.Name == "MTN Nigeria");
 
-                        user.Projects = userClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
+                            user.IsMTNUser = mtnVendor == null || !(mtnVendor.Id == user.VendorId);
+                            user.Roles = (IUser.GetUserRolesId(user).GetAwaiter().GetResult()).ToArray();
+                            List<ClaimListManager> userClaims = (Claim.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                            {
+                                Category = u.Key,
+                                Claims = u.ToList().FormatClaimSelection(user)
+                            }).ToList();
 
+                            user.Projects = userClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
+
+                        });
                     });
                 }
                 catch (Exception ex)

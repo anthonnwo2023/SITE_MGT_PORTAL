@@ -29,8 +29,6 @@ namespace Project.V1.DLL.RequestActions
 
         public async Task SendEmail(string application, T request)
         {
-            LoginObject.InitObjects();
-
             ApplicationUser user = await LoginObject.User.GetUserByUsername(request.Requester.Username);
 
             var regionEngineers = (await LoginObject.UserManager.GetUsersInRoleAsync("Engineer")).Where(x => x.Regions.Select(x => x.Id).Contains(request.RegionId)).Select(x => new SenderBody

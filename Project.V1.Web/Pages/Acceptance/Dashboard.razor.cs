@@ -215,8 +215,9 @@ namespace Project.V1.Web.Pages.Acceptance
         private async Task<List<AcceptanceDTO>> GetVendorRequests(string requestType)
         {
             var requests = new List<AcceptanceDTO>();
+            var vendors = await IVendor.Get(x => x.IsActive && x.Name != "MTN Nigeria");
 
-            foreach (var vendor in await IVendor.Get(x => x.IsActive && x.Name != "MTN Nigeria"))
+            foreach (var vendor in vendors)
             {
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "2G", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "3G", Vendor = vendor.Name });

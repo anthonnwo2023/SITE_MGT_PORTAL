@@ -17,7 +17,7 @@ namespace Project.V1.DLL.Helpers
 
         public AppState()
         {
-            LoginObject.InitObjects();
+            //LoginObject.InitObjects();
         }
 
         public void TriggerRequestRecount()

@@ -1532,7 +1532,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     await SFBulkASSV_Uploader.ClearAllAsync();
                 }
-                await InitializeForm();
+                //await InitializeForm();
             });
 
             GC.SuppressFinalize(this);

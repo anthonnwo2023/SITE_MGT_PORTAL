@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Models;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +30,7 @@ namespace Project.V1.Web.Pages
         public List<PathInfo> Paths { get; set; }
         public string UserType { get; set; }
         public string Direction { get; set; } = "row";
+        public string PwdChgMessage { get; set; }
         public InputModel Input { get; set; } = new InputModel();
 
         public class InputModel
@@ -72,20 +76,37 @@ namespace Project.V1.Web.Pages
             }
         }
 
+        private void CloseDialog()
+        {
+            ShowUpdateNotification = false;
+        }
+
         protected async Task HandleValidSubmit()
         {
-            string token = await UserManager.GeneratePasswordResetTokenAsync(UserData);
-            IdentityResult resultChangedPW = await UserManager.ResetPasswordAsync(UserData, token, Input.Password);
-
-            if (resultChangedPW.Succeeded)
+            try
             {
-                UserData.IsNewPassword = false;
-                await UserManager.UpdateAsync(UserData);
+                string token = await UserManager.GeneratePasswordResetTokenAsync(UserData);
+                IdentityResult resultChangedPW = await UserManager.ResetPasswordAsync(UserData, token, Input.Password);
 
-                IsUpdateSuccessful = true;
+                if (resultChangedPW.Succeeded)
+                {
+                    UserData.IsNewPassword = false;
+                    await UserManager.UpdateAsync(UserData);
+
+                    IsUpdateSuccessful = true;
+
+                    PwdChgMessage = "Password Changed Successfully.";
+                }
+
+                ShowUpdateNotification = true;
             }
+            catch (Exception ex)
+            {
+                PwdChgMessage = $"Password failed to change. Please try again later";
+                Log.Logger.Error(ex, $"{ex.Message} - {UserData.UserName} {UserData.Fullname}");
 
-            ShowUpdateNotification = true;
+                ShowUpdateNotification = true;
+            }
         }
     }
 }

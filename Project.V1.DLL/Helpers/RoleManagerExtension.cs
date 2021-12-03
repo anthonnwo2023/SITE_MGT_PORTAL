@@ -51,8 +51,6 @@ namespace Project.V1.DLL.Helpers
 
         public static List<ClaimViewModel> FormatClaimSelection(this List<ClaimViewModel> allRoleClaims, IdentityRole role)
         {
-            LoginObject.InitObjects();
-
             IList<Claim> roleClaims = LoginObject.RoleManager.GetClaimsAsync(role).GetAwaiter().GetResult();
 
             allRoleClaims.ForEach(item =>

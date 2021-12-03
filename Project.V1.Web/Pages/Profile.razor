@@ -4,6 +4,19 @@
 
 <div class="col-sm-12 m-0 p-0 px-4">
     <Breadcrumb OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    
+    <SfDialog Width="420px" ShowCloseIcon="true" IsModal="true" Visible="ShowUpdateNotification">
+        <DialogTemplates>
+            <Header> Change Response </Header>
+            <Content> 
+                <p style="font-size: 1.3rem;" class="@(IsUpdateSuccessful ? "text-success" : "text-danger")">@PwdChgMessage</p>
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="OK" IsPrimary="true" OnClick="@CloseDialog" />
+            @*<DialogButton Content="Cancel" OnClick="@CloseDialog" />*@
+        </DialogButtons>
+    </SfDialog>
 
     @{
         var clas = (UserType == "External") ? "col-lg-4 col-xlg-3 col-md-5" : "col-lg-12 col-xlg-12 col-md-12";

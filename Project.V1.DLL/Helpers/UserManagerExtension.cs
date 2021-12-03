@@ -30,7 +30,7 @@ namespace Project.V1.DLL.Helpers
 
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, ex.Message);
                 return false;
@@ -39,8 +39,6 @@ namespace Project.V1.DLL.Helpers
 
         public static async Task<bool> AddUserClaims(this UserManager<ApplicationUser> userManager, ApplicationUser user, List<ClaimViewModel> claims)
         {
-            LoginObject.InitObjects();
-
             try
             {
                 ApplicationUser userData = (await userManager.Users.AsNoTracking()
@@ -70,24 +68,33 @@ namespace Project.V1.DLL.Helpers
 
         public static List<ClaimViewModel> FormatClaimSelection(this List<ClaimViewModel> allRoleClaims, ApplicationUser user)
         {
-            LoginObject.InitObjects();
-
-            IList<Claim> roleClaims = LoginObject.UserManager.GetClaimsAsync(user).GetAwaiter().GetResult();
-
-            allRoleClaims.ForEach(item =>
+            try
             {
-                item.IsSelected = false;
-            });
+                if (LoginObject.UserManager == null)
+                    LoginObject.InitObjects();
 
-            allRoleClaims.ForEach(allClaim =>
-            {
-                if (allRoleClaims.Count > 0 && roleClaims.Any(c => c.Type == allClaim.ClaimName))
+                IList<Claim> roleClaims = LoginObject.UserManager.GetClaimsAsync(user).GetAwaiter().GetResult();
+
+                allRoleClaims.ForEach(item =>
                 {
-                    allClaim.IsSelected = true;
-                }
-            });
+                    item.IsSelected = false;
+                });
 
-            return allRoleClaims;
+                allRoleClaims.ForEach(allClaim =>
+                {
+                    if (allRoleClaims.Count > 0 && roleClaims.Any(c => c.Type == allClaim.ClaimName))
+                    {
+                        allClaim.IsSelected = true;
+                    }
+                });
+
+                return allRoleClaims;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, ex.Message);
+                return new List<ClaimViewModel>();
+            }
         }
     }
 }

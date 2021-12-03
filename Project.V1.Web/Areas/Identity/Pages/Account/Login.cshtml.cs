@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using Project.V1.DLL.Helpers;
 
 namespace Project.V1.Web.Areas.Identity.Pages.Account
 {
@@ -126,6 +127,8 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
                 if (ModelState.IsValid)
                 {
+                    LoginObject.InitObjects();
+
                     UserSignInResult = await LoginProcessor.Login(Input.Username, Input.Password, Input.VendorId);
 
                     return await LoginActionRedirect(UserSignInResult, atype, returnUrl);
@@ -180,7 +183,8 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
             if (UserShouldResetPassword(password))
             {
-                return RedirectToPage($"{Request.PathBase}/profile", new { ReturnUrl = returnUrl, rt = UserSignInResult.UserType });
+                _logger.LogInformation(Request.PathBase, new { });
+                return LocalRedirect($"{Request.PathBase}/profile/{returnUrl}{atye}");
             }
 
             switch (HasReturnUrl(returnUrl))
