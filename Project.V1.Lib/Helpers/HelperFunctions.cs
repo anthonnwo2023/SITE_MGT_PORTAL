@@ -442,8 +442,9 @@ namespace Project.V1.Lib.Helpers
 
             try
             {
-                await _smtpClient.SendAsync(message, _cts.Token);
-
+                //await _smtpClient.SendAsync(message, _cts.Token);
+                var sendMail = _smtpClient.SendAsync(message, _cts.Token);
+                sendMail.Wait();
                 Log.Information($"Mail sent to customer to {string.Join(", ", message.To.Select(x => x.Name))}");
 
                 return true;
