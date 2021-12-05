@@ -932,6 +932,7 @@ namespace Project.V1.Web.Pages.Acceptance
                             if (ValidateRow(request) == false)
                             {
                                 BulkUploadError = $"Invalid Excel Template uploaded. Foreign Key Mismatch/Error on row:  {dt.Rows.IndexOf(row) + 1}, col: {BulkUploadColumnError}";
+                                requests = new();
                                 break;
                             }
 
