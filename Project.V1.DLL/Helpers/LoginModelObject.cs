@@ -66,5 +66,9 @@ namespace Project.V1.DLL.Helpers
             //}
 
         }
+
+        public class Ini
+        {
+        }
     }
 }

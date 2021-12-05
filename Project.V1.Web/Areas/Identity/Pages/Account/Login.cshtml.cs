@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using Project.V1.DLL.Helpers;
 
 namespace Project.V1.Web.Areas.Identity.Pages.Account
 {
@@ -112,6 +113,9 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
             try
             {
+                if (LoginObject.Vendor == null)
+                    LoginObject.InitObjects();
+
                 SignInResponse UserSignInResult = new();
 
                 List<VendorModel> Vendors = await _vendor.Get();
@@ -143,6 +147,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
                 return Page();
             }
         }
+
         private async Task<IActionResult> LoginActionRedirect(SignInResponse signInResponse, string atype, string returnUrl)
         {
             if (signInResponse.Result.Succeeded)
