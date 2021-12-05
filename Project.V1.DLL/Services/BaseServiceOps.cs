@@ -29,23 +29,23 @@ namespace Project.V1.Lib.Services
             _entities = context.Set<T>();
         }
 
-        public void Accept(T request, Dictionary<string, object> variables) => _state.Accept(this, request, variables);
+        public bool Accept(T request, Dictionary<string, object> variables) => _state.Accept(this, request, variables);
 
-        public void Cancel(T request, Dictionary<string, object> variables) => _state.Cancel(this, request, variables);
+        public bool Cancel(T request, Dictionary<string, object> variables) => _state.Cancel(this, request, variables);
 
-        public void Reject(T request, Dictionary<string, object> variables, string reason) => _state.Reject(this, request, variables, reason);
+        public bool Reject(T request, Dictionary<string, object> variables, string reason) => _state.Reject(this, request, variables, reason);
 
-        public void Rework(T request, Dictionary<string, object> variables) => _state.Rework(this, request, variables);
+        public bool Rework(T request, Dictionary<string, object> variables) => _state.Rework(this, request, variables);
 
         public void SetTransitionState(RequestStateBase<T> newState)
         {
             _state = newState;
         }
 
-        public void TransitionState(RequestStateBase<T> newState, T requests, Dictionary<string, object> variables)
+        public bool TransitionState(RequestStateBase<T> newState, T requests, Dictionary<string, object> variables)
         {
             _state = newState;
-            _state.EnterState(this, requests, variables);
+            return _state.EnterState(this, requests, variables).GetAwaiter().GetResult();
         }
 
         public void TransitionState(RequestStateBase<T> newState, List<T> requests, Dictionary<string, object> variables)

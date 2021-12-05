@@ -1,6 +1,7 @@
 ﻿using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -10,13 +11,23 @@ namespace Project.V1.DLL.RequestActions
 {
     public class AcceptedState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
-        public override async Task EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
+        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
         {
-            string application = variables["App"] as string;
+            try
+            {
+                string application = variables["App"] as string;
 
-            await _request.UpdateRequest(request, x => x.Id == request.Id);
+                await _request.UpdateRequest(request, x => x.Id == request.Id);
 
-            await SendEmail(application, request);
+                await SendEmail(application, request);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, ex.Message);
+                return false;
+            }
         }
 
         public async Task SendEmail(string application, T request)

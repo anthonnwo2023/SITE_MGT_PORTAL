@@ -12,34 +12,42 @@ namespace Project.V1.DLL.RequestActions
 {
     public class RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
-        public virtual Task EnterState(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public virtual Task<bool> EnterState(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(false);
         }
 
-        public virtual Task EnterState(IRequestAction<T> request, List<T> requests, Dictionary<string, object> variables)
+        public virtual Task<bool> EnterState(IRequestAction<T> request, List<T> requests, Dictionary<string, object> variables)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(false);
         }
 
-        public virtual void Accept(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public virtual bool Accept(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
             Log.Information("Cannot accept this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
         }
 
-        public virtual void Cancel(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public virtual bool Cancel(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
             Log.Information("Cannot cancel this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
         }
 
-        public virtual void Reject(IRequestAction<T> request, T requests, Dictionary<string, object> variables, string reason)
+        public virtual bool Reject(IRequestAction<T> request, T requests, Dictionary<string, object> variables, string reason)
         {
             Log.Information("Cannot reject this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
         }
 
-        public virtual void Rework(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public virtual bool Rework(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
             Log.Information("Cannot rework this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
         }
 
         public async Task SendNotification<T1>(T1 request, SendEmailActionObj emailObj, string role) where T1 : class, IDisposable

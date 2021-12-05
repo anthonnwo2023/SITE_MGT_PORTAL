@@ -2,6 +2,7 @@
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Lib.Helpers;
 using Project.V1.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,14 +14,22 @@ namespace Project.V1.DLL.RequestActions
 {
     public class PendingBulkState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
-        public override async Task EnterState(IRequestAction<T> _request, List<T> requests, Dictionary<string, object> variables)
+        public override async Task<bool> EnterState(IRequestAction<T> _request, List<T> requests, Dictionary<string, object> variables)
         {
-            string username = variables["User"] as string;
-            string application = variables["App"] as string;
+            try
+            {
+                string username = variables["User"] as string;
+                string application = variables["App"] as string;
 
-            //await _request.CreateBulkRequest(requests);
+                await SendEmail(username, application, requests);
 
-            await SendEmail(username, application, requests);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, ex.Message);
+                return false;
+            }
         }
 
         public async Task SendEmail(string username, string application, List<T> requests)

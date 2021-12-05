@@ -31,7 +31,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
         [Inject] protected ISpectrum ISpectrum { get; set; }
         [Inject] protected IUser IUser { get; set; }
 
-        public List<RequestViewModel> Requests { get; set; }
+        public List<RequestViewModel> RequestEngWorklists { get; set; }
         public List<RegionViewModel> Regions { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
         public List<SpectrumViewModel> Spectrums { get; set; }
@@ -66,10 +66,12 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
                     var userRegionIds = User.Regions.Select(x => x.Id);
 
-                    Requests = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && x.Status != "Rejected" && x.Status != "Accepted")).OrderByDescending(x => x.DateCreated).ToList();
+                    RequestEngWorklists = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && x.Status != "Rejected" && x.Status != "Accepted")).OrderByDescending(x => x.DateCreated).ToList();
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
                     Spectrums = await ISpectrum.Get(x => x.IsActive);
+
+                    StateHasChanged();
                 }
                 catch (Exception ex)
                 {

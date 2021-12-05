@@ -103,7 +103,7 @@ namespace Project.V1.Web.Pages.Acceptance
             "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
         };
 
-        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x }).ToList();
+        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x.ToUpper() }).ToList();
 
         public List<BoolDropDown> BoolDrops { get; set; } = new()
         {
@@ -408,16 +408,12 @@ namespace Project.V1.Web.Pages.Acceptance
             {
                 if(requestClass.Status == "Cancelled")
                 {
-                    requests.Cancel(requestClass, variables);
-
-                    return true;
+                    return requests.Cancel(requestClass, variables);
                 }
 
                 if (requestClass.Status == "Reworked")
                 {
-                    requests.Rework(requestClass, variables);
-
-                    return true;
+                    return requests.Rework(requestClass, variables);
                 }
 
                 return false;

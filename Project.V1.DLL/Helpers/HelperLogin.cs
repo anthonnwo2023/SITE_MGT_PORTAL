@@ -89,7 +89,7 @@ namespace Project.V1.DLL.Helpers
             return response;
         }
 
-        public static async Task<SignInResponse> PerformSignInOp(string username, string password, string vendorId, VendorModel Vendor, ApplicationUser user,
+        public static async Task<SignInResponse> PerformSignInOp(string username, string vendorId, VendorModel Vendor, ApplicationUser user,
             SignInResult result, ADUserDomainModel userADData)
 
         {

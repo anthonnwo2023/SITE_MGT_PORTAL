@@ -160,6 +160,9 @@ namespace Project.V1.Lib.Helpers
 
         public static string UpperCaseFirst(this string str)
         {
+            if (str == null || str.Length == 0)
+                return "";
+
             return str[0].ToString().ToUpper() + str[1..].ToString().ToLower();
         }
 

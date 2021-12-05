@@ -26,16 +26,18 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
         private readonly IVendor _vendor;
         private readonly IUser _user;
         private readonly ICLogger _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public LoginModel(ICLogger logger, IVendor vendor, IConfiguration configuration, IUser user)
+        public LoginModel(ICLogger logger, IVendor vendor,
+            UserManager<ApplicationUser> userManager, IUser user, SignInManager<ApplicationUser> signInManager)
         {
             _logger = logger;
-            Configuration = configuration;
+            _userManager = userManager;
+            _signInManager = signInManager;
             _user = user;
             _vendor = vendor;
         }
-
-        public IConfiguration Configuration { get; }
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -78,12 +80,11 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
                 returnUrl ??= Url.Content("~/");
 
                 VendorList = new SelectList(await _vendor.Get(x => x.IsActive), "Id", "Name");
-                TempData["IsLoggingIn"] = true;
-
+                
                 // Clear the existing external cookie to ensure a clean login process
-                //await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-                //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
                 ReturnUrl = returnUrl;
             }
@@ -109,97 +110,133 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
         [SupportedOSPlatform("windows")]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null, string atype = null)
         {
+            returnUrl ??= Url.Content("~/");
+
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             _logger.LogInformation("Starting the user login process. ", new { Input.Username, Vendor = Input.VendorId });
 
-            try
+            if (ModelState.IsValid)
             {
-                SignInResponse UserSignInResult = new();
-
-                List<VendorModel> Vendors = await _vendor.Get();
-                VendorList = new SelectList(Vendors, "Id", "Name");
-                VendorModel MTN_Vendor = Vendors.FirstOrDefault(x => x.Name.ToUpper() == "MTN NIGERIA");
-
-                bool isInternal = (Input.VendorId == MTN_Vendor.Id);
-                IUserLogin LoginProcessor = GetLoginProcessor(isInternal);
-
-                Input.Username = Input.Username.ToLower();
-                TempData["Password"] = Input.Password.ToLower();
-
-                if (ModelState.IsValid)
+                try
                 {
-                    LoginObject.InitObjects();
+                    if (LoginObject.Vendor == null)
+                        LoginObject.InitObjects();
+
+                    SignInResponse UserSignInResult = new();
+
+                    List<VendorModel> Vendors = await _vendor.Get();
+                    VendorList = new SelectList(Vendors, "Id", "Name");
+                    VendorModel MTN_Vendor = Vendors.FirstOrDefault(x => x.Name.ToUpper() == "MTN NIGERIA");
+
+                    bool isInternal = (Input.VendorId == MTN_Vendor.Id);
+                    IUserLogin LoginProcessor = GetLoginProcessor(isInternal);
+
+                    Input.Username = Input.Username.ToLower();
 
                     UserSignInResult = await LoginProcessor.Login(Input.Username, Input.Password, Input.VendorId);
 
-                    return await LoginActionRedirect(UserSignInResult, atype, returnUrl);
+                    //return await LoginActionRedirect(UserSignInResult, atype, returnUrl);
+                    if (UserSignInResult.Result.Succeeded)
+                    {
+                        _logger.LogInformation("User logged in.", new { });
+                        string atye = (atype != null) ? "&atype=" + atype : "";
+
+                        await _user.GenerateScope(User);
+                        //return GetRedirectPath(returnUrl, UserSignInResult, atye, Input.Password);
+
+                        if (UserShouldResetPassword(Input.Password))
+                        {
+                            return LocalRedirect($"{Request.PathBase}/profile");
+                        }
+
+                        return HasReturnUrl(returnUrl) switch
+                        {
+                            true => LocalRedirect($"{Request.PathBase}/{returnUrl}{atye}"),
+                            _ => LocalRedirect($"{Request.PathBase}/{GetRedirectUrl(UserSignInResult.Roles.First())}?rt={UserSignInResult.UserType}")
+                        };
+                    }
+                    if (UserSignInResult.Result.IsNotAllowed)
+                    {
+                        _logger.LogInformation("User not allowed to log in.", new { });
+                    }
+                    if (UserSignInResult.Result.IsLockedOut)
+                    {
+                        _logger.LogInformation("User is locked out.", new { });
+                    }
+                    if (UserSignInResult.Result.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe, rt = UserSignInResult.UserType });
+                    }
+
+                    ModelState.AddModelError(string.Empty, UserSignInResult.Message);
+                    return Page();
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error occurred while attempting to login", new { Input.Username, Vendor = Input.VendorId, ex.StackTrace });
 
-                ModelState.AddModelError("", UserSignInResult.Message);
-                // If we got this far, something failed, redisplay form
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occurred while attempting to login", new { Input.Username, Vendor = Input.VendorId, ex.StackTrace });
-
-                ModelState.AddModelError("", "Internal error occurred! Login failed.");
-                return Page();
-            }
-        }
-        private async Task<IActionResult> LoginActionRedirect(SignInResponse signInResponse, string atype, string returnUrl)
-        {
-            if (signInResponse.Result.Succeeded)
-            {
-                _logger.LogInformation("User logged in.", new { });
-                string atye = (atype != null) ? "&atype=" + atype : "";
-
-                await _user.GenerateScope(User);
-                return GetRedirectPath(returnUrl, signInResponse, atye, Input.Password);
-            }
-            if (signInResponse.Result.IsNotAllowed)
-            {
-                _logger.LogInformation("User not allowed to log in.", new { });
-                ModelState.AddModelError(string.Empty, signInResponse.Message);
-                return Page();
-            }
-            if (signInResponse.Result.IsLockedOut)
-            {
-                _logger.LogInformation("User is locked out.", new { });
-                ModelState.AddModelError(string.Empty, signInResponse.Message);
-                return Page();
-                //return RedirectToPage("./Lockout");
-            }
-            if (signInResponse.Result.RequiresTwoFactor)
-            {
-                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe, rt = signInResponse.UserType });
+                    ModelState.AddModelError("", "Internal error occurred! Login failed.");
+                    return Page();
+                }
             }
 
-            ModelState.AddModelError(string.Empty, signInResponse.Message);
+            // If we got this far, something failed, redisplay form
             return Page();
         }
 
-        private IActionResult GetRedirectPath(string returnUrl, SignInResponse UserSignInResult, string atye, string password)
-        {
+        //private async Task<IActionResult> LoginActionRedirect(SignInResponse signInResponse, string atype, string returnUrl)
+        //{
+        //    if (signInResponse.Result.Succeeded)
+        //    {
+        //        _logger.LogInformation("User logged in.", new { });
+        //        string atye = (atype != null) ? "&atype=" + atype : "";
 
-            if (UserShouldResetPassword(password))
-            {
-                _logger.LogInformation(Request.PathBase, new { });
-                return LocalRedirect($"{Request.PathBase}/profile/{returnUrl}{atye}");
-            }
+        //        await _user.GenerateScope(User);
+        //        return GetRedirectPath(returnUrl, signInResponse, atye, Input.Password);
+        //    }
+        //    if (signInResponse.Result.IsNotAllowed)
+        //    {
+        //        _logger.LogInformation("User not allowed to log in.", new { });
+        //        ModelState.AddModelError(string.Empty, signInResponse.Message);
+        //        return Page();
+        //    }
+        //    if (signInResponse.Result.IsLockedOut)
+        //    {
+        //        _logger.LogInformation("User is locked out.", new { });
+        //        ModelState.AddModelError(string.Empty, signInResponse.Message);
+        //        return Page();
+        //        //return RedirectToPage("./Lockout");
+        //    }
+        //    if (signInResponse.Result.RequiresTwoFactor)
+        //    {
+        //        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe, rt = signInResponse.UserType });
+        //    }
 
-            switch (HasReturnUrl(returnUrl))
-            {
-                case true:
-                    {
-                        return LocalRedirect($"{Request.PathBase}/{returnUrl}{atye}");
-                    }
+        //    ModelState.AddModelError(string.Empty, signInResponse.Message);
+        //    return Page();
+        //}
 
-                default:
-                    {
-                        return LocalRedirect($"{Request.PathBase}/{GetRedirectUrl(UserSignInResult.Roles.First())}?rt={UserSignInResult.UserType}");
-                    }
-            }
-        }
+        //private IActionResult GetRedirectPath(string returnUrl, SignInResponse UserSignInResult, string atye, string password)
+        //{
+        //    if (UserShouldResetPassword(password))
+        //    {
+        //        return RedirectToPage($"{Request.PathBase}/profile", new { ReturnUrl = returnUrl, rt = UserSignInResult.UserType });
+        //    }
+
+        //    switch (HasReturnUrl(returnUrl))
+        //    {
+        //        case true:
+        //            {
+        //                return LocalRedirect($"{Request.PathBase}/{returnUrl}{atye}");
+        //            }
+
+        //        default:
+        //            {
+        //                return LocalRedirect($"{Request.PathBase}/{GetRedirectUrl(UserSignInResult.Roles.First())}?rt={UserSignInResult.UserType}");
+        //            }
+        //    }
+        //}
 
         private static bool HasReturnUrl(string returnUrl)
         {

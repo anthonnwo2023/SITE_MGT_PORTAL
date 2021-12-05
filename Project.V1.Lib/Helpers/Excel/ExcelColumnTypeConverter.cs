@@ -23,7 +23,7 @@ namespace Project.V1.Lib.Helpers.Excel
             // Get and convert the values of the old column, and insert them into the new
             foreach (DataRow dr in dt.Rows)
             {
-                dr[dc.ColumnName] = valueConverter(dr[columnName]);
+                dr[dc.ColumnName] = valueConverter(Convert.ToString(dr[columnName]));
             }
 
             // Remove the old column

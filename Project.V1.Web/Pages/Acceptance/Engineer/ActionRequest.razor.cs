@@ -138,7 +138,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
             "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
          };
 
-        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x }).ToList();
+        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x.ToUpper() }).ToList();
 
         private async void ErrorBtnOnClick()
         {
@@ -232,14 +232,13 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                         await InitializeForm();
 
                         RequestModel = (await IRequest.GetById(x => x.Id == Id));
-                        //RequestStatus = RequestModel.Status;
-                        //RequestModel.Status = null;
                         Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId);
 
                         DateTime dt = DateTime.Now;
                         //EnableSpecial = (dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month));
                         int lastDayOfPrevMth = DateTime.DaysInMonth(dt.Year, dt.Month - 1);
-                        EnableSpecial = (dt.Day == 1 || dt.Day == 2);
+                        EnableSpecial = Enumerable.Range(1, 2).Contains(dt.Day);
+
                         MinDateTime = new DateTime(dt.Year, dt.Month - 1, lastDayOfPrevMth);
                         MaxDateTime = new DateTime(dt.Year, dt.Month, 2);
 
@@ -292,7 +291,11 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                 if (ProcessAction(RequestModel, variables, IRequest))
                 {
                     AppState.TriggerRequestRecount();
+
+                    StateHasChanged();
                     NavMan.NavigateTo("acceptance/engineer/worklist");
+
+                    return;
                 }
 
                 ToastContent = "An error occurred, request could not be updated.";
@@ -337,14 +340,10 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                 {
                     requestClass.EngineerAssigned.DateApproved = (requestClass.EngineerAssigned.DateApproved == DateTime.MinValue) ? DateTimeOffset.UtcNow.DateTime : requestClass.EngineerAssigned.DateApproved;
 
-                    requests.Accept(requestClass, variables);
-
-                    return true;
+                    return requests.Accept(requestClass, variables);
                 }
 
-                requests.Reject(requestClass, variables, requestClass.EngineerAssigned.ApproverComment);
-
-                return true;
+                return requests.Reject(requestClass, variables, requestClass.EngineerAssigned.ApproverComment);
             }
             catch
             {

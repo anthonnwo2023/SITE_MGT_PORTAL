@@ -26,13 +26,13 @@
     }
 </style>
 
-@if (Requests == null)
+@if (RequestEngWorklists == null)
 {
     <PageLoading />
 }
 else
 {
-    <SfGrid ID="RejectedRequestTable" DataSource="@Requests" AllowPaging="true" AllowSorting="true" AllowTextWrap="true"
+    <SfGrid ID="RejectedRequestTable" DataSource="@RequestEngWorklists" AllowPaging="true" AllowSorting="true" AllowTextWrap="true"
         Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
         <GridPageSettings PageSize="8"></GridPageSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>

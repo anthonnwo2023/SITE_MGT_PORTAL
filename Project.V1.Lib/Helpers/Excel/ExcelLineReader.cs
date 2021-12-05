@@ -79,7 +79,7 @@ namespace Project.V1.Lib.Helpers.Excel
                 dt.ConvertColumnTypeTo("Latitude", raw => Convert.ToDouble(raw));
                 dt.ConvertColumnTypeTo("Antenna Height", raw => raw.ToString());
                 dt.ConvertColumnTypeTo("Tower Height - (M)", raw => Convert.ToDouble(raw));
-                dt.ConvertColumnTypeTo("State", raw => raw.ToString().UpperCaseFirst());
+                dt.ConvertColumnTypeTo("State", raw => raw.ToString()?.UpperCaseFirst());
                 dt.ConvertColumnTypeTo("Antenna Azimuth", raw => raw.ToString());
                 dt.ConvertColumnTypeTo("Project Year", raw => Convert.ToDouble(raw));
 

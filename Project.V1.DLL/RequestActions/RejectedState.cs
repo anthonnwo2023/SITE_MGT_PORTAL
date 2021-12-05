@@ -1,6 +1,7 @@
 ﻿using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,23 +13,33 @@ namespace Project.V1.DLL.RequestActions
 {
     public class RejectedState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
-        public override void Cancel(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public override bool Cancel(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
-            request.TransitionState(new CancelledState<T>(), requests, variables);
+            return request.TransitionState(new CancelledState<T>(), requests, variables);
         }
 
-        public override void Rework(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public override bool Rework(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
-            request.TransitionState(new ReworkedState<T>(), requests, variables);
+            return request.TransitionState(new ReworkedState<T>(), requests, variables);
         }
 
-        public override async Task EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
+        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
         {
-            string application = variables["App"] as string;
-
-            if (await _request.UpdateRequest(request, x => x.Id == request.Id))
+            try
             {
-                await SendEmail(application, request);
+                string application = variables["App"] as string;
+
+                if (await _request.UpdateRequest(request, x => x.Id == request.Id))
+                {
+                    await SendEmail(application, request);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, ex.Message);
+                return false;
             }
         }
 

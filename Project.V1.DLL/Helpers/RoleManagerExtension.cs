@@ -36,7 +36,7 @@ namespace Project.V1.DLL.Helpers
 
                 foreach (ClaimViewModel claim in claims)
                 {
-                    Claim newClaim = new Claim(claim.ClaimName, claim.ClaimValue);
+                    Claim newClaim = new(claim.ClaimName, claim.ClaimValue);
 
                     await roleManager.AddClaimAsync(role, newClaim);
                 }

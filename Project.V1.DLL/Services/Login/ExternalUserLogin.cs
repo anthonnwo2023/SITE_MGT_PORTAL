@@ -24,13 +24,13 @@ namespace Project.V1.Lib.Services.Login
                 user.Roles = (await LoginObject.User.GetUserRoles(user)).ToArray();
                 SignInResult result = await LoginObject.SignInManager.PasswordSignInAsync(username, password, true, lockoutOnFailure: true);
                 LoginObject.ContextAccessor.HttpContext.User = await LoginObject.SignInManager.CreateUserPrincipalAsync(user);
-                return await ProcessSignInResultOldUser(username, password, vendorId, Vendor, user, result);
+                return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, result);
             }
 
             return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
         }
 
-        private static async Task<SignInResponse> ProcessSignInResultOldUser(string username, string password, string vendorId, VendorModel Vendor, ApplicationUser user,
+        private static async Task<SignInResponse> ProcessSignInResultOldUser(string username, string vendorId, VendorModel Vendor, ApplicationUser user,
             SignInResult result)
         {
 
@@ -39,7 +39,7 @@ namespace Project.V1.Lib.Services.Login
                 return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
             }
 
-            return await HelperLogin.PerformSignInOp(username, password, vendorId, Vendor, user, result, null);
+            return await HelperLogin.PerformSignInOp(username, vendorId, Vendor, user, result, null);
         }
     }
 }

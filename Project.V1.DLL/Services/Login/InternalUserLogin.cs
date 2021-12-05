@@ -62,10 +62,10 @@ namespace Project.V1.Lib.Services.Login
                         Log.Information("AD User AppData. ", new { username, Vendor = vendorId });
 
                         user.Roles = (await LoginObject.User.GetUserRoles(user)).ToArray();
-                        SignInResult result = await LoginObject.SignInManager.PasswordSignInAsync(username, "0004Fa1c-H!!3f7-47f4-9e58-25c9001d5426", true, lockoutOnFailure: true);
+                        await LoginObject.SignInManager.SignInAsync(user, true);
                         LoginObject.ContextAccessor.HttpContext.User = await LoginObject.SignInManager.CreateUserPrincipalAsync(user);
 
-                        return await ProcessSignInResultOldUser(username, "0004Fa1c-H!!3f7-47f4-9e58-25c9001d5426", vendorId, Vendor, user, result, userADData);
+                        return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, SignInResult.Success, userADData);
                     }
 
                     ApplicationUser newUser = new()
@@ -101,7 +101,7 @@ namespace Project.V1.Lib.Services.Login
             return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
         }
 
-        private static async Task<SignInResponse> ProcessSignInResultOldUser(string username, string password, string vendorId, VendorModel MTN_Vendor, ApplicationUser user,
+        private static async Task<SignInResponse> ProcessSignInResultOldUser(string username, string vendorId, VendorModel MTN_Vendor, ApplicationUser user,
             SignInResult result, ADUserDomainModel userADData)
         {
 
@@ -110,7 +110,7 @@ namespace Project.V1.Lib.Services.Login
                 return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
             }
 
-            return await HelperLogin.PerformSignInOp(username, password, vendorId, MTN_Vendor, user, result, userADData);
+            return await HelperLogin.PerformSignInOp(username, vendorId, MTN_Vendor, user, result, userADData);
         }
     }
 }

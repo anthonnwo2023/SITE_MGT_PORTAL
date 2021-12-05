@@ -1,6 +1,7 @@
 ﻿using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +11,31 @@ namespace Project.V1.DLL.RequestActions
 {
     public class PendingState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
-        public override void Accept(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public override bool Accept(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
-            request.TransitionState(new AcceptedState<T>(), requests, variables);
+            return request.TransitionState(new AcceptedState<T>(), requests, variables);
         }
 
-        public override void Reject(IRequestAction<T> request, T requests, Dictionary<string, object> variables, string reason)
+        public override bool Reject(IRequestAction<T> request, T requests, Dictionary<string, object> variables, string reason)
         {
-            request.TransitionState(new RejectedState<T>(), requests, variables);
+            return request.TransitionState(new RejectedState<T>(), requests, variables);
         }
 
-        public override async Task EnterState(IRequestAction<T> _request, T requests, Dictionary<string, object> variables)
+        public override async Task<bool> EnterState(IRequestAction<T> _request, T requests, Dictionary<string, object> variables)
         {
-            string application = variables["App"] as string;
+            try
+            {
+                string application = variables["App"] as string;
 
-            await SendEmail(application, requests);
+                await SendEmail(application, requests);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, ex.Message);
+                return false;
+            }
         }
 
         public async Task SendEmail(string application, T request)

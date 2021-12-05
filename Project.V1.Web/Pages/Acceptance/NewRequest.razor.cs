@@ -144,15 +144,15 @@ namespace Project.V1.Web.Pages.Acceptance
 
         private readonly List<ToastModel> Toast = new()
         {
-            new ToastModel { Title = "Warning!", Content = "There was a problem with your network connection.", CssClass = "e-toast-warning", Icon = "e-warning toast-icons", Timeout=0 },
+            new ToastModel { Title = "Warning!", Content = "There was a problem with your network connection.", CssClass = "e-toast-warning", Icon = "e-warning toast-icons", Timeout = 0 },
             new ToastModel { Title = "Success!", Content = "Your message has been sent successfully.", CssClass = "e-toast-success", Icon = "e-success toast-icons", Timeout = 0 },
             new ToastModel { Title = "Error!", Content = "A problem has been occurred while submitting your data.", CssClass = "e-toast-danger", Icon = "e-error toast-icons", Timeout = 0 },
             new ToastModel { Title = "Information!", Content = "Please read the comments carefully.", CssClass = "e-toast-info", Icon = "e-info toast-icons", Timeout = 0 }
         };
 
-        Dictionary<string, object> htmlattributeFileUpload = new Dictionary<string, object>()
+        private readonly Dictionary<string, object> htmlattributeFileUpload = new()
         {
-           { "padding", "5px 2px 5px 2px" },
+            { "padding", "5px 2px 5px 2px" },
         };
 
         private async Task CheckIfSEValid()
@@ -214,7 +214,7 @@ namespace Project.V1.Web.Pages.Acceptance
             }
         }
 
-        private void ResetUploadToNull(Syncfusion.Blazor.Inputs.FileInfo file)
+        private void ResetUploadToNull(Syncfusion.Blazor.Inputs.FileInfo file, bool shouldDelete)
         {
             var nameCompare = Path.GetFileNameWithoutExtension(file.Name).RemoveSpecialCharacters();
             var fname = (nameCompare.Length > 3) ? Path.GetFileNameWithoutExtension(file.Name.Split('(')[0].Trim()).RemoveSpecialCharacters() : Path.GetFileNameWithoutExtension(file.Name.Trim()).RemoveSpecialCharacters();
@@ -232,7 +232,8 @@ namespace Project.V1.Web.Pages.Acceptance
                     uploaderToClear.Filestream.Close();
                     uploaderToClear.UploadFile.Stream.Close();
 
-                    File.Delete(uploaderToClear.UploadPath);
+                    if (shouldDelete)
+                        File.Delete(uploaderToClear.UploadPath);
                 }
 
                 uploaderToClear.Filestream = null;
@@ -310,13 +311,13 @@ namespace Project.V1.Web.Pages.Acceptance
         private void OnRemoveToNull(RemovingEventArgs args)
         {
             if (args.FilesData.Count > 0)
-                ResetUploadToNull(args.FilesData.First());
+                ResetUploadToNull(args.FilesData.First(), true);
         }
 
         private void OnClearToNull(ClearingEventArgs args)
         {
             if (args.FilesData.Count > 0)
-                ResetUploadToNull(args.FilesData.First());
+                ResetUploadToNull(args.FilesData.First(), false);
         }
 
         private async Task InitializeForm()
@@ -367,15 +368,13 @@ namespace Project.V1.Web.Pages.Acceptance
             if (BulkUploadSelected)
             {
                 UploadedRequestFiles.AddRange(InitializeUploadFiles());
+                Spectrums = ISpectrum.Get(x => x.IsActive).GetAwaiter().GetResult().OrderBy(x => x.Name).ToList();
             }
-            //if (SingleEntrySelected)
-            //{
-            //    UploadedRequestFiles.Add(new FilesManager
-            //    {
-            //        Index = 0,
-            //        UploadType = "SSV",
-            //    });
-            //}
+
+            if (SingleEntrySelected)
+            {
+                Spectrums = new();
+            }
 
             EnableDisableActionButton(IsRRUType);
 
@@ -677,20 +676,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     DisableBUButton = true;
                     BulkUploadIconCss = "fas fa-spin fa-spinner ml-2";
                     WaiverUploadSelected = BulkWaiverUploadSelected;
-                    Spectrums = await ISpectrum.Get(x => x.IsActive);
 
-                    //FilesManager acceptanceUpload = UploadedRequestFiles.FirstOrDefault(x => x.UploadType == "Bulk");
-
-                    //string ext = Path.GetExtension(acceptanceUpload.UploadFile.FileInfo.Name);
-                    //bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
-
-                    //(string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension, acceptanceUpload, true);
-                    //(string uploadResp, string filePath, string uploadError) = ("", "", "");
-
-                    //if (uploadResp.Length == 0 && uploadError.Length == 0)
-                    //{
-
-                    //}
                     (string error, List<RequestViewModel> requests) = BulkUploadData;
                     var errorRequests = new List<RequestViewModel>();
 
@@ -730,6 +716,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                                 request.BulkuploadPath = Path.GetFileName(BulkUploadPath);
                                 request.BulkBatchNumber = batchNumber;
+                                request.State = request.State.ToUpper();
                                 var toClose = true;
 
                                 if (BulkWaiverUploadSelected && ((requests.IndexOf(request) + 1) != requests.Count))
@@ -975,17 +962,12 @@ namespace Project.V1.Web.Pages.Acceptance
             && IsFKValid(x => x.Name.ToUpper() == request.RegionId.ToUpper(), Regions)
             && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechType.Name == request.TechTypeId, Spectrums)
             && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes)
+            && IsFKValid(x => x.Name.ToUpper() == request.State.ToUpper(), NigerianStates)
             && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes);
 
             if (request.SiteName == null)
             {
                 BulkUploadColumnError = "Site Name";
-                result = false;
-            }
-
-            if (request.State == null)
-            {
-                BulkUploadColumnError = "State";
                 result = false;
             }
 
@@ -1447,7 +1429,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     BulkRequestInvalidData.Add(RequestModel);
                 }
-            }                
+            }
         }
 
         private void EnableDisableActionButton(bool IsSERRUType)

@@ -163,6 +163,7 @@ namespace Project.V1.Web
             app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
 
             app.UseHttpsRedirection();
+
             FileExtensionContentTypeProvider provider = new();
             provider.Mappings[".msg"] = "application/vnd.ms-outlook";
             provider.Mappings[".eml"] = "application/octet-stream";

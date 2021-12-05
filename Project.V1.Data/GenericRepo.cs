@@ -161,7 +161,7 @@ namespace Project.V1.Data
             {
                 _logger.Error(ex.Message, ex);
 
-                return false;
+                throw;
             }
         }
 
