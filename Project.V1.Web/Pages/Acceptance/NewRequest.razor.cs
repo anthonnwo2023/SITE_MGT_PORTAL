@@ -962,13 +962,24 @@ namespace Project.V1.Web.Pages.Acceptance
             bool result = IsFKValid(x => x.Name.ToUpper() == request.TechTypeId.ToUpper(), TechTypes)
             && IsFKValid(x => x.Name.ToUpper() == request.RegionId.ToUpper(), Regions)
             && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechType.Name == request.TechTypeId, Spectrums)
-            && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes)
             && IsFKValid(x => x.Name.ToUpper() == request.State.ToUpper(), NigerianStates)
             && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes);
 
             if (request.SiteName == null)
             {
                 BulkUploadColumnError = "Site Name";
+                result = false;
+            }
+
+            if (request.RRUTypeId == null)
+            {
+                BulkUploadColumnError = "RRU Type";
+                result = false;
+            }
+
+            if (request.BasebandId == null)
+            {
+                BulkUploadColumnError = "Baseband";
                 result = false;
             }
 
@@ -984,11 +995,11 @@ namespace Project.V1.Web.Pages.Acceptance
             //        && IsFKValid(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper(), RRUTypes);
             //}
 
-            if (request.BasebandId != null)
-            {
-                result = result
-                    && IsFKValid(x => x.Name.ToUpper() == request.BasebandId.ToUpper(), Basebands);
-            }
+            //if (request.BasebandId != null)
+            //{
+            //    result = result
+            //        && IsFKValid(x => x.Name.ToUpper() == request.BasebandId.ToUpper(), Basebands);
+            //}
 
             if (request.AntennaMakeId != null)
             {

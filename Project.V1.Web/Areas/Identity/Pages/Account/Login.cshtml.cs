@@ -161,14 +161,10 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
             if (signInResponse.Result.IsNotAllowed)
             {
                 _logger.LogInformation("User not allowed to log in.", new { });
-                ModelState.AddModelError(string.Empty, signInResponse.Message);
-                return Page();
             }
             if (signInResponse.Result.IsLockedOut)
             {
                 _logger.LogInformation("User is locked out.", new { });
-                ModelState.AddModelError(string.Empty, signInResponse.Message);
-                return Page();
                 //return RedirectToPage("./Lockout");
             }
             if (signInResponse.Result.RequiresTwoFactor)
@@ -185,7 +181,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
             if (UserShouldResetPassword(password))
             {
-                return RedirectToPage($"{Request.PathBase}/profile", new { ReturnUrl = returnUrl, rt = UserSignInResult.UserType });
+                return LocalRedirect($"{Request.PathBase}/profile");
             }
 
             switch (HasReturnUrl(returnUrl))

@@ -84,17 +84,17 @@ namespace Project.V1.Models
 
         //[Required]
         [ExcelColumnName("Baseband")]
-        public string BasebandId { get; set; }
+        public string Baseband { get; set; }
 
-        [ForeignKey(nameof(BasebandId))]
-        public virtual BaseBandModel Baseband { get; set; }
+        //[ForeignKey(nameof(BasebandId))]
+        //public virtual BaseBandModel Baseband { get; set; }
 
         [Required]
         [ExcelColumnName("RRU TYPE")]
-        public string RRUTypeId { get; set; }
+        public string RRUType { get; set; }
 
-        [ForeignKey(nameof(RRUTypeId))]
-        public virtual RRUTypeModel RRUType { get; set; }
+        //[ForeignKey(nameof(RRUTypeId))]
+        //public virtual RRUTypeModel RRUType { get; set; }
 
         [ExcelColumnName("Power - (w)")]
         public string Power { get; set; }

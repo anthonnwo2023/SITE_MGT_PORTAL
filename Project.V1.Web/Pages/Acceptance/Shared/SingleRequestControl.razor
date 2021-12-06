@@ -237,20 +237,16 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="BaseBandModel" DataSource="@Basebands" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                        Placeholder="Baseband" style="font-size: 10px;" @bind-Value="RequestModel.BasebandId">
-                <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
-            </SfDropDownList>
-            <ValidationMessage For="@(() => RequestModel.BasebandId)" />
+            <SfTextBox Enabled="ShouldEnable" Placeholder="Baseband" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Baseband)">
+            </SfTextBox>
+            <ValidationMessage For="@(() => RequestModel.Baseband)" />
         </div>
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="RRUTypeModel" DataSource="@RRUTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
-                        Placeholder="RRU Type" style="font-size: 10px;" @bind-Value="RequestModel.RRUTypeId">
-                <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
-            </SfDropDownList>
-            <ValidationMessage For="@(() => RequestModel.RRUTypeId)" />
+            <SfTextBox Enabled="ShouldEnable" Placeholder="RRU Type" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.RRUType)">
+            </SfTextBox>
+            <ValidationMessage For="@(() => RequestModel.RRUType)" />
         </div>
     </div>
     <div class="col-md-3 mt-3">

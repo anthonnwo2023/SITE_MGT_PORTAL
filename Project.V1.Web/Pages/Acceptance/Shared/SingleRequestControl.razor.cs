@@ -19,6 +19,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
     public partial class SingleRequestControl
     {
         [Parameter] public bool ShouldEnable { get; set; }
+        [Parameter] public bool ShowRequired { get; set; }
         //[Parameter] public bool DisableSEButton { get; set; }
         //[Parameter] public string SEUploadIconCss { get; set; }
         public List<SpectrumViewModel> Spectrums { get; set; }
@@ -46,6 +47,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Inject] protected IUser IUser { get; set; }
 
 
+        public string showRqdClass { get; set; } = "inline-block";
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
         public List<RegionViewModel> Regions { get; set; }
@@ -132,6 +134,9 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
                 : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
 
             await OnCheckValidButton.InvokeAsync(false);
+
+            if (!ShowRequired)
+                showRqdClass = "none";
         }
 
         protected override async Task OnInitializedAsync()
