@@ -130,8 +130,6 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
 
         protected override async Task OnInitializedAsync()
         {
-
-
             await InitializeForm();
         }
 

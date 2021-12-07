@@ -266,7 +266,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
                     Vendors = await IVendor.Get();
-                    Projects = (User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get(x => x.VendorId == User.VendorId) : await IProjects.Get(x => x.VendorId == User.VendorId);
+                    Projects = (User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get() : await IProjects.Get(x => x.VendorId == User.VendorId);
                 }
                 catch (Exception ex)
                 {
