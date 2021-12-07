@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Lib.Helpers;
+using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Lib.Services.Login;
 using Project.V1.Models;
 using System;
@@ -16,7 +15,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
-using Project.V1.DLL.Helpers;
 
 namespace Project.V1.Web.Areas.Identity.Pages.Account
 {

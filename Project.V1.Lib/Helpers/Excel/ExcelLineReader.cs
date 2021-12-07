@@ -296,7 +296,8 @@ namespace Project.V1.Lib.Helpers.Excel
                     {
                         var mapsto = columnMapping as ExcelColumnNameAttribute;
                         //Console.WriteLine(msg, property.Name, mapsto.ColumnName);
-                        property.SetValue(item, row[columnName]);
+
+                        property.SetValue(item, (row[columnName] is string) ? row[columnName].ToString().Trim() : row[columnName]);
                     }
 
                     //var propertyValue = row[columnName];

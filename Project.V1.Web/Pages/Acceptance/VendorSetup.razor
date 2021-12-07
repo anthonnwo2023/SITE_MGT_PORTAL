@@ -51,7 +51,8 @@
                                             </GridColumn>
                                             <GridColumn Field="@nameof(ProjectModel.Name)" HeaderText="Project Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                             </GridColumn>
-                                            <GridForeignColumn Field="@nameof(ProjectModel.VendorId)" HeaderText="Vendor" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Vendors" EditType="EditType.DropDownEdit">
+                                            <GridForeignColumn Field="@nameof(ProjectModel.VendorId)" HeaderText="Vendor" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Vendors" 
+                                                EditType="EditType.DropDownEdit" AllowEditing="CanEdit" AllowAdding="CanEdit">
                                             </GridForeignColumn>
                                             <GridColumn Field="@nameof(ProjectModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                             </GridColumn>

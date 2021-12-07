@@ -3,33 +3,32 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using Project.V1.Data;
-using Project.V1.Lib.Interfaces;
+using Project.V1.DLL.Helpers;
+using Project.V1.DLL.Interface;
+using Project.V1.DLL.Services.Interfaces;
+using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Helpers;
-using Project.V1.DLL.Interface;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Lib.Services;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Models;
 using Project.V1.Web.Areas.Identity;
 using Project.V1.Web.Middlewares;
 using Serilog;
 using Serilog.Context;
 using Syncfusion.Blazor;
-using Syncfusion.Blazor.Navigations;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Project.V1.DLL.Services.Interfaces;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
-using Project.V1.DLL.Helpers;
 
 namespace Project.V1.Web
 {
@@ -55,7 +54,8 @@ namespace Project.V1.Web
                 //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            services.AddDefaultIdentity<ApplicationUser>(options => {
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
                 options.SignIn.RequireConfirmedAccount = false;
 
             })
@@ -136,7 +136,7 @@ namespace Project.V1.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTE1OTIxQDMxMzkyZTMzMmUzMGhia0ZGMXNFVU54N1dGNWVIb3RFOU5xbmJTMkJocDkxdVN5bEd0UExLUWc9");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTQ0NTg3QDMxMzkyZTMzMmUzMFY4MGRvNmFCOG5vdmFxRVcxSTUySllsS2hPcnhjUlRjSUFUbytSNUZ4blk9;NTQ0NTg4QDMxMzkyZTMzMmUzMGc1U1dzaDV4Q0ZxUkZJdE1HUjNJSXB6SDhRM0QyakMzOTlGTWxQNjFuQUU9");
 
             ServiceActivator.Configure(app.ApplicationServices);
 

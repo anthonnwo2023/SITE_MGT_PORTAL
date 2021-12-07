@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.DLL.Services.Interfaces;
+using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
-using System.Linq;
 using Syncfusion.Blazor.Inputs;
 using Syncfusion.Blazor.SplitButtons;
-using Project.V1.Lib.Services;
-using Microsoft.AspNetCore.Components.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Project.V1.Web.Pages.Acceptance.Shared
 {
@@ -48,7 +47,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Inject] protected IUser IUser { get; set; }
 
 
-        public string showRqdClass { get; set; } = "inline-block";
+        public string ShowRqdClass { get; set; } = "inline-block";
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
         public List<RegionViewModel> Regions { get; set; }
@@ -125,7 +124,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             await OnCheckValidButton.InvokeAsync(false);
 
             if (!ShowRequired)
-                showRqdClass = "none";
+                ShowRqdClass = "none";
         }
 
         protected override async Task OnInitializedAsync()
@@ -135,7 +134,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
 
         private async Task CheckIfSEValid()
         {
-            if(RequestModel.SiteId == null || RequestModel.SpectrumId == null)
+            if (RequestModel.SiteId == null || RequestModel.SpectrumId == null)
                 await CheckValid.InvokeAsync(false);
 
             if (RequestModel.SiteId != null && RequestModel.SpectrumId != null)

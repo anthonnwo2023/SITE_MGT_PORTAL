@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Helpers;
+using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
+using Project.V1.Lib.Extensions;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,6 @@ using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Project.V1.DLL.Helpers;
 
 namespace Project.V1.Web.Pages
 {

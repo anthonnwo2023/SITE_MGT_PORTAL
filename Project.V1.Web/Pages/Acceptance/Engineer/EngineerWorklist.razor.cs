@@ -1,20 +1,18 @@
-﻿using Project.V1.Models;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
+using Project.V1.DLL.Interface;
+using Project.V1.DLL.Services.Interfaces;
+using Project.V1.DLL.Services.Interfaces.FormSetup;
+using Project.V1.Lib.Extensions;
+using Project.V1.Lib.Interfaces;
+using Project.V1.Models;
+using Syncfusion.Blazor.Grids;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http;
-using Project.V1.Lib.Interfaces;
-using Project.V1.DLL.Interface;
-using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
-using Syncfusion.Blazor.Grids;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Services;
-using Project.V1.DLL.Services.Interfaces;
 using System.Linq;
-using Project.V1.Web.Shared;
-using Project.V1.Lib.Extensions;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Project.V1.Web.Pages.Acceptance.Engineer
 {

@@ -1,26 +1,24 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Project.V1.Lib.Interfaces;
+using Project.V1.DLL.Helpers;
+using Project.V1.DLL.Interface;
+using Project.V1.DLL.Services.Interfaces;
+using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Helpers.Excel;
-using Project.V1.DLL.Interface;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
 using Syncfusion.Blazor.Inputs;
 using Syncfusion.Blazor.Notifications;
+using Syncfusion.Blazor.SplitButtons;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.DLL.Services.Interfaces;
-using System.ComponentModel.DataAnnotations;
-using Project.V1.DLL.Helpers;
-using Syncfusion.Blazor.SplitButtons;
-using Project.V1.Lib.Services;
-using static Project.V1.Web.Pages.Acceptance.NewRequest;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -335,7 +333,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 //    throw new Exception("Site Id does not match the uploaded document", new Exception("Site Id does not match the uploaded document"));
                 //}
 
-                if(UploadFiles != null)
+                if (UploadFiles != null)
                 {
                     string ext = Path.GetExtension(UploadFiles.FileInfo.Name);
                     bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
@@ -408,7 +406,7 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             try
             {
-                if(requestClass.Status == "Cancelled")
+                if (requestClass.Status == "Cancelled")
                 {
                     return requests.Cancel(requestClass, variables);
                 }
@@ -491,9 +489,9 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             DisableCreateButton = false;
         }
-        private void IsSEValid(bool SEValid)
+        private static void IsSEValid(bool SEValid)
         {
-            
+
         }
 
         public void Dispose()

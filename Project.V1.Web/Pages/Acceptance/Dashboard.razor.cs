@@ -1,20 +1,17 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.DLL.Services.Interfaces;
+using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
-using Syncfusion.Blazor.Grids;
+using Syncfusion.Blazor.Calendars;
+using Syncfusion.Blazor.PivotView;
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Linq;
-using Syncfusion.Blazor.PivotView;
-using Project.V1.Lib.Services;
-using Syncfusion.Blazor.Calendars;
+using System.Threading.Tasks;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -101,6 +98,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 "RT REVENUE SHARE" => "Rural Telephony",
                 "RT CAPEX" => "Rural Telephony",
                 "UPGRADE" => "UPGRADE Accepted",
+                var pType when pType.Contains("UPGRADE") => "UPGRADE Accepted",
                 _ => projectType
             };
         }

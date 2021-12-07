@@ -1,19 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Services;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
+using Project.V1.Lib.Extensions;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
 using Syncfusion.Blazor.Calendars;
 using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +35,7 @@ namespace Project.V1.Web.Pages.Acceptance
         public List<PathInfo> Paths { get; set; }
         public List<VendorModel> Vendors { get; set; }
         public List<ProjectModel> Projects { get; set; }
+        public bool CanEdit { get; set; }
 
         protected SfGrid<ProjectModel> Grid_Projects { get; set; }
 
@@ -265,7 +263,9 @@ namespace Project.V1.Web.Pages.Acceptance
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    Vendors = await IVendor.Get();
+                    CanEdit = User.Vendor.Name == "MTN Nigeria";
+
+                    Vendors = await IVendor.Get(x => x.IsActive);
                     Projects = (User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get() : await IProjects.Get(x => x.VendorId == User.VendorId);
                 }
                 catch (Exception ex)
@@ -283,7 +283,7 @@ namespace Project.V1.Web.Pages.Acceptance
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
             {
-
+                ((dynamic)args.Data).VendorId = User.VendorId;
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
             {

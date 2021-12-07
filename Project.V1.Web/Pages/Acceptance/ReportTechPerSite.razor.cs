@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Project.V1.DLL.Interface;
+using Project.V1.DLL.Services.Interfaces;
+using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
 using Syncfusion.Blazor.Grids;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System;
-using System.Linq;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Lib.Extensions;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -18,12 +18,12 @@ namespace Project.V1.Web.Pages.Acceptance
     {
         public List<PathInfo> Paths { get; set; }
         [Inject] protected IUserAuthentication UserAuth { get; set; }
-        [Inject] protected NavigationManager NavMan { get; set; }        
+        [Inject] protected NavigationManager NavMan { get; set; }
         [Inject] public ICLogger Logger { get; set; }
-        [Inject] protected IRequest IRequest { get; set; }        
+        [Inject] protected IRequest IRequest { get; set; }
         [Inject] protected IUser IUser { get; set; }
         [Inject] protected IVendor IVendor { get; set; }
-        
+
 
         List<RequestViewModel> RequestsGroup { get; set; }
         public ClaimsPrincipal Principal { get; set; }

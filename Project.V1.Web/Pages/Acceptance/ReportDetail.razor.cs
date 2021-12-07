@@ -1,26 +1,17 @@
-﻿using Hanssens.Net;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components;
-using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.DLL.Services.Interfaces;
+using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Helpers.Excel;
-using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
 using Syncfusion.Blazor.Inputs;
-using Syncfusion.Blazor.Notifications;
-using Syncfusion.Blazor.SplitButtons;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using static Project.V1.Web.Pages.Acceptance.NewRequest;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -97,7 +88,7 @@ namespace Project.V1.Web.Pages.Acceptance
             AntennaTypes = await IAntennaType.Get(x => x.IsActive);
             AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
             Basebands = (Principal.IsInRole("Super Admin"))
-                ? await IBaseBand.Get(x => x.IsActive) 
+                ? await IBaseBand.Get(x => x.IsActive)
                 : await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId);
 
             RequestModel = new();
@@ -170,7 +161,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
         private void EnableDisableActionButton(bool IsSERRUType)
         {
-            
+
         }
 
         private void IsSEValid(bool SEValid)
