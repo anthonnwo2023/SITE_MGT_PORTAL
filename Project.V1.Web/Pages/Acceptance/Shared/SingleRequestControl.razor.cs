@@ -20,6 +20,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
     {
         [Parameter] public bool ShouldEnable { get; set; }
         [Parameter] public bool ShowRequired { get; set; }
+        [Parameter] public bool ShowSSVUpload { get; set; } = true;
         //[Parameter] public bool DisableSEButton { get; set; }
         //[Parameter] public string SEUploadIconCss { get; set; }
         public List<SpectrumViewModel> Spectrums { get; set; }
@@ -39,7 +40,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Inject] protected ISpectrum ISpectrum { get; set; }
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
         [Inject] protected IProjectType IProjectType { get; set; }
-        [Inject] protected IRRUType IRRUType { get; set; }
+        [Inject] protected IProjects IProjects { get; set; }
         [Inject] protected ITechType ITechType { get; set; }
         [Inject] protected IAntennaMake IAntennaMake { get; set; }
         [Inject] protected IAntennaType IAntennaType { get; set; }
@@ -53,12 +54,11 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         public List<RegionViewModel> Regions { get; set; }
         public List<SummerConfigModel> SummerConfigs { get; set; }
         public List<ProjectTypeModel> ProjectTypes { get; set; }
-        public List<RRUTypeModel> RRUTypes { get; set; }
+        public List<ProjectModel> Projects { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
         public List<AntennaMakeModel> AntennaMakes { get; set; }
         public List<AntennaTypeModel> AntennaTypes { get; set; }
         public List<BaseBandModel> Basebands { get; set; }
-        public LTEInputModel LTEInput { get; set; } = new();
 
         protected bool SingleEntrySelected { get; set; }
         protected SfButtonGroup SingleSelector { get; set; }
@@ -80,17 +80,6 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         public bool WaiverUploadSelected { get; set; }
         public bool IsRRUType { get; set; } = false;
 
-
-        public class LTEInputModel
-        {
-            public string RRUPower { get; set; }
-
-            public string CSFDStatusGSM { get; set; }
-
-            public string CSFDStatusWCDMA { get; set; }
-        }
-
-
         public List<BoolDropDown> BoolDrops { get; set; } = new()
         {
             new BoolDropDown { Name = "Yes" },
@@ -104,7 +93,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
         };
 
-        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x }).ToList();
+        public List<NigerianState> NigerianStates { get; set; } = States.Select(x => new NigerianState { Name = x.ToUpper() }).ToList();
 
         public class BoolDropDown
         {
@@ -124,11 +113,11 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             Regions = (await IRegion.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             SummerConfigs = (await ISummerConfig.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             ProjectTypes = (await IProjectType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            RRUTypes = (User.Vendor.Name == "MTN Nigeria") ? (await IRRUType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
+            Projects = (User.Vendor.Name == "MTN Nigeria") ? (await IProjects.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
             TechTypes = (await ITechType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             AntennaMakes = (await IAntennaMake.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             AntennaTypes = (await IAntennaType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            Spectrums = new();
+            Spectrums = (RequestModel.TechTypeId == null) ? new() : (await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId)).OrderBy(x => x.Name).ToList();
             Basebands = (Principal.IsInRole("Super Admin"))
                 ? (await IBaseBand.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList()
                 : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();

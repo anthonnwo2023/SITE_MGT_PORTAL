@@ -35,7 +35,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
         [Inject] protected ISpectrum ISpectrum { get; set; }
         [Inject] protected IProjectType IProjectType { get; set; }
-        [Inject] protected IRRUType IRRUType { get; set; }
+        [Inject] protected IProjects IRRUType { get; set; }
         [Inject] protected ITechType ITechType { get; set; }
         [Inject] protected IAntennaType IAntennaType { get; set; }
         [Inject] protected IAntennaMake IAntennaMake { get; set; }
@@ -51,7 +51,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
         public List<RegionViewModel> Regions { get; set; }
         public List<SummerConfigModel> SummerConfigs { get; set; }
         public List<ProjectTypeModel> ProjectTypes { get; set; }
-        public List<RRUTypeModel> RRUTypes { get; set; }
+        public List<ProjectModel> RRUTypes { get; set; }
         public List<SpectrumViewModel> Spectrums { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
         public List<AntennaMakeModel> AntennaMakes { get; set; }
@@ -173,9 +173,11 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                 ResetUpload();
         }
 
-        public async Task OnTechChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, TechTypeModel> args)
+        public async Task OnTechChange(List<SpectrumViewModel> spectrums)
         {
-            Spectrums = await ISpectrum.Get(x => x.TechTypeId == args.Value);
+            Spectrums = spectrums;
+
+            await Task.CompletedTask;
         }
 
         private async Task InitializeForm()
@@ -410,6 +412,16 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
             Filestream = new(UploadPath, FileMode.Create, FileAccess.Write);
 
             return await Task.Run(() => true);
+        }
+
+        private void EnableDisableActionButton(bool IsSERRUType)
+        {
+            DisableCreateButton = false;
+        }
+
+        private void IsSEValid(bool SEValid)
+        {
+
         }
 
         public void Dispose()

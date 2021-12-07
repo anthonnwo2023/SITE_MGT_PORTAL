@@ -337,48 +337,6 @@
                                 }
                             </div>
                         </div>
-
-                        <div class="col-lg-6 miniTable">
-                            <p class="d-flex">
-                                @*<a href="access/user/create" class="btn btn-sm w-auto btn-warning">Create User</a>*@
-                                <span class="border float-right px-3 font-weight-bold">RRU Types</span>
-                            </p>
-                            <div class="col-md-12 p-0">
-                                @if (RRUTypes != null)
-                                {
-                                    <SfGrid DataSource="@RRUTypes" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_RRUType">
-                                        <GridPageSettings PageSize="5"></GridPageSettings>
-                                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
-                                        <GridEvents OnActionBegin='e => ActionBegin(e, "RRUTypeModel")' OnActionComplete='e => ActionComplete(e, "RRUTypeModel")' TValue="RRUTypeModel"></GridEvents>
-                                        <GridColumns>
-                                            <GridColumn Field="@nameof(RRUTypeModel.Id)" Visible="false" IsPrimaryKey="true">
-                                            </GridColumn>
-                                            <GridColumn Field="@nameof(RRUTypeModel.Name)" HeaderText="Baseband" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
-                                            </GridColumn>
-                                            <GridForeignColumn Field="@nameof(RRUTypeModel.VendorId)" HeaderText="Vendor" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Vendors" EditType="EditType.DropDownEdit">
-                                            </GridForeignColumn>
-                                            <GridColumn Field="@nameof(RRUTypeModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
-                                            </GridColumn>
-                                            <GridColumn Field="@nameof(RRUTypeModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
-                                                        Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
-                                            </GridColumn>
-                                            <GridColumn HeaderText="Manage Records" Width="150">
-                                                <GridCommandColumns>
-                                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                                                    <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
-                                                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
-                                                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
-                                                </GridCommandColumns>
-                                            </GridColumn>
-                                        </GridColumns>
-                                    </SfGrid>
-                                }
-                                else
-                                {
-                                    <PageLoading MarginTop="10" />
-                                }
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

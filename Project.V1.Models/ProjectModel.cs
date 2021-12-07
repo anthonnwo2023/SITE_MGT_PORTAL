@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.V1.Models
 {
-    [Table("TBL_RFACCEPT_RRUTYPES")]
-    public class RRUTypeModel
+    [Table("TBL_RFACCEPT_PROJECTS")]
+    public class ProjectModel
     {
         [Key]
         public string Id { get; set; }

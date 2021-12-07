@@ -1,4 +1,15 @@
 ﻿<style type="text/css">
+    .form-group .required-field::after {
+        content: '**';
+        margin-right: 4px;
+        font-size: 13px;
+        color: red;
+    }
+
+    .required-field label {
+        font-weight: 500 !important;
+    }
+
     .custom-font {
         font-size: 13px;
         font-weight: 400;
@@ -74,7 +85,7 @@
 {
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="TechTypeModel" DataSource="@TechTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="TechTypeModel" DataSource="@TechTypes" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Technology" style="font-size: 10px;" @bind-Value="RequestModel.TechTypeId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                 <DropDownListEvents TValue="string" TItem="TechTypeModel" ValueChange="OnTechChange"></DropDownListEvents>
@@ -84,7 +95,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfTextBox Enabled="ShouldEnable" Placeholder="Site ID" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SiteId)"
+            <SfTextBox Enabled="ShouldEnable" Placeholder="Site ID" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SiteId)" CssClass="@((ShowRequired) ? "required-field" : "")"
                    OnBlur="@CheckIfSEValid">
             </SfTextBox>
             <ValidationMessage For="@(() => RequestModel.SiteId)" />
@@ -110,7 +121,7 @@
     }
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="RegionViewModel" DataSource="@Regions" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="RegionViewModel" DataSource="@Regions" TValue="string" FloatLabelType="@FloatLabelType.Auto" CssClass="@((ShowRequired) ? "required-field" : "")"
                         Placeholder="Region" style="font-size: 10px;" @bind-Value="RequestModel.RegionId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -119,7 +130,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="@(ShouldEnable || RequestModel.State == null)" TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="@ShouldEnable" TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="State" style="font-size: 10px;" @bind-Value="RequestModel.State">
                 <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -151,7 +162,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="@(ShouldEnable || RequestModel.SpectrumId == null)" TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="@ShouldEnable" TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
                 <DropDownListEvents TValue="string" TItem="SpectrumViewModel" ValueChange="OnSpectrumChange"></DropDownListEvents>
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
@@ -258,7 +269,16 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="ProjectTypeModel" DataSource="@ProjectTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="ProjectModel" DataSource="@Projects" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
+                        Placeholder="Project Name" style="font-size: 10px;" @bind-Value="RequestModel.ProjectNameId">
+                <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
+            </SfDropDownList>
+            <ValidationMessage For="@(() => RequestModel.ProjectNameId)" />
+        </div>
+    </div>
+    <div class="col-md-3 mt-3">
+        <div class="form-group">
+            <SfDropDownList Enabled="ShouldEnable" TItem="ProjectTypeModel" DataSource="@ProjectTypes" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -278,29 +298,29 @@
     {
         <div class="col-md-3 mt-3">
             <div class="form-group">
-                <SfTextBox Enabled="ShouldEnable" Placeholder="RRU Power (w)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(LTEInput.RRUPower)">
+                <SfTextBox Enabled="ShouldEnable" Placeholder="RRU Power (w)" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.RRUPower)" CssClass="@((ShowRequired) ? "required-field" : "")">
                 </SfTextBox>
-                <ValidationMessage For="@(() => LTEInput.RRUPower)" />
+                <ValidationMessage For="@(() => RequestModel.RRUPower)" />
             </div>
         </div>
         <div class="col-md-3 mt-3">
             <div class="form-group">
-                <SfTextBox Enabled="ShouldEnable" Placeholder="CSFB status GSM" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(LTEInput.CSFDStatusGSM)">
+                <SfTextBox Enabled="ShouldEnable" Placeholder="CSFB status GSM" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.CSFBStatusGSM)">
                 </SfTextBox>
-                <ValidationMessage For="@(() => LTEInput.CSFDStatusGSM)" />
+                <ValidationMessage For="@(() => RequestModel.CSFBStatusGSM)" />
             </div>
         </div>
         <div class="col-md-3 mt-3">
             <div class="form-group">
-                <SfTextBox Enabled="ShouldEnable" Placeholder="CSFB Status WCDMA" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(LTEInput.CSFDStatusWCDMA)">
+                <SfTextBox Enabled="ShouldEnable" Placeholder="CSFB Status WCDMA" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.CSFBStatusWCDMA)">
                 </SfTextBox>
-                <ValidationMessage For="@(() => LTEInput.CSFDStatusWCDMA)" />
+                <ValidationMessage For="@(() => RequestModel.CSFBStatusWCDMA)" />
             </div>
         </div>
     }
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable " TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="RET Configured" style="font-size: 10px;" @bind-Value="RequestModel.RETConfigured">
                 <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -321,7 +341,7 @@
     }
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDatePicker Placeholder="Site Integrated Date" Min='@MinDateTime' Max='@MaxDateTime' FloatLabelType="@FloatLabelType.Auto"
+            <SfDatePicker Enabled="ShouldEnable" Placeholder="Site Integrated Date" Min='@MinDateTime' Max='@MaxDateTime' FloatLabelType="@FloatLabelType.Auto"
                       @bind-Value="@(RequestModel.IntegratedDate)">
             </SfDatePicker>
             <ValidationMessage For="@(() => RequestModel.IntegratedDate)" />
@@ -334,23 +354,27 @@
         <ValidationMessage For="@(() => RequestModel.DateSubmitted)" />
         </div>
         </div>*@
-    <div class="col-md-3">
-        <div class="form-group text-right">
-            <p class="h5 my-3 custom-font">Report Type</p>
-            <SfButtonGroup @ref="SingleSelector" CssClass="" Mode="Syncfusion.Blazor.SplitButtons.SelectionMode.Single">
-                <ButtonGroupButton IsToggle="false" @ref="SingleSSVSelector" @bind-Selected="@SSVUploadSelected">SSV</ButtonGroupButton>
-                <ButtonGroupButton IsToggle="false" @ref="SingleWaiverSelector" @bind-Selected="@WaiverUploadSelected">Waiver</ButtonGroupButton>
-            </SfButtonGroup>
-        </div>
-        <div class="form-group">
-            <label for="filePath" class="col-form-label custom-font" style="">@((WaiverUploadSelected) ? "Waiver Email" : "SSV Report")</label>
-            <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx")" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+    @if (ShowSSVUpload)
+    {
+        <div class="col-md-3">
+            <div class="form-group text-right">
+                <p class="h5 my-3 custom-font">Report Type</p>
+                <SfButtonGroup @ref="SingleSelector" CssClass="" Mode="Syncfusion.Blazor.SplitButtons.SelectionMode.Single">
+                    <ButtonGroupButton IsToggle="false" @ref="SingleSSVSelector" @bind-Selected="@SSVUploadSelected">SSV</ButtonGroupButton>
+                    <ButtonGroupButton IsToggle="false" @ref="SingleWaiverSelector" @bind-Selected="@WaiverUploadSelected">Waiver</ButtonGroupButton>
+                </SfButtonGroup>
+            </div>
+            <div class="form-group">
+                <label for="filePath" class="col-form-label custom-font" style="">@((WaiverUploadSelected) ? "Waiver Email" : "SSV Report")</label>
+                <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx")" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
                     @ref="SF_Uploader" @bind-Value="RequestModel.SSVReport">
-                <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange="OnFileSSVUploadChange"></UploaderEvents>
-            </SfUploader>
-            <ValidationMessage For="@(() => RequestModel.SSVReport)" />
+                    <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange="OnFileSSVUploadChange"></UploaderEvents>
+                </SfUploader>
+                <ValidationMessage For="@(() => RequestModel.SSVReport)" />
+            </div>
         </div>
-    </div>
+    }
+
     @*<div class="col-md-3 mt-3 ml-auto">
         <div class="form-group">
         <div class="col-sm-12 p-0 mt-4">

@@ -34,7 +34,7 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] protected IAntennaMake IAntennaMake { get; set; }
         [Inject] protected IAntennaType IAntennaType { get; set; }
         [Inject] protected IBaseBand IBaseband { get; set; }
-        [Inject] protected IRRUType IRRUType { get; set; }
+        [Inject] protected IProjects IRRUType { get; set; }
         [Inject] protected IProjectType IProjectType { get; set; }
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
 
@@ -45,7 +45,7 @@ namespace Project.V1.Web.Pages.Acceptance
         List<AntennaMakeModel> AntennaMakes { get; set; }
         List<AntennaTypeModel> AntennaTypes { get; set; }
         List<BaseBandModel> Basebands { get; set; }
-        List<RRUTypeModel> RRUTypes { get; set; }
+        List<ProjectModel> RRUTypes { get; set; }
         List<ProjectTypeModel> ProjectTypes { get; set; }
         List<SummerConfigModel> SummerConfigs { get; set; }
         public ClaimsPrincipal Principal { get; set; }

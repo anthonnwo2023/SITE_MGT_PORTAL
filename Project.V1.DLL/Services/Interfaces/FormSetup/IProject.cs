@@ -4,7 +4,7 @@ using System;
 
 namespace Project.V1.DLL.Services.Interfaces.FormSetup
 {
-    public interface IRRUType : IGenericRepo<RRUTypeModel>, IDisposable
+    public interface IProjects : IGenericRepo<ProjectModel>, IDisposable
     {
     }
 }

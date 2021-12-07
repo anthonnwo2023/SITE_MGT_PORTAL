@@ -37,7 +37,7 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] protected ISpectrum ISpectrum { get; set; }
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
         [Inject] protected IProjectType IProjectType { get; set; }
-        [Inject] protected IRRUType IRRUType { get; set; }
+        [Inject] protected IProjects IProjects { get; set; }
         [Inject] protected ITechType ITechType { get; set; }
         [Inject] protected IAntennaMake IAntennaMake { get; set; }
         [Inject] protected IAntennaType IAntennaType { get; set; }
@@ -54,7 +54,7 @@ namespace Project.V1.Web.Pages.Acceptance
         public List<SummerConfigModel> SummerConfigs { get; set; }
         public List<SpectrumViewModel> Spectrums { get; set; }
         public List<ProjectTypeModel> ProjectTypes { get; set; }
-        public List<RRUTypeModel> RRUTypes { get; set; }
+        public List<ProjectModel> Projects { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
         public List<AntennaMakeModel> AntennaMakes { get; set; }
         public List<AntennaTypeModel> AntennaTypes { get; set; }
@@ -333,7 +333,7 @@ namespace Project.V1.Web.Pages.Acceptance
             Regions = (await IRegion.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             SummerConfigs = (await ISummerConfig.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             ProjectTypes = (await IProjectType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            RRUTypes = (User.Vendor.Name == "MTN Nigeria") ? (await IRRUType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
+            Projects = (User.Vendor.Name == "MTN Nigeria") ? (await IProjects.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
             TechTypes = (await ITechType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             AntennaMakes = (await IAntennaMake.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
             AntennaTypes = (await IAntennaType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
@@ -502,7 +502,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
         //public async Task OnVendorChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, VendorModel> args)
         //{
-        //    //RRUTypes = await IRRUType.Get(x => x.VendorId == args.Value && x.IsActive);
+        //    //RRUTypes = await IProjects.Get(x => x.VendorId == args.Value && x.IsActive);
         //}
 
         public class LTEInputModel
@@ -884,7 +884,7 @@ namespace Project.V1.Web.Pages.Acceptance
                             "Technology", "Site Id", "Site Name", "RNC/BSC", "Region", "Spectrum", "Bandwidth (MHz)", "Latitude", "Longitude",
                             "Antenna Make", "Antenna Type", "Antenna Height", "Tower Height - (M)", "Antenna Azimuth", "M Tilt", "E Tilt", "Baseband", "RRU TYPE", "Power - (w)",
                             "Project Type", "Project Year", "Summer Config", "Software", "RRU Power - (w)", "CSFB Status GSM", "CSFB Status WCDMA",
-                            "Integrated Date", "RET Configured", "Carrier Aggregation", "State"
+                            "Integrated Date", "RET Configured", "Carrier Aggregation", "State", "Project Name"
                         }
                     };
 
@@ -938,13 +938,12 @@ namespace Project.V1.Web.Pages.Acceptance
 
                             request.AntennaMakeId = (request.AntennaMakeId != null) ? AntennaMakes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper())?.Id : request.AntennaMakeId;
                             request.AntennaTypeId = (request.AntennaTypeId != null) ? AntennaTypes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper())?.Id : request.AntennaTypeId;
-                            request.BasebandId = (request.BasebandId != null) ? Basebands.FirstOrDefault(x => x.Name.ToUpper() == request.BasebandId.ToUpper())?.Id : request.BasebandId;
                             request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper())?.Id : request.ProjectTypeId;
                             request.RegionId = (request.RegionId != null) ? Regions.FirstOrDefault(x => x.Name.ToUpper() == request.RegionId.ToUpper())?.Id : request.RegionId;
                             request.SummerConfigId = (request.SummerConfigId != null) ? SummerConfigs.FirstOrDefault(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper())?.Id : request.SummerConfigId;
                             request.TechTypeId = (request.TechTypeId != null) ? TechTypes.FirstOrDefault(x => x.Name.ToUpper() == request.TechTypeId.ToUpper())?.Id : request.TechTypeId;
                             request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechTypeId == request.TechTypeId)?.Id : request.SpectrumId;
-                            request.RRUTypeId = (request.RRUTypeId != null) ? RRUTypes.FirstOrDefault(x => x.Name.ToUpper() == request.RRUTypeId.ToUpper())?.Id : request.RRUTypeId;
+                            request.ProjectNameId = (request.ProjectNameId != null) ? Projects.FirstOrDefault(x => x.Name.ToUpper() == request.ProjectNameId.ToUpper())?.Id : request.ProjectNameId;
 
                             requests.Add(request);
                         }
@@ -963,6 +962,7 @@ namespace Project.V1.Web.Pages.Acceptance
             && IsFKValid(x => x.Name.ToUpper() == request.RegionId.ToUpper(), Regions)
             && IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechType.Name == request.TechTypeId, Spectrums)
             && IsFKValid(x => x.Name.ToUpper() == request.State.ToUpper(), NigerianStates)
+            && IsFKValid(x => x.Name.ToUpper() == request.ProjectNameId.ToUpper(), Projects)
             && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes);
 
             if (request.SiteName == null)
@@ -971,13 +971,13 @@ namespace Project.V1.Web.Pages.Acceptance
                 result = false;
             }
 
-            if (request.RRUTypeId == null)
+            if (request.RRUType == null)
             {
                 BulkUploadColumnError = "RRU Type";
                 result = false;
             }
 
-            if (request.BasebandId == null)
+            if (request.Baseband == null)
             {
                 BulkUploadColumnError = "Baseband";
                 result = false;

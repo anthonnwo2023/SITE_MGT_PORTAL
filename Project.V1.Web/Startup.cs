@@ -96,7 +96,7 @@ namespace Project.V1.Web
             services.AddScoped<ITechType, TechType>();
             services.AddScoped<ISpectrum, Spectrum>();
             services.AddScoped<IBaseBand, BaseBand>();
-            services.AddScoped<IRRUType, RRUType>();
+            services.AddScoped<IProjects, Projects>();
             services.AddScoped<ISummerConfig, SummerConfig>();
 
 

@@ -88,12 +88,12 @@ else
             <GridColumn Visible="false" Field="@nameof(RequestViewModel.ETilt)" HeaderText="E Tilt" TextAlign="TextAlign.Left"
                     FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
-            <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.BasebandId)" HeaderText="Baseband" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Basebands" EditType="EditType.DropDownEdit"
+            <GridColumn Visible="false" Field="@nameof(RequestViewModel.Baseband)" HeaderText="Baseband"
                            FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-            </GridForeignColumn>
-            <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.RRUTypeId)" HeaderText="RRU Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@RRUTypes" EditType="EditType.DropDownEdit"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModel.RRUType)" HeaderText="RRU Type"
                            FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-            </GridForeignColumn>
+            </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModel.Power)" HeaderText="Power - (w)" TextAlign="TextAlign.Left"
                     FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>

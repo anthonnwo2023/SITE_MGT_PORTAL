@@ -6,9 +6,9 @@ using System;
 
 namespace Project.V1.Lib.Services
 {
-    public class RRUType : GenericRepo<RRUTypeModel>, IRRUType, IDisposable
+    public class Projects : GenericRepo<ProjectModel>, IProjects, IDisposable
     {
-        public RRUType(ApplicationDbContext context, ICLogger logger)
+        public Projects(ApplicationDbContext context)
             : base(context, "")
         {
         }

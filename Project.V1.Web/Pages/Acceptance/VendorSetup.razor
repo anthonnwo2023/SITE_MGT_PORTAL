@@ -1,0 +1,83 @@
+﻿@page "/acceptance/setup/vendor"
+@layout MainLayoutAcceptance
+
+<PageTitlePat Title="SMP (Acceptance) - Vendor Setup" />
+
+<style type="text/css">
+    .miniTable {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    .e-dlg-overlay {
+        opacity: .8 !important;
+    }
+
+    #UserTable, #UserTable_header_table {
+        /*table-layout: unset !important;*/
+    }
+</style>
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/worklist.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4" style="padding: 4rem 2rem;">
+        Site Acceptance Vendor Setup
+    </div>
+</div>
+
+<div>
+    <BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body px-2">
+                    <!-- Row -->
+                    <div class="row" style="margin-right: 0px; margin-left:0px;">
+
+                        <div class="col-lg-6 miniTable">
+                            <p class="d-flex">
+                                @*<a href="access/user/create" class="btn btn-sm w-auto btn-warning">Create User</a>*@
+                                <span class="border float-right px-3 font-weight-bold">Projects</span>
+                            </p>
+                            <div class="col-md-12 p-0">
+                                @if (Projects != null)
+                                {
+                                    <SfGrid DataSource="@Projects" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_Projects">
+                                        <GridPageSettings PageSize="5"></GridPageSettings>
+                                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                        <GridEvents OnActionBegin='e => ActionBegin(e, "ProjectModel")' OnActionComplete='e => ActionComplete(e, "ProjectModel")' TValue="ProjectModel"></GridEvents>
+                                        <GridColumns>
+                                            <GridColumn Field="@nameof(ProjectModel.Id)" Visible="false" IsPrimaryKey="true">
+                                            </GridColumn>
+                                            <GridColumn Field="@nameof(ProjectModel.Name)" HeaderText="Project Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridForeignColumn Field="@nameof(ProjectModel.VendorId)" HeaderText="Vendor" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Vendors" EditType="EditType.DropDownEdit">
+                                            </GridForeignColumn>
+                                            <GridColumn Field="@nameof(ProjectModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
+                                            <GridColumn Field="@nameof(ProjectModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                                        Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
+                                            </GridColumn>
+                                            <GridColumn HeaderText="Manage Records" Width="150">
+                                                <GridCommandColumns>
+                                                    <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-update", CssClass = "e-flat" })"></GridCommandColumn>
+                                                    <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-cancel-icon", CssClass = "e-flat" })"></GridCommandColumn>
+                                                </GridCommandColumns>
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                }
+                                else
+                                {
+                                    <PageLoading MarginTop="10" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

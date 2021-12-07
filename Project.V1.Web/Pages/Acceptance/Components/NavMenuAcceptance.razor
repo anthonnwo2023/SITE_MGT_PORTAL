@@ -79,7 +79,7 @@
             </ul>
         </li>
 
-        @if (Principal.HasClaim(x => x.Type == "Can:ManageSetupSA"))
+        @if (Principal.HasClaim(x => x.Type == "Can:ManageSetupSA" || x.Type == "Can:ManageVendorSetup"))
         {
             <li class="nav-item px-3">
                 <NavLink class="nav-link expand-menu" style="cursor: pointer;" @onclick="() => expandNESICTRequestSubNav = !expandNESICTRequestSubNav">
@@ -99,12 +99,22 @@
                 <ul class="nav flex-column">
                     @if (expandNESICTRequestSubNav)
                     {
-                        <li class="nav-item px-3">
-                            <NavLink class="nav-link" href="acceptance/setup" Match="NavLinkMatch.All">
-                                <span class="oi oi-task" aria-hidden="true"></span> Setup
-                            </NavLink>
-                        </li>
-
+                        @if (Principal.HasClaim(x => x.Type == "Can:ManageSetupSA"))
+                        {
+                            <li class="nav-item px-3">
+                                <NavLink class="nav-link" href="acceptance/setup" Match="NavLinkMatch.All">
+                                    <span class="oi oi-task" aria-hidden="true"></span> Setup
+                                </NavLink>
+                            </li>                            
+                        }
+                        @if (Principal.HasClaim(x => x.Type == "Can:ManageVendorSetup"))
+                        {
+                            <li class="nav-item px-3">
+                                <NavLink class="nav-link" href="acceptance/setup/vendor" Match="NavLinkMatch.All">
+                                    <span class="oi oi-task" aria-hidden="true"></span> Setup (Vendor)
+                                </NavLink>
+                            </li>                            
+                        }
                     }
                 </ul>
             </li>

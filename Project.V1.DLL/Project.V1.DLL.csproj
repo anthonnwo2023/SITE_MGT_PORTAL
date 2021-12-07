@@ -40,7 +40,7 @@
     <Compile Include="Helpers\UserManagerExtension.cs" />
     <Compile Include="Services\Interfaces\FormSetup\IAntennaMake.cs" />
     <Compile Include="Services\Interfaces\FormSetup\IAntennaType.cs" />
-    <Compile Include="Services\Interfaces\FormSetup\IRRUType.cs" />
+    <Compile Include="Services\Interfaces\FormSetup\IProject.cs" />
     <Compile Include="Services\Interfaces\FormSetup\IBaseBand.cs" />
     <Compile Include="Services\Interfaces\FormSetup\IProjectType.cs" />
     <Compile Include="Services\Interfaces\FormSetup\ISpectrum.cs" />

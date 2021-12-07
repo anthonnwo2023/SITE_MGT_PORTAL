@@ -104,7 +104,6 @@ namespace Project.V1.Web.Pages.Acceptance
                             RegionId = x.Select(x => x.Region.Name).First(),
                             SpectrumId = string.Join(", ", x.Select(x => x.Spectrum.Name).Distinct()),
                             TechTypeId = string.Join(", ", x.Select(x => x.TechType.Name).Distinct()),
-                            BasebandId = string.Join(", ", x.Select(y => y.Requester.Vendor.Name).Distinct()),
                         }).ToList();
                 }
                 catch (Exception ex)

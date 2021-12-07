@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using Project.V1.Data;
@@ -9,9 +10,10 @@ using Project.V1.Data;
 namespace Project.V1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211206144341_Request.rrutypr-string")]
+    partial class Requestrrutyprstring
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -384,7 +386,26 @@ namespace Project.V1.Data.Migrations
                     b.ToTable("TBL_RFACCEPT_CLAIMS");
                 });
 
-            modelBuilder.Entity("Project.V1.Models.ProjectModel", b =>
+            modelBuilder.Entity("Project.V1.Models.ProjectTypeModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("NUMBER(1)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TBL_RFACCEPT_PROJECTTYPES");
+                });
+
+            modelBuilder.Entity("Project.V1.Models.RRUTypeModel", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("NVARCHAR2(450)");
@@ -405,26 +426,7 @@ namespace Project.V1.Data.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("TBL_RFACCEPT_PROJECTS");
-                });
-
-            modelBuilder.Entity("Project.V1.Models.ProjectTypeModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("NVARCHAR2(450)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("TIMESTAMP(7)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("NUMBER(1)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("NVARCHAR2(2000)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TBL_RFACCEPT_PROJECTTYPES");
+                    b.ToTable("TBL_RFACCEPT_RRUTYPES");
                 });
 
             modelBuilder.Entity("Project.V1.Models.RegionViewModel", b =>
@@ -572,10 +574,6 @@ namespace Project.V1.Data.Migrations
                     b.Property<string>("Power")
                         .HasColumnType("NVARCHAR2(2000)");
 
-                    b.Property<string>("ProjectNameId")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(450)");
-
                     b.Property<string>("ProjectTypeId")
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(450)");
@@ -654,8 +652,6 @@ namespace Project.V1.Data.Migrations
                     b.HasIndex("AntennaTypeId");
 
                     b.HasIndex("EngineerId");
-
-                    b.HasIndex("ProjectNameId");
 
                     b.HasIndex("ProjectTypeId");
 
@@ -894,7 +890,7 @@ namespace Project.V1.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Project.V1.Models.ProjectModel", b =>
+            modelBuilder.Entity("Project.V1.Models.RRUTypeModel", b =>
                 {
                     b.HasOne("Project.V1.Models.VendorModel", "Vendor")
                         .WithMany()
@@ -916,12 +912,6 @@ namespace Project.V1.Data.Migrations
                     b.HasOne("Project.V1.Models.RequestApproverModel", "EngineerAssigned")
                         .WithMany()
                         .HasForeignKey("EngineerId");
-
-                    b.HasOne("Project.V1.Models.ProjectModel", "ProjectName")
-                        .WithMany()
-                        .HasForeignKey("ProjectNameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.HasOne("Project.V1.Models.ProjectTypeModel", "ProjectType")
                         .WithMany()
@@ -960,8 +950,6 @@ namespace Project.V1.Data.Migrations
                     b.Navigation("AntennaType");
 
                     b.Navigation("EngineerAssigned");
-
-                    b.Navigation("ProjectName");
 
                     b.Navigation("ProjectType");
 

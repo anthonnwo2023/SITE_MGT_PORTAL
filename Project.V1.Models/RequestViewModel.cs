@@ -30,7 +30,7 @@ namespace Project.V1.Models
         [ExcelColumnName("State")]
         public string State { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Region field is required.")]
         [ExcelColumnName("Region")]
         public string RegionId { get; set; }
 
@@ -40,7 +40,7 @@ namespace Project.V1.Models
         [ExcelColumnName("Bandwidth (MHz)")]
         public string Bandwidth { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Spectrum/Tech Split field is required.")]
         [ExcelColumnName("Spectrum")]
         public string SpectrumId { get; set; }
 
@@ -89,12 +89,17 @@ namespace Project.V1.Models
         //[ForeignKey(nameof(BasebandId))]
         //public virtual BaseBandModel Baseband { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The RRU Type field is required.")]
         [ExcelColumnName("RRU TYPE")]
         public string RRUType { get; set; }
 
-        //[ForeignKey(nameof(RRUTypeId))]
-        //public virtual RRUTypeModel RRUType { get; set; }
+
+        [Required(ErrorMessage = "The Project Name field is required.")]
+        [ExcelColumnName("Project Name")]
+        public string ProjectNameId { get; set; }
+
+        [ForeignKey(nameof(ProjectNameId))]
+        public virtual ProjectModel ProjectName { get; set; }
 
         [ExcelColumnName("Power - (w)")]
         public string Power { get; set; }
@@ -108,14 +113,14 @@ namespace Project.V1.Models
         [ExcelColumnName("CSFB Status WCDMA")]
         public string CSFBStatusWCDMA { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Technology field is required.")]
         [ExcelColumnName("Technology")]
         public string TechTypeId { get; set; }
 
         [ForeignKey(nameof(TechTypeId))]
         public virtual TechTypeModel TechType { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Project Type field is required.")]
         [ExcelColumnName("Project Type")]
         public string ProjectTypeId { get; set; }
 

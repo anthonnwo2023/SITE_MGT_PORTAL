@@ -447,6 +447,8 @@ namespace Project.V1.Lib.Helpers
                 sendMail.Wait();
                 Log.Information($"Mail sent to customer to {string.Join(", ", message.To.Select(x => x.Name))}");
 
+                await Task.CompletedTask;
+
                 return true;
             }
             catch (Exception ex)

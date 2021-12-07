@@ -56,9 +56,6 @@ else
             <GridColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="TechTypes" TextAlign="TextAlign.Left"
                         FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
-            <GridColumn Field="@nameof(RequestViewModel.BasebandId)" HeaderText="Vendor" TextAlign="TextAlign.Left"
-                        FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-            </GridColumn>
         </GridColumns>
     </SfGrid>
 

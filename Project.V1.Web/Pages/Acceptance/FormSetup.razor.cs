@@ -31,7 +31,6 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] protected IAntennaMake IAntennaMake { get; set; }
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
         [Inject] protected IProjectType IProjectType { get; set; }
-        [Inject] protected IRRUType IRRUType { get; set; }
         [Inject] protected ITechType ITechType { get; set; }
         [Inject] protected IBaseBand IBaseBand { get; set; }
         [Inject] public IVendor IVendor { get; set; }
@@ -49,7 +48,6 @@ namespace Project.V1.Web.Pages.Acceptance
         public List<AntennaMakeModel> AntennaMakes { get; set; }
         public List<SummerConfigModel> SummerConfigs { get; set; }
         public List<ProjectTypeModel> ProjectTypes { get; set; }
-        public List<RRUTypeModel> RRUTypes { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
         public List<BaseBandModel> BaseBands { get; set; }
 
@@ -60,7 +58,6 @@ namespace Project.V1.Web.Pages.Acceptance
         protected SfGrid<SummerConfigModel> Grid_SummerConfig { get; set; }
         protected SfGrid<ProjectTypeModel> Grid_ProjectType { get; set; }
         protected SfGrid<TechTypeModel> Grid_TechType { get; set; }
-        protected SfGrid<RRUTypeModel> Grid_RRUType { get; set; }
         protected SfGrid<BaseBandModel> Grid_BaseBand { get; set; }
 
         public List<string> ToolbarItems = new() { "Add", "Search" };
@@ -100,35 +97,6 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Dictionary<string, Action<T>> processor = new()
             {
-                ["RRUTypeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            RRUTypeModel DataToReset = await IRRUType.GetById(x => x.Id == Id);
-
-                            RRUTypes.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                    x.VendorId = DataToReset.VendorId;
-                                }
-                            });
-                        }
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                },
                 ["SpectrumViewModel"] = async (data) =>
                 {
                     try
@@ -364,18 +332,6 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Dictionary<string, Func<double, bool>> processor = new()
             {
-                ["RRUTypeModel"] = (Id) =>
-                {
-                    try
-                    {
-                        Grid_RRUType.DeleteRow(Id);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
                 ["SpectrumViewModel"] = (Id) =>
                 {
                     try
@@ -481,18 +437,6 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Dictionary<string, Func<T, bool>> processor = new()
             {
-                ["RRUTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_RRUType.UpdateRow(Id, data as RRUTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
                 ["SpectrumViewModel"] = (data) =>
                 {
                     try
@@ -598,18 +542,6 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Dictionary<string, Func<T, bool>> processor = new()
             {
-                ["RRUTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_RRUType.AddRecord(data as RRUTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
                 ["SpectrumViewModel"] = (data) =>
                 {
                     try
@@ -715,20 +647,6 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Dictionary<string, Func<T, Task<T>>> processor = new()
             {
-                ["RRUTypeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        RRUTypeModel result = await IRRUType.Update(data as RRUTypeModel, x => x.Id == Id);
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
                 ["SpectrumViewModel"] = async (data) =>
                 {
                     try
@@ -850,22 +768,6 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Dictionary<string, Func<T, Task<T>>> processor = new()
             {
-                ["RRUTypeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string spectrumId = (data as RRUTypeModel).Id;
-                        RRUTypeModel result = await IRRUType.Delete(data as RRUTypeModel, x => x.Id == spectrumId);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
                 ["SpectrumViewModel"] = async (data) =>
                 {
                     try
@@ -1003,19 +905,6 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             Dictionary<string, Func<T, Task<T>>> processor = new()
             {
-                ["RRUTypeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-                        RRUTypeModel result = await IRRUType.Create(data as RRUTypeModel);
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
                 ["SpectrumViewModel"] = async (data) =>
                 {
                     try
@@ -1149,7 +1038,6 @@ namespace Project.V1.Web.Pages.Acceptance
                     AntennaTypes = await IAntennaType.Get();
                     AntennaMakes = await IAntennaMake.Get();
                     ProjectTypes = await IProjectType.Get();
-                    RRUTypes = await IRRUType.Get();
                     TechTypes = await ITechType.Get();
                     BaseBands = await IBaseBand.Get();
                     SummerConfigs = await ISummerConfig.Get();
