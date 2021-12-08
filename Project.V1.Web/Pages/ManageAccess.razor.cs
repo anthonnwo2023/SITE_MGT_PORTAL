@@ -842,7 +842,7 @@ namespace Project.V1.Web.Pages
                         ProjectClaims = UserClaims.SelectMany(x => x.Claims).ToList();
 
                         StateHasChanged();
-                        ApplicationUsers = await IUser.GetUsers();
+                        ApplicationUsers = (await IUser.GetUsers()).ToList();
                         ApplicationUsers.ForEach((user) =>
                         {
                             VendorModel mtnVendor = Vendors.First(y => y.Name == "MTN Nigeria");
@@ -950,19 +950,20 @@ namespace Project.V1.Web.Pages
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
                 string Id = (string)args.PrimaryKeyValue;
+                var oldEntry = ApplicationUsers.Any(x => x.Id == Id);
 
                 if (model == "ApplicationUser")
                 {
-                    Id = ApplicationUsers.FirstOrDefault(x => x.Id == Id)?.Id;
+                    //Id = ApplicationUsers.FirstOrDefault(x => x.Id == Id)?.Id;
                     ((dynamic)args.Data).Roles = SelectedUserRoles;
                     ((dynamic)args.Data).Projects = ProjectClaims.Where(x => SelectedUserProjects.Contains(x.Id)).ToList();
                     ((dynamic)args.Data).Regions = Regions.Where(x => SelectedUserRegions.Contains(x.Id)).ToList();
                 }
 
-                if (Id == null)
+                if (!oldEntry)
                 {
                     T SavedData = await DoAddNew(args.Data, model);
-                    args.PrimaryKeyValue = ((dynamic)SavedData)?.Id;
+                    //args.PrimaryKeyValue = ((dynamic)SavedData)?.Id;
                     ((dynamic)args.Data).Id = ((dynamic)SavedData)?.Id;
                 }
                 else

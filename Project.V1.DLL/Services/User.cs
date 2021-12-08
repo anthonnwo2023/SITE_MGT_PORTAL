@@ -135,7 +135,6 @@ namespace Project.V1.Lib.Services
 
                 NewUser = user;
                 NewUser.UserName = user.UserName.ToLower();
-                NewUser.Id = Guid.NewGuid().ToString();
                 NewUser.DateCreated = DateTimeOffset.UtcNow.DateTime;
                 NewUser.LastLoginDate = DateTimeOffset.UtcNow.DateTime;
                 NewUser.IsActive = true;
@@ -144,19 +143,21 @@ namespace Project.V1.Lib.Services
 
                 foreach (var region in user.Regions)
                 {
-                    regions.Add(await _region.GetById(x => x.Id == region.Id));
+                    regions.Add(_region.GetById(x => x.Id == region.Id).Result);
                 }
 
                 NewUser.Regions = new List<RegionViewModel>();
                 NewUser.Regions.AddRange(regions);
 
-                IdentityResult result = (Password != null) ? await _userManager.CreateAsync(NewUser, Password) : await _userManager.CreateAsync(NewUser, "0004Fa1c-H!!3f7-47f4-9e58-25c9001d5426");
+                IdentityResult result = (Password != null) ? _userManager.CreateAsync(NewUser, Password).Result : _userManager.CreateAsync(NewUser, "0004Fa1c-H!!3f7-47f4-9e58-25c9001d5426").Result;
 
                 if (result.Succeeded)
                 {
                     foreach (string roleId in RoleIds)
                     {
-                        await _userManager.AddToRoleAsync(user, (await _roleManager.FindByIdAsync(roleId)).Name);
+                        var roleName = (_roleManager.FindByIdAsync(roleId).Result).Name;
+
+                        await _userManager.AddToRoleAsync(user, roleName);
                     }
                 }
 
