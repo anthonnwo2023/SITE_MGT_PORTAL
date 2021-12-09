@@ -63,7 +63,6 @@ namespace Project.V1.Lib.Services.Login
 
                         user.Roles = (await LoginObject.User.GetUserRoles(user)).ToArray();
                         await LoginObject.SignInManager.SignInAsync(user, true);
-                        LoginObject.ContextAccessor.HttpContext.User = await LoginObject.SignInManager.CreateUserPrincipalAsync(user);
 
                         return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, SignInResult.Success, userADData);
                     }

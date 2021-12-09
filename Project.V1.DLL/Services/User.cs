@@ -138,6 +138,7 @@ namespace Project.V1.Lib.Services
                 NewUser.DateCreated = DateTimeOffset.UtcNow.DateTime;
                 NewUser.LastLoginDate = DateTimeOffset.UtcNow.DateTime;
                 NewUser.IsActive = true;
+                NewUser.IsNewPassword = true;
                 NewUser.UserType = (userVendor.Id == MTN_Vendor.Id) ? WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("Internal")) : WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("External"));
                 //NewUser.UserType = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("External"));
 
@@ -346,12 +347,16 @@ namespace Project.V1.Lib.Services
                     result = await _userManager.UpdateAsync(userExists);
 
                     if (Password != null)
-                    {
-                        //await _userManager.RemovePasswordAsync(userExists);
-                        //await _userManager.AddPasswordAsync(userExists, Password);
-
+                    {     
                         string token = await _userManager.GeneratePasswordResetTokenAsync(userExists);
                         IdentityResult resultChangedPW = await _userManager.ResetPasswordAsync(userExists, token, Password);
+
+                        if(resultChangedPW.Succeeded)
+                        {
+                            userExists.IsNewPassword = true;
+
+                            result = await _userManager.UpdateAsync(userExists);
+                        }
                     }
 
                     if (result.Succeeded)

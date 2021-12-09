@@ -79,6 +79,7 @@ namespace Project.V1.DLL.Helpers
         {
             SignInResponse response = new()
             {
+                User = user,
                 UserType = user?.UserType,
                 Result = result,
                 Message = message,

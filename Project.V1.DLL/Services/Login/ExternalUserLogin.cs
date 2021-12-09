@@ -23,7 +23,6 @@ namespace Project.V1.Lib.Services.Login
             {
                 user.Roles = (await LoginObject.User.GetUserRoles(user)).ToArray();
                 SignInResult result = await LoginObject.SignInManager.PasswordSignInAsync(username, password, true, lockoutOnFailure: true);
-                LoginObject.ContextAccessor.HttpContext.User = await LoginObject.SignInManager.CreateUserPrincipalAsync(user);
                 return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, result);
             }
 

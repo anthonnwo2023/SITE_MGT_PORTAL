@@ -4,6 +4,8 @@ namespace Project.V1.Models
 {
     public class SignInResponse
     {
+        public ApplicationUser User { get; set; }
+
         public string UserType { get; set; } = "";
 
         public string Message { get; set; }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Models;
 using Serilog;
@@ -35,7 +36,7 @@ namespace Project.V1.Web.Pages
         public class InputModel
         {
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -85,7 +86,8 @@ namespace Project.V1.Web.Pages
             try
             {
                 string token = await UserManager.GeneratePasswordResetTokenAsync(UserData);
-                IdentityResult resultChangedPW = await UserManager.ResetPasswordAsync(UserData, token, Input.Password);
+
+                IdentityResult resultChangedPW = UserManager.ResetPasswordAsync(UserData, token, Input.Password).Result;
 
                 if (resultChangedPW.Succeeded)
                 {
@@ -95,6 +97,13 @@ namespace Project.V1.Web.Pages
                     IsUpdateSuccessful = true;
 
                     PwdChgMessage = "Password Changed Successfully.";
+                }
+                else
+                {
+                    PwdChgMessage = $"Password failed to change. Please try again later";
+                    Log.Logger.Error(string.Join(". ", resultChangedPW.Errors));
+
+                    ShowUpdateNotification = true;
                 }
 
                 ShowUpdateNotification = true;

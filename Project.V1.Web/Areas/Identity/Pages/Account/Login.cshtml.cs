@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Lib.Interfaces;
+using Project.V1.Lib.Services;
 using Project.V1.Lib.Services.Login;
 using Project.V1.Models;
 using System;
@@ -24,11 +26,14 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
         private readonly IVendor _vendor;
         private readonly IUser _user;
         private readonly ICLogger _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public LoginModel(ICLogger logger, IVendor vendor, IConfiguration configuration, IUser user)
+        public LoginModel(SignInManager<ApplicationUser> signInManager,
+           ICLogger logger, IVendor vendor, IConfiguration configuration, IUser user)
         {
             _logger = logger;
             Configuration = configuration;
+            _signInManager = signInManager;
             _user = user;
             _vendor = vendor;
         }
@@ -79,9 +84,9 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
                 TempData["IsLoggingIn"] = true;
 
                 // Clear the existing external cookie to ensure a clean login process
-                //await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-                //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
                 ReturnUrl = returnUrl;
             }
@@ -107,12 +112,15 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
         [SupportedOSPlatform("windows")]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null, string atype = null)
         {
+            returnUrl ??= Url.Content("~/");
+
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             _logger.LogInformation("Starting the user login process. ", new { Input.Username, Vendor = Input.VendorId });
 
             try
             {
-                if (LoginObject.Vendor == null)
-                    LoginObject.InitObjects();
+                LoginObject.InitObjects();
 
                 SignInResponse UserSignInResult = new();
 
@@ -153,7 +161,8 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
                 _logger.LogInformation("User logged in.", new { });
                 string atye = (atype != null) ? "&atype=" + atype : "";
 
-                await _user.GenerateScope(User);
+                LoginObject.ContextAccessor.HttpContext.User = await LoginObject.SignInManager.CreateUserPrincipalAsync(signInResponse.User);
+
                 return GetRedirectPath(returnUrl, signInResponse, atye, Input.Password);
             }
             if (signInResponse.Result.IsNotAllowed)
@@ -177,7 +186,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
         private IActionResult GetRedirectPath(string returnUrl, SignInResponse UserSignInResult, string atye, string password)
         {
 
-            if (UserShouldResetPassword(password))
+            if (UserShouldResetPassword(password) || UserSignInResult.User.IsNewPassword)
             {
                 return LocalRedirect($"{Request.PathBase}/profile");
             }
