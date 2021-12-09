@@ -112,8 +112,6 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
         [SupportedOSPlatform("windows")]
         public async Task<IActionResult> OnPostAsync(string returnUrl = null, string atype = null)
         {
-            returnUrl ??= Url.Content("~/");
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             _logger.LogInformation("Starting the user login process. ", new { Input.Username, Vendor = Input.VendorId });
