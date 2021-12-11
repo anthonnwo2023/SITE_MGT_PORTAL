@@ -120,7 +120,7 @@ namespace Project.V1.Web.Pages
         {
             return app switch
             {
-                "SA" => "images/dashbord-img.jpg",
+                "SA" => "images/site-accept.jpg",
                 "HS" => "images/holistic.jpg",
                 "LS" => "images/live.jpg",
                 "EM" => "images/eq-matching.jpg",
