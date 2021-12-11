@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Project.V1.Models;
+using System;
+using System.Configuration;
 
 namespace Project.V1.Data
 {
@@ -16,7 +19,7 @@ namespace Project.V1.Data
         {
             base.OnModelCreating(modelBuilder); // MUST go first.
 
-            modelBuilder.HasDefaultSchema("INHOUSE_DEV"); // Use uppercase!
+            //modelBuilder.HasDefaultSchema("INHOUSE_DEV"); // Use uppercase!
 
             modelBuilder.Entity<ApplicationUser>().ToTable("TBL_RFACCEPT_ASP_USERS");
             modelBuilder.Entity<IdentityRole>().ToTable("TBL_RFACCEPT_ASP_ROLES");
@@ -27,6 +30,28 @@ namespace Project.V1.Data
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("TBL_RFACCEPT_ASP_USERTOKENS");
 
             modelBuilder.Entity("ApplicationUserRegionViewModel").ToTable("TBL_RFACCEPT_USERREGION");
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            var environmentName =
+                Environment.GetEnvironmentVariable(
+                    "ASPNETCORE_ENVIRONMENT");
+
+            var basePath = AppContext.BaseDirectory;
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(basePath)
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{environmentName}.json", true)
+                .AddEnvironmentVariables();
+
+            var config = builder.Build();
+
+            options.UseLazyLoadingProxies();
+            options.UseOracle(
+                config.GetConnectionString("OracleConnection")
+                );
         }
 
         public DbSet<RequestViewModel> Requests { get; set; }

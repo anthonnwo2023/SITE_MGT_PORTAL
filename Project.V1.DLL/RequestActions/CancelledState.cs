@@ -49,7 +49,7 @@ namespace Project.V1.DLL.RequestActions
                     {
                         Name = "Hello " + request.Requester.Name,
                         Title = "Update Notification on Request - See Below Request Details",
-                        Greetings = $"NWG NAPO Site Acceptance Request : <font color='red'><b>Request Cancelled</b></font> - See Details below:",
+                        Greetings = $"Site Acceptance Request : <font color='red'><b>Request Cancelled</b></font> - See Details below:",
                         Comment = "",
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
@@ -69,7 +69,7 @@ namespace Project.V1.DLL.RequestActions
                     {
                         Name = "Hello " + request.EngineerAssigned.Fullname,
                         Title = "Update Notification on Request - See Below Request Details",
-                        Greetings = $"NWG NAPO Site Acceptance Request : <font color='red'><b>Request Cancelled</b></font> - See Details below:",
+                        Greetings = $"Site Acceptance Request : <font color='red'><b>Request Cancelled</b></font> - See Details below:",
                         Comment = "",
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),

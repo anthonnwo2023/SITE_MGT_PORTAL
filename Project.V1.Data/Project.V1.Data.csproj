@@ -5,13 +5,55 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApplicationContextFactory.cs" />
+    <Compile Remove="DbContextFactoryBase.cs" />
     <Compile Remove="Interfaces\ICLogger.cs" />
     <Compile Remove="Interfaces\IGenericRepo.cs" />
+    <Compile Remove="Migrations\20211018001433_Initial-Commit.cs" />
+    <Compile Remove="Migrations\20211018001433_Initial-Commit.Designer.cs" />
+    <Compile Remove="Migrations\20211019015939_Request.Engineer.cs" />
+    <Compile Remove="Migrations\20211019015939_Request.Engineer.Designer.cs" />
+    <Compile Remove="Migrations\20211021195359_Request.Revamp-AntennaMake.cs" />
+    <Compile Remove="Migrations\20211021195359_Request.Revamp-AntennaMake.Designer.cs" />
+    <Compile Remove="Migrations\20211021205911_Request.IWaiverUpload.cs" />
+    <Compile Remove="Migrations\20211021205911_Request.IWaiverUpload.Designer.cs" />
+    <Compile Remove="Migrations\20211023172500_SeparateBandwith-Spectrum.cs" />
+    <Compile Remove="Migrations\20211023172500_SeparateBandwith-Spectrum.Designer.cs" />
+    <Compile Remove="Migrations\20211025141615_Request.SetRequired.cs" />
+    <Compile Remove="Migrations\20211025141615_Request.SetRequired.Designer.cs" />
+    <Compile Remove="Migrations\20211026213032_User.MultiRegion.cs" />
+    <Compile Remove="Migrations\20211026213032_User.MultiRegion.Designer.cs" />
+    <Compile Remove="Migrations\20211027005603_Request.RequesterVendor.cs" />
+    <Compile Remove="Migrations\20211027005603_Request.RequesterVendor.Designer.cs" />
+    <Compile Remove="Migrations\20211104131432_Request.RET-CarrieAggr.cs" />
+    <Compile Remove="Migrations\20211104131432_Request.RET-CarrieAggr.Designer.cs" />
+    <Compile Remove="Migrations\20211104150656_Request.DRPRequired.cs" />
+    <Compile Remove="Migrations\20211104150656_Request.DRPRequired.Designer.cs" />
+    <Compile Remove="Migrations\20211108204614_Request.UnRequiredDrp.cs" />
+    <Compile Remove="Migrations\20211108204614_Request.UnRequiredDrp.Designer.cs" />
+    <Compile Remove="Migrations\20211124120623_Request.State-DoubleProjectYear.cs" />
+    <Compile Remove="Migrations\20211124120623_Request.State-DoubleProjectYear.Designer.cs" />
+    <Compile Remove="Migrations\20211125115659_UniqueSite-IDSpectrum.cs" />
+    <Compile Remove="Migrations\20211125115659_UniqueSite-IDSpectrum.Designer.cs" />
+    <Compile Remove="Migrations\20211125141927_Request.TowerHeight.cs" />
+    <Compile Remove="Migrations\20211125141927_Request.TowerHeight.Designer.cs" />
+    <Compile Remove="Migrations\20211206144341_Request.rrutypr-string.cs" />
+    <Compile Remove="Migrations\20211206144341_Request.rrutypr-string.Designer.cs" />
+    <Compile Remove="Migrations\20211206205825_Request.ProjectName.cs" />
+    <Compile Remove="Migrations\20211206205825_Request.ProjectName.Designer.cs" />
+    <Compile Remove="Migrations\20211211015418_RemoveHasDefSchema.cs" />
+    <Compile Remove="Migrations\20211211015418_RemoveHasDefSchema.Designer.cs" />
+    <Compile Remove="Migrations\Production\20211211015603_Prod-InitialCommit.cs" />
+    <Compile Remove="Migrations\Production\20211211015603_Prod-InitialCommit.Designer.cs" />
+    <Compile Remove="Migrations\Staging\20211211023859_Staging-InitialCommit.cs" />
+    <Compile Remove="Migrations\Staging\20211211023859_Staging-InitialCommit.Designer.cs" />
+    <Compile Remove="StageAppDBContext.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.0" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="6.21.4" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.41" />
   </ItemGroup>
@@ -23,6 +65,8 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\" />
+    <Folder Include="Migrations\Production\" />
+    <Folder Include="Migrations\Staging\" />
   </ItemGroup>
 
 </Project>

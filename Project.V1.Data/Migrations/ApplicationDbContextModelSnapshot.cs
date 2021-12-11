@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using Project.V1.Data;
 
-namespace Project.V1.Data.Migrations
+#nullable disable
+
+namespace Project.V1.Data.Migrations.Staging
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -15,10 +17,10 @@ namespace Project.V1.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("INHOUSE_DEV")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
-                .HasAnnotation("Oracle:ValueGenerationStrategy", OracleValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("ApplicationUserRegionViewModel", b =>
                 {
@@ -32,7 +34,7 @@ namespace Project.V1.Data.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("TBL_RFACCEPT_USERREGION");
+                    b.ToTable("TBL_RFACCEPT_USERREGION", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -59,15 +61,16 @@ namespace Project.V1.Data.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("\"NormalizedName\" IS NOT NULL");
 
-                    b.ToTable("TBL_RFACCEPT_ASP_ROLES");
+                    b.ToTable("TBL_RFACCEPT_ASP_ROLES", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)")
-                        .HasAnnotation("Oracle:ValueGenerationStrategy", OracleValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("NUMBER(10)");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("NVARCHAR2(2000)");
@@ -83,15 +86,16 @@ namespace Project.V1.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("TBL_RFACCEPT_ASP_ROLECLAIMS");
+                    b.ToTable("TBL_RFACCEPT_ASP_ROLECLAIMS", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)")
-                        .HasAnnotation("Oracle:ValueGenerationStrategy", OracleValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("NUMBER(10)");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("NVARCHAR2(2000)");
@@ -107,7 +111,7 @@ namespace Project.V1.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TBL_RFACCEPT_ASP_USERCLAIMS");
+                    b.ToTable("TBL_RFACCEPT_ASP_USERCLAIMS", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -131,7 +135,7 @@ namespace Project.V1.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TBL_RFACCEPT_ASP_USERLOGINS");
+                    b.ToTable("TBL_RFACCEPT_ASP_USERLOGINS", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -146,7 +150,7 @@ namespace Project.V1.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("TBL_RFACCEPT_ASP_USERROLES");
+                    b.ToTable("TBL_RFACCEPT_ASP_USERROLES", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -167,7 +171,7 @@ namespace Project.V1.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("TBL_RFACCEPT_ASP_USERTOKENS");
+                    b.ToTable("TBL_RFACCEPT_ASP_USERTOKENS", (string)null);
                 });
 
             modelBuilder.Entity("Project.V1.Models.AntennaMakeModel", b =>
@@ -304,7 +308,7 @@ namespace Project.V1.Data.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("TBL_RFACCEPT_ASP_USERS");
+                    b.ToTable("TBL_RFACCEPT_ASP_USERS", (string)null);
                 });
 
             modelBuilder.Entity("Project.V1.Models.BaseBandModel", b =>
@@ -504,6 +508,44 @@ namespace Project.V1.Data.Migrations
                     b.ToTable("TBL_RFACCEPT_APPROVER");
                 });
 
+            modelBuilder.Entity("Project.V1.Models.RequesterData", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("VendorId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VendorId");
+
+                    b.ToTable("TBL_RFACCEPT_REQUEST_REQUESTER");
+                });
+
             modelBuilder.Entity("Project.V1.Models.RequestViewModel", b =>
                 {
                     b.Property<string>("Id")
@@ -673,44 +715,6 @@ namespace Project.V1.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("TBL_RFACCEPT_REQUESTS");
-                });
-
-            modelBuilder.Entity("Project.V1.Models.RequesterData", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("NVARCHAR2(450)");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("NVARCHAR2(2000)");
-
-                    b.Property<string>("VendorId")
-                        .HasColumnType("NVARCHAR2(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VendorId");
-
-                    b.ToTable("TBL_RFACCEPT_REQUEST_REQUESTER");
                 });
 
             modelBuilder.Entity("Project.V1.Models.SpectrumViewModel", b =>
@@ -903,6 +907,15 @@ namespace Project.V1.Data.Migrations
                     b.Navigation("Vendor");
                 });
 
+            modelBuilder.Entity("Project.V1.Models.RequesterData", b =>
+                {
+                    b.HasOne("Project.V1.Models.VendorModel", "Vendor")
+                        .WithMany()
+                        .HasForeignKey("VendorId");
+
+                    b.Navigation("Vendor");
+                });
+
             modelBuilder.Entity("Project.V1.Models.RequestViewModel", b =>
                 {
                     b.HasOne("Project.V1.Models.AntennaMakeModel", "AntennaMake")
@@ -974,15 +987,6 @@ namespace Project.V1.Data.Migrations
                     b.Navigation("SummerConfig");
 
                     b.Navigation("TechType");
-                });
-
-            modelBuilder.Entity("Project.V1.Models.RequesterData", b =>
-                {
-                    b.HasOne("Project.V1.Models.VendorModel", "Vendor")
-                        .WithMany()
-                        .HasForeignKey("VendorId");
-
-                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("Project.V1.Models.SpectrumViewModel", b =>

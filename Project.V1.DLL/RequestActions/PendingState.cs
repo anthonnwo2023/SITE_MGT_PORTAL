@@ -67,7 +67,7 @@ namespace Project.V1.DLL.RequestActions
                     {
                         Name = "Hello " + user.Fullname,
                         Title = "Notification of New Request - See Below Request Details",
-                        Greetings = $"NWG NAPO Site Acceptance Request : <font color='blue'><b>New Request</b></font> - See Details below:",
+                        Greetings = $"Site Acceptance Request : <font color='blue'><b>New Request</b></font> - See Details below:",
                         Comment = "",
                         BodyType = "",
                         M2Uname = user.UserName.ToLower().Trim(),

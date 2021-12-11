@@ -279,7 +279,7 @@ namespace Project.V1.Lib.Helpers
                 To = emailObj.To,
                 CC = emailObj.CC,
                 Subject = ($"Site Acceptance Bulk Request - {mailRequestObject.BatchNumber} {role} Notice").Replace("  ", " "),
-                From = new SenderBody { Name = "NAPO SMP Portal", Address = "smp_request@mtnnigeria.net" },
+                From = new SenderBody { Name = "SMP Portal", Address = "smp_request@mtnnigeria.net" },
                 Request = mailRequestObject,
                 MailToUsername = emailObj.M2Uname,
                 Comment = emailObj.Comment,

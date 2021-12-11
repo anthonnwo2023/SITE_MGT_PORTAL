@@ -34,9 +34,12 @@ namespace Project.V1.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        //private readonly IWebHostEnvironment _env;
+
+        public Startup(IConfiguration configuration/*, IWebHostEnvironment env*/)
         {
             Configuration = configuration;
+            ///_env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -45,14 +48,13 @@ namespace Project.V1.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseLazyLoadingProxies();
-                options.UseOracle(
-                    Configuration.GetConnectionString("OracleConnection")
-                    );
-                //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
+            services.AddDbContext<ApplicationDbContext>();
+
+            //set ASPNETCORE_ENVIRONMENT=Production
+            //if (_env.IsProduction())
+            //    services.AddDbContext<ApplicationDbContext>();
+            //else
+            //    services.AddDbContext<ApplicationDbContext, StageAppDBContext>();
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
@@ -134,11 +136,14 @@ namespace Project.V1.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
         {
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTQ0NTg3QDMxMzkyZTMzMmUzMFY4MGRvNmFCOG5vdmFxRVcxSTUySllsS2hPcnhjUlRjSUFUbytSNUZ4blk9;NTQ0NTg4QDMxMzkyZTMzMmUzMGc1U1dzaDV4Q0ZxUkZJdE1HUjNJSXB6SDhRM0QyakMzOTlGTWxQNjFuQUU9");
 
             ServiceActivator.Configure(app.ApplicationServices);
+
+            // migrate any database changes on startup (includes initial db creation)
+            context.Database.Migrate();
 
             if (env.IsDevelopment())
             {

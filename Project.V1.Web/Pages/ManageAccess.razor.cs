@@ -799,11 +799,11 @@ namespace Project.V1.Web.Pages
                         Principal = (await AuthenticationStateTask).User;
                         ApplicationUser userData = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                        Vendors = await IVendor.Get();
-                        Regions = await IRegion.Get();
+                        Vendors = (await IVendor.Get()).OrderBy(x => x.Name).ToList();
+                        Regions = (await IRegion.Get()).OrderBy(x => x.Name).ToList();
                         StateHasChanged();
 
-                        RoleClaims = (await Claim.Get(x => x.IsActive)).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name).Select(async x => new ClaimListManager
+                        RoleClaims = (await Claim.Get(x => x.IsActive)).OrderBy(x => x.Category.Name).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name).Select(async x => new ClaimListManager
                         {
                             Category = x.Key,
                             Claims = await x.ToList().FormatClaimSelection()
@@ -811,7 +811,7 @@ namespace Project.V1.Web.Pages
 
                         var ActiveClaims = await Claim.Get(y => y.IsActive);
 
-                        IdentityRoles = await Task.FromResult((await Role.Roles.ToListAsync()).Select(x =>
+                        IdentityRoles = await Task.FromResult((await Role.Roles.ToListAsync()).OrderBy(x => x.Name).Select(x =>
                         {
                             dynamic d = new ExpandoObject();
                             d.Id = x.Id;
@@ -831,7 +831,7 @@ namespace Project.V1.Web.Pages
                         }).Cast<ExpandoObject>().ToList());
 
                         ClaimModels = (await IClaim.Get()).OrderBy(x => x.ClaimName).ToList();
-                        ClaimCategories = (await IClaimCategory.Get()).ToList();
+                        ClaimCategories = (await IClaimCategory.Get()).OrderBy(x => x.Name).ToList();
 
                         UserClaims = ActiveClaims.Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                         {
@@ -839,10 +839,10 @@ namespace Project.V1.Web.Pages
                             Claims = u.ToList().FormatClaimSelection().GetAwaiter().GetResult()
                         }).ToList();
 
-                        ProjectClaims = UserClaims.SelectMany(x => x.Claims).ToList();
+                        ProjectClaims = UserClaims.SelectMany(x => x.Claims).OrderBy(x => x.ClaimName).ToList();
 
                         StateHasChanged();
-                        ApplicationUsers = (await IUser.GetUsers()).ToList();
+                        ApplicationUsers = (await IUser.GetUsers()).OrderBy(x => x.Vendor.Name).ToList();
                         ApplicationUsers.ForEach((user) =>
                         {
                             VendorModel mtnVendor = Vendors.First(y => y.Name == "MTN Nigeria");
