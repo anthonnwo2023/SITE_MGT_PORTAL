@@ -201,6 +201,7 @@ namespace Project.V1.Models
                                                                     <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
                                                                 </p>
                                                                 <p><b>" + Greetings + @"</b></p>
+                                                                <p> Region : <b>" + ((dynamic)Request).Region.Name + @" </b></p>
                                                                 <p> Unique Id : <b>" + ((dynamic)Request).UniqueId + @"</b></p>
                                                                 <p> Requester : <b>" + ((dynamic)Request).Requester.Name + @" </b></p>
                                                                 <p> Email : <b>" + ((dynamic)Request).Requester.Email + @" </b></p>
@@ -302,6 +303,7 @@ namespace Project.V1.Models
                                                                     <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
                                                                 </p>                                                                
                                                                 <b><p>" + Greetings + @"</p></b>
+                                                                <p> Region : <b>" + Request.Region + @"</b></p>
                                                                 <p> Batch Number : <b>" + Request.BatchNumber + @"</b></p>
                                                                 <p> Request Count : <b>" + Request.RequestCount + @" </b></p>
                                                                 <p> Request Type : <b>" + Request.RequestType + @" </b></p>

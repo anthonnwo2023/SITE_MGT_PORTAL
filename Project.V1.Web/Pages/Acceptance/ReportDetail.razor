@@ -144,6 +144,37 @@ else
                         <ValidationMessage For="@(() => RequestModel.EngineerAssigned.DateApproved)" />
                     </div>
                 </div>
+                <div class="col-md-12 row">
+                    <div class="py-2 bg-light mb-3 col-12"></div>
+                    <h3 class="col-12">Requester</h3>
+
+                    <div class="py-1 bg-light mb-3 col-12"></div>
+
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Name" Value="@RequestModel.Requester.Name" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Phone Number" Value="@RequestModel.Requester.Phone" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Email" Value="@RequestModel.Requester.Email" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Vendor" Value="@RequestModel.Requester.Vendor.Name" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </EditForm>

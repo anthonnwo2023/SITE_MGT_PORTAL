@@ -929,7 +929,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                             if (ValidateRow(request) == false)
                             {
-                                BulkUploadError = $"Invalid Excel Template uploaded. Foreign Key Mismatch/Error on row:  {dt.Rows.IndexOf(row) + 1}, col: {BulkUploadColumnError}";
+                                BulkUploadError = $"Invalid Excel Template uploaded. Error on row:  {dt.Rows.IndexOf(row) + 1}, column: {BulkUploadColumnError}";
                                 requests = new();
                                 break;
                             }
@@ -963,25 +963,25 @@ namespace Project.V1.Web.Pages.Acceptance
             && IsFKValid(x => x.Name.ToUpper() == request.ProjectNameId.ToUpper(), Projects)
             && IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes);
 
-            if (request.SiteName == null)
+            if (string.IsNullOrEmpty(request.SiteName))
             {
                 BulkUploadColumnError = "Site Name";
                 result = false;
             }
 
-            if (request.RRUType == null)
+            if (string.IsNullOrEmpty(request.RRUType))
             {
                 BulkUploadColumnError = "RRU Type";
                 result = false;
             }
 
-            if (request.Baseband == null)
-            {
-                BulkUploadColumnError = "Baseband";
-                result = false;
-            }
+            //if (string.IsNullOrEmpty(request.Baseband))
+            //{
+            //    BulkUploadColumnError = "Baseband";
+            //    result = false;
+            //}
 
-            if (request.SummerConfigId != null)
+            if (!string.IsNullOrEmpty(request.SummerConfigId))
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper(), SummerConfigs);
@@ -999,19 +999,19 @@ namespace Project.V1.Web.Pages.Acceptance
             //        && IsFKValid(x => x.Name.ToUpper() == request.BasebandId.ToUpper(), Basebands);
             //}
 
-            if (request.AntennaMakeId != null)
+            if (!string.IsNullOrEmpty(request.AntennaMakeId))
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper(), AntennaMakes);
             }
 
-            if (request.RETConfigured != null)
+            if (!string.IsNullOrEmpty(request.RETConfigured))
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.RETConfigured.ToUpper(), BoolDrops);
             }
 
-            if (request.AntennaTypeId != null)
+            if (!string.IsNullOrEmpty(request.AntennaTypeId))
             {
                 result = result
                     && IsFKValid(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper(), AntennaTypes);
@@ -1019,7 +1019,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
             if (RequestModel.TechTypeId != TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
             {
-                if (request.CarrierAggregation != null)
+                if (!string.IsNullOrEmpty(request.CarrierAggregation))
                 {
                     result = result
                         && IsFKValid(x => x.Name.ToUpper() == request.CarrierAggregation.ToUpper(), BoolDrops);
@@ -1035,7 +1035,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
             if (!isFound)
             {
-                BulkUploadColumnError = typeof(T).Name.Replace("Model", "");
+                BulkUploadColumnError = typeof(T).Name.Replace("Model", "").Replace("View", "");
             }
 
             return isFound;

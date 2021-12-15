@@ -27,12 +27,16 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
         [Inject] protected IRegion IRegion { get; set; }
         [Inject] protected ITechType ITechType { get; set; }
         [Inject] protected ISpectrum ISpectrum { get; set; }
+        [Inject] protected IProjects IProject { get; set; }
+        [Inject] protected IProjectType IProjectType { get; set; }
         [Inject] protected IUser IUser { get; set; }
 
         public List<RequestViewModel> RequestEngWorklists { get; set; }
         public List<RegionViewModel> Regions { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
         public List<SpectrumViewModel> Spectrums { get; set; }
+        public List<ProjectTypeModel> ProjectTypes { get; set; }
+        public List<ProjectModel> Projects { get; set; }
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
 
@@ -68,6 +72,8 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
                     Spectrums = await ISpectrum.Get(x => x.IsActive);
+                    ProjectTypes = await IProjectType.Get(x => x.IsActive);
+                    Projects = await IProject.Get(x => x.IsActive);
 
                     StateHasChanged();
                 }

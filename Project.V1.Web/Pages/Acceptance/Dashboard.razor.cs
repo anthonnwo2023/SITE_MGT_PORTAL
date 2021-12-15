@@ -94,11 +94,12 @@ namespace Project.V1.Web.Pages.Acceptance
                 "DAS INDOOR" => "Reactivation/Mobile/DAS/BURNT Accepted",
                 "DAS OUTDOOR" => "Reactivation/Mobile/DAS/BURNT Accepted",
                 "COLO" => "COLO Accepted",
-                "RT LEGACY" => "Rural Telephony",
-                "RT REVENUE SHARE" => "Rural Telephony",
-                "RT CAPEX" => "Rural Telephony",
+                //"RT LEGACY" => "Rural Telephony",
+                //"RT REVENUE SHARE" => "Rural Telephony",
+                //"RT CAPEX" => "Rural Telephony",
                 "UPGRADE" => "UPGRADE Accepted",
                 var pType when pType.Contains("UPGRADE") => "UPGRADE Accepted",
+                var pType when pType.StartsWith("RT ") => "Rural Telephony",
                 _ => projectType
             };
         }

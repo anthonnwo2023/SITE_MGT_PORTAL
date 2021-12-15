@@ -49,8 +49,12 @@ else
             <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit"
                            FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridForeignColumn>
-            @*<GridColumn Field="@nameof(RequestViewModel.FrequencyBand)" HeaderText="Frequency Band" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
-                </GridColumn>*@
+            <GridForeignColumn Field="@nameof(RequestViewModel.ProjectNameId)" HeaderText="Project Name" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Projects" EditType="EditType.DropDownEdit"
+                           FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridForeignColumn>
+            <GridForeignColumn Field="@nameof(RequestViewModel.ProjectTypeId)" HeaderText="Project Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@ProjectTypes" EditType="EditType.DropDownEdit"
+                           FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridForeignColumn>
             @*<GridColumn Field="@nameof(RequestViewModel.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                 </GridColumn>*@
             <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit">

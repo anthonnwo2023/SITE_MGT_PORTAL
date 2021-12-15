@@ -80,6 +80,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 //await Grid_RequestGroup.HideColumnsAsync(hiddenCols);
             }
         }
+
         protected async Task AuthenticationCheck(bool isAuthenticated)
         {
             if (isAuthenticated)
@@ -96,7 +97,7 @@ namespace Project.V1.Web.Pages.Acceptance
                         return;
                     }
 
-                    RequestsGroup = (await IRequest.Get(null, x => x.OrderByDescending(y => y.DateCreated))).GroupBy(x => x.SiteId)
+                    RequestsGroup = (await IRequest.Get(x => x.EngineerAssigned.DateApproved != DateTime.MinValue, x => x.OrderByDescending(y => y.DateCreated))).GroupBy(x => x.SiteId)
                         .Select(x => new RequestViewModel
                         {
                             SiteId = x.Key,

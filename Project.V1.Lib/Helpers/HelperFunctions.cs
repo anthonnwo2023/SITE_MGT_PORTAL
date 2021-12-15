@@ -270,6 +270,7 @@ namespace Project.V1.Lib.Helpers
             mailRequestObject.RequestType = requestType;
             mailRequestObject.DateCreated = request.DateCreated;
             mailRequestObject.Status = request.Status;
+            mailRequestObject.Region = request.Region.Name;
 
             MailerViewModel<T> mvm = new()
             {
@@ -278,7 +279,7 @@ namespace Project.V1.Lib.Helpers
                 Greetings = emailObj.Greetings,
                 To = emailObj.To,
                 CC = emailObj.CC,
-                Subject = ($"Site Acceptance Bulk Request - {mailRequestObject.BatchNumber} {role} Notice").Replace("  ", " "),
+                Subject = ($"Site Acceptance Bulk Request ({mailRequestObject.Region}) - {mailRequestObject.BatchNumber} {role} Notice").Replace("  ", " "),
                 From = new SenderBody { Name = "SMP Portal", Address = "smp_request@mtnnigeria.net" },
                 Request = mailRequestObject,
                 MailToUsername = emailObj.M2Uname,
@@ -304,7 +305,7 @@ namespace Project.V1.Lib.Helpers
                 Greetings = emailObj.Greetings,
                 To = emailObj.To,
                 CC = emailObj.CC,
-                Subject = ($"Site Acceptance Request - {((dynamic)mObj).BulkBatchNumber} {role} Notice").Replace("  ", " "),
+                Subject = ($"Site Acceptance Request ({((dynamic)mObj).Region.Name}) - {((dynamic)mObj).BulkBatchNumber} {role} Notice").Replace("  ", " "),
                 From = new SenderBody { Name = "SMP Portal", Address = "smp_request@mtnnigeria.net" },
                 Request = ((dynamic)mObj),
                 MailToUsername = emailObj.M2Uname,
