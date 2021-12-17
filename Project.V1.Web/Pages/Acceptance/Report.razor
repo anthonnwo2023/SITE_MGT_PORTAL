@@ -183,7 +183,7 @@ else
                         var ssvExt = Path.GetExtension(request.SSVReport);
                         var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
 
-                        <a target="_blank" href="Documents/SSV/@request.SSVReport" class="btn btn-warning">
+                        <a target="_blank" href="Documents/@((request.SSVReportIsWaiver) ? "Waiver" : "SSV")/@request.SSVReport" class="btn btn-warning">
                             <i class="fas fa-fw @((request.SSVReportIsWaiver) ? "fa-envelope": icon)"></i>
                         </a>
                     }
