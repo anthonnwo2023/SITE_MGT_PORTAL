@@ -160,9 +160,11 @@ namespace Project.V1.Lib.Services
 
                         await _userManager.AddToRoleAsync(user, roleName);
                     }
+
+                    return (true, NewUser.Id);
                 }
 
-                return (true, NewUser.Id);
+                return (false, string.Join(". ", result.Errors.Select(x => x.Description)));
             }
             catch
             {

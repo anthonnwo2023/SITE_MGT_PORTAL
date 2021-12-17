@@ -91,7 +91,7 @@ namespace Project.V1.Data
             }
         }
 
-        public async Task<T> Create(T item)
+        public async Task<(T, string)> Create(T item)
         {
             try
             {
@@ -103,17 +103,18 @@ namespace Project.V1.Data
                 {
                     ((dynamic)item).Id = Guid.NewGuid().ToString();
                     ((dynamic)item).DateCreated = DateTime.Now;
+
                     await entity.AddAsync(item);
 
                     await Save();
                 }
 
-                return item;
+                return (item, "");
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, new { }, ex);
-                return default;
+                return (default, ex.Message);
             }
         }
 
@@ -207,7 +208,7 @@ namespace Project.V1.Data
             }
         }
 
-        public async Task<T> Delete(T item, Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null)
+        public async Task<(T, string)> Delete(T item, Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null)
         {
             try
             {
@@ -225,16 +226,16 @@ namespace Project.V1.Data
                     await Save();
                 }
 
-                return item;
+                return (item, "");
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, new { }, ex);
-                return default;
+                return (default, ex.Message);
             }
         }
 
-        public async Task<T> Update(T item, Expression<Func<T, bool>> IdFilter)
+        public async Task<(T, string)> Update(T item, Expression<Func<T, bool>> IdFilter)
         {
             try
             {
@@ -252,13 +253,13 @@ namespace Project.V1.Data
                     entity.Update(itemObj);
                     await Save();
 
-                    return itemObj;
+                    return (itemObj, "");
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, new { }, ex);
-                return default;
+                return (default, ex.Message);
             }
         }
 

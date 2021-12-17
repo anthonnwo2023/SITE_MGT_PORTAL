@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,7 @@ namespace Project.V1.Models
         [Key]
         public string Id { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
         public string VendorId { get; set; }

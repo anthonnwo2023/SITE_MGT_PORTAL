@@ -366,7 +366,7 @@
             </div>
             <div class="form-group">
                 <label for="filePath" class="col-form-label custom-font" style="">@((WaiverUploadSelected) ? "Waiver Email" : "SSV Report")</label>
-                <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx")" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+                <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx, .ppt, .pptx")" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
                     @ref="SF_Uploader" @bind-Value="RequestModel.SSVReport">
                     <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange="OnFileSSVUploadChange"></UploaderEvents>
                 </SfUploader>

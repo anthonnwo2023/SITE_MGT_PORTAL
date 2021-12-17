@@ -8,10 +8,13 @@ using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Interfaces;
+using Project.V1.Lib.Services;
 using Project.V1.Models;
 using Syncfusion.Blazor.Calendars;
 using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
+using Syncfusion.Blazor.Notifications;
+using Syncfusion.Blazor.Notifications.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -82,6 +85,55 @@ namespace Project.V1.Web.Pages
         protected SfGrid<ApplicationUser> Grid_User { get; set; }
 
         public List<string> ToolbarItems = new() { "Add", "ColumnChooser", "Search" };
+
+        private string ToastPosition { get; set; } = "Right";
+        public string ToastTitle { get; set; } = "Error Notification";
+        public string ToastContent { get; set; }
+        public string ToastCss { get; set; } = "e-toast-danger";
+        protected SfToast ToastObj { get; set; }
+
+        private readonly List<ToastModel> Toast = new()
+        {
+            new ToastModel { Title = "Warning!", Content = "There was a problem with your network connection.", CssClass = "e-toast-warning", Icon = "e-warning toast-icons", Timeout = 0 },
+            new ToastModel { Title = "Success!", Content = "Your message has been sent successfully.", CssClass = "e-toast-success", Icon = "e-success toast-icons", Timeout = 0 },
+            new ToastModel { Title = "Error!", Content = "A problem has been occurred while submitting your data.", CssClass = "e-toast-danger", Icon = "e-error toast-icons", Timeout = 0 },
+            new ToastModel { Title = "Information!", Content = "Please read the comments carefully.", CssClass = "e-toast-info", Icon = "e-info toast-icons", Timeout = 0 }
+        };
+
+        private async void SuccessBtnOnClick()
+        {
+            Toast[1].Content = ToastContent;
+
+            await this.ToastObj.Show(Toast[1]);
+        }
+
+        private async void ErrorBtnOnClick()
+        {
+            Toast[2].Content = ToastContent;
+
+            await this.ToastObj.Show(Toast[2]);
+        }
+
+        public void OnToastClickHandler(ToastClickEventArgs args)
+        {
+            args.ClickToClose = true;
+        }
+
+        private async Task HandleOpResponse<T>(SfGrid<T> sfGrid, string error, T data) where T : class
+        {
+            if (error.Length == 0)
+            {
+                ToastContent = "Operation Successful.";
+                await Task.Delay(200);
+                SuccessBtnOnClick();
+            }
+            else
+            {
+                ToastContent = error;
+                await Task.Delay(200);
+                ErrorBtnOnClick();
+            }
+        }
 
         public IEditorSettings DropdownEditParams = new DropDownEditCellParams
         {
@@ -488,7 +540,10 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
 
-                        VendorModel result = await IVendor.Update(data as VendorModel, x => x.Id == Id);
+                        var (result, error) = await IVendor.Update(data as VendorModel, x => x.Id == Id);
+
+                        await HandleOpResponse(Grid_Vendor, error, data as VendorModel);
+
                         return result as T;
                     }
                     catch
@@ -530,7 +585,10 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
 
-                        ClaimViewModel result = await IClaim.Update(data as ClaimViewModel, x => x.Id == Id);
+                        var (result, error) = await IClaim.Update(data as ClaimViewModel, x => x.Id == Id);
+
+                        await HandleOpResponse(Grid_Claim, error, data as ClaimViewModel);
+
                         return result as T;
                     }
                     catch
@@ -544,7 +602,10 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
 
-                        ClaimCategoryModel result = await IClaimCategory.Update(data as ClaimCategoryModel, x => x.Id == Id);
+                        var (result, error) = await IClaimCategory.Update(data as ClaimCategoryModel, x => x.Id == Id);
+
+                        await HandleOpResponse(Grid_ClaimCategory, error, data as ClaimCategoryModel);
+
                         return result as T;
                     }
                     catch
@@ -593,7 +654,10 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
                         string projectId = (data as VendorModel).Id;
-                        VendorModel result = await IVendor.Delete(data as VendorModel, x => x.Id == projectId);
+                        var (result, error) = await IVendor.Delete(data as VendorModel, x => x.Id == projectId);
+
+                        await HandleOpResponse(Grid_Vendor, error, data as VendorModel);
+
                         return result as T;
                     }
                     catch
@@ -625,7 +689,10 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
                         string subCategoryId = (data as ClaimViewModel).Id;
-                        ClaimViewModel result = await IClaim.Delete(data as ClaimViewModel, x => x.Id == subCategoryId);
+                        var (result, error) = await IClaim.Delete(data as ClaimViewModel, x => x.Id == subCategoryId);
+
+                        await HandleOpResponse(Grid_Claim, error, data as ClaimViewModel);
+
                         return result as T;
                     }
                     catch
@@ -639,7 +706,10 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
                         string statusId = (data as ClaimCategoryModel).Id;
-                        ClaimCategoryModel result = await IClaimCategory.Delete(data as ClaimCategoryModel, x => x.Id == statusId);
+                        var (result, error) = await IClaimCategory.Delete(data as ClaimCategoryModel, x => x.Id == statusId);
+
+                        await HandleOpResponse(Grid_ClaimCategory, error, data as ClaimCategoryModel);
+
                         return result as T;
                     }
                     catch
@@ -675,8 +745,21 @@ namespace Project.V1.Web.Pages
                     try
                     {
                         cts.Token.ThrowIfCancellationRequested();
-                        VendorModel result = await IVendor.Create(data as VendorModel);
-                        return result as T;
+
+                        var Exists = await IVendor.GetById(x => x.Name == (data as VendorModel).Name);
+
+                        if (Exists == null)
+                        {
+                            var (result, error) = await IVendor.Create(data as VendorModel);
+
+                            await HandleOpResponse(Grid_Vendor, error, data as VendorModel);
+
+                            return result as T;
+                        }
+
+                        await HandleOpResponse(Grid_Vendor, "Duplicate entry found", data as VendorModel);
+
+                        return null;
                     }
                     catch
                     {
@@ -707,8 +790,11 @@ namespace Project.V1.Web.Pages
                             List<ClaimViewModel> userClaims = RoleClaims.Where(x => x.IsSelected).ToList();
 
                             await Role.AddRoleClaims(role, SelectedRolePermissions);
+
+                            await HandleOpResponse(Grid_IdentityRole, "", data as ExpandoObject);
                         }
 
+                        await HandleOpResponse(Grid_IdentityRole, $"An error as occured. {string.Join(". ", result.Errors.Select(x => x.Description))}", data as ExpandoObject);
                         return data;
                     }
                     catch
@@ -722,8 +808,20 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
 
-                        ClaimViewModel result = await IClaim.Create(data as ClaimViewModel);
-                        return result as T;
+                        var Exists = await IClaim.GetById(x => x.ClaimName == (data as ClaimViewModel).ClaimName);
+
+                        if (Exists == null)
+                        {
+                            var (result, error) = await IClaim.Create(data as ClaimViewModel);
+
+                            await HandleOpResponse(Grid_Claim, error, data as ClaimViewModel);
+
+                            return result as T;
+                        }
+
+                        await HandleOpResponse(Grid_Claim, "Duplicate entry found", data as ClaimViewModel);
+
+                        return null;
                     }
                     catch
                     {
@@ -736,8 +834,20 @@ namespace Project.V1.Web.Pages
                     {
                         cts.Token.ThrowIfCancellationRequested();
 
-                        ClaimCategoryModel result = await IClaimCategory.Create(data as ClaimCategoryModel);
-                        return result as T;
+                        var Exists = await IClaimCategory.GetById(x => x.Name == (data as ClaimCategoryModel).Name);
+
+                        if (Exists == null)
+                        {
+                            var (result, error) = await IClaimCategory.Create(data as ClaimCategoryModel);
+
+                            await HandleOpResponse(Grid_ClaimCategory, error, data as ClaimCategoryModel);
+
+                            return result as T;
+                        }
+
+                        await HandleOpResponse(Grid_ClaimCategory, "Duplicate entry found", data as ClaimCategoryModel);
+
+                        return null;
                     }
                     catch
                     {
@@ -752,19 +862,30 @@ namespace Project.V1.Web.Pages
 
                         var user = data as ApplicationUser;
 
-                        (bool result, string Id) = await IUser.CreateUser(user, SelectedUserPassword, SelectedUserRoles.ToList());
+                        (bool result, string response) = await IUser.CreateUser(user, SelectedUserPassword, SelectedUserRoles.ToList());
 
                         if (result)
                         {
                             List<ClaimViewModel> userClaims = UserClaims.SelectMany(x => x.Claims).Where(x => SelectedUserProjects.Contains(x.Id)).ToList();
 
                             await User.AddUserClaims(user, userClaims);
+
+                            ((dynamic)data).Regions = user.Regions;
+
+                            ToastContent = "Account created successfully.";
+                            await Task.Delay(200);
+                            SuccessBtnOnClick();
+
+                            return data;
                         }
 
-                        ((dynamic)data).Id = Id;
-                        ((dynamic)data).Regions = user.Regions;
+                        ToastContent = response;
+                        await Task.Delay(200);
+                        ErrorBtnOnClick();
 
-                        return data;
+                        await Grid_User.DeleteRow(user.Id);
+
+                        return null;
                     }
                     catch
                     {
@@ -780,6 +901,79 @@ namespace Project.V1.Web.Pages
         {
             //return (Principal != null) ? Principal.HasClaim(x => x.Type == claimName) : false;
             return (Principal != null) && Principal.HasClaim(x => x.Type == claimName);
+        }
+
+        private async Task InitData(string model = null)
+        {
+            var ActiveClaims = await Claim.Get(y => y.IsActive);
+
+            if (model == null || model == "VendorModel")
+                Vendors = (await IVendor.Get()).OrderBy(x => x.Name).ToList();
+
+            if (model == null || model == "IdentityRole")
+            {
+                RoleClaims = ActiveClaims.OrderBy(x => x.Category.Name).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name).Select(async x => new ClaimListManager
+                {
+                    Category = x.Key,
+                    Claims = await x.ToList().FormatClaimSelection()
+                }).SelectMany(x => (x.GetAwaiter().GetResult()).Claims).ToList();
+
+                IdentityRoles = await Task.FromResult((await Role.Roles.ToListAsync()).OrderBy(x => x.Name).Select(x =>
+                {
+                    dynamic d = new ExpandoObject();
+                    d.Id = x.Id;
+                    d.Name = x.Name;
+                    d.NormalizedName = x.NormalizedName;
+                    d.ConcurrencyStamp = x.ConcurrencyStamp;
+
+                    List<ClaimListManager> roleClaims = ActiveClaims.Where(z => z.Category.Name != "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                    {
+                        Category = u.Key,
+                        Claims = u.ToList().FormatClaimSelection(x)
+                    }).ToList();
+
+                    d.Permissions = roleClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
+
+                    return d;
+                }).Cast<ExpandoObject>().ToList());
+            }
+
+            if (model == null || model == "ClaimViewModel")
+                ClaimModels = (await IClaim.Get()).OrderBy(x => x.ClaimName).ToList();
+
+            if (model == null || model == "ClaimCategoryModel")
+                ClaimCategories = (await IClaimCategory.Get()).OrderBy(x => x.Name).ToList();
+
+            if (model == null || model == "ApplicationUser")
+            {
+                Regions = (await IRegion.Get()).OrderBy(x => x.Name).ToList();
+
+                UserClaims = ActiveClaims.Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                {
+                    Category = u.Key,
+                    Claims = u.ToList().FormatClaimSelection().GetAwaiter().GetResult()
+                }).ToList();
+
+                ProjectClaims = UserClaims.SelectMany(x => x.Claims).OrderBy(x => x.ClaimName).ToList();
+
+                ApplicationUsers = (await IUser.GetUsers()).OrderBy(x => x.Vendor.Name).ToList();
+
+                ApplicationUsers.ForEach((user) =>
+                {
+                    VendorModel mtnVendor = Vendors.First(y => y.Name == "MTN Nigeria");
+
+                    user.IsMTNUser = mtnVendor == null || !(mtnVendor.Id == user.VendorId);
+                    user.Roles = (IUser.GetUserRolesId(user).GetAwaiter().GetResult()).ToArray();
+                    List<ClaimListManager> userClaims = (Claim.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                    {
+                        Category = u.Key,
+                        Claims = u.ToList().FormatClaimSelection(user)
+                    }).ToList();
+
+                    user.Projects = userClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
+
+                });
+            }
         }
 
         protected async Task AuthenticationCheck(bool isAuthenticated)
@@ -799,65 +993,7 @@ namespace Project.V1.Web.Pages
                         Principal = (await AuthenticationStateTask).User;
                         ApplicationUser userData = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                        Vendors = (await IVendor.Get()).OrderBy(x => x.Name).ToList();
-                        Regions = (await IRegion.Get()).OrderBy(x => x.Name).ToList();
-                        StateHasChanged();
-
-                        RoleClaims = (await Claim.Get(x => x.IsActive)).OrderBy(x => x.Category.Name).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name).Select(async x => new ClaimListManager
-                        {
-                            Category = x.Key,
-                            Claims = await x.ToList().FormatClaimSelection()
-                        }).SelectMany(x => (x.GetAwaiter().GetResult()).Claims).ToList();
-
-                        var ActiveClaims = await Claim.Get(y => y.IsActive);
-
-                        IdentityRoles = await Task.FromResult((await Role.Roles.ToListAsync()).OrderBy(x => x.Name).Select(x =>
-                        {
-                            dynamic d = new ExpandoObject();
-                            d.Id = x.Id;
-                            d.Name = x.Name;
-                            d.NormalizedName = x.NormalizedName;
-                            d.ConcurrencyStamp = x.ConcurrencyStamp;
-
-                            List<ClaimListManager> roleClaims = ActiveClaims.Where(z => z.Category.Name != "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
-                            {
-                                Category = u.Key,
-                                Claims = u.ToList().FormatClaimSelection(x)
-                            }).ToList();
-
-                            d.Permissions = roleClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
-
-                            return d;
-                        }).Cast<ExpandoObject>().ToList());
-
-                        ClaimModels = (await IClaim.Get()).OrderBy(x => x.ClaimName).ToList();
-                        ClaimCategories = (await IClaimCategory.Get()).OrderBy(x => x.Name).ToList();
-
-                        UserClaims = ActiveClaims.Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
-                        {
-                            Category = u.Key,
-                            Claims = u.ToList().FormatClaimSelection().GetAwaiter().GetResult()
-                        }).ToList();
-
-                        ProjectClaims = UserClaims.SelectMany(x => x.Claims).OrderBy(x => x.ClaimName).ToList();
-
-                        StateHasChanged();
-                        ApplicationUsers = (await IUser.GetUsers()).OrderBy(x => x.Vendor.Name).ToList();
-                        ApplicationUsers.ForEach((user) =>
-                        {
-                            VendorModel mtnVendor = Vendors.First(y => y.Name == "MTN Nigeria");
-
-                            user.IsMTNUser = mtnVendor == null || !(mtnVendor.Id == user.VendorId);
-                            user.Roles = (IUser.GetUserRolesId(user).GetAwaiter().GetResult()).ToArray();
-                            List<ClaimListManager> userClaims = (Claim.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
-                            {
-                                Category = u.Key,
-                                Claims = u.ToList().FormatClaimSelection(user)
-                            }).ToList();
-
-                            user.Projects = userClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
-
-                        });
+                        await InitData();
                     });
                 }
                 catch (Exception ex)
@@ -950,11 +1086,13 @@ namespace Project.V1.Web.Pages
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
                 string Id = (string)args.PrimaryKeyValue;
-                var oldEntry = ApplicationUsers.Any(x => x.Id == Id);
+
+                var oldEntry = Id != null;
 
                 if (model == "ApplicationUser")
                 {
-                    //Id = ApplicationUsers.FirstOrDefault(x => x.Id == Id)?.Id;
+                    oldEntry = ApplicationUsers.Any(x => x.Id == Id);
+
                     ((dynamic)args.Data).Roles = SelectedUserRoles;
                     ((dynamic)args.Data).Projects = ProjectClaims.Where(x => SelectedUserProjects.Contains(x.Id)).ToList();
                     ((dynamic)args.Data).Regions = Regions.Where(x => SelectedUserRegions.Contains(x.Id)).ToList();
@@ -964,7 +1102,7 @@ namespace Project.V1.Web.Pages
                 {
                     T SavedData = await DoAddNew(args.Data, model);
                     //args.PrimaryKeyValue = ((dynamic)SavedData)?.Id;
-                    ((dynamic)args.Data).Id = ((dynamic)SavedData)?.Id;
+                    //((dynamic)args.Data).Id = ((dynamic)SavedData)?.Id;
                 }
                 else
                 {
@@ -992,14 +1130,7 @@ namespace Project.V1.Web.Pages
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
-                if (args.RowIndex == 0)
-                {
-                    await DoGridAddNew(args.RowData, model);
-                }
-                else
-                {
-                    await DoGridUpdate(args.RowIndex, args.Data, model);
-                }
+                await InitData(model);
 
                 if (model == "ApplicationUser")
                 {

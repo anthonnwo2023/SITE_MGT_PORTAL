@@ -5,12 +5,16 @@ using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Interfaces;
+using Project.V1.Lib.Services;
 using Project.V1.Models;
 using Syncfusion.Blazor.Calendars;
+using Syncfusion.Blazor.Charts;
 using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
+using Syncfusion.Blazor.Notifications;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,6 +45,39 @@ namespace Project.V1.Web.Pages.Acceptance
 
         public List<string> ToolbarItems = new() { "Add", "Search" };
 
+        private string ToastPosition { get; set; } = "Right";
+        public string ToastTitle { get; set; } = "Error Notification";
+        public string ToastContent { get; set; }
+        public string ToastCss { get; set; } = "e-toast-danger";
+        protected SfToast ToastObj { get; set; }
+
+        private readonly List<ToastModel> Toast = new()
+        {
+            new ToastModel { Title = "Warning!", Content = "There was a problem with your network connection.", CssClass = "e-toast-warning", Icon = "e-warning toast-icons", Timeout = 0 },
+            new ToastModel { Title = "Success!", Content = "Your message has been sent successfully.", CssClass = "e-toast-success", Icon = "e-success toast-icons", Timeout = 0 },
+            new ToastModel { Title = "Error!", Content = "A problem has been occurred while submitting your data.", CssClass = "e-toast-danger", Icon = "e-error toast-icons", Timeout = 0 },
+            new ToastModel { Title = "Information!", Content = "Please read the comments carefully.", CssClass = "e-toast-info", Icon = "e-info toast-icons", Timeout = 0 }
+        };
+
+        private async void SuccessBtnOnClick()
+        {
+            Toast[1].Content = ToastContent;
+
+            await this.ToastObj.Show(Toast[1]);
+        }
+
+        private async void ErrorBtnOnClick()
+        {
+            Toast[2].Content = ToastContent;
+
+            await this.ToastObj.Show(Toast[2]);
+        }
+
+        public void OnToastClickHandler(ToastClickEventArgs args)
+        {
+            args.ClickToClose = true;
+        }
+
         public IEditorSettings DropdownEditParams = new DropDownEditCellParams
         {
             Params = new DropDownListModel<object, object>() { AllowFiltering = true, ShowClearButton = true }
@@ -70,6 +107,22 @@ namespace Project.V1.Web.Pages.Acceptance
                 new PathInfo { Name = $"Vendor Setup", Link = "acceptance/setup/vendor" },
                 new PathInfo { Name = $"Acceptance", Link = "acceptance" },
             };
+        }
+
+        private async Task HandleOpResponse<T>(SfGrid<T> sfGrid, string error, T data) where T : class
+        {
+            if (error.Length == 0)
+            {
+                ToastContent = "Operation Successful.";
+                await Task.Delay(200);
+                SuccessBtnOnClick();
+            }
+            else
+            {
+                ToastContent = error;
+                await Task.Delay(200);
+                ErrorBtnOnClick();
+            }
         }
 
         private async Task DoReset<T>(T data, string model)
@@ -183,7 +236,10 @@ namespace Project.V1.Web.Pages.Acceptance
                     {
                         cts.Token.ThrowIfCancellationRequested();
 
-                        ProjectModel result = await IProjects.Update(data as ProjectModel, x => x.Id == Id);
+                        var (result, error) = await IProjects.Update(data as ProjectModel, x => x.Id == Id);
+
+                        await HandleOpResponse(Grid_Projects, error, data as ProjectModel);
+
                         return result as T;
                     }
                     catch
@@ -207,7 +263,10 @@ namespace Project.V1.Web.Pages.Acceptance
                         cts.Token.ThrowIfCancellationRequested();
 
                         string spectrumId = (data as ProjectModel).Id;
-                        ProjectModel result = await IProjects.Delete(data as ProjectModel, x => x.Id == spectrumId);
+                        var (result, error) = await IProjects.Delete(data as ProjectModel, x => x.Id == spectrumId);
+
+                        await HandleOpResponse(Grid_Projects, error, data as ProjectModel);
+
 
                         return result as T;
                     }
@@ -230,8 +289,21 @@ namespace Project.V1.Web.Pages.Acceptance
                     try
                     {
                         cts.Token.ThrowIfCancellationRequested();
-                        ProjectModel result = await IProjects.Create(data as ProjectModel);
-                        return result as T;
+
+                        var Exists = await IProjects.GetById(x => x.Name == (data as ProjectModel).Name && x.VendorId == (data as ProjectModel).VendorId);
+
+                        if (Exists == null)
+                        {
+                            var (result, error) = await IProjects.Create(data as ProjectModel);
+
+                            await HandleOpResponse(Grid_Projects, error, data as ProjectModel);
+
+                            return result as T;
+                        }
+
+                        await HandleOpResponse(Grid_Projects, "Duplicate entry found", data as ProjectModel);
+
+                        return null;
                     }
                     catch
                     {
@@ -246,6 +318,14 @@ namespace Project.V1.Web.Pages.Acceptance
         protected bool CheckClaimPermission(string claimName)
         {
             return Principal.HasClaim(x => x.Type == claimName);
+        }
+
+        private async Task InitData(string model = null)
+        {
+            if (model == null)
+                Vendors = await IVendor.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+            if (model == null || model == "ProjectModel")
+                Projects = (User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get(null, x => x.OrderBy(y => y.Name)) : await IProjects.Get(x => x.VendorId == User.VendorId);
         }
 
         protected async Task AuthenticationCheck(bool isAuthenticated)
@@ -264,9 +344,6 @@ namespace Project.V1.Web.Pages.Acceptance
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
                     CanEdit = User.Vendor.Name == "MTN Nigeria";
-
-                    Vendors = await IVendor.Get(x => x.IsActive);
-                    Projects = (User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get() : await IProjects.Get(x => x.VendorId == User.VendorId);
                 }
                 catch (Exception ex)
                 {
@@ -325,15 +402,7 @@ namespace Project.V1.Web.Pages.Acceptance
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
-                if (args.RowIndex == 0)
-                {
-                    await DoGridAddNew(args.RowData, model);
-                }
-                else
-                {
-                    await DoGridUpdate(args.RowIndex, args.Data, model);
-                }
-
+                await InitData(model);
             }
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {

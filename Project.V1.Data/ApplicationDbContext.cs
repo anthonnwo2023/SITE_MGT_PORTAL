@@ -59,8 +59,9 @@ namespace Project.V1.Data
         public DbSet<AntennaMakeModel> AntennaMakes { get; set; }
         public DbSet<AntennaTypeModel> AntennaTypes { get; set; }
         public DbSet<SummerConfigModel> SummerConfigs { get; set; }
+        public DbSet<SpectrumViewModel> Spectrums { get; set; }
         public DbSet<BaseBandModel> BaseBands { get; set; }
-        public DbSet<ProjectModel> RRUTypes { get; set; }
+        public DbSet<ProjectModel> Projects { get; set; }
         public DbSet<VendorModel> Vendors { get; set; }
         public DbSet<ProjectTypeModel> ProjectTypes { get; set; }
         public DbSet<TechTypeModel> TechTypes { get; set; }
