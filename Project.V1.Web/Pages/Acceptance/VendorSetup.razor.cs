@@ -344,6 +344,8 @@ namespace Project.V1.Web.Pages.Acceptance
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
                     CanEdit = User.Vendor.Name == "MTN Nigeria";
+
+                    await InitData();
                 }
                 catch (Exception ex)
                 {
