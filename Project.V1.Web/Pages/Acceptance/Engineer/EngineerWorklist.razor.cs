@@ -68,7 +68,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
                     var userRegionIds = User.Regions.Select(x => x.Id);
 
-                    RequestEngWorklists = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && (x.Status == "Pending" || x.Status != "Reworked"))).OrderByDescending(x => x.DateCreated).ToList();
+                    RequestEngWorklists = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && (x.Status == "Pending" || x.Status == "Reworked"))).OrderByDescending(x => x.DateCreated).ToList();
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
                     Spectrums = await ISpectrum.Get(x => x.IsActive);
