@@ -144,6 +144,13 @@ else
                         <ValidationMessage For="@(() => RequestModel.EngineerAssigned.DateApproved)" />
                     </div>
                 </div>
+                <div class="col-md-3 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Enabled="false" Placeholder="Status" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.Status)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestModel.Status)" />
+                    </div>
+                </div>
                 <div class="col-md-12 row">
                     <div class="py-2 bg-light mb-3 col-12"></div>
                     <h3 class="col-12">Requester</h3>
