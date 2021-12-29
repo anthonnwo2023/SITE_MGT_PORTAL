@@ -44,7 +44,7 @@
                             {
                                 <SfGrid DataSource="@Vendors" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_Vendor">
                                     <GridPageSettings PageSize="5"></GridPageSettings>
-                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddVendor")" AllowEditing="@CheckClaimPermission("Can:UpdateVendor")" AllowDeleting="@CheckClaimPermission("Can:DeleteVendor")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddVendor")" AllowEditing="@CheckClaimPermission("Can:UpdateVendor")" AllowDeleting="@CheckClaimPermission("Can:DeleteVendor")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true" AllowEditOnDblClick="false"></GridEditSettings>
                                     <GridEvents OnActionBegin='e => ActionBegin(e, "VendorModel")' OnActionComplete='e => ActionComplete(e, "VendorModel")' TValue="VendorModel"></GridEvents>
                                     <GridColumns>
                                         <GridColumn Field="@nameof(VendorModel.Id)" Visible="false" IsPrimaryKey="true">
@@ -87,7 +87,7 @@
                             {
                                 <SfGrid DataSource="@IdentityRoles" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_IdentityRole">
                                     <GridPageSettings PageSize="5"></GridPageSettings>
-                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddRole")" AllowEditing="@CheckClaimPermission("Can:UpdateRole")" AllowDeleting="@CheckClaimPermission("Can:DeleteRole")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddRole")" AllowEditing="@CheckClaimPermission("Can:UpdateRole")" AllowDeleting="@CheckClaimPermission("Can:DeleteRole")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true" AllowEditOnDblClick="false"></GridEditSettings>
                                     <GridEvents OnActionBegin='e => ActionBegin(e, "IdentityRole")' OnActionComplete='e => ActionComplete(e, "IdentityRole")' TValue="ExpandoObject"></GridEvents>
                                     <GridColumns>
                                         <GridColumn Field="Id" Visible="false" IsPrimaryKey="true">
@@ -97,7 +97,7 @@
                                         <GridColumn Field="Permissions" Visible="false" HeaderText="Permissions" TextAlign="TextAlign.Left">
                                             <EditTemplate>
                                                 <div class="form-group col-md-12 mt-2">
-                                                    <PatCheckboxList TItem="ClaimViewModel" ItemListTitle="Permissions" TValue="bool" ListOfItems="@RoleClaims" SelectedValues="@SelectedRolePermissions" TextField="@(e => e.ClaimName)"
+                                                    <PatCheckboxList TItem="ClaimViewModel" ItemListTitle="Permissions" TValue="bool" ListOfItems="@RoleClaims" SelectedValues="@SelectedRolePermissions" TextField="@(e => e.Name)"
                                                                      ValueField="@(e => e.IsSelected)"></PatCheckboxList>
                                                 </div>
                                             </EditTemplate>
@@ -127,14 +127,14 @@
                             {
                                 <SfGrid DataSource="@ClaimModels" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_Claim">
                                     <GridPageSettings PageSize="5"></GridPageSettings>
-                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddClaim")" AllowEditing="@CheckClaimPermission("Can:UpdateClaim")" AllowDeleting="@CheckClaimPermission("Can:DeleteClaim")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddClaim")" AllowEditing="@CheckClaimPermission("Can:UpdateClaim")" AllowDeleting="@CheckClaimPermission("Can:DeleteClaim")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true" AllowEditOnDblClick="false"></GridEditSettings>
                                     <GridEvents OnActionBegin='e => ActionBegin(e, "ClaimViewModel")' OnActionComplete='e => ActionComplete(e, "ClaimViewModel")' TValue="ClaimViewModel"></GridEvents>
                                     <GridColumns>
                                         <GridColumn Field="@nameof(ClaimViewModel.Id)" Visible="false" IsPrimaryKey="true">
                                         </GridColumn>
-                                        <GridColumn Field="@nameof(ClaimViewModel.ClaimName)" HeaderText="Claim Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        <GridColumn Field="@nameof(ClaimViewModel.Name)" HeaderText="Claim Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                         </GridColumn>
-                                        <GridColumn Field="@nameof(ClaimViewModel.ClaimValue)" HeaderText="Claim Value" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        <GridColumn Field="@nameof(ClaimViewModel.Value)" HeaderText="Claim Value" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                         </GridColumn>
                                         <GridColumn Field="@nameof(ClaimViewModel.CategoryId)" HeaderText="Category" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                             <Template>
@@ -177,7 +177,7 @@
                             {
                                 <SfGrid DataSource="@ClaimCategories" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Toolbar="@ToolbarItems" @ref="Grid_ClaimCategory">
                                     <GridPageSettings PageSize="5"></GridPageSettings>
-                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddClaimCategory")" AllowEditing="@CheckClaimPermission("Can:UpdateClaimCategory")" AllowDeleting="@CheckClaimPermission("Can:DeleteClaimCategory")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                    <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddClaimCategory")" AllowEditing="@CheckClaimPermission("Can:UpdateClaimCategory")" AllowDeleting="@CheckClaimPermission("Can:DeleteClaimCategory")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true" AllowEditOnDblClick="false"></GridEditSettings>
                                     <GridEvents OnActionBegin='e => ActionBegin(e, "ClaimCategoryModel")' OnActionComplete='e => ActionComplete(e, "ClaimCategoryModel")' TValue="ClaimCategoryModel"></GridEvents>
                                     <GridColumns>
                                         <GridColumn Field="@nameof(ClaimCategoryModel.Id)" Visible="false" IsPrimaryKey="true">
@@ -218,7 +218,7 @@
                                             Toolbar="@ToolbarItems" @ref="Grid_User" ShowColumnChooser="true">
                                         <GridPageSettings PageSize="5"></GridPageSettings>
                                         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
-                                        <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddUser")" AllowEditing="@CheckClaimPermission("Can:UpdateUser")" AllowDeleting="@CheckClaimPermission("Can:DeleteUser")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true"></GridEditSettings>
+                                        <GridEditSettings AllowAdding="@CheckClaimPermission("Can:AddUser")" AllowEditing="@CheckClaimPermission("Can:UpdateUser")" AllowDeleting="@CheckClaimPermission("Can:DeleteUser")" Mode="EditMode.Dialog" Dialog="DialogEditParams" ShowDeleteConfirmDialog="true" AllowEditOnDblClick="false"></GridEditSettings>
                                         <GridEvents OnActionBegin='e => ActionBegin(e, "ApplicationUser")' OnActionComplete='e => ActionComplete(e, "ApplicationUser")' TValue="ApplicationUser"></GridEvents>
                                         <GridColumns>
                                             <GridColumn Field="@nameof(ApplicationUser.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
@@ -258,14 +258,14 @@
                                                     @{
                                                         var user = (context as ApplicationUser);
 
-                                                        var userProjects = user.Projects.Select(x => x.ClaimName).ToList();
+                                                        var userProjects = user.Projects.Select(x => x.Name).ToList();
                                                         <span>@(string.Join(" - ", userProjects))</span>
                                                     }
                                                 </Template>
                                                 <EditTemplate>
                                                     <SfMultiSelect TValue="string[]" TItem="ClaimViewModel" AllowCustomValue="false" AllowFiltering="false" @bind-Value="@SelectedUserProjects"
                                                                    Placeholder="Projects" Mode="VisualMode.CheckBox" DataSource="@ProjectClaims" FloatLabelType="@FloatLabelType.Auto">
-                                                        <MultiSelectFieldSettings Value="Id" Text="ClaimName"></MultiSelectFieldSettings>
+                                                        <MultiSelectFieldSettings Value="Id" Text="Name"></MultiSelectFieldSettings>
                                                     </SfMultiSelect>
                                                 </EditTemplate>
                                             </GridColumn>

@@ -20,10 +20,10 @@
 
                 foreach (var project in ProjectClaims)
                 {
-                    if (project.ClaimName.ToLower().Contains("equipment "))
+                    if (project.Name.ToLower().Contains("equipment "))
                         continue;
 
-                    var claimNameChunk = project.ClaimName.Split(' ').ToList().Select(x => x.Substring(0, 1).ToUpper());
+                    var claimNameChunk = project.Name.Split(' ').ToList().Select(x => x.Substring(0, 1).ToUpper());
                     var abbr = string.Join("", claimNameChunk);
 
                     <div class="card ml-3 mr-4 mb-4 float-left" style="width: @($"{width}%"); cursor: pointer;" @onclick='() => LoadLinkData(abbr)'>

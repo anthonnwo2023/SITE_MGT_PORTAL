@@ -49,8 +49,8 @@ namespace Project.V1.DLL.Helpers
                 var userIdentityClaims = claims.Select(x => new IdentityUserClaim<string>
                 {
                     UserId = userData.Id,
-                    ClaimType = x.ClaimName,
-                    ClaimValue = x.ClaimValue
+                    ClaimType = x.Name,
+                    ClaimValue = x.Value
                 }).ToList();
 
                 await LoginObject.Context.UserClaims.AddRangeAsync(userIdentityClaims);
@@ -82,7 +82,7 @@ namespace Project.V1.DLL.Helpers
 
                 allRoleClaims.ForEach(allClaim =>
                 {
-                    if (allRoleClaims.Count > 0 && roleClaims.Any(c => c.Type == allClaim.ClaimName))
+                    if (allRoleClaims.Count > 0 && roleClaims.Any(c => c.Type == allClaim.Name))
                     {
                         allClaim.IsSelected = true;
                     }

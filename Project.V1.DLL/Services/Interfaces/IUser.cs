@@ -26,5 +26,6 @@ namespace Project.V1.DLL.Services.Interfaces
         Task<bool> AddClaim(ApplicationUser user, string type, string value);
         Task<bool> GenerateScope(ClaimsPrincipal principal);
         Task RemoveClaim(ClaimsPrincipal principal, string claimType);
+        Task<List<ApplicationUser>> GetUsersNoTrack(bool isActive = true);
     }
 }

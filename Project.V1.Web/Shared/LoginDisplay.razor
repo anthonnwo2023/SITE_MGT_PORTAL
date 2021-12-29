@@ -28,7 +28,7 @@
                         {
                             foreach (var project in ProjectClaims)
                             {
-                                var claimNameChunk = project.ClaimName.Split(' ').ToList().Select(x => x.Substring(0, 1).ToUpper());
+                                var claimNameChunk = project.Name.Split(' ').ToList().Select(x => x.Substring(0, 1).ToUpper());
                                 var abbr = string.Join("", claimNameChunk);
 
                                 <li class="nav-item float-left">

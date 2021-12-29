@@ -8,13 +8,11 @@ using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Interfaces;
-using Project.V1.Lib.Services;
 using Project.V1.Models;
 using Syncfusion.Blazor.Calendars;
 using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.Notifications;
-using Syncfusion.Blazor.Notifications.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -167,6 +165,65 @@ namespace Project.V1.Web.Pages
             await Task.CompletedTask;
         }
 
+        private async Task ProcessReset<T>(IGenericRepo<T> genericRepo, T data, List<T> items) where T : ObjectBase
+        {
+            cts.Token.ThrowIfCancellationRequested();
+
+            if (data.Id != null)
+            {
+                string Id = data.Id;
+
+                var DBData4Reset = await genericRepo.GetById(x => x.Id == Id);
+
+                var changedData = items.First(x => x.Id == Id);
+                changedData = DBData4Reset;
+            }
+        }
+
+        private async Task<T> ProcessUpdate<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid, string Id) where T : ObjectBase
+        {
+            cts.Token.ThrowIfCancellationRequested();
+
+            var (result, error) = await genericRepo.Update(data, x => x.Id == Id);
+
+            await HandleOpResponse(grid, error, data);
+
+            return result as T;
+        }
+
+        private async Task<T> ProcessDelete<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid) where T : ObjectBase
+        {
+            cts.Token.ThrowIfCancellationRequested();
+
+            string spectrumId = data.Id;
+            var (result, error) = await genericRepo.Delete(data, x => x.Id == spectrumId);
+
+            await HandleOpResponse(grid, error, data);
+
+
+            return result as T;
+        }
+
+        private async Task<T> ProcessAdd<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid) where T : ObjectBase
+        {
+            cts.Token.ThrowIfCancellationRequested();
+
+            var Exists = await genericRepo.GetById(x => x.Name == data.Name);
+
+            if (Exists == null)
+            {
+                var (result, error) = await genericRepo.Create(data);
+
+                await HandleOpResponse(grid, error, data);
+
+                return result as T;
+            }
+
+            await HandleOpResponse(grid, "Duplicate entry found", data);
+
+            return null;
+        }
+
         private async Task DoReset<T>(T data, string model)
         {
             Dictionary<string, Action<T>> processor = new()
@@ -175,25 +232,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            List<VendorModel> FullData = await IVendor.Get();
-                            VendorModel DataToReset = FullData.FirstOrDefault(x => x.Id == ((dynamic)data).Id);
-
-                            Vendors.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                    x.MailList = DataToReset.MailList;
-                                }
-                            });
-                        }
+                        await ProcessReset(IVendor, data as VendorModel, Vendors);
                     }
                     catch
                     {
@@ -231,26 +270,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-                        if (((dynamic)data).Id != null)
-                        {
-                            List<ClaimViewModel> FullData = await IClaim.Get();
-                            ClaimViewModel DataToReset = FullData.FirstOrDefault(x => x.Id == ((dynamic)data).Id);
-
-                            ClaimModels.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Category = DataToReset.Category;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                    x.IsSelected = DataToReset.IsSelected;
-                                    x.ClaimName = DataToReset.ClaimName;
-                                    x.ClaimValue = DataToReset.ClaimValue;
-                                }
-                            });
-                        }
+                        await ProcessReset(IClaim, data as ClaimViewModel, ClaimModels);
                     }
                     catch
                     {
@@ -261,23 +281,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-                        if (((dynamic)data).Id != null)
-                        {
-                            List<ClaimCategoryModel> FullData = await IClaimCategory.Get();
-                            ClaimCategoryModel DataToReset = FullData.FirstOrDefault(x => x.Id == ((dynamic)data).Id);
-
-                            ClaimCategories.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                }
-                            });
-                        }
+                        await ProcessReset(IClaimCategory, data as ClaimCategoryModel, ClaimCategories);
                     }
                     catch
                     {
@@ -323,213 +327,6 @@ namespace Project.V1.Web.Pages
             await Task.Run(() => processor[model](data));
         }
 
-        private async Task<bool> DoDeleteFromGrid(double Id, string model)
-        {
-            Dictionary<string, Func<double, bool>> processor = new()
-            {
-                ["VendorModel"] = (Id) =>
-                {
-                    try
-                    {
-                        Grid_Vendor.DeleteRow(Id);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["IdentityRole"] = (Id) =>
-                {
-                    try
-                    {
-                        Grid_IdentityRole.DeleteRow(Id);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ClaimViewModel"] = (Id) =>
-                {
-                    try
-                    {
-                        Grid_Claim.DeleteRow(Id);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ClaimCategoryModel"] = (Id) =>
-                {
-                    try
-                    {
-                        Grid_ClaimCategory.DeleteRow(Id);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ApplicationUser"] = (Id) =>
-                {
-                    try
-                    {
-                        Grid_User.DeleteRow(Id);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-            };
-
-            return await Task.Run(() => processor[model](Id));
-        }
-
-        private async Task<bool> DoGridUpdate<T>(double Id, T data, string model)
-        {
-            Dictionary<string, Func<T, bool>> processor = new()
-            {
-                ["VendorModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_Vendor.UpdateRow(Id, data as VendorModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["IdentityRole"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_IdentityRole.UpdateRow(Id, data as ExpandoObject);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ClaimViewModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_Claim.UpdateRow(Id, data as ClaimViewModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ClaimCategoryModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_ClaimCategory.UpdateRow(Id, data as ClaimCategoryModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ApplicationUser"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_User.UpdateRow(Id, data as ApplicationUser);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-            };
-
-            return await Task.Run(() => processor[model](data));
-        }
-
-        private static async Task<bool> DoGridAddNew<T>(T data, string model)
-        {
-            Dictionary<string, Func<T, bool>> processor = new()
-            {
-                ["VendorModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Project.AddRecord(data as VendorModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["IdentityRole"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_IdentityRole.AddRecord(data as NESICTRequestCategory);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ClaimViewModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Claim.AddRecord(data as ClaimViewModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ClaimCategoryModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_ClaimCategory.AddRecord(data as ClaimCategoryModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ApplicationUser"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_User.AddRecord(data as ApplicationUser);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-            };
-
-            return await Task.Run(() => processor[model](data));
-        }
-
         private async Task<T> DoUpdate<T>(string Id, T data, string model) where T : class
         {
             Dictionary<string, Func<T, Task<T>>> processor = new()
@@ -538,11 +335,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await IVendor.Update(data as VendorModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_Vendor, error, data as VendorModel);
+                        var result = await ProcessUpdate(IVendor, data as VendorModel, Grid_Vendor, Id);
 
                         return result as T;
                     }
@@ -583,11 +376,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await IClaim.Update(data as ClaimViewModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_Claim, error, data as ClaimViewModel);
+                        var result = await ProcessUpdate(IClaim, data as ClaimViewModel, Grid_Claim, Id);
 
                         return result as T;
                     }
@@ -600,11 +389,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await IClaimCategory.Update(data as ClaimCategoryModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_ClaimCategory, error, data as ClaimCategoryModel);
+                        var result = await ProcessUpdate(IClaimCategory, data as ClaimCategoryModel, Grid_ClaimCategory, Id);
 
                         return result as T;
                     }
@@ -652,11 +437,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-                        string projectId = (data as VendorModel).Id;
-                        var (result, error) = await IVendor.Delete(data as VendorModel, x => x.Id == projectId);
-
-                        await HandleOpResponse(Grid_Vendor, error, data as VendorModel);
+                        var result = await ProcessDelete(IVendor, data as VendorModel, Grid_Vendor);
 
                         return result as T;
                     }
@@ -673,10 +454,15 @@ namespace Project.V1.Web.Pages
 
                         IDictionary<string, object> dataDict = data as ExpandoObject;
 
-                        IdentityRole role = await Role.FindByIdAsync(dataDict["Id"].ToString());
+                        IdentityRole role = await Role.Roles.FirstOrDefaultAsync(x => x.Id == dataDict["Id"].ToString());
 
-                        IdentityResult result = await Role.DeleteAsync(role);
-                        return data;
+                        if (role != null)
+                        {
+                            IdentityResult result = await Role.DeleteAsync(role);
+                            return data;
+                        }
+
+                        return null;
                     }
                     catch
                     {
@@ -687,11 +473,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-                        string subCategoryId = (data as ClaimViewModel).Id;
-                        var (result, error) = await IClaim.Delete(data as ClaimViewModel, x => x.Id == subCategoryId);
-
-                        await HandleOpResponse(Grid_Claim, error, data as ClaimViewModel);
+                        var result = await ProcessDelete(IClaim, data as ClaimViewModel, Grid_Claim);
 
                         return result as T;
                     }
@@ -704,11 +486,7 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-                        string statusId = (data as ClaimCategoryModel).Id;
-                        var (result, error) = await IClaimCategory.Delete(data as ClaimCategoryModel, x => x.Id == statusId);
-
-                        await HandleOpResponse(Grid_ClaimCategory, error, data as ClaimCategoryModel);
+                        var result = await ProcessDelete(IClaimCategory, data as ClaimCategoryModel, Grid_ClaimCategory);
 
                         return result as T;
                     }
@@ -744,22 +522,9 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IVendor, data as VendorModel, Grid_Vendor);
 
-                        var Exists = await IVendor.GetById(x => x.Name == (data as VendorModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IVendor.Create(data as VendorModel);
-
-                            await HandleOpResponse(Grid_Vendor, error, data as VendorModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_Vendor, "Duplicate entry found", data as VendorModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -779,9 +544,7 @@ namespace Project.V1.Web.Pages
                             Name = dataDict["Name"].ToString(),
                         };
 
-                        //var roleMapped = (data as ExpandoObject).Map<IdentityRole>(role);
                         ((dynamic)data).Id = role.Id;
-                        //((dynamic)data).NormalizedName = role.NormalizedName;
 
                         IdentityResult result = await Role.CreateAsync(role);
 
@@ -792,6 +555,8 @@ namespace Project.V1.Web.Pages
                             await Role.AddRoleClaims(role, SelectedRolePermissions);
 
                             await HandleOpResponse(Grid_IdentityRole, "", data as ExpandoObject);
+
+                            return data;
                         }
 
                         await HandleOpResponse(Grid_IdentityRole, $"An error as occured. {string.Join(". ", result.Errors.Select(x => x.Description))}", data as ExpandoObject);
@@ -806,22 +571,9 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IClaim, data as ClaimViewModel, Grid_Claim);
 
-                        var Exists = await IClaim.GetById(x => x.ClaimName == (data as ClaimViewModel).ClaimName);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IClaim.Create(data as ClaimViewModel);
-
-                            await HandleOpResponse(Grid_Claim, error, data as ClaimViewModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_Claim, "Duplicate entry found", data as ClaimViewModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -832,22 +584,9 @@ namespace Project.V1.Web.Pages
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IClaimCategory, data as ClaimCategoryModel, Grid_ClaimCategory);
 
-                        var Exists = await IClaimCategory.GetById(x => x.Name == (data as ClaimCategoryModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IClaimCategory.Create(data as ClaimCategoryModel);
-
-                            await HandleOpResponse(Grid_ClaimCategory, error, data as ClaimCategoryModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_ClaimCategory, "Duplicate entry found", data as ClaimCategoryModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -939,7 +678,7 @@ namespace Project.V1.Web.Pages
             }
 
             if (model == null || model == "ClaimViewModel")
-                ClaimModels = (await IClaim.Get()).OrderBy(x => x.ClaimName).ToList();
+                ClaimModels = (await IClaim.Get()).OrderBy(x => x.Name).ToList();
 
             if (model == null || model == "ClaimCategoryModel")
                 ClaimCategories = (await IClaimCategory.Get()).OrderBy(x => x.Name).ToList();
@@ -954,16 +693,16 @@ namespace Project.V1.Web.Pages
                     Claims = u.ToList().FormatClaimSelection().GetAwaiter().GetResult()
                 }).ToList();
 
-                ProjectClaims = UserClaims.SelectMany(x => x.Claims).OrderBy(x => x.ClaimName).ToList();
+                ProjectClaims = UserClaims.SelectMany(x => x.Claims).OrderBy(x => x.Name).ToList();
 
-                ApplicationUsers = (await IUser.GetUsers()).OrderBy(x => x.Vendor.Name).ToList();
+                ApplicationUsers = (await IUser.GetUsersNoTrack()).OrderBy(x => x.Vendor.Name).ToList();
 
                 ApplicationUsers.ForEach((user) =>
                 {
                     VendorModel mtnVendor = Vendors.First(y => y.Name == "MTN Nigeria");
 
                     user.IsMTNUser = mtnVendor == null || !(mtnVendor.Id == user.VendorId);
-                    user.Roles = (IUser.GetUserRolesId(user).GetAwaiter().GetResult()).ToArray();
+                    //user.Roles = (IUser.GetUserRolesId(user).GetAwaiter().GetResult()).ToArray();
                     List<ClaimListManager> userClaims = (Claim.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                     {
                         Category = u.Key,
@@ -1112,23 +851,23 @@ namespace Project.V1.Web.Pages
             else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
                 await DoDelete(args.Data, model);
-                await DoDeleteFromGrid(args.RowIndex, model);
+                //await DoDeleteFromGrid(args.RowIndex, model);
             }
         }
 
         public async Task ActionComplete<T>(ActionEventArgs<T> args, string model) where T : class
         {
-            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
-            {
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
-            {
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
-            {
+            //if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            //{
+            //}
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            //{
+            //}
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            //{
 
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            //}
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
                 await InitData(model);
 
@@ -1151,10 +890,10 @@ namespace Project.V1.Web.Pages
                     await Grid_IdentityRole.HideColumnsAsync(hiddens);
                 }
             }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
-            {
-                await DoDeleteFromGrid(args.RowIndex, model);
-            }
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            //{
+            //    //await DoDeleteFromGrid(args.RowIndex, model);
+            //}
 
             StateHasChanged();
         }

@@ -36,7 +36,7 @@ namespace Project.V1.DLL.Helpers
 
                 foreach (ClaimViewModel claim in claims)
                 {
-                    Claim newClaim = new(claim.ClaimName, claim.ClaimValue);
+                    Claim newClaim = new(claim.Name, claim.Value);
 
                     await roleManager.AddClaimAsync(role, newClaim);
                 }
@@ -60,7 +60,7 @@ namespace Project.V1.DLL.Helpers
 
             allRoleClaims.ForEach(allClaim =>
             {
-                if (allRoleClaims.Count > 0 && roleClaims.Any(c => c.Type == allClaim.ClaimName))
+                if (allRoleClaims.Count > 0 && roleClaims.Any(c => c.Type == allClaim.Name))
                 {
                     allClaim.IsSelected = true;
                 }

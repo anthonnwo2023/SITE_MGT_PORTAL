@@ -9,7 +9,6 @@ using Project.V1.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -210,7 +209,7 @@ namespace Project.V1.Lib.Services
             {
                 _logger.LogError(ex.Message, new { }, ex);
                 return new ApplicationUser();
-            }            
+            }
         }
 
         public async Task<ApplicationUser> GetUserById(string UserId)
@@ -231,6 +230,29 @@ namespace Project.V1.Lib.Services
                 users.ForEach(async (user) =>
                 {
                     user.Roles = (await _userManager.GetRolesAsync(user)).ToArray();
+                });
+
+                return users;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<ApplicationUser>> GetUsersNoTrack(bool isActive = true)
+        {
+            try
+            {
+                List<ApplicationUser> users = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).Where(x => x.IsActive == true).AsNoTracking().ToListAsync();
+                if (isActive == false)
+                {
+                    users = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
+                }
+
+                users.ForEach(async (user) =>
+                {
+                    user.Roles = (await GetUserRolesId(user)).ToArray();
                 });
 
                 return users;
@@ -349,11 +371,11 @@ namespace Project.V1.Lib.Services
                     result = await _userManager.UpdateAsync(userExists);
 
                     if (Password != null)
-                    {     
+                    {
                         string token = await _userManager.GeneratePasswordResetTokenAsync(userExists);
                         IdentityResult resultChangedPW = await _userManager.ResetPasswordAsync(userExists, token, Password);
 
-                        if(resultChangedPW.Succeeded)
+                        if (resultChangedPW.Succeeded)
                         {
                             userExists.IsNewPassword = true;
 

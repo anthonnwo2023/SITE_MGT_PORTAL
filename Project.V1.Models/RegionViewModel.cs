@@ -7,15 +7,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Project.V1.Models
 {
     [Table("TBL_RFACCEPT_REGIONS")]
-    [Index(new string[] {nameof(Name)}, IsUnique = true)]
-    public class RegionViewModel
+    [Index(new string[] { nameof(Name) }, IsUnique = true)]
+    public class RegionViewModel : ObjectBase
     {
-        [Key]
-        public string Id { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-
         [Required]
         public string Abbr { get; set; }
 
@@ -24,10 +18,6 @@ namespace Project.V1.Models
         public bool IsRegular { get; set; }
 
         public bool IsRural { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public DateTime DateCreated { get; set; }
 
         public virtual List<ApplicationUser> Users { get; set; }
     }

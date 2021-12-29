@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
@@ -11,7 +10,6 @@ using Syncfusion.Blazor.Calendars;
 using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.Notifications;
-using Syncfusion.Blazor.Notifications.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -152,25 +150,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            SpectrumViewModel DataToReset = await ISpectrum.GetById(x => x.Id == Id);
-
-                            Spectrums.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                    x.TechTypeId = DataToReset.TechTypeId;
-                                }
-                            });
-                        }
+                        await ProcessReset(ISpectrum, data as SpectrumViewModel, Spectrums);
                     }
                     catch
                     {
@@ -181,25 +161,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            RegionViewModel DataToReset = await IRegion.GetById(x => x.Id == Id);
-
-                            Regions.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                    x.Abbr = DataToReset.Abbr;
-                                }
-                            });
-                        }
+                        await ProcessReset(IRegion, data as RegionViewModel, Regions);
                     }
                     catch
                     {
@@ -210,24 +172,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            AntennaMakeModel DataToReset = await IAntennaMake.GetById(x => x.Id == Id);
-
-                            AntennaMakes.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                }
-                            });
-                        }
+                        await ProcessReset(IAntennaMake, data as AntennaMakeModel, AntennaMakes);
                     }
                     catch
                     {
@@ -238,24 +183,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            AntennaTypeModel DataToReset = await IAntennaType.GetById(x => x.Id == Id);
-
-                            AntennaTypes.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                }
-                            });
-                        }
+                        await ProcessReset(IAntennaType, data as AntennaTypeModel, AntennaTypes);
                     }
                     catch
                     {
@@ -266,24 +194,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            SummerConfigModel DataToReset = await ISummerConfig.GetById(x => x.Id == Id);
-
-                            SummerConfigs.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                }
-                            });
-                        }
+                        await ProcessReset(ISummerConfig, data as SummerConfigModel, SummerConfigs);
                     }
                     catch
                     {
@@ -294,24 +205,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            ProjectTypeModel DataToReset = await IProjectType.GetById(x => x.Id == Id);
-
-                            ProjectTypes.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                }
-                            });
-                        }
+                        await ProcessReset(IProjectType, data as ProjectTypeModel, ProjectTypes);
                     }
                     catch
                     {
@@ -322,24 +216,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            TechTypeModel DataToReset = await ITechType.GetById(x => x.Id == Id);
-
-                            TechTypes.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                }
-                            });
-                        }
+                        await ProcessReset(ITechType, data as TechTypeModel, TechTypes);
                     }
                     catch
                     {
@@ -350,24 +227,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        if (((dynamic)data).Id != null)
-                        {
-                            string Id = ((dynamic)data).Id;
-                            BaseBandModel DataToReset = await IBaseBand.GetById(x => x.Id == Id);
-
-                            BaseBands.ForEach(x =>
-                            {
-                                if (x.Id == ((dynamic)data).Id)
-                                {
-                                    x.Id = DataToReset.Id;
-                                    x.Name = DataToReset.Name;
-                                    x.DateCreated = DataToReset.DateCreated;
-                                    x.IsActive = DataToReset.IsActive;
-                                }
-                            });
-                        }
+                        await ProcessReset(IBaseBand, data as BaseBandModel, BaseBands);
                     }
                     catch
                     {
@@ -484,359 +344,63 @@ namespace Project.V1.Web.Pages.Acceptance
             return await Task.Run(() => processor[model](Id));
         }
 
-        private async Task<bool> DoGridUpdate<T>(double Id, T data, string model)
+        private async Task ProcessReset<T>(IGenericRepo<T> genericRepo, T data, List<T> items) where T : ObjectBase
         {
-            Dictionary<string, Func<T, bool>> processor = new()
-            {
-                ["SpectrumViewModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_Spectrum.UpdateRow(Id, data as SpectrumViewModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["RegionViewModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_Region.UpdateRow(Id, data as RegionViewModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["AntennaMakeModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_AntennaMake.UpdateRow(Id, data as AntennaMakeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["AntennaTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_AntennaType.UpdateRow(Id, data as AntennaTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["SummerConfigModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_SummerConfig.UpdateRow(Id, data as SummerConfigModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ProjectTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_ProjectType.UpdateRow(Id, data as ProjectTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["TechTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_TechType.UpdateRow(Id, data as TechTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["BaseBandModel"] = (data) =>
-                {
-                    try
-                    {
-                        Grid_BaseBand.UpdateRow(Id, data as BaseBandModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-            };
+            cts.Token.ThrowIfCancellationRequested();
 
-            return await Task.Run(() => processor[model](data));
+            if (data.Id != null)
+            {
+                string Id = data.Id;
+
+                var DBData4Reset = await genericRepo.GetById(x => x.Id == Id);
+
+                var changedData = items.First(x => x.Id == Id);
+                changedData = DBData4Reset;
+            }
         }
 
-        private static async Task<bool> DoGridAddNew<T>(T data, string model)
+        private async Task<T> ProcessUpdate<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid, string Id) where T : ObjectBase
         {
-            Dictionary<string, Func<T, bool>> processor = new()
-            {
-                ["SpectrumViewModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Spectrum.AddRecord(data as SpectrumViewModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["RegionViewModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Project.AddRecord(data as RegionViewModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["AntennaMakeModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Project.AddRecord(data as AntennaMakeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["AntennaTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Project.AddRecord(data as AntennaTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["SummerConfigModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Project.AddRecord(data as SummerConfigModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["ProjectTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Project.AddRecord(data as ProjectTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["TechTypeModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Tech.AddRecord(data as TechTypeModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-                ["BaseBandModel"] = (data) =>
-                {
-                    try
-                    {
-                        //Grid_Project.AddRecord(data as BaseBandModel);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                },
-            };
+            cts.Token.ThrowIfCancellationRequested();
 
-            return await Task.Run(() => processor[model](data));
+            var (result, error) = await genericRepo.Update(data, x => x.Id == Id);
+
+            await HandleOpResponse(grid, error, data);
+
+            return result as T;
         }
 
-        private async Task<T> DoUpdate<T>(string Id, T data, string model) where T : class
+        private async Task<T> ProcessDelete<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid) where T : ObjectBase
         {
-            Dictionary<string, Func<T, Task<T>>> processor = new()
+            cts.Token.ThrowIfCancellationRequested();
+
+            string spectrumId = data.Id;
+            var (result, error) = await genericRepo.Delete(data, x => x.Id == spectrumId);
+
+            await HandleOpResponse(grid, error, data);
+
+
+            return result as T;
+        }
+
+        private async Task<T> ProcessAdd<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid) where T : ObjectBase
+        {
+            cts.Token.ThrowIfCancellationRequested();
+
+            var Exists = await genericRepo.GetById(x => x.Name == data.Name);
+
+            if (Exists == null)
             {
-                ["SpectrumViewModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
+                var (result, error) = await genericRepo.Create(data);
 
-                        var (result, error) = await ISpectrum.Update(data as SpectrumViewModel, x => x.Id == Id);
+                await HandleOpResponse(grid, error, data);
 
-                        await HandleOpResponse(Grid_Spectrum, error, data as SpectrumViewModel);
+                return result as T;
+            }
 
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-                ["RegionViewModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
+            await HandleOpResponse(grid, "Duplicate entry found", data);
 
-                        var (result, error) = await IRegion.Update(data as RegionViewModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_Region, error, data as RegionViewModel);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-                ["AntennaMakeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await IAntennaMake.Update(data as AntennaMakeModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_AntennaMake, error, data as AntennaMakeModel);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-                ["AntennaTypeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await IAntennaType.Update(data as AntennaTypeModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_AntennaType, error, data as AntennaTypeModel);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-                ["SummerConfigModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await ISummerConfig.Update(data as SummerConfigModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_SummerConfig, error, data as SummerConfigModel);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-                ["ProjectTypeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await IProjectType.Update(data as ProjectTypeModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_ProjectType, error, data as ProjectTypeModel);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-                ["TechTypeModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await ITechType.Update(data as TechTypeModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_TechType, error, data as TechTypeModel);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-                ["BaseBandModel"] = async (data) =>
-                {
-                    try
-                    {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        var (result, error) = await IBaseBand.Update(data as BaseBandModel, x => x.Id == Id);
-
-                        await HandleOpResponse(Grid_BaseBand, error, data as BaseBandModel);
-
-                        return result as T;
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                },
-            };
-
-            return await Task.Run(() => processor[model](data));
+            return null;
         }
 
         private async Task<T> DoDelete<T>(T data, string model) where T : class
@@ -847,13 +411,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string spectrumId = (data as SpectrumViewModel).Id;
-                        var (result, error) = await ISpectrum.Delete(data as SpectrumViewModel, x => x.Id == spectrumId);
-
-                        await HandleOpResponse(Grid_Spectrum, error, data as SpectrumViewModel);
-
+                        var result = await ProcessDelete(ISpectrum, data as SpectrumViewModel, Grid_Spectrum);
 
                         return result as T;
                     }
@@ -866,13 +424,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string regionId = (data as RegionViewModel).Id;
-                        var (result, error) = await IRegion.Delete(data as RegionViewModel, x => x.Id == regionId);
-
-                        await HandleOpResponse(Grid_Region, error, data as RegionViewModel);
-
+                        var result = await ProcessDelete(IRegion, data as RegionViewModel, Grid_Region);
 
                         return result as T;
                     }
@@ -885,13 +437,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string antennaId = (data as AntennaMakeModel).Id;
-                        var (result, error) = await IAntennaMake.Delete(data as AntennaMakeModel, x => x.Id == antennaId);
-
-                        await HandleOpResponse(Grid_AntennaMake, error, data as AntennaMakeModel);
-
+                        var result = await ProcessDelete(IAntennaMake, data as AntennaMakeModel, Grid_AntennaMake);
 
                         return result as T;
                     }
@@ -904,13 +450,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string antennaId = (data as AntennaTypeModel).Id;
-                        var (result, error) = await IAntennaType.Delete(data as AntennaTypeModel, x => x.Id == antennaId);
-
-                        await HandleOpResponse(Grid_AntennaType, error, data as AntennaTypeModel);
-
+                        var result = await ProcessDelete(IAntennaType, data as AntennaTypeModel, Grid_AntennaType);
 
                         return result as T;
                     }
@@ -923,13 +463,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string configId = (data as SummerConfigModel).Id;
-                        var (result, error) = await ISummerConfig.Delete(data as SummerConfigModel, x => x.Id == configId);
-
-                        await HandleOpResponse(Grid_SummerConfig, error, data as SummerConfigModel);
-
+                        var result = await ProcessDelete(ISummerConfig, data as SummerConfigModel, Grid_SummerConfig);
 
                         return result as T;
                     }
@@ -942,13 +476,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string projectId = (data as ProjectTypeModel).Id;
-                        var (result, error) = await IProjectType.Delete(data as ProjectTypeModel, x => x.Id == projectId);
-
-                        await HandleOpResponse(Grid_ProjectType, error, data as ProjectTypeModel);
-
+                        var result = await ProcessDelete(IProjectType, data as ProjectTypeModel, Grid_ProjectType);
 
                         return result as T;
                     }
@@ -961,13 +489,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string techId = (data as TechTypeModel).Id;
-                        var (result, error) = await ITechType.Delete(data as TechTypeModel, x => x.Id == techId);
-
-                        await HandleOpResponse(Grid_TechType, error, data as TechTypeModel);
-
+                        var result = await ProcessDelete(ITechType, data as TechTypeModel, Grid_TechType);
 
                         return result as T;
                     }
@@ -980,13 +502,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
-
-                        string basebandId = (data as BaseBandModel).Id;
-                        var (result, error) = await IBaseBand.Delete(data as BaseBandModel, x => x.Id == basebandId);
-
-                        await HandleOpResponse(Grid_BaseBand, error, data as BaseBandModel);
-
+                        var result = await ProcessDelete(IBaseBand, data as BaseBandModel, Grid_BaseBand);
 
                         return result as T;
                     }
@@ -1008,22 +524,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(ISpectrum, data as SpectrumViewModel, Grid_Spectrum);
 
-                        var Exists = await ISpectrum.GetById(x => x.Name == (data as SpectrumViewModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await ISpectrum.Create(data as SpectrumViewModel);
-
-                            await HandleOpResponse(Grid_Spectrum, error, data as SpectrumViewModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_Spectrum, "Duplicate entry found", data as SpectrumViewModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -1034,22 +537,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IRegion, data as RegionViewModel, Grid_Region);
 
-                        var Exists = await IRegion.GetById(x => x.Name == (data as RegionViewModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IRegion.Create(data as RegionViewModel);
-
-                            await HandleOpResponse(Grid_Region, error, data as RegionViewModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_Region, "Duplicate entry found", data as RegionViewModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -1060,22 +550,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IAntennaMake, data as AntennaMakeModel, Grid_AntennaMake);
 
-                        var Exists = await IAntennaMake.GetById(x => x.Name == (data as AntennaMakeModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IAntennaMake.Create(data as AntennaMakeModel);
-
-                            await HandleOpResponse(Grid_AntennaMake, error, data as AntennaMakeModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_AntennaMake, "Duplicate entry found", data as AntennaMakeModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -1086,22 +563,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IAntennaType, data as AntennaTypeModel, Grid_AntennaType);
 
-                        var Exists = await IAntennaType.GetById(x => x.Name == (data as AntennaTypeModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IAntennaType.Create(data as AntennaTypeModel);
-
-                            await HandleOpResponse(Grid_AntennaType, error, data as AntennaTypeModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_AntennaType, "Duplicate entry found", data as AntennaTypeModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -1112,22 +576,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(ISummerConfig, data as SummerConfigModel, Grid_SummerConfig);
 
-                        var Exists = await ISummerConfig.GetById(x => x.Name == (data as SummerConfigModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await ISummerConfig.Create(data as SummerConfigModel);
-
-                            await HandleOpResponse(Grid_SummerConfig, error, data as SummerConfigModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_SummerConfig, "Duplicate entry found", data as SummerConfigModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -1138,22 +589,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IProjectType, data as ProjectTypeModel, Grid_ProjectType);
 
-                        var Exists = await IProjectType.GetById(x => x.Name == (data as ProjectTypeModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IProjectType.Create(data as ProjectTypeModel);
-
-                            await HandleOpResponse(Grid_ProjectType, error, data as ProjectTypeModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_ProjectType, "Duplicate entry found", data as ProjectTypeModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -1164,22 +602,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(ITechType, data as TechTypeModel, Grid_TechType);
 
-                        var Exists = await ITechType.GetById(x => x.Name == (data as TechTypeModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await ITechType.Create(data as TechTypeModel);
-
-                            await HandleOpResponse(Grid_TechType, error, data as TechTypeModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_TechType, "Duplicate entry found", data as TechTypeModel);
-
-                        return null;
+                        return result as T;
                     }
                     catch
                     {
@@ -1190,22 +615,122 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        var result = await ProcessAdd(IBaseBand, data as BaseBandModel, Grid_BaseBand);
 
-                        var Exists = await IBaseBand.GetById(x => x.Name == (data as BaseBandModel).Name);
-
-                        if (Exists == null)
-                        {
-                            var (result, error) = await IBaseBand.Create(data as BaseBandModel);
-
-                            await HandleOpResponse(Grid_BaseBand, error, data as BaseBandModel);
-
-                            return result as T;
-                        }
-
-                        await HandleOpResponse(Grid_BaseBand, "Duplicate entry found", data as BaseBandModel);
-
+                        return result as T;
+                    }
+                    catch
+                    {
                         return null;
+                    }
+                },
+            };
+
+            return await Task.Run(() => processor[model](data));
+        }
+
+        private async Task<T> DoUpdate<T>(string Id, T data, string model) where T : class
+        {
+            Dictionary<string, Func<T, Task<T>>> processor = new()
+            {
+                ["SpectrumViewModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(ISpectrum, data as SpectrumViewModel, Grid_Spectrum, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+                ["RegionViewModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(IRegion, data as RegionViewModel, Grid_Region, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+                ["AntennaMakeModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(IAntennaMake, data as AntennaMakeModel, Grid_AntennaMake, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+                ["AntennaTypeModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(IAntennaType, data as AntennaTypeModel, Grid_AntennaType, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+                ["SummerConfigModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(ISummerConfig, data as SummerConfigModel, Grid_SummerConfig, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+                ["ProjectTypeModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(IProjectType, data as ProjectTypeModel, Grid_ProjectType, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+                ["TechTypeModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(ITechType, data as TechTypeModel, Grid_TechType, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+                ["BaseBandModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(IBaseBand, data as BaseBandModel, Grid_BaseBand, Id);
+
+                        return result as T;
                     }
                     catch
                     {
@@ -1269,19 +794,19 @@ namespace Project.V1.Web.Pages.Acceptance
 
         public async Task ActionBegin<T>(ActionEventArgs<T> args, string model = null) where T : class
         {
-            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
-            {
+            //if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            //{
 
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
-            {
+            //}
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            //{
 
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            //}
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
             {
                 await DoReset(args.Data, model);
             }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
                 string Id = (string)args.PrimaryKeyValue;
 
@@ -1296,33 +821,33 @@ namespace Project.V1.Web.Pages.Acceptance
                     await DoUpdate((string)args.PrimaryKeyValue, args.Data, model);
                 }
             }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             {
                 await DoDelete(args.Data, model);
-                await DoDeleteFromGrid(args.RowIndex, model);
+                //await DoDeleteFromGrid(args.RowIndex, model);
             }
         }
 
         public async Task ActionComplete<T>(ActionEventArgs<T> args, string model) where T : class
         {
-            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
-            {
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
-            {
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
-            {
+            //if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            //{
+            //}
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            //{
+            //}
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            //{
 
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            //}
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
                 await InitData(model);
             }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
-            {
-                //await DoDeleteFromGrid(args.RowIndex, model);
-            }
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            //{
+            //    //await DoDeleteFromGrid(args.RowIndex, model);
+            //}
 
             StateHasChanged();
         }

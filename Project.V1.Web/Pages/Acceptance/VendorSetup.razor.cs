@@ -5,10 +5,8 @@ using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Interfaces;
-using Project.V1.Lib.Services;
 using Project.V1.Models;
 using Syncfusion.Blazor.Calendars;
-using Syncfusion.Blazor.Charts;
 using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.Notifications;
@@ -392,24 +390,24 @@ namespace Project.V1.Web.Pages.Acceptance
 
         public async Task ActionComplete<T>(ActionEventArgs<T> args, string model) where T : class
         {
-            if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
-            {
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
-            {
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
-            {
+            //if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            //{
+            //}
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Add)
+            //{
+            //}
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Cancel)
+            //{
 
-            }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
+            //}
+            if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
                 await InitData(model);
             }
-            else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
-            {
-                await DoDeleteFromGrid(args.RowIndex, model);
-            }
+            //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
+            //{
+            //    await DoDeleteFromGrid(args.RowIndex, model);
+            //}
 
             StateHasChanged();
         }
