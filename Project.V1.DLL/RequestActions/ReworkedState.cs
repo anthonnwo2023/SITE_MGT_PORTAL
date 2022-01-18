@@ -5,7 +5,6 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
@@ -61,7 +60,7 @@ namespace Project.V1.DLL.RequestActions
 
         private static async Task<SendEmailActionObj> GenerateMailBody(string mailType, T request, ApplicationUser user, string application, IEnumerable<SenderBody> regionEngineers)
         {
-            var vendorMailList = (user.VendorId != null) ? (await LoginObject.Vendor.Get()).FirstOrDefault(x => x.Id == user.VendorId)?.MailList : null;
+            var vendorMailList = (user.VendorId != null) ? (await LoginObject.Vendor.GetById(x => x.Id == user.VendorId))?.MailList : null;
 
             Dictionary<string, Func<SendEmailActionObj>> processMailBody = new()
             {

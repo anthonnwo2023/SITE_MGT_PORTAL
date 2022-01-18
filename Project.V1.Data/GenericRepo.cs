@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Project.V1.Lib.Interfaces;
 using Project.V1.Lib.Helpers;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Serilog.Core;
 
 namespace Project.V1.Data
 {
@@ -149,7 +149,7 @@ namespace Project.V1.Data
                 {
                     T itemObj = await entity.FirstOrDefaultAsync(IdFilter);
                     _context.Entry(itemObj).CurrentValues.SetValues(item);
-                    
+
                     _context.Entry(itemObj).State = EntityState.Modified;
 
                     entity.Update(itemObj);

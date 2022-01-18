@@ -5,7 +5,6 @@ using Project.V1.Lib.Helpers;
 using Project.V1.Models;
 using Serilog;
 using System;
-using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
@@ -22,7 +21,7 @@ namespace Project.V1.Lib.Services.Login
             Log.Logger = HelperFunctions.GetSerilogLogger();
 
             Log.Information("Internal login process. ", new { Username = username, Vendor = vendorId, UserType = "Internal" });
-            VendorModel Vendor = (await LoginObject.Vendor.Get()).FirstOrDefault(x => x.Id == vendorId && x.Name.ToUpper() == "MTN NIGERIA");
+            VendorModel Vendor = (await LoginObject.Vendor.GetById(x => x.Id == vendorId && x.Name.ToUpper() == "MTN NIGERIA"));
 
             if (Vendor == null)
             {

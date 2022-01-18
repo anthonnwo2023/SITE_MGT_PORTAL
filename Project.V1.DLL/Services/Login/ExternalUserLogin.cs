@@ -3,7 +3,6 @@ using Project.V1.DLL.Helpers;
 using Project.V1.Lib.Helpers;
 using Project.V1.Models;
 using Serilog;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Project.V1.Lib.Services.Login
@@ -15,7 +14,7 @@ namespace Project.V1.Lib.Services.Login
             Log.Logger = HelperFunctions.GetSerilogLogger();
 
             Log.Information("External login process. ", new { Username = username, Vendor = vendorId, UserType = "External" });
-            VendorModel Vendor = (await LoginObject.Vendor.Get()).FirstOrDefault(x => x.Id == vendorId);
+            VendorModel Vendor = (await LoginObject.Vendor.GetById(x => x.Id == vendorId));
 
             ApplicationUser user = await LoginObject.User.GetUserByUsername(username.ToLower());
 

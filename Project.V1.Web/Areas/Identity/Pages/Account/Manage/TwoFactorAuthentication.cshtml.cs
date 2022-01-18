@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Project.V1.Web.Areas.Identity.Pages.Account.Manage
 {
+    [Authorize("NoAccess")]
     public class TwoFactorAuthenticationModel : PageModel
     {
         private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}";
