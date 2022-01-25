@@ -106,11 +106,12 @@ namespace Project.V1.Web.Pages.Acceptance
 
         private static string GetSpectrumName(string spectrum)
         {
-            return spectrum.ToUpper() switch
+            return spectrum.ToUpper().Trim() switch
             {
                 "2G RT" => "2G",
                 "G900" => "2G",
                 "G1800" => "2G",
+                "G900+G1800" => "2G",
                 "3G RT" => "3G",
                 "U2100" => "3G",
                 "L700" => "700M",

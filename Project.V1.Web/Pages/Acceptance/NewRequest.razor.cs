@@ -626,12 +626,12 @@ namespace Project.V1.Web.Pages.Acceptance
 
                     var spectrumName = Spectrums.FirstOrDefault(x => x.Id == RequestModel.SpectrumId).Name;
                     var TechTypeName = TechTypes.FirstOrDefault(x => x.Id == RequestModel.TechTypeId).Name;
-                    var checkName = (spectrumName.Contains("RRU")) ? $"{RequestModel.SiteId.ToUpper()}_{TechTypeName}_RRU_MOD" : $"{RequestModel.SiteId.ToUpper()}_{spectrumName.ToUpper()}";
+                    var checkName = (spectrumName.Contains("RRU")) ? $"{RequestModel.SiteId.ToUpper()}_{TechTypeName}_RRU_MOD" : $"{RequestModel.SiteId.ToUpper()}_{spectrumName.ToUpper().RemoveSpecialCharacters()}";
 
 
                     if (ssvReport?.Filename != null && !ssvReport.Filename.ToUpper().Contains(checkName.ToUpper()))
                     {
-                        BulkUploadIconCss = "fas fa-paper-plane ml-2";
+                        SEUploadIconCss = "fas fa-paper-plane ml-2";
                         ToastContent = "Site Id does not match the uploaded SSV document";
                         await Task.Delay(200);
                         ErrorBtnOnClick();
@@ -641,7 +641,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                     if (ssvReport?.Filename == null && !spectrumName.Contains("RRU"))
                     {
-                        BulkUploadIconCss = "fas fa-paper-plane ml-2";
+                        SEUploadIconCss = "fas fa-paper-plane ml-2";
                         ToastContent = "Please upload SSV document";
                         await Task.Delay(200);
 
@@ -659,7 +659,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     }
                     else
                     {
-                        BulkUploadIconCss = "fas fa-paper-plane ml-2";
+                        SEUploadIconCss = "fas fa-paper-plane ml-2";
                         ToastContent = SaveError;
                         await Task.Delay(200);
 
@@ -701,7 +701,7 @@ namespace Project.V1.Web.Pages.Acceptance
                                 FilesManager uploadFile = new();
                                 var spectrumName = Spectrums.FirstOrDefault(x => x.Id == request.SpectrumId).Name;
                                 var TechTypeName = TechTypes.FirstOrDefault(x => x.Id == request.TechTypeId).Name;
-                                var checkName = (spectrumName.Contains("RRU")) ? $"{request.SiteId.ToUpper()}_{TechTypeName}_RRU_MOD" : $"{request.SiteId.ToUpper()}_{spectrumName.ToUpper()}";
+                                var checkName = (spectrumName.Contains("RRU")) ? $"{request.SiteId.ToUpper()}_{TechTypeName}_RRU_MOD" : $"{request.SiteId.ToUpper()}_{spectrumName.ToUpper().RemoveSpecialCharacters()}";
 
                                 if (BulkWaiverUploadSelected)
                                 {
