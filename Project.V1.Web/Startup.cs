@@ -60,7 +60,7 @@ namespace Project.V1.Web
                     .WithIdentity("Daily Report Reminder Trigger")
                     .ForJob(jobKey)
                     .StartNow()
-                    .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
+                    .WithCronSchedule(Configuration.GetValue<string>("Scheduler:DailyReport"))
                     .WithDescription("Daily Report Reminder Trigger")
                 );
             });
