@@ -1,18 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Grids;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using Syncfusion.Blazor.Grids;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -94,6 +80,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     "Carrier Aggregation",
                     "Date Integrated",
                     "Date Submitted",
+                    "Date Accepted",
                 };
 
                 await Grid_Request.ShowColumnsAsync(hiddenCols);

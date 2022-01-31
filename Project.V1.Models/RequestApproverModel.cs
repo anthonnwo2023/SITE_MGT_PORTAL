@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Project.V1.Models
 {
@@ -25,6 +20,8 @@ namespace Project.V1.Models
         public bool IsApproved { get; set; }
 
         public DateTime DateAssigned { get; set; }
+
+        public DateTime DateActioned { get; set; }
 
         [Required]
         [Display(Name = "Date Actioned")]

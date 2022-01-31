@@ -1,28 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Web;
-using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Helpers;
-using Project.V1.Lib.Helpers.Excel;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Inputs;
-using Syncfusion.Blazor.Notifications;
-using Syncfusion.Blazor.SplitButtons;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Pages.Acceptance
+﻿namespace Project.V1.Web.Pages.Acceptance
 {
     public partial class NewRequest : IDisposable
     {
@@ -428,7 +404,7 @@ namespace Project.V1.Web.Pages.Acceptance
             await Task.CompletedTask;
         }
 
-        private void SEProjectYear(ChangeEventArgs<double?> args)
+        private void SEProjectYear(Syncfusion.Blazor.Inputs.ChangeEventArgs<double?> args)
         {
             RequestModel.ProjectYear = (double)args.Value;
         }
@@ -882,7 +858,7 @@ namespace Project.V1.Web.Pages.Acceptance
                             "Technology", "Site Id", "Site Name", "RNC/BSC", "Region", "Spectrum", "Bandwidth (MHz)", "Latitude", "Longitude",
                             "Antenna Make", "Antenna Type", "Antenna Height", "Tower Height - (M)", "Antenna Azimuth", "M Tilt", "E Tilt", "Baseband", "RRU TYPE", "Power - (w)",
                             "Project Type", "Project Year", "Summer Config", "Software", "RRU Power - (w)", "CSFB Status GSM", "CSFB Status WCDMA",
-                            "Integrated Date", "RET Configured", "Carrier Aggregation", "State", "Project Name"
+                            "Integrated Date", "RET Configured", "Carrier Aggregation", "State", "Project Name", "Comment"
                         }
                     };
 

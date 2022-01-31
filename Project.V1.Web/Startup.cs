@@ -1,35 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
-using Project.V1.Data;
-using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Helpers;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Lib.Services;
-using Project.V1.Models;
-using Project.V1.Web.Areas.Identity;
-using Project.V1.Web.Middlewares;
-using Serilog;
-using Serilog.Context;
-using Syncfusion.Blazor;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Project.V1.Web
 {
     public class Startup
@@ -64,6 +32,45 @@ namespace Project.V1.Web
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddQuartz(q =>
+            {
+                // base quartz scheduler, job and trigger configuration
+                q.SchedulerId = "Scheduler-Core";
+                q.SchedulerName = "Custom Notification Scheduler";
+                q.UseMicrosoftDependencyInjectionScopedJobFactory();
+                // these are the defaults
+                q.UseSimpleTypeLoader();
+                q.UseInMemoryStore();
+                q.UseDefaultThreadPool(tp =>
+                {
+                    tp.MaxConcurrency = 20;
+                });
+
+                // configure jobs with code
+                var jobKey = new JobKey("Daily Report job", "SMP group");
+
+                q.AddJob<DailyReportEmail>(j => j
+                    .StoreDurably()
+                    .WithIdentity(jobKey)
+                    .WithDescription("Daily Report Reminder")
+                );
+
+                q.AddTrigger(t => t
+                    .WithIdentity("Daily Report Reminder Trigger")
+                    .ForJob(jobKey)
+                    .StartNow()
+                    .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
+                    .WithDescription("Daily Report Reminder Trigger")
+                );
+            });
+
+            // ASP.NET Core hosting
+            services.AddQuartzServer(options =>
+            {
+                // when shutting down we want jobs to complete gracefully
+                options.WaitForJobsToComplete = true;
+            });
 
             services.Configure<SecurityStampValidatorOptions>(options =>
             {

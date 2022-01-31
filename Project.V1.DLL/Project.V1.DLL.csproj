@@ -5,18 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Cron\**" />
     <Compile Remove="Data\**" />
     <Compile Remove="Extensions\**" />
     <Compile Remove="Helpers\**" />
     <Compile Remove="Migrations\**" />
     <Compile Remove="Models\**" />
     <Compile Remove="Services\Interfaces\**" />
+    <EmbeddedResource Remove="Cron\**" />
     <EmbeddedResource Remove="Data\**" />
     <EmbeddedResource Remove="Extensions\**" />
     <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="Migrations\**" />
     <EmbeddedResource Remove="Models\**" />
     <EmbeddedResource Remove="Services\Interfaces\**" />
+    <None Remove="Cron\**" />
     <None Remove="Data\**" />
     <None Remove="Extensions\**" />
     <None Remove="Helpers\**" />
@@ -36,6 +39,7 @@
     <Compile Include="Helpers\Factory.cs" />
     <Compile Include="Helpers\HelperLogin.cs" />
     <Compile Include="Helpers\LoginModelObject.cs" />
+    <Compile Include="Helpers\RequestSummary.cs" />
     <Compile Include="Helpers\RoleManagerExtension.cs" />
     <Compile Include="Helpers\UserManagerExtension.cs" />
     <Compile Include="Services\Interfaces\FormSetup\IAntennaMake.cs" />
@@ -54,10 +58,6 @@
     <Compile Include="Services\Interfaces\IRequestAction.cs" />
     <Compile Include="Services\Interfaces\IUser.cs" />
     <Compile Include="Services\Interfaces\IVendor.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Cron\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -142,6 +141,9 @@ namespace Project.V1.Models
 
         public string EngineerRejectReport { get; set; }
 
+        [ExcelColumnName("Comment")]
+        public string RequesterComment { get; set; }
+
         //[Required]
         [ExcelColumnName("Summer Config")]
         public string SummerConfigId { get; set; }
@@ -177,6 +179,16 @@ namespace Project.V1.Models
 
         [ExcelColumnName("Carrier Aggregation")]
         public string CarrierAggregation { get; set; }
+
+        public DateTime? DateActioned
+        {
+            get
+            {
+                return (EngineerAssigned.DateApproved == DateTime.MinValue) ? (EngineerAssigned.DateActioned == DateTime.MinValue) ? null : EngineerAssigned.DateActioned : EngineerAssigned.DateApproved;
+            }
+        }
+
+        public string EngineerComment => EngineerAssigned.ApproverComment;
 
         public void Dispose()
         {

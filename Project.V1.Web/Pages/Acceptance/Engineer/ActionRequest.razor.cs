@@ -1,26 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Helpers;
-using Project.V1.Lib.Helpers.Excel;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Inputs;
-using Syncfusion.Blazor.Notifications;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Pages.Acceptance.Engineer
+﻿namespace Project.V1.Web.Pages.Acceptance.Engineer
 {
     public partial class ActionRequest : IDisposable
     {
@@ -334,6 +312,7 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                 requestClass.EngineerAssigned.IsApproved = (Input.Status == "Accepted");
                 requestClass.EngineerAssigned.ApproverComment = Input.Comment;
                 requestClass.EngineerAssigned.DateAssigned = DateTimeOffset.UtcNow.DateTime;
+                requestClass.EngineerAssigned.DateActioned = DateTimeOffset.UtcNow.DateTime;
                 requestClass.Status = Input.Status;
 
                 if (requestClass.EngineerAssigned.IsApproved)

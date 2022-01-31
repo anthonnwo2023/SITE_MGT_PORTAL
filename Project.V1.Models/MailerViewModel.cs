@@ -41,7 +41,7 @@ namespace Project.V1.Models
 
         public string DelegateRoleAbbr { get; set; }
 
-        public string AssignedUpdateBody { get; set; }
+        public string DailyReportEmailBody { get; set; }
 
         public string AssignUsername { get; set; }
 
@@ -53,7 +53,7 @@ namespace Project.V1.Models
 
         public string RequestLink { get; set; }
 
-        public string AssignedUpdateMailBody
+        public string DailyReportMailBody
         {
             get { return _bodyTemplate; }
             set
@@ -84,51 +84,29 @@ namespace Project.V1.Models
                             <div class='col-lg-12'>
                                 <div class='invoice'>
                                     <div class=' invoice-header'>
-                                        <table width=100% border=0 bordercolor=#CCCCCC cellspacing=0 cellpadding=0>
-                                            <tr><td align=left valign=top>
-                                                <table width=100% border=0 cellspacing=0 cellpadding=0>
-                                                    <tr>
-                                                        <td align=left valign=top>
-                                                            <span style='font-size: 33 px; font-family:Myriad Pro, Arial'>
-                                                                <b>Workflow Notification</b>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align=left valign=top height=2 bgcolor=#FFFFFF>&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td height=2 align=right valign=top bgcolor=#FACD58></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align=left valign=top>
-                                                            <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
-                                                                <p><br />" + Name + @",</p><br />
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align=left valign=top>
-                                                            <p> 
-                                                                <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
-                                                            </p>
-                                                            <p><br />" + Greetings + @"
-                                                            <p>" + AssignedUpdateBody + @"
-                                                            Click <a href='https://ojtssapp1/nms/Identity/Account/Login'> HERE</a> to login and view requests </span></p><p>
-                                                            </b></span></p><p><span style='font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>Thank you.<br><b> Technical Systems Support (TSS) Team</b><br><b>
-                                                            NOTE: This email Message is auto-generated, Please do not reply to the email address</b></p></td></tr><tr><td height=5 align=left valign=top  bgcolor=#FACD58>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align=center valign=middle height=15  bgcolor=#FFFFFF>
-                                                            <span style='font-size: 13px; color:#000000; font-family:Verdana,Helvetica, sans-serif'>
-                                                                &copy; " + DateTime.Now.Year + @" Powered by Technical Systems Support Team (TSS)
-                                                            </span>
-                                                        </td> 
-                                                    </tr>
-                                                </table>
-                                            </td></tr>
+                                        <table width=100% border=0 cellspacing=0 cellpadding=0>               
+                                            <tr>
+                                                <td align=left valign=top>
+                                                    " + Name + @"<br>
+                                                </td>
+                                            </tr>                   
+                                            <tr>
+                                                <td align=left valign=top>
+                                                    " + Greetings + @" 
+                                                </td>
+                                            </tr>               
+                                            <tr>
+                                                <td align=left valign=top>
+                                                    " + Request +
+                                                @"</td>
+                                            </tr>
                                         </table>
+                                        <div>
+                                            <br><br>
+                                            <span style='color:#000000; font-family:Verdana,Helvetica, sans-serif'>
+                                                &copy; " + DateTime.Now.Year + @" Powered by Technical Systems Support Team (TSS)
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

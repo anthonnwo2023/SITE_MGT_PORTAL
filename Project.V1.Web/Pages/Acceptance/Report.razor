@@ -89,10 +89,10 @@ else
                     FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModel.Baseband)" HeaderText="Baseband"
-                           FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                    FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModel.RRUType)" HeaderText="RRU Type"
-                           FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                    FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModel.Power)" HeaderText="Power - (w)" TextAlign="TextAlign.Left"
                     FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
@@ -147,8 +147,11 @@ else
                     Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                     FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
         </GridColumn>
-        <GridColumn Field="@nameof(RequestViewModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left"
+        <GridColumn Visible="false" Field="@nameof(RequestViewModel.DateActioned)" HeaderText="Date Actioned" TextAlign="TextAlign.Left"
                     Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
+                    FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
+        </GridColumn>
+        <GridColumn Visible="false" Field="@nameof(RequestViewModel.EngineerComment)" HeaderText="Engineer Comment" TextAlign="TextAlign.Left"
                     FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
         </GridColumn>
         <GridColumn HeaderText="Bulk" Width="100" AllowFiltering="false">

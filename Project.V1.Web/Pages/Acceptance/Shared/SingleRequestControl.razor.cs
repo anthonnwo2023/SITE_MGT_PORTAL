@@ -1,19 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Inputs;
-using Syncfusion.Blazor.SplitButtons;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Pages.Acceptance.Shared
+﻿namespace Project.V1.Web.Pages.Acceptance.Shared
 {
     public partial class SingleRequestControl
     {
@@ -78,6 +63,11 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         public bool SSVUploadSelected { get; set; } = true;
         public bool WaiverUploadSelected { get; set; }
         public bool IsRRUType { get; set; } = false;
+
+        protected Dictionary<string, object> DescriptionHtmlAttribute { get; set; } = new Dictionary<string, object>()
+        {
+            { "rows", "3" },
+        };
 
         public List<BoolDropDown> BoolDrops { get; set; } = new()
         {

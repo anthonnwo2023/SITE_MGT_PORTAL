@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using Project.V1.Data;
@@ -11,9 +12,10 @@ using Project.V1.Data;
 namespace Project.V1.Data.Migrations.Staging
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220128162134_Request.Comment")]
+    partial class RequestComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -497,9 +499,6 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.Property<string>("ApproverType")
                         .HasColumnType("NVARCHAR2(2000)");
-
-                    b.Property<DateTime>("DateActioned")
-                        .HasColumnType("TIMESTAMP(7)");
 
                     b.Property<DateTime>("DateApproved")
                         .HasColumnType("TIMESTAMP(7)");

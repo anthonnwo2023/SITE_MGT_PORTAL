@@ -45,6 +45,9 @@
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="6.21.4" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.41" />
     <PackageReference Include="PPioli.FluentValidation.Blazor" Version="5.0.0" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.3.3" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.3.3" />
+    <PackageReference Include="Quartz.Jobs" Version="3.3.3" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
     <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />

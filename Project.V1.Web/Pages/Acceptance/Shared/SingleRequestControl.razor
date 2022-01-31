@@ -79,6 +79,14 @@
         font-weight: normal;
         line-height: normal;
     }
+
+    textarea.e-input,
+    .e-float-input textarea,
+    .e-float-input.e-control-wrapper textarea,
+    .e-input-group textarea,
+    .e-input-group.e-control-wrapper textarea {
+        resize: none;
+    }
 </style>
 
 @if (RequestModel != null)
@@ -347,6 +355,7 @@
             <ValidationMessage For="@(() => RequestModel.IntegratedDate)" />
         </div>
     </div>
+
     @*<div class="col-md-3 mt-3">
         <div class="form-group">
         <SfDatePicker Enabled="false" Placeholder="Date Submitted" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateSubmitted)">
@@ -354,6 +363,14 @@
         <ValidationMessage For="@(() => RequestModel.DateSubmitted)" />
         </div>
         </div>*@
+
+    <div class="col-md-3 mt-3">
+        <div class="form-group">
+            <SfTextBox Multiline=true HtmlAttributes="@DescriptionHtmlAttribute" Enabled="ShouldEnable" Placeholder="Comment" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.RequesterComment)">
+            </SfTextBox>
+            <ValidationMessage For="@(() => RequestModel.RequesterComment)" />
+        </div>
+    </div>
     @if (ShowSSVUpload)
     {
         <div class="col-md-3">
