@@ -34,7 +34,7 @@ bld/
 [Ll]ogs/
 [Dd]ocuments/
 
-appsettings.*.json
+appsettings*.json
 log-*.json
 log-*.txt
 
