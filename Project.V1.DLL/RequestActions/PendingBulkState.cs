@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
@@ -58,7 +57,7 @@ namespace Project.V1.DLL.RequestActions
             {
                 ["Requester"] = () =>
                 {
-                    return new SendEmailActionObj
+                    var emailObj = new SendEmailActionObj
                     {
                         Name = "Hello " + user.Fullname,
                         Title = "Notification of New Request - See Below Request Details",
@@ -72,10 +71,12 @@ namespace Project.V1.DLL.RequestActions
                         },
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
-                            new SenderBody { Name = "", Address = vendorMailList },
                         },
                         Attachment = bulkAttach
                     };
+                    emailObj.CC.AddRange(HelperFunctions.ConvertMailStringToList(vendorMailList));
+
+                    return emailObj;
                 },
 
                 ["RFTeam"] = () =>
@@ -89,7 +90,7 @@ namespace Project.V1.DLL.RequestActions
                         BodyType = "",
                         M2Uname = "",// requests.Manager.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist",
-                        To = new(),
+                        To = regionEngineers.ToList(),
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         },

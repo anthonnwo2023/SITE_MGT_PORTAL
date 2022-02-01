@@ -1,5 +1,6 @@
 ﻿using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Services.Interfaces;
+using Project.V1.Lib.Helpers;
 using Project.V1.Models;
 using Serilog;
 using System;
@@ -77,9 +78,9 @@ namespace Project.V1.DLL.RequestActions
                         },
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
-                            new SenderBody { Name = "", Address = vendorMailList },
                         }
                     };
+                    emailObj.CC.AddRange(HelperFunctions.ConvertMailStringToList(vendorMailList));
 
                     return emailObj;
                 },
@@ -94,8 +95,8 @@ namespace Project.V1.DLL.RequestActions
                         Comment = "",
                         BodyType = "",
                         M2Uname = "", // requests.Manager.Username.ToLower().Trim(),
-                        To = new(),
-                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist/{request.Id}",                        
+                        To = regionEngineers.ToList(),
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist/{request.Id}",
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         }

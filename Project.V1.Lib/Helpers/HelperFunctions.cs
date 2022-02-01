@@ -1,7 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Project.V1.Models;
 using Serilog;
 using Serilog.Core;
@@ -96,6 +95,18 @@ namespace Project.V1.Lib.Helpers
                 FailureCallback = e => Console.WriteLine("Unable to submit event " + e.MessageTemplate),
                 IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name!.ToLower().Replace(".", "-")}-{environment?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
             };
+        }
+
+        public static List<SenderBody> ConvertMailStringToList(string vendorMailList)
+        {
+            var ccs = new List<SenderBody>();
+
+            foreach (var mail in vendorMailList.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                ccs.Add(new SenderBody { Name = "", Address = mail });
+            }
+
+            return ccs;
         }
 
         public static Logger GetSerilogLogger()
@@ -367,7 +378,7 @@ namespace Project.V1.Lib.Helpers
             _cts = cts;
             _smtpClient = new SmtpClient();
 
-            if(!_smtpClient.IsConnected)
+            if (!_smtpClient.IsConnected)
             {
                 // Note: only needed if the SMTP server requires authentication
                 //client.Authenticate("no-reply@classicholdingscompany.com", "mz8Ql1!5");

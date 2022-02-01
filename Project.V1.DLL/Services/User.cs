@@ -244,7 +244,7 @@ namespace Project.V1.Lib.Services
         {
             try
             {
-                List<ApplicationUser> users = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).Where(x => x.IsActive == true).AsNoTracking().ToListAsync();
+                List<ApplicationUser> users = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
                 if (isActive == false)
                 {
                     users = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
