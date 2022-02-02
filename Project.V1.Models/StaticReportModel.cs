@@ -20,6 +20,8 @@ public class StaticReportModel
 
     public string Vendor { get; set; }
 
+    public string Sector { get; set; }
+
     public DateTime DateUpgraded { get; set; }
 
     public DateTime DateIntegrated { get; set; }

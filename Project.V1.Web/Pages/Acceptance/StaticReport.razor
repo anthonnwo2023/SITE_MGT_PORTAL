@@ -194,6 +194,9 @@ else
             <GridColumn Field="@nameof(StaticReportModel.Frequency)" HeaderText="Freq."  TextAlign="TextAlign.Left"
                     FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>   
+            <GridColumn Field="@nameof(StaticReportModel.Sector)" HeaderText="Sector" Visible="false"  TextAlign="TextAlign.Left"
+                    FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>    
             <GridColumn Field="@nameof(StaticReportModel.RNC)" HeaderText="RNC" Visible="false"  TextAlign="TextAlign.Left"
                     FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>   
