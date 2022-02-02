@@ -54,6 +54,7 @@
     <Compile Include="Services\Interfaces\IClaim.cs" />
     <Compile Include="Services\Interfaces\IClaimCategory.cs" />
     <Compile Include="Services\Interfaces\ILTERequest.cs" />
+    <Compile Include="Services\Interfaces\IStaticReport.cs" />
     <Compile Include="Services\Interfaces\IRequest.cs" />
     <Compile Include="Services\Interfaces\IRequestAction.cs" />
     <Compile Include="Services\Interfaces\IUser.cs" />

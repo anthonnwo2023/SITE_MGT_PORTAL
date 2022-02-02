@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Project.V1.Models;
 
-namespace Project.V1.Models
+public class ExcelRequestObj
 {
-    public class ExcelRequestObj
-    {
-        public List<string> Headers { get; set; }
-    }
+    public List<string> Headers { get; set; }
 }

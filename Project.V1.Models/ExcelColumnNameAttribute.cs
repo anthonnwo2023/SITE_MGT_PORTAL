@@ -1,36 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Project.V1.Models;
 
-namespace Project.V1.Models
+[AttributeUsage(AttributeTargets.Property)]
+public class ExcelColumnNameAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ExcelColumnNameAttribute : Attribute
+    protected string _name;
+
+    public string ColumnName
     {
-        protected string _name;
-
-        public string ColumnName
+        get
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
+            return _name;
         }
-
-        public ExcelColumnNameAttribute()
+        set
         {
-            _name = "";
+            _name = value;
         }
+    }
 
-        public ExcelColumnNameAttribute(string name)
-        {
-            _name = name;
-        }
+    public ExcelColumnNameAttribute()
+    {
+        _name = "";
+    }
+
+    public ExcelColumnNameAttribute(string name)
+    {
+        _name = name;
     }
 }

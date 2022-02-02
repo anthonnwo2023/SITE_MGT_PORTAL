@@ -1,16 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace Project.V1.Models;
 
-namespace Project.V1.Models
+[Table("TBL_RFACCEPT_SPECTRUM")]
+[Index(new string[] { nameof(Name), nameof(TechTypeId) }, IsUnique = true)]
+public class SpectrumViewModel : ObjectBase
 {
-    [Table("TBL_RFACCEPT_SPECTRUM")]
-    [Index(new string[] { nameof(Name), nameof(TechTypeId) }, IsUnique = true)]
-    public class SpectrumViewModel : ObjectBase
-    {
-        public string TechTypeId { get; set; }
+    public string TechTypeId { get; set; }
 
-        [ForeignKey(nameof(TechTypeId))]
-        public virtual TechTypeModel TechType { get; set; }
-    }
+    [ForeignKey(nameof(TechTypeId))]
+    public virtual TechTypeModel TechType { get; set; }
 }

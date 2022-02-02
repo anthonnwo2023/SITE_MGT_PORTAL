@@ -1,6 +1,4 @@
-﻿using Syncfusion.Blazor.Grids;
-
-namespace Project.V1.Web.Pages.Acceptance
+﻿namespace Project.V1.Web.Pages.Acceptance
 {
     public partial class Report
     {
@@ -56,6 +54,7 @@ namespace Project.V1.Web.Pages.Acceptance
             if (args.Item.Id == "ReportTable_excelexport") //Id is combination of Grid's ID and itemname
             {
                 var hiddenCols = new string[] {
+                    "Site Name",
                     "RNC/BSC",
                     "Spectrum",
                     "Bandwidth",
@@ -78,9 +77,11 @@ namespace Project.V1.Web.Pages.Acceptance
                     "CSFB Status WCDMA",
                     "RET Configured",
                     "Carrier Aggregation",
+                    "Engineer",
                     "Date Integrated",
                     "Date Submitted",
-                    "Date Accepted",
+                    "Date Actioned",
+                    "Engineer Comment",
                 };
 
                 await Grid_Request.ShowColumnsAsync(hiddenCols);

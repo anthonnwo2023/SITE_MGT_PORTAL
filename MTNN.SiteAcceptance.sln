@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.V1.Lib", "Project.V
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.V1.DLLTest", "Project.V1.WebTest\Project.V1.DLLTest.csproj", "{B408A891-459A-4709-9A59-DB1C1FF9F12D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.V1.DataTest", "Project.V1.DataTest\Project.V1.DataTest.csproj", "{712FDB91-38F4-46BE-B66B-ED8187CD602E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.V1.DataTest", "Project.V1.DataTest\Project.V1.DataTest.csproj", "{712FDB91-38F4-46BE-B66B-ED8187CD602E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -107,6 +107,7 @@ namespace Project.V1.Web
             services.AddScoped<IBaseBand, BaseBand>();
             services.AddScoped<IProjects, Projects>();
             services.AddScoped<ISummerConfig, SummerConfig>();
+            services.AddScoped<IStaticReport, StaticReport>();
 
 
             services.ConfigureBlazorizeOptions();

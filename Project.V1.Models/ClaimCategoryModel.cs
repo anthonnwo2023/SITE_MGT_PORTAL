@@ -1,32 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace Project.V1.Models;
 
-namespace Project.V1.Models
+[Table("TBL_RFACCEPT_CLAIM_CATEGORIES")]
+[Index(new string[] { nameof(Name) }, IsUnique = true)]
+public class ClaimCategoryModel : ObjectBase, IDisposable
 {
-    [Table("TBL_RFACCEPT_CLAIM_CATEGORIES")]
-    [Index(new string[] { nameof(Name) }, IsUnique = true)]
-    public class ClaimCategoryModel : ObjectBase, IDisposable
+    [NotMapped]
+    private bool disposed = false;
+
+    protected void Dispose(bool disposing)
     {
-        [NotMapped]
-        private bool disposed = false;
-
-        protected void Dispose(bool disposing)
+        if (!this.disposed)
         {
-            if (!this.disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    //await this.DisposeAsync();
-                }
+                //await this.DisposeAsync();
             }
-            this.disposed = true;
         }
+        this.disposed = true;
+    }
 
-        void IDisposable.Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    void IDisposable.Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

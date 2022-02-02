@@ -1,64 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿namespace Project.V1.Models;
 
-namespace Project.V1.Models
+public class MailerViewModel<T> where T : class
 {
-    public class MailerViewModel<T> where T : class
+    private string _bodyTemplate;
+
+    [Key]
+    public int Id { get; set; }
+
+    public string MessageTitle { get; set; }
+
+    public string DelegateRole { get; set; }
+
+    public string Greetings { get; set; }
+
+    public string Name { get; set; }
+
+    public string RequestType { get; set; }
+
+    public string RequestStatus { get; set; }
+
+    public SenderBody From { get; set; }
+
+    public List<SenderBody> To { get; set; }
+
+    public List<SenderBody> CC { get; set; }
+
+    public dynamic Request { get; set; }
+
+    public string Subject { get; set; }
+
+    public string Comment { get; set; }
+
+    public List<string> Attachments { get; set; }
+
+    public string Body { get; set; }
+
+    public string DelegateRoleAbbr { get; set; }
+
+    public string DailyReportEmailBody { get; set; }
+
+    public string AssignUsername { get; set; }
+
+    public string MailToRole { get; set; }
+
+    public string MailToUsername { get; set; }
+
+    public string DelegateUsername { get; set; }
+
+    public string RequestLink { get; set; }
+
+    public string DailyReportMailBody
     {
-        private string _bodyTemplate;
-
-        [Key]
-        public int Id { get; set; }
-
-        public string MessageTitle { get; set; }
-
-        public string DelegateRole { get; set; }
-
-        public string Greetings { get; set; }
-
-        public string Name { get; set; }
-
-        public string RequestType { get; set; }
-
-        public string RequestStatus { get; set; }
-
-        public SenderBody From { get; set; }
-
-        public List<SenderBody> To { get; set; }
-
-        public List<SenderBody> CC { get; set; }
-
-        public dynamic Request { get; set; }
-
-        public string Subject { get; set; }
-
-        public string Comment { get; set; }
-
-        public List<string> Attachments { get; set; }
-
-        public string Body { get; set; }
-
-        public string DelegateRoleAbbr { get; set; }
-
-        public string DailyReportEmailBody { get; set; }
-
-        public string AssignUsername { get; set; }
-
-        public string MailToRole { get; set; }
-
-        public string MailToUsername { get; set; }
-
-        public string DelegateUsername { get; set; }
-
-        public string RequestLink { get; set; }
-
-        public string DailyReportMailBody
+        get { return _bodyTemplate; }
+        set
         {
-            get { return _bodyTemplate; }
-            set
-            {
-                _bodyTemplate = @"
+            _bodyTemplate = @"
                 <!DOCTYPE html>
                     <html lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'>
                     <head>
@@ -98,7 +94,7 @@ namespace Project.V1.Models
                                             <tr>
                                                 <td align=left valign=top>
                                                     " + Request +
-                                                @"</td>
+                                            @"</td>
                                             </tr>
                                         </table>
                                         <div>
@@ -114,17 +110,17 @@ namespace Project.V1.Models
                     </body>
                 </html>
         ";
-            }
         }
+    }
 
-        public string MailBody { get; set; }
+    public string MailBody { get; set; }
 
-        public string CreateMailBody
+    public string CreateMailBody
+    {
+        get { return _bodyTemplate; }
+        set
         {
-            get { return _bodyTemplate; }
-            set
-            {
-                _bodyTemplate = @"
+            _bodyTemplate = @"
                     <!DOCTYPE html>
                     <html lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'>
                         <head>
@@ -218,15 +214,15 @@ namespace Project.V1.Models
                         </body>
                     </html>
             ";
-            }
         }
+    }
 
-        public string BulkCreateMailBody
+    public string BulkCreateMailBody
+    {
+        get { return _bodyTemplate; }
+        set
         {
-            get { return _bodyTemplate; }
-            set
-            {
-                _bodyTemplate = @"
+            _bodyTemplate = @"
                     <!DOCTYPE html>
                     <html lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'>
                         <head>
@@ -316,7 +312,7 @@ namespace Project.V1.Models
                         </body>
                     </html>
             ";
-            }
         }
     }
 }
+

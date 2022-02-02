@@ -38,6 +38,7 @@ global using Serilog;
 global using Serilog.Context;
 global using Syncfusion.Blazor;
 global using Syncfusion.Blazor.Calendars;
+global using Syncfusion.Blazor.Grids;
 global using Syncfusion.Blazor.Inputs;
 global using Syncfusion.Blazor.Notifications;
 global using Syncfusion.Blazor.PivotView;

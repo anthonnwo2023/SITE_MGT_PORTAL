@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Project.V1.Models;
 using System;
-using System.Configuration;
 
 namespace Project.V1.Data
 {
@@ -54,6 +53,7 @@ namespace Project.V1.Data
                 );
         }
 
+        public DbSet<StaticReportModel> StaticReport { get; set; }
         public DbSet<RequestViewModel> Requests { get; set; }
         public DbSet<RegionViewModel> Regions { get; set; }
         public DbSet<AntennaMakeModel> AntennaMakes { get; set; }

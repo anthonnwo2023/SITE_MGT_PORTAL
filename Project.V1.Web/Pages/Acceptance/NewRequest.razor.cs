@@ -824,7 +824,7 @@
             {
                 var spectrumName = Spectrums.FirstOrDefault(x => x.Id == request.SpectrumId).Name;
 
-                var checkName = (spectrumName.Contains("RRU")) ? $"{request.SiteId.ToUpper()}" : $"{request.SiteId.ToUpper()}_{spectrumName.ToUpper()}";
+                var checkName = (spectrumName.Contains("RRU")) ? $"{request.SiteId.ToUpper()}" : $"{request.SiteId.ToUpper()}_{spectrumName.ToUpper().RemoveSpecialCharacters()}";
 
                 if (!BulkWaiverUploadSelected)
                 {
