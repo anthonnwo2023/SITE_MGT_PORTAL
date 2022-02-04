@@ -143,8 +143,8 @@ namespace Project.V1.DLL.Helpers
 
             requests.AddRange((Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
-                                && !x.Spectrum.Name.Contains("RRU")
-                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell").GetAwaiter().GetResult())
+                                && !x.Spectrum.Name.Contains("MOD")
+                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell" && !x.ProjectType.Name.Contains("MOD")).GetAwaiter().GetResult())
                                 .Select(x => new AcceptanceDTO
                                 {
                                     Vendor = x.Requester.Vendor.Name,
@@ -195,7 +195,7 @@ namespace Project.V1.DLL.Helpers
             requests.AddRange((Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
                                 //&& !x.Spectrum.Name.Contains("RT")
-                                && !x.Spectrum.Name.Contains("RRU")
+                                && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
                                 )).GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
                                 {

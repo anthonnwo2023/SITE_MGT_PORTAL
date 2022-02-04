@@ -79,7 +79,7 @@ namespace Project.V1.DLL.Crons
 
             var yesterdaysRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date == yesterDay.Date
-                                && !x.Spectrum.Name.Contains("RRU")
+                                && !x.Spectrum.Name.Contains("MOD")
                                 && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
                                  .Select(x => new AcceptanceDTO
                                  {
@@ -89,7 +89,7 @@ namespace Project.V1.DLL.Crons
                                      Vendor = x.Requester.Vendor.Name,
                                      ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
                                      TechType = x.TechType.Name,
-                                     Spectrum = RequestSummary.GetSpectrumName(x.Spectrum.Name),
+                                     Spectrum = x.Spectrum.Name,
                                      AcceptanceCount = 1,
                                      DateSubmitted = x.DateSubmitted,
                                      DateAccepted = x.EngineerAssigned.DateApproved
