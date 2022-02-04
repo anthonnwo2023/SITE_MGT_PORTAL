@@ -18,6 +18,7 @@
         [Inject] protected IBaseBand IBaseband { get; set; }
         [Inject] protected IProjects IRRUType { get; set; }
         [Inject] protected IProjectType IProjectType { get; set; }
+        [Inject] protected IProjects IProject { get; set; }
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
 
         List<RequestViewModel> Requests { get; set; }
@@ -29,6 +30,7 @@
         List<BaseBandModel> Basebands { get; set; }
         List<ProjectModel> RRUTypes { get; set; }
         List<ProjectTypeModel> ProjectTypes { get; set; }
+        List<ProjectModel> Projects { get; set; }
         List<SummerConfigModel> SummerConfigs { get; set; }
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
@@ -68,6 +70,7 @@
                     "Baseband",
                     "RRU Type",
                     "Power - (w)",
+                    "Project Name",
                     "Project Type",
                     "Project Year",
                     "Summer Config",
@@ -153,6 +156,7 @@
                     AntennaTypes = await IAntennaType.Get(x => x.IsActive);
                     Basebands = await IBaseband.Get(x => x.IsActive);
                     RRUTypes = await IRRUType.Get(x => x.IsActive);
+                    Projects = await IProject.Get(x => x.IsActive);
                     ProjectTypes = await IProjectType.Get(x => x.IsActive);
                     SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
                 }

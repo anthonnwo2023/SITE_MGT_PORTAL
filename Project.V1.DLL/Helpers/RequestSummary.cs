@@ -159,7 +159,8 @@ namespace Project.V1.DLL.Helpers
             return requests;
         }
 
-        public static List<AcceptanceDTO> GetVendorRequests(string requestType, DateTime DateData, DateTime MinDateTime, DateTime MaxDateTime, bool DateIsToday = true, bool DateWthMth = true)
+        public static List<AcceptanceDTO> GetVendorRequests(string requestType, DateTime DateData, DateTime MinDateTime,
+            DateTime MaxDateTime, bool DateIsToday = true, bool DateWthMth = true)
         {
             var requests = new List<AcceptanceDTO>();
             var vendors = Vendor.Get(x => x.IsActive && x.Name != "MTN Nigeria").GetAwaiter().GetResult();
