@@ -156,6 +156,12 @@
             await OnCheckValidButton.InvokeAsync(IsRRUType);
         }
 
+        public async Task OnProjectTypeChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, ProjectTypeModel> args)
+        {
+            await OnCheckValidButton.InvokeAsync(IsRRUType);
+            await Task.CompletedTask;
+        }
+
         public async Task OnSpectrumChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, SpectrumViewModel> args)
         {
             var specturm = Spectrums.FirstOrDefault(x => x.Id == args.Value)?.Name;

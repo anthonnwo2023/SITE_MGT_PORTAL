@@ -104,7 +104,12 @@ namespace Project.V1.DLL.Helpers
         {
             var requests = new List<AcceptanceDTO>();
 
-            var projectTypes = (ProjectType.Get(x => x.IsActive && x.Name != "Layer Expansion" && x.Name != "Small Cell").GetAwaiter().GetResult()).Select(x => GetProjectTypeName(x.Name)).ToList();
+            var projectTypes = (ProjectType.Get(x =>
+                                                    x.IsActive && x.Name != "Layer Expansion" &&
+                                                    x.Name != "Small Cell" &&
+                                                    !x.Name.Contains("MOD") &&
+                                                    !x.Name.ToUpper().Contains(" UPGRADE")
+                                ).GetAwaiter().GetResult()).Select(x => GetProjectTypeName(x.Name)).ToList();
 
             projectTypes = projectTypes.Distinct().ToList();
 

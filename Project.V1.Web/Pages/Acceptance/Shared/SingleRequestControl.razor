@@ -288,6 +288,7 @@
         <div class="form-group">
             <SfDropDownList Enabled="ShouldEnable" TItem="ProjectTypeModel" DataSource="@ProjectTypes" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
+                <DropDownListEvents TValue="string" TItem="ProjectTypeModel" ValueChange="OnProjectTypeChange"></DropDownListEvents>
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
             <ValidationMessage For="@(() => RequestModel.ProjectTypeId)" />
@@ -378,12 +379,12 @@
                 <p class="h5 my-3 custom-font">Report Type</p>
                 <SfButtonGroup @ref="SingleSelector" CssClass="" Mode="Syncfusion.Blazor.SplitButtons.SelectionMode.Single">
                     <ButtonGroupButton IsToggle="false" @ref="SingleSSVSelector" @bind-Selected="@SSVUploadSelected">SSV</ButtonGroupButton>
-                    <ButtonGroupButton IsToggle="false" @ref="SingleWaiverSelector" @bind-Selected="@WaiverUploadSelected">Waiver</ButtonGroupButton>
+                    <ButtonGroupButton IsToggle="false" @ref="SingleWaiverSelector" @bind-Selected="@RequestModel.SSVReportIsWaiver">Waiver</ButtonGroupButton>
                 </SfButtonGroup>
             </div>
             <div class="form-group">
-                <label for="filePath" class="col-form-label custom-font" style="">@((WaiverUploadSelected) ? "Waiver Email" : "SSV Report")</label>
-                <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((WaiverUploadSelected) ? ".msg, .eml":".xls, .xlsx, .ppt, .pptx")" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+                <label for="filePath" class="col-form-label custom-font" style="">@((RequestModel.SSVReportIsWaiver) ? "Waiver Email" : "SSV Report")</label>
+                <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions="@((RequestModel.SSVReportIsWaiver) ? ".msg, .eml":".xls, .xlsx, .ppt, .pptx")" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
                     @ref="SF_Uploader" @bind-Value="RequestModel.SSVReport">
                     <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange="OnFileSSVUploadChange"></UploaderEvents>
                 </SfUploader>

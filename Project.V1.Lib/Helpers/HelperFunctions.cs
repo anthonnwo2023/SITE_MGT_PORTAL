@@ -129,15 +129,15 @@ namespace Project.V1.Lib.Helpers
             string path = Path.Combine(pathBuilt, "log-.txt");
 
             return new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .ReadFrom.Configuration(configuration.GetSection("Serilog"))
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()
                 .Enrich.WithExceptionDetails()
-                .Enrich.WithProperty("Environment", environment!)
                 .WriteTo.Debug()
                 .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment!))
                 .WriteTo.Console(new ElasticsearchJsonFormatter())
+                .Enrich.WithProperty("Environment", environment)
+                .ReadFrom.Configuration(configuration)
+                .ReadFrom.Configuration(configuration.GetSection("Serilog"))
                 //.WriteTo.File("Logs/log-{Date}.txt", fileSizeLimitBytes: 1_000_000, rollOnFileSizeLimit: true, shared: true, flushToDiskInterval: TimeSpan.FromSeconds(1))
                 .WriteTo.File(path, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {NewLine}({SourceContext}.{Method}){NewLine}in method {MemberName} at {FilePath}:{LineNumber}{NewLine} {Message:lj}{NewLine}{Exception}",
                                 rollingInterval: RollingInterval.Day, fileSizeLimitBytes: 20000000, rollOnFileSizeLimit: true)

@@ -1,7 +1,7 @@
 ﻿namespace Project.V1.Models;
 
 [Table("TBL_RFACCEPT_REQUESTS")]
-[Index(new string[] { nameof(SiteId), nameof(SpectrumId) }, IsUnique = true)]
+[Index(new string[] { nameof(SiteId), nameof(SpectrumId), nameof(ProjectTypeId) }, IsUnique = true)]
 public class RequestViewModel : IDisposable
 {
     [Key]

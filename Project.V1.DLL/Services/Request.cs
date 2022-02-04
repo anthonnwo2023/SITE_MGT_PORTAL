@@ -1,20 +1,20 @@
 ﻿using Project.V1.Data;
-using Project.V1.Lib.Interfaces;
 using Project.V1.DLL.Interface;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace Project.V1.Lib.Services
 {
-    public class Request : BaseActionOps<RequestViewModel>, IRequest
+    public class SMPRequest : BaseActionOps<RequestViewModel>, IRequest
     {
         private readonly ApplicationDbContext _context;
         private readonly ICLogger _logger;
 
-        public Request(ApplicationDbContext context, ICLogger logger)
+        public SMPRequest(ApplicationDbContext context, ICLogger logger)
             : base(context, "SA", logger)
         {
             _context = context;
@@ -37,7 +37,7 @@ namespace Project.V1.Lib.Services
                 return false;
             }
         }
-    
+
         public async Task<(IEnumerable<RequestViewModel> Valid, IEnumerable<RequestViewModel> Invalid)> GetValidRequests(IEnumerable<RequestViewModel> items)
         {
             if (items == null)

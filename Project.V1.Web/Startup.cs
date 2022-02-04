@@ -93,7 +93,7 @@ namespace Project.V1.Web
 
             services.AddScoped<IUserAuthentication, UserAuthentication>();
             services.AddScoped<ICLogger, CLogger>();
-            services.AddScoped<IRequest, Request>();
+            services.AddScoped<IRequest, SMPRequest>();
             services.AddScoped<IClaimService, ClaimService>();
             services.AddScoped<IClaimCategory, ClaimCategory>();
             services.AddScoped<IVendor, Vendor>();

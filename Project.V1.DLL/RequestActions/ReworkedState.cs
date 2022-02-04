@@ -74,7 +74,7 @@ namespace Project.V1.DLL.RequestActions
                         Comment = "",
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
-                        Link = $"https://ojtssapp1/spm/Identity/Account/Login?ReturnUrl=%2Fspm/{application}/worklist/{request.Id}",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/worklist/{request.Id}",
                         To = new List<SenderBody> {
                             new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
                         },

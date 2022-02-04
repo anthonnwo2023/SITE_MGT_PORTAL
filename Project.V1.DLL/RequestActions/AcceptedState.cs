@@ -1,10 +1,8 @@
-﻿using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Services.Interfaces;
+﻿using Project.V1.DLL.Services.Interfaces;
 using Project.V1.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
@@ -53,7 +51,7 @@ namespace Project.V1.DLL.RequestActions
                         Comment = request.EngineerAssigned.ApproverComment,
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
-                        Link = $"https://ojtssapp1/spm/Identity/Account/Login?ReturnUrl=%2Fspm/{application}/worklist/{request.Id}",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/worklist/{request.Id}",
                         To = new List<SenderBody> {
                             new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
                         },
@@ -73,7 +71,7 @@ namespace Project.V1.DLL.RequestActions
                         Comment = request.EngineerAssigned.ApproverComment,
                         BodyType = "",
                         M2Uname = request.EngineerAssigned.Username.ToLower().Trim(),
-                        Link = $"https://ojtssapp1/spm/Identity/Account/Login?ReturnUrl=%2Fspm/{application}/engineer/worklist/detail/{request.Id}",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist/detail/{request.Id}",
                         To = new List<SenderBody>
                         {
                             new SenderBody { Name = request.EngineerAssigned.Fullname, Address = request.EngineerAssigned.Email },

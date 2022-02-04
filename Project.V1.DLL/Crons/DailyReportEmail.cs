@@ -110,7 +110,7 @@ namespace Project.V1.DLL.Crons
             SendNotification(yesterDay, table);
         }
 
-        private void SendNotification(DateTime yesterDay, string table)
+        private async void SendNotification(DateTime yesterDay, string table)
         {
             var mvm = new MailerViewModel<DailyReportEmail>
             {
@@ -147,7 +147,7 @@ namespace Project.V1.DLL.Crons
             mvm.DailyReportMailBody = mvm.DailyReportMailBody;
             mvm.MailBody = mvm.DailyReportMailBody;
 
-            var SentEmail = hff.SendRequestMessage(mvm);
+            await hff.SendRequestMessage(mvm);
         }
 
         private string GenerateSummaryTable(List<IGrouping<string, AcceptanceDTO>> tableData, List<string> tableColumnNames, DateTime date,
