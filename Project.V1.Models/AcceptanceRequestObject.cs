@@ -1,6 +1,6 @@
 ﻿namespace Project.V1.Models;
 
-public class SingleRequestObject
+public class AcceptanceRequestObject
 {
     public ApplicationUser User { get; set; }
     public List<SpectrumViewModel> Spectrums { get; set; }

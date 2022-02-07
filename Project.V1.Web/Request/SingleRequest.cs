@@ -11,7 +11,7 @@ public class SingleRequest : RequestBase
     }
 
 
-    public override async Task<(bool Saved, string Error)> Save(SingleRequestObject requestObject, bool toClose)
+    public override async Task<(bool Saved, string Error)> Save(AcceptanceRequestObject requestObject, bool toClose)
     {
         User = requestObject.User;
         ProjectTypes = requestObject.ProjectTypes;

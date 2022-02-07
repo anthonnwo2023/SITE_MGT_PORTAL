@@ -154,6 +154,9 @@ else
                     Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                     FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
         </GridColumn>
+        <GridColumn Visible="false" Field="@nameof(RequestViewModel.RequesterComment)" HeaderText="Requester Comment" TextAlign="TextAlign.Left"
+                    FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
+        </GridColumn>
         <GridColumn Visible="false" Field="@nameof(RequestViewModel.EngineerComment)" HeaderText="Engineer Comment" TextAlign="TextAlign.Left"
                     FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
         </GridColumn>

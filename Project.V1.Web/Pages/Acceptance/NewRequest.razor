@@ -95,6 +95,19 @@
 }
 else
 {
+    <SfDialog Width="420px" ShowCloseIcon="true" IsModal="true" Visible="ShowOffPeakNotice">
+        <DialogTemplates>
+            <Header><p class="dialog-header-custom text-danger">Delay Notice! </p></Header>
+            <Content> 
+                <span style="font-size: 14px;">Kindly note that all requests made at off peak hours @($"({PeakStart.ToString("t")} - {PeakEnd.ToString("t")})") will be subject to delays. Thank you.</span>
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="OK" IsPrimary="true" OnClick="@CloseDialog" />
+            @*<DialogButton Content="Cancel" OnClick="@CloseDialog" />*@
+        </DialogButtons>
+    </SfDialog>
+
     <SfDialog Width="420px" ShowCloseIcon="true" IsModal="true" Visible="ShowInvalidDialog">
         <DialogTemplates>
             <Header><p class="dialog-header-custom text-danger">Entry(s) below already exists and can not be <br> submitted. </p></Header>
@@ -115,7 +128,7 @@ else
                                 <tr>
                                     <td>@(BulkRequestInvalidData.IndexOf(item) + 1)</td>
                                     <td>@item.SiteId</td>
-                                    <td>@(Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId).Name)</td>
+                                    <td>@(IRequestList.Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId).Name)</td>
                                 </tr>
                             }
                         }
@@ -140,7 +153,7 @@ else
                                         <tr>
                                             <td>@(BulkUploadData.requests.IndexOf(item) + 1)</td>
                                             <td>@item.SiteId</td>
-                                            <td>@(Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId).Name)</td>
+                                            <td>@(IRequestList.Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId).Name)</td>
                                         </tr>
                                     }
                                 else
@@ -190,8 +203,7 @@ else
             <div class="col-md-12" style="">
                 <div class="col-md 12 row">
                     <SingleRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="true" RequestModel="@RequestModel" 
-                     OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileSSVUploadChange(e, "SSV")' CheckValid='IsSEValid'
-                     TechChanged="OnTechChange" ShowRequired="true"/>
+                     OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileSSVUploadChange(e, "SSV")' CheckValid='IsSEValid' ShowRequired="true"/>
                                          
                     <div class="col-md-3 mt-3 ml-auto">
                         <div class="form-group">
@@ -288,11 +300,11 @@ else
                                                 var item = element.item;
 
                                                 <tr class="custom-font">
-                                                    <td>@TechTypes.FirstOrDefault(x => x.Id == item.TechTypeId)?.Name</td>
+                                                    <td>@IRequestList.TechTypes.FirstOrDefault(x => x.Id == item.TechTypeId)?.Name</td>
                                                     <td>@item.SiteName</td>
                                                     <td>@item.SiteId</td>
-                                                    <td>@Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId)?.Name</td>
-                                                    <td>@Regions.FirstOrDefault(x => x.Id == item.RegionId)?.Name</td>
+                                                    <td>@IRequestList.Spectrums.FirstOrDefault(x => x.Id == item.SpectrumId)?.Name</td>
+                                                    <td>@IRequestList.Regions.FirstOrDefault(x => x.Id == item.RegionId)?.Name</td>
                                                     <td class="w-25">
                                                         <SfUploader @ref="@BulkUploadRRUSSVFiles[element.index]" AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx, .ppt, .pptx" MinFileSize="1000"
                                                 MaxFileSize="@MaxFileSize" AutoUpload="true" CssClass="" HtmlAttributes="@htmlattributeFileUpload">

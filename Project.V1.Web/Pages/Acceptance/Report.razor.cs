@@ -84,6 +84,7 @@
                     "Date Integrated",
                     "Date Submitted",
                     "Date Actioned",
+                    "Requester Comment",
                     "Engineer Comment",
                 };
 

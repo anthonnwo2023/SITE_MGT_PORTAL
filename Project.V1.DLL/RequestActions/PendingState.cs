@@ -72,7 +72,7 @@ namespace Project.V1.DLL.RequestActions
                         Comment = "",
                         BodyType = "",
                         M2Uname = user.UserName.ToLower().Trim(),
-                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/worklist/detail/{request.Id}",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/worklist/detail/{request.Id}",
                         To = new List<SenderBody> {
                             new SenderBody { Name = user.Fullname, Address = user.Email },
                         },
@@ -96,7 +96,7 @@ namespace Project.V1.DLL.RequestActions
                         BodyType = "",
                         M2Uname = "", // requests.Manager.Username.ToLower().Trim(),
                         To = regionEngineers.ToList(),
-                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist/{request.Id}",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/{request.Id}",
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         }

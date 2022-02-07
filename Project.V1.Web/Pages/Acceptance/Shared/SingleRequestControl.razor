@@ -93,7 +93,7 @@
 {
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="TechTypeModel" DataSource="@TechTypes" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="TechTypeModel" DataSource="@IRequestList.TechTypes" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Technology" style="font-size: 10px;" @bind-Value="RequestModel.TechTypeId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
                 <DropDownListEvents TValue="string" TItem="TechTypeModel" ValueChange="OnTechChange"></DropDownListEvents>
@@ -117,7 +117,7 @@
         </div>
     </div>
 
-    @if (RequestModel.TechTypeId != TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
+    @if (RequestModel.TechTypeId != IRequestList.TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
     {
         <div class="col-md-3 mt-3">
             <div class="form-group">
@@ -129,7 +129,7 @@
     }
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="RegionViewModel" DataSource="@Regions" TValue="string" FloatLabelType="@FloatLabelType.Auto" CssClass="@((ShowRequired) ? "required-field" : "")"
+            <SfDropDownList Enabled="ShouldEnable" TItem="RegionViewModel" DataSource="@IRequestList.Regions" TValue="string" FloatLabelType="@FloatLabelType.Auto" CssClass="@((ShowRequired) ? "required-field" : "")"
                         Placeholder="Region" style="font-size: 10px;" @bind-Value="RequestModel.RegionId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -147,7 +147,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="SummerConfigModel" DataSource="@SummerConfigs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="SummerConfigModel" DataSource="@IRequestList.SummerConfigs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Summer Config" style="font-size: 10px;" @bind-Value="RequestModel.SummerConfigId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -170,7 +170,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="@ShouldEnable" TItem="SpectrumViewModel" DataSource="@Spectrums" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="@ShouldEnable" TItem="SpectrumViewModel" DataSource="@IRequestList.Spectrums" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Spectrum/Tech Split" style="font-size: 10px;" @bind-Value="RequestModel.SpectrumId">
                 <DropDownListEvents TValue="string" TItem="SpectrumViewModel" ValueChange="OnSpectrumChange"></DropDownListEvents>
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
@@ -203,7 +203,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="AntennaMakeModel" DataSource="@AntennaMakes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="AntennaMakeModel" DataSource="@IRequestList.AntennaMakes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Antenna Make" style="font-size: 10px;" @bind-Value="RequestModel.AntennaMakeId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -212,7 +212,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="AntennaTypeModel" DataSource="@AntennaTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="AntennaTypeModel" DataSource="@IRequestList.AntennaTypes" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Antenna Type" style="font-size: 10px;" @bind-Value="RequestModel.AntennaTypeId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -277,7 +277,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="ProjectModel" DataSource="@Projects" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="ProjectModel" DataSource="@IRequestList.Projects" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Project Name" style="font-size: 10px;" @bind-Value="RequestModel.ProjectNameId">
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -286,7 +286,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="ProjectTypeModel" DataSource="@ProjectTypes" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="ShouldEnable" TItem="ProjectTypeModel" DataSource="@IRequestList.ProjectTypes" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="Project Type" style="font-size: 10px;" @bind-Value="RequestModel.ProjectTypeId">
                 <DropDownListEvents TValue="string" TItem="ProjectTypeModel" ValueChange="OnProjectTypeChange"></DropDownListEvents>
                 <DropDownListFieldSettings Text="Name" Value="Id"></DropDownListFieldSettings>
@@ -303,7 +303,7 @@
             <ValidationMessage For="@(() => RequestModel.ProjectYear)" />
         </div>
     </div>
-    @if (RequestModel.TechTypeId == TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
+    @if (RequestModel.TechTypeId == IRequestList.TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
     {
         <div class="col-md-3 mt-3">
             <div class="form-group">
@@ -326,18 +326,6 @@
                 <ValidationMessage For="@(() => RequestModel.CSFBStatusWCDMA)" />
             </div>
         </div>
-    }
-    <div class="col-md-3 mt-3">
-        <div class="form-group">
-            <SfDropDownList Enabled="ShouldEnable" TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" FloatLabelType="@FloatLabelType.Auto"
-                        Placeholder="RET Configured" style="font-size: 10px;" @bind-Value="RequestModel.RETConfigured">
-                <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
-            </SfDropDownList>
-            <ValidationMessage For="@(() => RequestModel.RETConfigured)" />
-        </div>
-    </div>
-    @if (RequestModel.TechTypeId == TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
-    {
         <div class="col-md-3 mt-3">
             <div class="form-group">
                 <SfDropDownList Enabled="ShouldEnable " TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
@@ -348,6 +336,15 @@
             </div>
         </div>
     }
+    <div class="col-md-3 mt-3">
+        <div class="form-group">
+            <SfDropDownList Enabled="ShouldEnable" TItem="BoolDropDown" DataSource="@BoolDrops" TValue="string" FloatLabelType="@FloatLabelType.Auto"
+                        Placeholder="RET Configured" style="font-size: 10px;" @bind-Value="RequestModel.RETConfigured">
+                <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+            </SfDropDownList>
+            <ValidationMessage For="@(() => RequestModel.RETConfigured)" />
+        </div>
+    </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
             <SfDatePicker Enabled="ShouldEnable" Placeholder="Site Integrated Date" Min='@MinDateTime' Max='@MaxDateTime' FloatLabelType="@FloatLabelType.Auto"

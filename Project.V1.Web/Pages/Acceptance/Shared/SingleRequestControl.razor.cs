@@ -1,4 +1,6 @@
-﻿namespace Project.V1.Web.Pages.Acceptance.Shared
+﻿using Project.V1.Web.Request;
+
+namespace Project.V1.Web.Pages.Acceptance.Shared
 {
     public partial class SingleRequestControl
     {
@@ -7,7 +9,7 @@
         [Parameter] public bool ShowSSVUpload { get; set; } = true;
         //[Parameter] public bool DisableSEButton { get; set; }
         //[Parameter] public string SEUploadIconCss { get; set; }
-        public List<SpectrumViewModel> Spectrums { get; set; }
+        //public List<SpectrumViewModel> Spectrums { get; set; }
         [Parameter] public RequestViewModel RequestModel { get; set; }
         [Parameter] public EventCallback<bool> CheckValid { get; set; }
         [Parameter] public List<FilesManager> UploadedRequestFiles { get; set; }
@@ -20,15 +22,16 @@
 
         [Inject] public ICLogger Logger { get; set; }
         [Inject] protected IRequest IRequest { get; set; }
-        [Inject] protected IRegion IRegion { get; set; }
+        [Inject] protected IRequestListObject IRequestList { get; set; }
+        //[Inject] protected IRegion IRegion { get; set; }
         [Inject] protected ISpectrum ISpectrum { get; set; }
-        [Inject] protected ISummerConfig ISummerConfig { get; set; }
-        [Inject] protected IProjectType IProjectType { get; set; }
-        [Inject] protected IProjects IProjects { get; set; }
-        [Inject] protected ITechType ITechType { get; set; }
-        [Inject] protected IAntennaMake IAntennaMake { get; set; }
-        [Inject] protected IAntennaType IAntennaType { get; set; }
-        [Inject] protected IBaseBand IBaseBand { get; set; }
+        //[Inject] protected ISummerConfig ISummerConfig { get; set; }
+        //[Inject] protected IProjectType IProjectType { get; set; }
+        //[Inject] protected IProjects IProjects { get; set; }
+        //[Inject] protected ITechType ITechType { get; set; }
+        //[Inject] protected IAntennaMake IAntennaMake { get; set; }
+        //[Inject] protected IAntennaType IAntennaType { get; set; }
+        //[Inject] protected IBaseBand IBaseBand { get; set; }
         [Inject] protected IUser IUser { get; set; }
 
 
@@ -97,19 +100,8 @@
         private async Task InitializeForm()
         {
             Principal = (await AuthenticationStateTask).User;
-            User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-            Regions = (await IRegion.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            SummerConfigs = (await ISummerConfig.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            ProjectTypes = (await IProjectType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            Projects = (User.Vendor.Name == "MTN Nigeria") ? (await IProjects.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
-            TechTypes = (await ITechType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            AntennaMakes = (await IAntennaMake.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            AntennaTypes = (await IAntennaType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-            Spectrums = (RequestModel.TechTypeId == null) ? new() : (await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId)).OrderBy(x => x.Name).ToList();
-            Basebands = (Principal.IsInRole("Super Admin"))
-                ? (await IBaseBand.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList()
-                : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
+            await IRequestList.Initialize(Principal);
 
             await OnCheckValidButton.InvokeAsync(false);
 
@@ -144,9 +136,9 @@
             try
             {
                 IsRRUType = false;
-                Spectrums = (await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive)).OrderBy(x => x.Name).ToList();
+                IRequestList.Spectrums = (await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive)).OrderBy(x => x.Name).ToList();
 
-                await TechChanged.InvokeAsync(Spectrums);
+                //await TechChanged.InvokeAsync(IRequestList.Spectrums);
             }
             catch (Exception ex)
             {
@@ -164,7 +156,7 @@
 
         public async Task OnSpectrumChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, SpectrumViewModel> args)
         {
-            var specturm = Spectrums.FirstOrDefault(x => x.Id == args.Value)?.Name;
+            var specturm = IRequestList.Spectrums.FirstOrDefault(x => x.Id == args.Value)?.Name;
 
             if (specturm == null)
             {

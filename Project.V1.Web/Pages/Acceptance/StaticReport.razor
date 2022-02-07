@@ -117,8 +117,10 @@
                 </div>
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
-                        <SfTextBox Placeholder="Frequency" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(FilterObject.Frequency)">
-                        </SfTextBox>
+                        <SfDropDownList TItem="StaticDrp" DataSource="@StaticFreqs" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                    Placeholder="Frequency" style="font-size: 10px;" @bind-Value="FilterObject.Frequency">
+                            <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
+                        </SfDropDownList>
                     </div>
                 </div>
                 <div class="col-md-3 mt-3">

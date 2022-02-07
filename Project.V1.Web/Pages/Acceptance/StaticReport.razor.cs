@@ -26,9 +26,16 @@ public partial class StaticReport
 
     public List<StaticDrp> StaticVendors { get; set; } = Vendors.Select(x => new StaticDrp { Name = x.ToUpper() }).ToList();
 
+    private static readonly string[] Freqs = new string[]
+    {
+        "700Mhz", "800M", "1800Mhz", "2600Mhz"
+    };
+
+    public List<StaticDrp> StaticFreqs { get; set; } = Freqs.Select(x => new StaticDrp { Name = x.ToUpper() }).ToList();
+
     private static readonly string[] Technos = new string[]
     {
-        "2G", "3G", "4G"
+        "2G", "3G", "U900", "MS"
     };
 
     public List<StaticDrp> StaticTechs { get; set; } = Technos.Select(x => new StaticDrp { Name = x.ToUpper() }).ToList();

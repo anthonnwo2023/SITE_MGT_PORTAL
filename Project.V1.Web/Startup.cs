@@ -1,3 +1,5 @@
+using Project.V1.Web.Request;
+
 namespace Project.V1.Web
 {
     public class Startup
@@ -108,6 +110,7 @@ namespace Project.V1.Web
             services.AddScoped<IProjects, Projects>();
             services.AddScoped<ISummerConfig, SummerConfig>();
             services.AddScoped<IStaticReport, StaticReport>();
+            services.AddScoped<IRequestListObject, RequestListObject>();
 
 
             services.ConfigureBlazorizeOptions();
@@ -174,6 +177,8 @@ namespace Project.V1.Web
             });
 
             app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
+
+            app.UseMiddleware<ExceptionHandling>();
 
             app.UseHttpsRedirection();
 

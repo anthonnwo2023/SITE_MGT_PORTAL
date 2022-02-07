@@ -36,10 +36,10 @@ public abstract class RequestBase : IDisposable
         SSVReports = ssvReports;
     }
 
-    public virtual Task<(bool Saved, string Error)> Save(SingleRequestObject requestObject, bool toClose)
+    public virtual Task<(bool Saved, string Error)> Save(AcceptanceRequestObject requestObject, bool toClose)
         => Task.FromResult((false, "Method not allowed - Custom Internal Error"));
 
-    public virtual Task<(string SaveStatus, List<string> Messages, List<RequestViewModel> ValidRequests)> Save(SingleRequestObject requestObject)
+    public virtual Task<(string SaveStatus, List<string> Messages, List<RequestViewModel> ValidRequests)> Save(AcceptanceRequestObject requestObject)
          => Task.Run<(string SaveStatus, List<string> Messages, List<RequestViewModel> ValidRequests)>(() =>
          {
              return ("Method not allowed", null, null);

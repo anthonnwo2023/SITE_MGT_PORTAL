@@ -74,7 +74,7 @@ namespace Project.V1.DLL.RequestActions
                         Comment = "",
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
-                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/worklist/{request.Id}",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/worklist/{request.Id}",
                         To = new List<SenderBody> {
                             new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
                         },
@@ -94,7 +94,7 @@ namespace Project.V1.DLL.RequestActions
                         Comment = "",
                         BodyType = "",
                         M2Uname = "", // requests.Manager.Username.ToLower().Trim(),
-                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl=%2Fsmp/{application}/engineer/worklist/{request.Id}",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/{request.Id}",
                         To = new List<SenderBody>
                         {
                             new SenderBody { Name = "#RF Planning", Address = "#rfplanning.ng@mtn.com" },

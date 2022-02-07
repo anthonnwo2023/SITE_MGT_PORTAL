@@ -10,7 +10,7 @@
             _request = request;
         }
 
-        public override async Task<(string SaveStatus, List<string> Messages, List<RequestViewModel> ValidRequests)> Save(SingleRequestObject requestObject)
+        public override async Task<(string SaveStatus, List<string> Messages, List<RequestViewModel> ValidRequests)> Save(AcceptanceRequestObject requestObject)
         {
             User = requestObject.User;
             ProjectTypes = requestObject.ProjectTypes;
