@@ -1015,7 +1015,7 @@ namespace Project.V1.Web.Pages.Acceptance
                         disable = true;
                     }
 
-                    if (BulkUploadData.requests.Count == BulkRequestRRUCount)
+                    if (BulkUploadData.requests.Count == BulkOptionalSSVCount)
                     {
                         disable = false;
                     }

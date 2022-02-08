@@ -65,6 +65,23 @@ namespace Project.V1.Web
                     .WithCronSchedule(Configuration.GetValue<string>("Scheduler:DailyReport"))
                     .WithDescription("Daily Report Reminder Trigger")
                 );
+
+                jobKey = new JobKey("Monthly Report job", "SMP group");
+
+                q.AddJob<MonthlyReportEmail>(j => j
+                    .StoreDurably()
+                    .WithIdentity(jobKey)
+                    .WithDescription("Monthly Report Reminder")
+                );
+
+                q.AddTrigger(t => t
+                    .WithIdentity("Monthly Report Reminder Trigger")
+                    .ForJob(jobKey)
+                    .StartNow()
+                    .WithCronSchedule(Configuration.GetValue<string>("Scheduler:MonthlyReport"))
+                    //.WithCronSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 7, 30))
+                    .WithDescription("Daily Report Reminder Trigger")
+                );
             });
 
             // ASP.NET Core hosting

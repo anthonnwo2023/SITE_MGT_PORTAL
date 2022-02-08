@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Project.V1.DLL.Crons
 {
-    public class DailyReportEmail : IJob, IDisposable
+    public class MonthlyReportEmail : IJob, IDisposable
     {
         private readonly IRequest _request;
         private readonly List<string> tableColumnNames = new() { "S/N", "TECH", "Spectrum", "SiteID", "Region", "Vendor", "Submission Date", "Acceptance Date", "Scope", "State" };
@@ -47,7 +47,7 @@ namespace Project.V1.DLL.Crons
             { "valign", "middle" },
         };
 
-        public DailyReportEmail(IRequest request, IVendor vendor, IProjectType projectType)
+        public MonthlyReportEmail(IRequest request, IVendor vendor, IProjectType projectType)
         {
             _request = request;
 
@@ -66,24 +66,65 @@ namespace Project.V1.DLL.Crons
             var MinDateTime = new DateTime(yesterDay.Year, yesterDay.Month, 1).Date;
             var MaxDateTime = new DateTime(yesterDay.Year, yesterDay.Month, lastDayOfMth).AddDays(1).Date;
 
-            var MonthlyRequests = RequestSummary.GetVendorRequests("Month", yesterDay, MinDateTime, MaxDateTime);
-            var DailyRequests = RequestSummary.GetVendorRequests("Day", yesterDay, MinDateTime, MaxDateTime);
-            var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", yesterDay);
+            var regionUsers = (await LoginObject.UserManager.GetUsersInRoleAsync("Engineer"))
+                .GroupBy(x => x.Regions.Select(y => y.Name)).ToList();
 
-            var VendorMthRequest = MonthlyRequests.GroupBy(x => x.Vendor).ToList();
-            var VendorDailyRequest = DailyRequests.GroupBy(x => x.Vendor).ToList();
-            var ProjectMthRequest = MonthlyProjectTypeRequests.GroupBy(x => x.ProjectType).ToList();
+            var regions = regionUsers.SelectMany(x => x.Key).Distinct().ToList();
 
-            var summaryTableHeader = VendorMthRequest.Select(x => x.Select(y => y.Spectrum).Distinct().ToList()).First();
+            foreach (var region in regions)
+            {
+                var engineers = regionUsers.Where(x => x.Key.Contains(region)).SelectMany(x => x.ToList()).Select(x => x.Email);
+                var engineerRecipientCSV = string.Join(",", engineers);
+
+                var MonthlyRequests = RequestSummary.GetVendorRequests("Month", yesterDay, MinDateTime, MaxDateTime);
+                var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", yesterDay);
+
+                var VendorMthRequest = MonthlyRequests.GroupBy(x => x.Vendor).ToList();
+                var ProjectMthRequest = MonthlyProjectTypeRequests.GroupBy(x => x.ProjectType).ToList();
+
+                var summaryTableHeader = VendorMthRequest.Select(x => x.Select(y => y.Spectrum).Distinct().ToList()).First();
+
+                var table = GenerateSummaryTable(ProjectMthRequest, summaryTableHeader, yesterDay);
+                table += GenerateSummaryTable(VendorMthRequest, summaryTableHeader, yesterDay, "vendor");
+                table += "<p></p><p></p>";
+
+                var regionMonthRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
+                                    && x.EngineerAssigned.DateApproved.Date >= MinDateTime.Date && x.EngineerAssigned.DateApproved.Date < MaxDateTime.Date
+                                    && !x.Spectrum.Name.Contains("MOD")
+                                    && x.Region.Name.ToUpper() == region.ToUpper()
+                                    && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
+                                     .Select(x => new AcceptanceDTO
+                                     {
+                                         SiteId = x.SiteId,
+                                         Region = x.Region.Name,
+                                         State = x.State,
+                                         Vendor = x.Requester.Vendor.Name,
+                                         ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
+                                         TechType = x.TechType.Name,
+                                         Spectrum = x.Spectrum.Name,
+                                         AcceptanceCount = 1,
+                                         DateSubmitted = x.DateSubmitted,
+                                         DateAccepted = x.EngineerAssigned.DateApproved
+                                     }).ToList();
+
+                if (regionMonthRequests.Any())
+                {
+                    table += $"<p><b><br><br>Sites accepted on {yesterDay:dd.MM.yyyy} are as follows: </b></p>";
+
+                    var requestsByFrequency = regionMonthRequests.GroupBy(x => x.Spectrum).ToList();
+
+                    foreach (var request in requestsByFrequency)
+                    {
+                        table += GenerateTable(request, tableColumnNames) + "<br><br>";
+                    }
+                }
+
+                SendNotification(yesterDay, table, engineerRecipientCSV, $"Monthly: Tuning Acceptance {yesterDay:yyyy-MMMM}");
+            }
 
 
-            var table = GenerateSummaryTable(VendorDailyRequest, summaryTableHeader, yesterDay, "vendor", "day");
-            table += GenerateSummaryTable(ProjectMthRequest, summaryTableHeader, yesterDay);
-            table += GenerateSummaryTable(VendorMthRequest, summaryTableHeader, yesterDay, "vendor");
-            table += "<p></p><p></p>";
-
-            var yesterdaysRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
-                                && x.EngineerAssigned.DateApproved.Date == yesterDay.Date
+            var lastMonthRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
+                                && x.EngineerAssigned.DateApproved.Date >= MinDateTime.Date && x.EngineerAssigned.DateApproved.Date < MaxDateTime.Date
                                 && !x.Spectrum.Name.Contains("MOD")
                                 && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
                                  .Select(x => new AcceptanceDTO
@@ -100,20 +141,7 @@ namespace Project.V1.DLL.Crons
                                      DateAccepted = x.EngineerAssigned.DateApproved
                                  }).ToList();
 
-            if (yesterdaysRequests.Any())
-            {
-                table += $"<p><b><br><br>Sites accepted on {yesterDay:dd.MM.yyyy} are as follows: </b></p>";
-
-                var requestsByFrequency = yesterdaysRequests.GroupBy(x => x.Spectrum).ToList();
-
-                foreach (var request in requestsByFrequency)
-                {
-                    table += GenerateTable(request, tableColumnNames) + "<br><br>";
-                }
-            }
-
-            SendNotification(yesterDay, table, RecipientsCSV, $"Tuning Acceptance {yesterDay:yyyy-MMMM-dd}");
-            SendVendorSpecificAccecptanceNotification(yesterDay, yesterdaysRequests);
+            SendVendorSpecificAccecptanceNotification(yesterDay, lastMonthRequests);
         }
 
         private void SendVendorSpecificAccecptanceNotification(DateTime yesterDay, List<AcceptanceDTO> yesterdaysRequests)
@@ -146,7 +174,7 @@ namespace Project.V1.DLL.Crons
             {
                 Name = $"<p>Dear All,</p>",
                 //Greetings = $"<p>Kindly find attached the updated tracker for all accepted sites and their details/summary.</p>"
-                Greetings = $"<p>The following sites were accepted as at <strong>{yesterDay:dd.MM.yyyy}</strong>, by MTNN RF.</p>"
+                Greetings = $"<p>The following sites were accepted as at <strong>{yesterDay:MMMM, yyyy}</strong>, by MTNN RF.</p>"
             };
             mvm.Greetings += $"<p>For all site details, kindly refer to the SMP Portal. In case of any further queries please feel free to contact MTN RF.</p>";
 
@@ -185,7 +213,7 @@ namespace Project.V1.DLL.Crons
         }
 
         private string GenerateSummaryTable(List<IGrouping<string, AcceptanceDTO>> tableData, List<string> tableColumnNames, DateTime date,
-            string type = "project", string frequency = "month")
+            string type = "project")
         {
             StringBuilder sb = new();
 
@@ -203,11 +231,11 @@ namespace Project.V1.DLL.Crons
                 {
                     string scenerio = $"Accepted {date.Date:dd/MM/yyyy} (Spectrum by Vendor)";
 
-                    if (type == "project" && frequency == "month")
+                    if (type == "project")
                     {
                         scenerio = $"Accepted in {date:MMMM} (Spectrum byProject Type) ";
                     }
-                    if (type == "vendor" && frequency == "month")
+                    if (type == "vendor")
                     {
                         scenerio = $"Accepted in {date:MMMM} (Spectrum by Vendor) ";
                     }
@@ -227,9 +255,6 @@ namespace Project.V1.DLL.Crons
                 {
                     using (HTMLTable.Row row = table.AddRow())
                     {
-                        if (frequency == "day")
-                            row.AddCell($"<b>Accepted Today: ({itemByVendor.Key})</b>", null, null, null, CellTHProperties);
-                        else
                         if (type == "project")
                             row.AddCell($"<b>{itemByVendor.Key} so far in {date:MMMM}</b>", null, null, null, CellTHProperties);
                         else
@@ -275,7 +300,7 @@ namespace Project.V1.DLL.Crons
                     }
                 }
 
-                if (type == "vendor" && frequency == "month")
+                if (type == "vendor")
                     using (HTMLTable.Row row = table.AddRow())
                     {
                         row.AddCell("<b>Monthly Total</b>", "strong", null, null, CellTHProperties);
