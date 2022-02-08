@@ -370,7 +370,7 @@ namespace Project.V1.Lib.Services
 
                     result = await _userManager.UpdateAsync(userExists);
 
-                    if (Password != null)
+                    if (!string.IsNullOrWhiteSpace(Password))
                     {
                         string token = await _userManager.GeneratePasswordResetTokenAsync(userExists);
                         IdentityResult resultChangedPW = await _userManager.ResetPasswordAsync(userExists, token, Password);

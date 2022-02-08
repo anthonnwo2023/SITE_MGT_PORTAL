@@ -1,26 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Calendars;
-using Syncfusion.Blazor.DropDowns;
-using Syncfusion.Blazor.Grids;
-using Syncfusion.Blazor.Notifications;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Syncfusion.Blazor.DropDowns;
 using System.Dynamic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Project.V1.Web.Pages
 {
@@ -68,7 +48,7 @@ namespace Project.V1.Web.Pages
         //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
-        public string SelectedUserPassword { get; set; } = "Network@55555";
+        public string SelectedUserPassword { get; set; }
 
         //[RequiredWhen(nameof(ShouldRequirePassword), true, AllowEmptyStrings = false, ErrorMessage = "Password is required for vendor accounts.")]
         [DataType(DataType.Password)]
