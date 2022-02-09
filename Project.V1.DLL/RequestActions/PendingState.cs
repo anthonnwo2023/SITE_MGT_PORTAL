@@ -102,8 +102,6 @@ namespace Project.V1.DLL.RequestActions
                         }
                     };
 
-                    emailObj.To.AddRange(regionEngineers);
-
                     return emailObj;
                 }
             };

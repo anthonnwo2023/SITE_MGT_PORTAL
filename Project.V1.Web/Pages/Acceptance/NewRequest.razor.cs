@@ -989,14 +989,15 @@ namespace Project.V1.Web.Pages.Acceptance
                     //    disable = true;
                     //    break;
                     //}
-                    else if (!BulkWaiverUploadSelected && (Input.BUSiteCount - BulkOptionalSSVCount) <= (ssvUploadCount + BulkOptionalSSVCount))
+                    else if (!BulkWaiverUploadSelected && Input.BUSiteCount <= (ssvUploadCount + BulkOptionalSSVCount)
+                        && ssvUploadCount <= Input.BUSiteCount)
                     {
-                        disable = true;
+                        disable = false;
                         break;
                     }
                     else
                     {
-                        if (item?.UploadFile != null)
+                        if (item?.UploadFile != null && Input.BUSiteCount <= (ssvUploadCount + BulkOptionalSSVCount))
                         {
                             disable = false;
                         }
@@ -1015,7 +1016,7 @@ namespace Project.V1.Web.Pages.Acceptance
                         disable = true;
                     }
 
-                    if (BulkUploadData.requests.Count == BulkOptionalSSVCount)
+                    if (BulkUploadData.requests.Count != 0 && BulkUploadData.requests.Count == BulkOptionalSSVCount)
                     {
                         disable = false;
                     }

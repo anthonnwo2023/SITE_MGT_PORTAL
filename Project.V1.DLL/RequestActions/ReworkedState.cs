@@ -95,16 +95,11 @@ namespace Project.V1.DLL.RequestActions
                         BodyType = "",
                         M2Uname = "", // requests.Manager.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/{request.Id}",
-                        To = new List<SenderBody>
-                        {
-                            new SenderBody { Name = "#RF Planning", Address = "#rfplanning.ng@mtn.com" },
-                        },
+                        To = regionEngineers.ToList(),
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         }
                     };
-
-                    emailObj.To.AddRange(regionEngineers);
 
                     return emailObj;
                 }

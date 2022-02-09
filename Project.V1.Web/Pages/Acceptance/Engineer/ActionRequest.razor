@@ -131,11 +131,11 @@ else
         <ObjectGraphDataAnnotationsValidator />
         <div class="col-md-12" style="">
             <div class="col-md 12 row">
-                <SingleRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="false" RequestModel="@RequestModel" 
-                     OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileUploadChange(e, "SSV")' CheckValid='IsSEValid'
-                     TechChanged="OnTechChange" ShowRequired="false" ShowSSVUpload="false"/>
+                <SingleRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="false" RequestModel="@RequestModel"
+                                  OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileUploadChange(e, "SSV")' CheckValid='IsSEValid'
+                                  TechChanged="OnTechChange" ShowRequired="false" ShowSSVUpload="false" />
 
-                
+
                 <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <SfDatePicker Enabled="false" Placeholder="Date Requested" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.DateCreated)">
@@ -203,15 +203,15 @@ else
                     </SfDropDownList>
                     <ValidationMessage For="@(() => Input.Status)" />
                 </div>
+                <div class="col-md-4 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Multiline="true" Placeholder="Reason for Action" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(Input.Comment)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => Input.Comment)" />
+                    </div>
+                </div>
                 @if (Input.Status == "Rejected")
                 {
-                    <div class="col-md-4 mt-3">
-                        <div class="form-group">
-                            <SfTextBox Multiline="true" Placeholder="Reason for Rejection" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(Input.Comment)">
-                            </SfTextBox>
-                            <ValidationMessage For="@(() => Input.Comment)" />
-                        </div>
-                    </div>
                     <div class="col-md-4 mt-3">
                         <div class="form-group">
                             <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">Engineer Reject Report</label>

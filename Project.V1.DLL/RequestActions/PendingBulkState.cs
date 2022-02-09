@@ -97,8 +97,6 @@ namespace Project.V1.DLL.RequestActions
                         Attachment = bulkAttach
                     };
 
-                    emailObj.To.AddRange(regionEngineers);
-
                     return emailObj;
                 }
             };
