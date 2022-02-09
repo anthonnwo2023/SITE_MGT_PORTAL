@@ -180,7 +180,7 @@
                             return;
                         }
 
-                        //await InitializeForm();
+                        await InitializeForm();
 
                         RequestModel = (await IRequest.GetById(x => x.Id == Id));
 
