@@ -7,15 +7,6 @@
         [Inject] protected NavigationManager NavMan { get; set; }
         [Inject] public ICLogger Logger { get; set; }
         [Inject] protected IRequest IRequest { get; set; }
-        [Inject] protected IRegion IRegion { get; set; }
-        [Inject] protected ISummerConfig ISummerConfig { get; set; }
-        [Inject] protected ISpectrum ISpectrum { get; set; }
-        [Inject] protected IProjectType IProjectType { get; set; }
-        [Inject] protected IProjects IRRUType { get; set; }
-        [Inject] protected ITechType ITechType { get; set; }
-        [Inject] protected IAntennaType IAntennaType { get; set; }
-        [Inject] protected IAntennaMake IAntennaMake { get; set; }
-        [Inject] protected IBaseBand IBaseBand { get; set; }
         [Inject] protected IUser IUser { get; set; }
         [Inject] AppState AppState { get; set; }
 
@@ -24,15 +15,7 @@
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
         public List<PathInfo> Paths { get; set; }
-        public List<RegionViewModel> Regions { get; set; }
-        public List<SummerConfigModel> SummerConfigs { get; set; }
-        public List<ProjectTypeModel> ProjectTypes { get; set; }
         public List<ProjectModel> RRUTypes { get; set; }
-        public List<SpectrumViewModel> Spectrums { get; set; }
-        public List<TechTypeModel> TechTypes { get; set; }
-        public List<AntennaMakeModel> AntennaMakes { get; set; }
-        public List<AntennaTypeModel> AntennaTypes { get; set; }
-        public List<BaseBandModel> Basebands { get; set; }
         public RequestViewModel RequestModel { get; set; }
 
         public bool EnableSpecial { get; set; }
@@ -107,7 +90,9 @@
         public ActionReason Reason { get; set; } = new()
         {
             Id = Guid.NewGuid().ToString(),
-        }; private static readonly string[] States = new string[]
+        };
+
+        private static readonly string[] States = new string[]
          {
             "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti",
             "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara","Lagos", "Nasarawa", "Niger",
@@ -151,7 +136,7 @@
 
         public async Task OnTechChange(List<SpectrumViewModel> spectrums)
         {
-            Spectrums = spectrums;
+            //Spectrums = spectrums;
 
             await Task.CompletedTask;
         }
@@ -160,18 +145,6 @@
         {
             Principal = (await AuthenticationStateTask).User;
             User = await IUser.GetUserByUsername(Principal.Identity.Name);
-
-
-            Regions = await IRegion.Get(x => x.IsActive);
-            SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
-            ProjectTypes = await IProjectType.Get(x => x.IsActive);
-            RRUTypes = (User.Vendor.Name == "MTN Nigeria") ? (await IRRUType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
-            TechTypes = await ITechType.Get(x => x.IsActive);
-            AntennaTypes = await IAntennaType.Get(x => x.IsActive);
-            AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
-            Basebands = (Principal.IsInRole("Super Admin"))
-                ? await IBaseBand.Get(x => x.IsActive)
-                : await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId);
 
             RequestModel = new();
             RequestModel.EngineerAssigned = new();
@@ -207,10 +180,9 @@
                             return;
                         }
 
-                        await InitializeForm();
+                        //await InitializeForm();
 
                         RequestModel = (await IRequest.GetById(x => x.Id == Id));
-                        Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId);
 
                         DateTime dt = DateTime.Now;
                         //EnableSpecial = (dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month));
@@ -223,7 +195,7 @@
                         return;
                     }
 
-                    await InitializeForm();
+                    //await InitializeForm();
 
                     NavMan.NavigateTo("access-denied");
                 }

@@ -7,45 +7,25 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Parameter] public bool ShouldEnable { get; set; }
         [Parameter] public bool ShowRequired { get; set; }
         [Parameter] public bool ShowSSVUpload { get; set; } = true;
-        //[Parameter] public bool DisableSEButton { get; set; }
-        //[Parameter] public string SEUploadIconCss { get; set; }
-        //public List<SpectrumViewModel> Spectrums { get; set; }
         [Parameter] public RequestViewModel RequestModel { get; set; }
         [Parameter] public EventCallback<bool> CheckValid { get; set; }
         [Parameter] public List<FilesManager> UploadedRequestFiles { get; set; }
         [Parameter] public EventCallback<bool> OnCheckValidButton { get; set; }
         [Parameter] public EventCallback<ClearingEventArgs> OnClear { get; set; }
         [Parameter] public EventCallback<RemovingEventArgs> OnRemove { get; set; }
-        [Parameter] public EventCallback<List<SpectrumViewModel>> TechChanged { get; set; }
         [Parameter] public EventCallback<UploadChangeEventArgs> OnFileSSVUploadChange { get; set; }
 
 
         [Inject] public ICLogger Logger { get; set; }
         [Inject] protected IRequest IRequest { get; set; }
         [Inject] protected IRequestListObject IRequestList { get; set; }
-        //[Inject] protected IRegion IRegion { get; set; }
         [Inject] protected ISpectrum ISpectrum { get; set; }
-        //[Inject] protected ISummerConfig ISummerConfig { get; set; }
-        //[Inject] protected IProjectType IProjectType { get; set; }
-        //[Inject] protected IProjects IProjects { get; set; }
-        //[Inject] protected ITechType ITechType { get; set; }
-        //[Inject] protected IAntennaMake IAntennaMake { get; set; }
-        //[Inject] protected IAntennaType IAntennaType { get; set; }
-        //[Inject] protected IBaseBand IBaseBand { get; set; }
         [Inject] protected IUser IUser { get; set; }
 
 
         public string ShowRqdClass { get; set; } = "inline-block";
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
-        public List<RegionViewModel> Regions { get; set; }
-        public List<SummerConfigModel> SummerConfigs { get; set; }
-        public List<ProjectTypeModel> ProjectTypes { get; set; }
-        public List<ProjectModel> Projects { get; set; }
-        public List<TechTypeModel> TechTypes { get; set; }
-        public List<AntennaMakeModel> AntennaMakes { get; set; }
-        public List<AntennaTypeModel> AntennaTypes { get; set; }
-        public List<BaseBandModel> Basebands { get; set; }
 
         protected bool SingleEntrySelected { get; set; }
         protected SfButtonGroup SingleSelector { get; set; }
@@ -103,6 +83,9 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
 
             await IRequestList.Initialize(Principal);
 
+            if (RequestModel.TechTypeId != null)
+                IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+
             await OnCheckValidButton.InvokeAsync(false);
 
             if (!ShowRequired)
@@ -137,8 +120,6 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             {
                 IsRRUType = false;
                 IRequestList.Spectrums = (await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive)).OrderBy(x => x.Name).ToList();
-
-                //await TechChanged.InvokeAsync(IRequestList.Spectrums);
             }
             catch (Exception ex)
             {

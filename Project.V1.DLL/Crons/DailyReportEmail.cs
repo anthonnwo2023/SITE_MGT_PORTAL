@@ -148,7 +148,7 @@ namespace Project.V1.DLL.Crons
                 //Greetings = $"<p>Kindly find attached the updated tracker for all accepted sites and their details/summary.</p>"
                 Greetings = $"<p>The following sites were accepted as at <strong>{yesterDay:dd.MM.yyyy}</strong>, by MTNN RF.</p>"
             };
-            mvm.Greetings += $"<p>For all site details, kindly refer to the SMP Portal. In case of any further queries please feel free to contact MTN RF.</p>";
+            mvm.Greetings += $"<p>For all site details, kindly refer to the <a href='https://ojtssapp1/smp/' target='_blank'>SMP Portal</a>. In case of any further queries please feel free to contact MTN RF.</p>";
 
             if (isGeneral)
             {
