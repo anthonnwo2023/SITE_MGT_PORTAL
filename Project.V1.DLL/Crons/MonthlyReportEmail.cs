@@ -180,7 +180,7 @@ namespace Project.V1.DLL.Crons
 
             if (isGeneral)
             {
-                mvm.Greetings += $"<p>In {yesterDay:MMMM yyyy}, <b>total of {TotalRow["2G"]} 2G, {TotalRow["3G"]} 3G, {TotalRow["Multi Sector"]} Multi-Sector, {TotalRow["U900"]} U900,  {TotalRow["700M"]} LTE7, {TotalRow["800M"]} LTE8, {TotalRow["1800M"]} LTE18, {TotalRow["2600M"]} LTE26</b> ARE RF ATP-ed:</p>";
+                mvm.Greetings += $"<p>In {yesterDay:MMMM, yyyy}, <b>total of {TotalRow["2G"]} 2G, {TotalRow["3G"]} 3G, {TotalRow["Multi Sector"]} Multi-Sector, {TotalRow["U900"]} U900,  {TotalRow["700M"]} LTE7, {TotalRow["800M"]} LTE8, {TotalRow["1800M"]} LTE18, {TotalRow["2600M"]} LTE26</b> ARE RF ATP-ed:</p>";
                 mvm.Greetings += $"<p> &nbsp; </p>";
             }
 
@@ -224,12 +224,12 @@ namespace Project.V1.DLL.Crons
 
                 using (HTMLTable.Row rowDateHeader = table.AddRow())
                 {
-                    rowDateHeader.AddCell($"{date:dd/MM/yyyy}", null, null, colSpan: (tableColumnNames.Count + 1).ToString(), CellTDProperties);
+                    rowDateHeader.AddCell($"{date:MMMM, yyyy}", null, null, colSpan: (tableColumnNames.Count + 1).ToString(), CellTDProperties);
                 }
 
                 using (HTMLTable.Row rowHeader = table.AddRow())
                 {
-                    string scenerio = $"Accepted {date.Date:dd/MM/yyyy} (Spectrum by Vendor)";
+                    string scenerio = $"Accepted {date.Date:MM.yyyy} (Spectrum by Vendor)";
 
                     if (type == "project")
                     {

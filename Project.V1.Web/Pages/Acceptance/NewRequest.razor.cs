@@ -989,7 +989,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     //    disable = true;
                     //    break;
                     //}
-                    else if (!BulkWaiverUploadSelected && (Input.BUSiteCount - BulkOptionalSSVCount) != ssvUploadCount)
+                    else if (!BulkWaiverUploadSelected && (Input.BUSiteCount - BulkOptionalSSVCount) <= (ssvUploadCount + BulkOptionalSSVCount))
                     {
                         disable = true;
                         break;
