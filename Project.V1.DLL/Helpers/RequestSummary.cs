@@ -143,10 +143,11 @@ namespace Project.V1.DLL.Helpers
 
             requests.AddRange((Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
-                                && !x.Spectrum.Name.Contains("MOD")
-                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell" && !x.ProjectType.Name.Contains("MOD")).GetAwaiter().GetResult())
+                                && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
+                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell").GetAwaiter().GetResult())
                                 .Select(x => new AcceptanceDTO
                                 {
+                                    Region = x.Region.Name,
                                     Vendor = x.Requester.Vendor.Name,
                                     ProjectType = GetProjectTypeName(x.ProjectType.Name),
                                     TechType = x.TechType.Name,
@@ -163,7 +164,7 @@ namespace Project.V1.DLL.Helpers
             DateTime MaxDateTime, bool DateIsToday = true, bool DateWthMth = true)
         {
             var requests = new List<AcceptanceDTO>();
-            var vendors = Vendor.Get(x => x.IsActive && x.Name != "MTN Nigeria").GetAwaiter().GetResult();
+            var vendors = Vendor.Get(x => x.IsActive && x.ShouldSummerize).GetAwaiter().GetResult();
 
             foreach (var vendor in vendors)
             {
@@ -197,9 +198,11 @@ namespace Project.V1.DLL.Helpers
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
                                 //&& !x.Spectrum.Name.Contains("RT")
                                 && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
+                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"
                                 )).GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
                                 {
+                                    Region = x.Region.Name,
                                     Vendor = x.Requester.Vendor.Name,
                                     ProjectType = GetProjectTypeName(x.ProjectType.Name),
                                     TechType = x.TechType.Name,

@@ -25,6 +25,18 @@ namespace Project.V1.DLL.Crons
             { "ERICSSON", "emmanuel.idoko@mtn.com,oghenekevwe.kofi@ericsson.com,tola.daramola@ericsson.com,asuku.aliu.mohammed@ericsson.com,adebayo.sulaiman.oshijirin@ericsson.com,chinedu.obi@ericsson.com,esther.igbinakenzua@ericsson.com,emmanuel.ekpendu@ericsson.com,chinyere.tina.ejiofor@ericsson.com,simeon.oladipo@ericsson.com,abiodun.abimbola.kayode@ericsson.com,joseph.ogundiran@ericsson.com,david.aweh@ericsson.com,opeyemi.tokoya.oluwadamilare@ericsson.com,ejiofor.asogwa@ericsson.com,kikelomo.sofolahan@ericsson.com,stephen.seyi.ademoloye@ericsson.com,yusuf.adejumo.salau@ericsson.com,paul.ajayi@ericsson.com,junaid.omotade@ericsson.com,oluwafunmiso.inaolaji@ericsson.com,victoria.nsiamuna@ericsson.com,chiamaka.ohaji@ericsson.com,elmer.ambrose@ericsson.com,adaugo.okezie@ericsson.com,joseph.nwokeafor@ericsson.com,mirian.nnanyere@ericsson.com,lilian.onyedim@ericsson.com,echezona.madu@ericsson.com,john.nnoli@ericsson.com,precious.nwaorgu@ericsson.com,salvation.peter@ericsson.com,ajirioghene.manawa@ericsson.com,sydney.onukwugha@ericsson.com,oluwatoba.abe@ericsson.com,oluwatobi.allen@ericsson.com,frederick.kpam@ericsson.com,damilola.adeyemi@ericsson.com,ifeanyichukwu.oparaeke@ericsson.com" }
         };
         private Dictionary<string, int> TotalRow = new();
+        private Dictionary<string, int> TotalRowInit = new()
+        {
+            { "2G", 0 },
+            { "3G", 0 },
+            { "Multi Sector", 0 },
+            { "U900", 0 },
+            { "700M", 0 },
+            { "800M", 0 },
+            { "1800M", 0 },
+            { "2600M", 0 }
+        };
+
         private readonly string ENV = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
         private readonly Dictionary<string, string> TableProperties = new()
@@ -74,7 +86,7 @@ namespace Project.V1.DLL.Crons
             var VendorDailyRequest = DailyRequests.GroupBy(x => x.Vendor).ToList();
             var ProjectMthRequest = MonthlyProjectTypeRequests.GroupBy(x => x.ProjectType).ToList();
 
-            var summaryTableHeader = VendorMthRequest.Select(x => x.Select(y => y.Spectrum).Distinct().ToList()).First();
+            var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
 
 
             var table = GenerateSummaryTable(VendorDailyRequest, summaryTableHeader, yesterDay, "vendor", "day");
@@ -191,12 +203,22 @@ namespace Project.V1.DLL.Crons
 
             using (HTMLTable.Initialize table = new(sb, null, null, TableProperties))
             {
-                Dictionary<string, int> totalRow = new();
+                Dictionary<string, int> totalRow = new()
+                {
+                    { "2G", 0 },
+                    { "3G", 0 },
+                    { "U900", 0 },
+                    { "Multi Sector", 0 },
+                    { "700M", 0 },
+                    { "800M", 0 },
+                    { "1800M", 0 },
+                    { "2600M", 0 }
+                };
                 table.StartHead();
 
                 using (HTMLTable.Row rowDateHeader = table.AddRow())
                 {
-                    rowDateHeader.AddCell($"{date:dd/MM/yyyy}", null, null, colSpan: (tableColumnNames.Count + 1).ToString(), CellTDProperties);
+                    rowDateHeader.AddCell((frequency == "day") ? $"{date:dd/MM/yyyy}" : $"{date:MMM, yyyy}", null, null, colSpan: (tableColumnNames.Count + 1).ToString(), CellTDProperties);
                 }
 
                 using (HTMLTable.Row rowHeader = table.AddRow())
@@ -205,7 +227,7 @@ namespace Project.V1.DLL.Crons
 
                     if (type == "project" && frequency == "month")
                     {
-                        scenerio = $"Accepted in {date:MMMM} (Spectrum byProject Type) ";
+                        scenerio = $"Accepted in {date:MMMM} (Spectrum by Project Type) ";
                     }
                     if (type == "vendor" && frequency == "month")
                     {
@@ -216,7 +238,11 @@ namespace Project.V1.DLL.Crons
                     foreach (var tData in tableColumnNames)
                     {
                         rowHeader.AddCell($"<b>{tData}</b>", null, null, null, CellTDProperties);
-                        totalRow.Add(tData, 0);
+
+                        if (totalRow.ContainsKey(tData))
+                            totalRow[tData] += 0;
+                        else
+                            totalRow.Add(tData, 0);
                     }
                 }
                 table.EndHead();
@@ -282,7 +308,7 @@ namespace Project.V1.DLL.Crons
 
                         foreach (var colName in tableColumnNames)
                         {
-                            row.AddCell(totalRow[colName].ToString(), null, null, null, CellTDProperties);
+                            row.AddCell($"<b>{totalRow[colName]}</b>", null, null, null, CellTDProperties);
                         }
                     }
                 TotalRow = totalRow;

@@ -53,7 +53,9 @@
                                         </GridColumn>
                                         <GridColumn Field="@nameof(VendorModel.MailList)" HeaderText="Mail List" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                         </GridColumn>
-                                        <GridColumn Field="@nameof(VendorModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        <GridColumn Field="@nameof(VendorModel.IsActive)" HeaderText="Is Active?" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        </GridColumn>
+                                        <GridColumn Field="@nameof(VendorModel.ShouldSummerize)" HeaderText="Should Summerize?" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                         </GridColumn>
                                         <GridColumn Field="@nameof(VendorModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
                                                     Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">

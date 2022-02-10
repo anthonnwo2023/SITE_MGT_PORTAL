@@ -5,4 +5,6 @@
 public class VendorModel : ObjectBase
 {
     public string MailList { get; set; }
+
+    public bool ShouldSummerize { get; set; }
 }
