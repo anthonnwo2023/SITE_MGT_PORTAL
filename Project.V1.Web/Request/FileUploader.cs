@@ -160,14 +160,14 @@
                                 return (errorMsg, new());
                             }
 
-                            request.AntennaMakeId = (request.AntennaMakeId != null) ? AntennaMakes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper())?.Id : request.AntennaMakeId;
-                            request.AntennaTypeId = (request.AntennaTypeId != null) ? AntennaTypes.FirstOrDefault(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper())?.Id : request.AntennaTypeId;
-                            request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper())?.Id : request.ProjectTypeId;
-                            request.RegionId = (request.RegionId != null) ? Regions.FirstOrDefault(x => x.Name.ToUpper() == request.RegionId.ToUpper())?.Id : request.RegionId;
-                            request.SummerConfigId = (request.SummerConfigId != null) ? SummerConfigs.FirstOrDefault(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper())?.Id : request.SummerConfigId;
-                            request.TechTypeId = (request.TechTypeId != null) ? TechTypes.FirstOrDefault(x => x.Name.ToUpper() == request.TechTypeId.ToUpper())?.Id : request.TechTypeId;
-                            request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechTypeId == request.TechTypeId)?.Id : request.SpectrumId;
-                            request.ProjectNameId = (request.ProjectNameId != null) ? Projects.FirstOrDefault(x => x.Name.ToUpper() == request.ProjectNameId.ToUpper())?.Id : request.ProjectNameId;
+                            request.AntennaMakeId = (request.AntennaMakeId != null) ? AntennaMakes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.AntennaMakeId.ToUpper())?.Id : request.AntennaMakeId;
+                            request.AntennaTypeId = (request.AntennaTypeId != null) ? AntennaTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.AntennaTypeId.ToUpper())?.Id : request.AntennaTypeId;
+                            request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper())?.Id : request.ProjectTypeId;
+                            request.RegionId = (request.RegionId != null) ? Regions.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.RegionId.ToUpper())?.Id : request.RegionId;
+                            request.SummerConfigId = (request.SummerConfigId != null) ? SummerConfigs.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.SummerConfigId.ToUpper())?.Id : request.SummerConfigId;
+                            request.TechTypeId = (request.TechTypeId != null) ? TechTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.TechTypeId.ToUpper())?.Id : request.TechTypeId;
+                            request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.SpectrumId.ToUpper() && x.TechTypeId == request.TechTypeId)?.Id : request.SpectrumId;
+                            request.ProjectNameId = (request.ProjectNameId != null) ? Projects.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectNameId.ToUpper())?.Id : request.ProjectNameId;
 
                             requests.Add(request);
                         }
@@ -182,18 +182,18 @@
 
         private static (string column, bool valid) ValidateRow(RequestViewModel request)
         {
-            var (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.TechTypeId.ToUpper(), TechTypes);
+            var (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.TechTypeId.ToUpper(), TechTypes);
+            if (!valid) return ("Technology", valid);
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.RegionId.ToUpper(), Regions);
             if (!valid) return (error, valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.RegionId.ToUpper(), Regions);
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.SpectrumId.ToUpper() && x.TechType.Name == request.TechTypeId, Spectrums);
             if (!valid) return (error, valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.SpectrumId.ToUpper() && x.TechType.Name == request.TechTypeId, Spectrums);
-            if (!valid) return (error, valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.State.ToUpper(), NigerianStates);
-            if (!valid) return (error, valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.ProjectNameId.ToUpper(), Projects);
-            if (!valid) return (error, valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.ProjectTypeId.ToUpper(), ProjectTypes); ;
-            if (!valid) return (error, valid);
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.State.ToUpper(), NigerianStates);
+            if (!valid) return ("State", valid);
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectNameId.ToUpper(), Projects);
+            if (!valid) return ("Project Name", valid);
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper(), ProjectTypes); ;
+            if (!valid) return ("Project Type", valid);
 
             if (string.IsNullOrEmpty(request.SiteName))
             {
@@ -208,34 +208,34 @@
             }
             if (!string.IsNullOrEmpty(request.SummerConfigId))
             {
-                (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.SummerConfigId.ToUpper(), SummerConfigs);
-                if (!valid) return (error, valid);
+                (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.SummerConfigId.ToUpper(), SummerConfigs);
+                if (!valid) return ("Summer Config", valid);
             }
 
             if (!string.IsNullOrEmpty(request.AntennaMakeId))
             {
-                (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.AntennaMakeId.ToUpper(), AntennaMakes);
-                if (!valid) return (error, valid);
+                (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.AntennaMakeId.ToUpper(), AntennaMakes);
+                if (!valid) return ("Antenna Make", valid);
             }
 
             if (!string.IsNullOrEmpty(request.RETConfigured))
             {
-                (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.RETConfigured.ToUpper(), BoolDrops);
-                if (!valid) return (error, valid);
+                (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.RETConfigured.ToUpper(), BoolDrops);
+                if (!valid) return ("RET Configured", valid);
             }
 
             if (!string.IsNullOrEmpty(request.AntennaTypeId))
             {
-                (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.AntennaTypeId.ToUpper(), AntennaTypes);
-                if (!valid) return (error, valid);
+                (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.AntennaTypeId.ToUpper(), AntennaTypes);
+                if (!valid) return ("Antenna Type", valid);
             }
 
             if (request.TechTypeId != TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
             {
                 if (!string.IsNullOrEmpty(request.CarrierAggregation))
                 {
-                    (error, valid) = IsFKValid(x => x.Name.ToUpper() == request.CarrierAggregation.ToUpper(), BoolDrops);
-                    if (!valid) return (error, valid);
+                    (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.CarrierAggregation.ToUpper(), BoolDrops);
+                    if (!valid) return ("Carrier Aggregation", valid);
                 }
             }
 
