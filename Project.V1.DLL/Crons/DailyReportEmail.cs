@@ -4,6 +4,7 @@ using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Helpers.HTML.Table;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
 using Quartz;
 using System;
@@ -18,6 +19,7 @@ namespace Project.V1.DLL.Crons
     public class DailyReportEmail : IJob, IDisposable
     {
         private readonly IRequest _request;
+        private readonly ICLogger _logger;
         private readonly List<string> tableColumnNames = new() { "S/N", "TECH", "Spectrum", "SiteID", "Region", "Vendor", "Submission Date", "Acceptance Date", "Scope", "State" };
         private readonly string RecipientsCSV = "emmanuel.idoko@mtn.com,chinedu.obi@ericsson.com,mtnnocsl@huawei.com,akinola@huawei.com,Joseph.Yakubu@mtn.com,he.jin2@zte.com.cn,Abraham.Uanzekin@mtn.com,Akeem.Alabi@mtn.com,Harold.Obodozie@mtn.com,Olayinka.Esan@mtn.com,Olabode.Aluko@mtn.com,Peter.Okewumi@mtn.com,Oladipo.Bajo@mtn.com,#3G-NOCBackOffice.NG@mtn.com,muhammsal@gmail.com,Nnamdi.Ugochukwu@mtn.com,Babatunde.Ayeni@mtn.com,David.Melaiye@mtn.com,Henry.Obukoadata@mtn.com,lei.yifang@zte.com.cn,Abdul.Ajikobi@mtn.com,#TransmissionBearerServices.NG@mtn.com,#TransmissionAccessPlanningNorth.NG@mtn.com,#TransmissionAccessPlanningWest.NG@mtn.com,#NIDPSOReports.NG@mtn.com,gao.shuang@zte.com.cn,nity.dangwal@zte.com.cn,zengruile@huawei.com,iakhidenor@gmail.com,zhang.yabo111@zte.com.cn,#MTNNigeriaTSSNWG.NG@mtn.com,leey.liyi@huawei.com,#TransmissionAccessPlanningEast.NG@mtn.com,cui.haibo5@zte.com.cn,Chinedu.Ezeigweneme@mtn.com,#RFOptimization.NG@mtn.com,Esther.Igbinakenzua@mtn.com,frederick.kpam@ericsson.com,chido@molcomconcepts.com,stephen.caoguodong@huawei.com,Abayomi.Onafuye@mtn.com,Orieke.Nwosu@mtn.com,femaj2001@yahoo.com,nnamdi.osuji@huawei.com,stephen.seyi.ademoloye@ericsson.com,tosin.adedapo@ericsson.com,adebayo.sulaiman.oshijirin@ericsson.com,Joy.Okpo@mtn.com,Idongesit.Udom@mtn.com,samuel.ola1@huawei.com,irorere.lawrence.osakhienuwa@huawei.com,ejiofor.asogwa@ericsson.com,satish.satish@zte.com.cn,tang.mingxin1@zte.com.cn,Olufunso.Oluwapojuwomi@mtn.com,amah.Jackson@mtn.com,#NIDRAI.NG@mtn.com,tola.daramola@ericsson.com,ragavendra.kumar@ericsson.com,oluwadare.awe@ericsson.com,abimbola.nwankwonta@ericsson.com,eddie.zhangfan@huawei.com,Olayemi.Awofisoye@huawei.com,olawale.aminu@huawei.com,femi.ajayi@zte.com.cn,#NWGUAT_FAT.NG@mtn.com,oghenekevwe.kofi@ericsson.com,kehinde.akingbagbohun@huawei.com,patrick.okaka@huawei.com,ekene.anthony.ibedu@huawei.com,#RFPlanningEngr.NG@mtn.com,uzoma.joenkamuke@huawei.com,Oluwaseun.Onabajo@huawei.com,duqisheng@huawei.com,imoh.umobong@ericsson.com,asuku.aliu.mohammed@ericsson.com,nokia-opt@list.nokia.com,Titilayo.Oguntokun@mtn.com,maxz.chooi@huawei.com,osukoya.ayodele@huawei.com,bola.badie.zaki@huawei.com,alabi.shukrat.mopelola@huawei.com,Young.Omereonye@mtn.com,yakubu.oke.ext@nokia.com,muhammad.t.khan.ext@nokia.com,MohammadReza.Rajabi@mtn.com,oyebode.olumide.temitayo@huawei.com,Rasheed.Bello@mtn.com,Kayode.Olufuwa@mtn.com,Ayodeji.Oni@mtn.com,Peter.Erin@mtn.com,ogunbiyi.timilehin.oladapo@huawei.com,Albert.Chukwuma@mtn.com,augustine.solomon@huawei.com,xue.ningyi@zte.com.cn,hu.shaodong@zte.com.cn,Iyilary@zte.com.cn,wang.huiwen30@zte.com.cn,peng.weidong@zte.com.cn,liu.gang5@zte.com.cn,mohd.zuheb.shakeel@ericsson.com,adeboye.dayo@huawei.com,zhanghaitao11@huawei.com,wangguangxi@huawei.com,pengzhenxing@huawei.com,hazem.amaher@huawei.com,Adeniran.Adepoju@mtn.com,Muhammad.Ashraf@mtn.com,Adeel.Ahmed1@mtn.com,#TxAccessPlanningHQ.NG@mtn.com,idrisolanigan@gmail.com,jesse.obuotor@nokia.com,adebanji.adeyemi@nokia.com,yuguda.hamisu.ext@nokia.com,fehintola.olayemi.ext@nokia.com,waqar.mehmood@nokia.com,chijioke.okoli@nokia.com,huzhili@huawei.com,Tochukwu.Alaekee@mtn.com,#MTNNigeriaTSSNWG.NG@mtn.com,#networkaccessplanning&optimizationhq.ng@mtn.com";
         private readonly Dictionary<string, string> VendorRecipientsCSV = new()
@@ -59,9 +61,11 @@ namespace Project.V1.DLL.Crons
             { "valign", "middle" },
         };
 
-        public DailyReportEmail(IRequest request, IVendor vendor, IProjectType projectType)
+        public DailyReportEmail(IRequest request, IVendor vendor, IProjectType projectType,
+            ICLogger logger)
         {
             _request = request;
+            _logger = logger;
 
             RequestSummary.Initialize(projectType, vendor, request);
         }
@@ -73,59 +77,67 @@ namespace Project.V1.DLL.Crons
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var yesterDay = DateTime.Now.AddDays(-1);
-            int lastDayOfMth = DateTime.DaysInMonth(yesterDay.Year, yesterDay.Month);
-            var MinDateTime = new DateTime(yesterDay.Year, yesterDay.Month, 1).Date;
-            var MaxDateTime = new DateTime(yesterDay.Year, yesterDay.Month, lastDayOfMth).AddDays(1).Date;
-
-            var MonthlyRequests = RequestSummary.GetVendorRequests("Month", yesterDay, MinDateTime, MaxDateTime);
-            var DailyRequests = RequestSummary.GetVendorRequests("Day", yesterDay, MinDateTime, MaxDateTime);
-            var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", yesterDay);
-
-            var VendorMthRequest = MonthlyRequests.GroupBy(x => x.Vendor).ToList();
-            var VendorDailyRequest = DailyRequests.GroupBy(x => x.Vendor).ToList();
-            var ProjectMthRequest = MonthlyProjectTypeRequests.GroupBy(x => x.ProjectType).ToList();
-
-            var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
-
-
-            var table = GenerateSummaryTable(VendorDailyRequest, summaryTableHeader, yesterDay, "vendor", "day");
-            table += GenerateSummaryTable(ProjectMthRequest, summaryTableHeader, yesterDay);
-            table += GenerateSummaryTable(VendorMthRequest, summaryTableHeader, yesterDay, "vendor");
-            table += "<p></p><p></p>";
-
-            var yesterdaysRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
-                                && x.EngineerAssigned.DateApproved.Date == yesterDay.Date
-                                && !x.Spectrum.Name.Contains("MOD")
-                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
-                                 .Select(x => new AcceptanceDTO
-                                 {
-                                     SiteId = x.SiteId,
-                                     Region = x.Region.Name,
-                                     State = x.State,
-                                     Vendor = x.Requester.Vendor.Name,
-                                     ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
-                                     TechType = x.TechType.Name,
-                                     Spectrum = x.Spectrum.Name,
-                                     AcceptanceCount = 1,
-                                     DateSubmitted = x.DateSubmitted,
-                                     DateAccepted = x.EngineerAssigned.DateApproved
-                                 }).ToList();
-
-            if (yesterdaysRequests.Any())
+            try
             {
-                table += $"<p><b><br><br>Sites accepted on {yesterDay:dd.MM.yyyy} are as follows: </b></p>";
+                var yesterDay = DateTime.Now.AddDays(-1);
+                int lastDayOfMth = DateTime.DaysInMonth(yesterDay.Year, yesterDay.Month);
+                var MinDateTime = new DateTime(yesterDay.Year, yesterDay.Month, 1).Date;
+                var MaxDateTime = new DateTime(yesterDay.Year, yesterDay.Month, lastDayOfMth).AddDays(1).Date;
 
-                var requestsByFrequency = yesterdaysRequests.GroupBy(x => x.Spectrum).ToList();
+                var MonthlyRequests = RequestSummary.GetVendorRequests("Month", yesterDay, MinDateTime, MaxDateTime);
+                var DailyRequests = RequestSummary.GetVendorRequests("Day", yesterDay, MinDateTime, MaxDateTime);
+                var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", yesterDay);
 
-                foreach (var request in requestsByFrequency)
+                var VendorMthRequest = MonthlyRequests.GroupBy(x => x.Vendor).ToList();
+                var VendorDailyRequest = DailyRequests.GroupBy(x => x.Vendor).ToList();
+                var ProjectMthRequest = MonthlyProjectTypeRequests.GroupBy(x => x.ProjectType).ToList();
+
+                var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
+
+
+                var table = GenerateSummaryTable(VendorDailyRequest, summaryTableHeader, yesterDay, "vendor", "day");
+                table += GenerateSummaryTable(ProjectMthRequest, summaryTableHeader, yesterDay);
+                table += GenerateSummaryTable(VendorMthRequest, summaryTableHeader, yesterDay, "vendor");
+                table += "<p></p><p></p>";
+
+                var yesterdaysRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
+                                    && x.EngineerAssigned.DateApproved.Date == yesterDay.Date
+                                    && !x.Spectrum.Name.Contains("MOD")
+                                    && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
+                                     .Select(x => new AcceptanceDTO
+                                     {
+                                         SiteId = x.SiteId,
+                                         Region = x.Region.Name,
+                                         State = x.State,
+                                         Vendor = x.Requester.Vendor.Name,
+                                         ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
+                                         TechType = x.TechType.Name,
+                                         Spectrum = x.Spectrum.Name,
+                                         AcceptanceCount = 1,
+                                         DateSubmitted = x.DateSubmitted,
+                                         DateAccepted = x.EngineerAssigned.DateApproved
+                                     }).ToList();
+
+                if (yesterdaysRequests.Any())
                 {
-                    table += GenerateTable(request, tableColumnNames) + "<br><br>";
-                }
-            }
+                    table += $"<p><b><br><br>Sites accepted on {yesterDay:dd.MM.yyyy} are as follows: </b></p>";
 
-            SendNotification(yesterDay, table, RecipientsCSV, $"Tuning Acceptance {yesterDay:yyyy-MMMM-dd}");
-            SendVendorSpecificAccecptanceNotification(yesterDay, yesterdaysRequests);
+                    var requestsByFrequency = yesterdaysRequests.GroupBy(x => x.Spectrum).ToList();
+
+                    foreach (var request in requestsByFrequency)
+                    {
+                        table += GenerateTable(request, tableColumnNames) + "<br><br>";
+                    }
+                }
+
+                SendNotification(yesterDay, table, RecipientsCSV, $"Tuning Acceptance {yesterDay:yyyy-MMMM-dd}");
+                SendVendorSpecificAccecptanceNotification(yesterDay, yesterdaysRequests);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, new { }, ex);
+            }
         }
 
         private void SendVendorSpecificAccecptanceNotification(DateTime yesterDay, List<AcceptanceDTO> yesterdaysRequests)
