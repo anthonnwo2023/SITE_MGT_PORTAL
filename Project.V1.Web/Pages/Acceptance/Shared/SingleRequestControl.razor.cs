@@ -38,7 +38,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         protected SfUploader SF_Uploader { get; set; }
 
         public double MaxFileSize { get; set; } = 25000000;
-        public DateTime MaxDateTime { get; set; }
+        public DateTime MaxDateTime { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
         public DateTime MinDateTime { get; set; }
 
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }

@@ -480,7 +480,8 @@ namespace Project.V1.Web.Pages
                     try
                     {
                         cts.Token.ThrowIfCancellationRequested();
-                        string stageId = (data as ApplicationUser).Id;
+                        string userId = (data as ApplicationUser).Id;
+
                         IdentityResult result = await User.DeleteAsync(data as ApplicationUser);
                         return data;
                     }

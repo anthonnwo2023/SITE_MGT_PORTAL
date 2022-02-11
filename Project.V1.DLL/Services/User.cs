@@ -333,6 +333,29 @@ namespace Project.V1.Lib.Services
             }
         }
 
+        public async Task<bool> ClearUserRegion(ApplicationUser user)
+        {
+            try
+            {
+                ApplicationUser userExists = await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
+
+                if (userExists == null)
+                {
+                    throw new Exception($"User with Id = {user.Id} cannot be found. Update Failed");
+                }
+
+                userExists.Regions = new List<RegionViewModel>();
+
+                IdentityResult result = await _userManager.UpdateAsync(userExists);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> UpdateUser(ApplicationUser user, string Password, List<string> RoleIds)
         {
             try

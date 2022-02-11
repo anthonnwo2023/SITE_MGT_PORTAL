@@ -347,7 +347,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDatePicker Enabled="ShouldEnable" Placeholder="Site Integrated Date" Min='@MinDateTime' Max='@MaxDateTime' FloatLabelType="@FloatLabelType.Auto"
+            <SfDatePicker Enabled="ShouldEnable" Placeholder="Site Integrated Date" Max='@MaxDateTime' FloatLabelType="@FloatLabelType.Auto"
                       @bind-Value="@(RequestModel.IntegratedDate)">
             </SfDatePicker>
             <ValidationMessage For="@(() => RequestModel.IntegratedDate)" />

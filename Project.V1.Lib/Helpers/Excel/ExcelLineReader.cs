@@ -1,10 +1,8 @@
 ﻿using ExcelDataReader;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Project.V1.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -95,7 +93,7 @@ namespace Project.V1.Lib.Helpers.Excel
             catch
             {
                 throw;
-            }            
+            }
         }
 
         private static ExcelDataSetConfiguration GetExcelDataSetConfig()
@@ -316,7 +314,7 @@ namespace Project.V1.Lib.Helpers.Excel
                     //}
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, ex.Message);
             }

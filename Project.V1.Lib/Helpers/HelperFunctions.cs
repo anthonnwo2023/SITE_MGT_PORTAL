@@ -372,6 +372,7 @@ namespace Project.V1.Lib.Helpers
     {
         private readonly CancellationTokenSource _cts;
         private readonly SmtpClient _smtpClient;
+        private readonly object _smtpLock = new object();
 
         public HelperFunctionFactory(CancellationTokenSource cts)
         {
@@ -382,8 +383,8 @@ namespace Project.V1.Lib.Helpers
             {
                 // Note: only needed if the SMTP server requires authentication
                 //client.Authenticate("no-reply@classicholdingscompany.com", "mz8Ql1!5");
-
-                _smtpClient.Connect("172.24.32.68", 25, false);
+                lock (_smtpLock)
+                    _smtpClient.Connect("172.24.32.68", 25, false);
             }
         }
 
@@ -467,6 +468,10 @@ namespace Project.V1.Lib.Helpers
             {
                 Log.Error(ex.Message + ": " + ex.StackTrace);
                 return false;
+            }
+            finally
+            {
+                await _smtpClient.DisconnectAsync(true, _cts.Token);
             }
         }
     }
