@@ -199,6 +199,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
             uri = role switch
             {
+                "User" => "acceptance/reports/general",
                 "Engineer" => "acceptance",
                 "Admin" or "Super Admin" => "dashboard",
                 _ => uri,
