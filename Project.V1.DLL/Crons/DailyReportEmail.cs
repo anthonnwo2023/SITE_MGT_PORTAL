@@ -166,7 +166,7 @@ namespace Project.V1.DLL.Crons
             {
                 var vendorTables = string.Empty;
 
-                if (vendorData.Key.ToUpper() == "ERICSSON" && vendorData.Any())
+                if (VendorRecipientsCSV.ContainsKey(vendorData.Key.ToUpper()) && vendorData.Any())
                 {
                     vendorTables += $"<p><b><br><br>{vendorData.Key} Sites submitted on {yesterDay:dd.MM.yyyy} are as follows: </b></p>";
 

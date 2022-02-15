@@ -471,7 +471,7 @@ namespace Project.V1.Lib.Helpers
             }
             finally
             {
-                await _smtpClient.DisconnectAsync(true, _cts.Token);
+                //await _smtpClient.DisconnectAsync(true, _cts.Token);
             }
         }
     }
