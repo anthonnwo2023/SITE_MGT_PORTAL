@@ -166,7 +166,7 @@ namespace Project.V1.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTQ0NTg3QDMxMzkyZTMzMmUzMFY4MGRvNmFCOG5vdmFxRVcxSTUySllsS2hPcnhjUlRjSUFUbytSNUZ4blk9;NTQ0NTg4QDMxMzkyZTMzMmUzMGc1U1dzaDV4Q0ZxUkZJdE1HUjNJSXB6SDhRM0QyakMzOTlGTWxQNjFuQUU9");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTgyNjAyQDMxMzkyZTM0MmUzMGd6TEs1d2REaVFxbDd2K214by9XektvTnVPdFhvd2xWdk1neGs5NlFKY289");
 
             ServiceActivator.Configure(app.ApplicationServices);
 

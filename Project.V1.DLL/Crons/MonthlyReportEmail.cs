@@ -26,7 +26,7 @@ namespace Project.V1.DLL.Crons
 
         private readonly Dictionary<string, string> VendorRecipientsCSV = new()
         {
-            { "ERICSSON", "emmanuel.idoko@mtn.com,oghenekevwe.kofi@ericsson.com,tola.daramola@ericsson.com,asuku.aliu.mohammed@ericsson.com,adebayo.sulaiman.oshijirin@ericsson.com,chinedu.obi@ericsson.com,esther.igbinakenzua@ericsson.com,emmanuel.ekpendu@ericsson.com,chinyere.tina.ejiofor@ericsson.com,simeon.oladipo@ericsson.com,abiodun.abimbola.kayode@ericsson.com,joseph.ogundiran@ericsson.com,david.aweh@ericsson.com,opeyemi.tokoya.oluwadamilare@ericsson.com,ejiofor.asogwa@ericsson.com,kikelomo.sofolahan@ericsson.com,stephen.seyi.ademoloye@ericsson.com,yusuf.adejumo.salau@ericsson.com,paul.ajayi@ericsson.com,junaid.omotade@ericsson.com,oluwafunmiso.inaolaji@ericsson.com,victoria.nsiamuna@ericsson.com,chiamaka.ohaji@ericsson.com,elmer.ambrose@ericsson.com,adaugo.okezie@ericsson.com,joseph.nwokeafor@ericsson.com,mirian.nnanyere@ericsson.com,lilian.onyedim@ericsson.com,echezona.madu@ericsson.com,john.nnoli@ericsson.com,precious.nwaorgu@ericsson.com,salvation.peter@ericsson.com,ajirioghene.manawa@ericsson.com,sydney.onukwugha@ericsson.com,oluwatoba.abe@ericsson.com,oluwatobi.allen@ericsson.com,frederick.kpam@ericsson.com,damilola.adeyemi@ericsson.com,ifeanyichukwu.oparaeke@ericsson.com" }
+            { "ERICSSON", "oghenekevwe.kofi@ericsson.com,tola.daramola@ericsson.com,asuku.aliu.mohammed@ericsson.com,adebayo.sulaiman.oshijirin@ericsson.com,chinedu.obi@ericsson.com,esther.igbinakenzua@ericsson.com,emmanuel.ekpendu@ericsson.com,chinyere.tina.ejiofor@ericsson.com,simeon.oladipo@ericsson.com,abiodun.abimbola.kayode@ericsson.com,joseph.ogundiran@ericsson.com,david.aweh@ericsson.com,opeyemi.tokoya.oluwadamilare@ericsson.com,ejiofor.asogwa@ericsson.com,kikelomo.sofolahan@ericsson.com,stephen.seyi.ademoloye@ericsson.com,yusuf.adejumo.salau@ericsson.com,paul.ajayi@ericsson.com,junaid.omotade@ericsson.com,oluwafunmiso.inaolaji@ericsson.com,victoria.nsiamuna@ericsson.com,chiamaka.ohaji@ericsson.com,elmer.ambrose@ericsson.com,adaugo.okezie@ericsson.com,joseph.nwokeafor@ericsson.com,mirian.nnanyere@ericsson.com,lilian.onyedim@ericsson.com,echezona.madu@ericsson.com,john.nnoli@ericsson.com,precious.nwaorgu@ericsson.com,salvation.peter@ericsson.com,ajirioghene.manawa@ericsson.com,sydney.onukwugha@ericsson.com,oluwatoba.abe@ericsson.com,oluwatobi.allen@ericsson.com,frederick.kpam@ericsson.com,damilola.adeyemi@ericsson.com,ifeanyichukwu.oparaeke@ericsson.com" }
         };
         private Dictionary<string, int> TotalRow = new();
         private Dictionary<string, int> TotalRowInit = new()
@@ -383,7 +383,7 @@ namespace Project.V1.DLL.Crons
                         rowBody.AddCell(request.Region, null, null, null, CellTDProperties);
                         rowBody.AddCell(request.Vendor, null, null, null, CellTDProperties);
                         rowBody.AddCell(request.DateSubmitted.ToString("d"), null, null, null, CellTDProperties);
-                        rowBody.AddCell(request.DateAccepted.ToString("d"), null, null, null, CellTDProperties);
+                        rowBody.AddCell((request.DateAccepted.HasValue) ? request.DateAccepted.Value.ToString("d") : null, null, null, null, CellTDProperties);
                         rowBody.AddCell(request.ProjectType, null, null, null, CellTDProperties);
                         rowBody.AddCell(request.State.Trim(), null, null, null, CellTDProperties);
                     }
