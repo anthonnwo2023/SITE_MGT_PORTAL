@@ -249,9 +249,10 @@
                                                     }
                                                 </Template>
                                                 <EditTemplate>
-                                                    <SfMultiSelect TValue="string[]" TItem="ExpandoObject" AllowCustomValue="false" AllowFiltering="false" @bind-Value="@SelectedUserRoles"
+                                                    <SfMultiSelect TValue="string[]" TItem="ExpandoObject" AllowCustomValue="false" AllowFiltering="false" Value="SelectedUserRoles"
                                                                    Placeholder="Roles" Mode="VisualMode.CheckBox" DataSource="@IdentityRoles" FloatLabelType="@FloatLabelType.Auto">
                                                         <MultiSelectFieldSettings Value="Id" Text="Name"></MultiSelectFieldSettings>
+                                                        <MultiSelectEvents TItem="ExpandoObject" TValue="string[]" ValueChange="@RolesChangeHandler"></MultiSelectEvents>
                                                     </SfMultiSelect>
                                                 </EditTemplate>
                                             </GridColumn>
@@ -265,9 +266,10 @@
                                                     }
                                                 </Template>
                                                 <EditTemplate>
-                                                    <SfMultiSelect TValue="string[]" TItem="ClaimViewModel" AllowCustomValue="false" AllowFiltering="false" @bind-Value="@SelectedUserProjects"
+                                                    <SfMultiSelect TValue="string[]" TItem="ClaimViewModel" AllowCustomValue="false" AllowFiltering="false" Value="@SelectedUserProjects"
                                                                    Placeholder="Projects" Mode="VisualMode.CheckBox" DataSource="@ProjectClaims" FloatLabelType="@FloatLabelType.Auto">
                                                         <MultiSelectFieldSettings Value="Id" Text="Name"></MultiSelectFieldSettings>
+                                                        <MultiSelectEvents TItem="ClaimViewModel" TValue="string[]" ValueChange="@ProjectsChangeHandler"></MultiSelectEvents>
                                                     </SfMultiSelect>
                                                 </EditTemplate>
                                             </GridColumn>
@@ -283,9 +285,10 @@
                                                     }
                                                 </Template>
                                                 <EditTemplate>
-                                                    <SfMultiSelect TValue="string[]" TItem="RegionViewModel" AllowCustomValue="false" AllowFiltering="false" @bind-Value="@SelectedUserRegions"
+                                                    <SfMultiSelect TValue="string[]" TItem="RegionViewModel" AllowCustomValue="false" AllowFiltering="false" Value="@SelectedUserRegions"
                                                                    Placeholder="Regions" Mode="VisualMode.CheckBox" DataSource="@Regions" FloatLabelType="@FloatLabelType.Auto">
                                                         <MultiSelectFieldSettings Value="Id" Text="Name"></MultiSelectFieldSettings>
+                                                        <MultiSelectEvents TItem="RegionViewModel" TValue="string[]" ValueChange="@RegionsChangeHandler"></MultiSelectEvents>
                                                     </SfMultiSelect>
                                                 </EditTemplate>
                                             </GridColumn>

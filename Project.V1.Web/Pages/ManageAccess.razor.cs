@@ -37,10 +37,10 @@ namespace Project.V1.Web.Pages
         public List<ClaimViewModel> RoleClaims { get; set; }
         public List<ClaimViewModel> ProjectClaims { get; set; }
 
-        public string[] SelectedUserRoles { get; set; }
-        public string[] SelectedUserRegions { get; set; }
+        public string[] SelectedUserRoles { get; set; } = Array.Empty<string>();
+        public string[] SelectedUserRegions { get; set; } = Array.Empty<string>();
         public List<ClaimViewModel> SelectedRolePermissions { get; set; }
-        public string[] SelectedUserProjects { get; set; }
+        public string[] SelectedUserProjects { get; set; } = Array.Empty<string>();
 
         public bool ShouldRequirePassword { get; set; } = false;
 
@@ -54,7 +54,7 @@ namespace Project.V1.Web.Pages
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare(nameof(SelectedUserPassword), ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; } = "Network@55555";
+        public string ConfirmPassword { get; set; }
 
         protected SfGrid<VendorModel> Grid_Vendor { get; set; }
         protected SfGrid<ExpandoObject> Grid_IdentityRole { get; set; }
@@ -621,6 +621,21 @@ namespace Project.V1.Web.Pages
         {
             //return (Principal != null) ? Principal.HasClaim(x => x.Type == claimName) : false;
             return (Principal != null) && Principal.HasClaim(x => x.Type == claimName);
+        }
+
+        private void RolesChangeHandler(MultiSelectChangeEventArgs<string[]> args)
+        {
+            SelectedUserRoles = args?.Value;
+        }
+
+        private void ProjectsChangeHandler(MultiSelectChangeEventArgs<string[]> args)
+        {
+            SelectedUserProjects = args?.Value;
+        }
+
+        private void RegionsChangeHandler(MultiSelectChangeEventArgs<string[]> args)
+        {
+            SelectedUserRegions = args?.Value;
         }
 
         private async Task InitData(string model = null)
