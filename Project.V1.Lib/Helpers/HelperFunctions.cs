@@ -368,7 +368,7 @@ namespace Project.V1.Lib.Helpers
         }
     }
 
-    public class HelperFunctionFactory<T> where T : class, IDisposable
+    public class HelperFunctionFactory<T> where T : class
     {
         private readonly CancellationTokenSource _cts;
         private readonly SmtpClient _smtpClient;
@@ -378,23 +378,6 @@ namespace Project.V1.Lib.Helpers
         {
             _cts = cts;
             _smtpClient = new SmtpClient();
-
-            if (!_smtpClient.IsConnected)
-            {
-                // Note: only needed if the SMTP server requires authentication
-                //client.Authenticate("no-reply@classicholdingscompany.com", "mz8Ql1!5");
-                lock (_smtpLock)
-                    _smtpClient.Connect("172.24.32.68", 25, false);
-            }
-        }
-
-        public void Dispose()
-        {
-            _smtpClient.Disconnect(true, _cts.Token);
-            _smtpClient.Dispose();
-
-            _cts.Cancel();
-            _cts.Dispose();
         }
 
         public async Task<bool> SendRequestMessage(MailerViewModel<T> mailObject)
@@ -455,9 +438,17 @@ namespace Project.V1.Lib.Helpers
 
             try
             {
+
+                if (!_smtpClient.IsConnected)
+                {
+                    // Note: only needed if the SMTP server requires authentication
+                    //client.Authenticate("no-reply@classicholdingscompany.com", "mz8Ql1!5");
+                    lock (_smtpLock)
+                        _smtpClient.Connect("172.24.32.68", 25, false, _cts.Token);
+                }
+
                 //await _smtpClient.SendAsync(message, _cts.Token);
-                var sendMail = _smtpClient.SendAsync(message, _cts.Token);
-                sendMail.Wait();
+                var sendMail = await _smtpClient.SendAsync(message, _cts.Token);
                 Log.Information($"Mail sent to customer to {string.Join(", ", message.To.Select(x => x.Name))}");
 
                 await Task.CompletedTask;
