@@ -183,6 +183,10 @@ public class RequestViewModel : IDisposable
         }
     }
 
+    public string Vendor => Requester.Vendor.Name;
+
+    public string Engineer => EngineerAssigned?.Fullname.Trim();
+
     public string EngineerComment => EngineerAssigned.ApproverComment;
 
     public void Dispose()

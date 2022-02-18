@@ -380,6 +380,27 @@ namespace Project.V1.Lib.Helpers
             _smtpClient = new SmtpClient();
         }
 
+        private void ConnectSMTP(int i)
+        {
+            try
+            {
+                if (!_smtpClient.IsConnected)
+                {
+                    // Note: only needed if the SMTP server requires authentication
+                    //client.Authenticate("no-reply@classicholdingscompany.com", "mz8Ql1!5");
+                    lock (_smtpLock)
+                        _smtpClient.Connect("172.24.32.68", 25, false, _cts.Token);
+                }
+            }
+            catch (Exception)
+            {
+                i += 1;
+
+                if (i < 60)
+                    ConnectSMTP(i++);
+            }
+        }
+
         public async Task<bool> SendRequestMessage(MailerViewModel<T> mailObject)
         {
             if (mailObject == null)
@@ -439,13 +460,7 @@ namespace Project.V1.Lib.Helpers
             try
             {
 
-                if (!_smtpClient.IsConnected)
-                {
-                    // Note: only needed if the SMTP server requires authentication
-                    //client.Authenticate("no-reply@classicholdingscompany.com", "mz8Ql1!5");
-                    lock (_smtpLock)
-                        _smtpClient.Connect("172.24.32.68", 25, false, _cts.Token);
-                }
+                ConnectSMTP(0);
 
                 //await _smtpClient.SendAsync(message, _cts.Token);
                 var sendMail = await _smtpClient.SendAsync(message, _cts.Token);

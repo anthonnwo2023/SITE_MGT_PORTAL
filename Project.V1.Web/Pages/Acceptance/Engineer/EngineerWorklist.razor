@@ -46,6 +46,9 @@ else
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModel.SiteId)" HeaderText="Site Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModel.Vendor)" HeaderText="Vendor" EditType="EditType.DropDownEdit"
+                           FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
             <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit"
                            FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridForeignColumn>

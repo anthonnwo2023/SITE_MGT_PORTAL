@@ -56,6 +56,7 @@
             if (args.Item.Id == "ReportTable_excelexport") //Id is combination of Grid's ID and itemname
             {
                 var hiddenCols = new string[] {
+                    "Vendor",
                     "Site Name",
                     "RNC/BSC",
                     "Spectrum",
@@ -89,7 +90,11 @@
                 };
 
                 await Grid_Request.ShowColumnsAsync(hiddenCols);
-                await Grid_Request.ExcelExport();
+
+                ExcelExportProperties ExportProperties = new();
+                ExportProperties.FileName = $"General_Report{DateTimeOffset.UtcNow:ddMMyyyy.Hmmss}.xlsx";
+
+                await Grid_Request.ExcelExport(ExportProperties);
                 await Grid_Request.HideColumnsAsync(hiddenCols);
             }
 
@@ -127,6 +132,7 @@
                 //await Grid_RequestGroup.HideColumnsAsync(hiddenCols);
             }
         }
+
         protected async Task AuthenticationCheck(bool isAuthenticated)
         {
             if (isAuthenticated)
