@@ -368,7 +368,7 @@ namespace Project.V1.Lib.Helpers
         }
     }
 
-    public class HelperFunctionFactory<T> where T : class
+    public class HelperFunctionFactory<T> where T : class, IDisposable
     {
         private readonly CancellationTokenSource _cts;
         private readonly SmtpClient _smtpClient;
@@ -378,6 +378,12 @@ namespace Project.V1.Lib.Helpers
         {
             _cts = cts;
             _smtpClient = new SmtpClient();
+        }
+
+        public void Dispose()
+        {
+            _smtpClient.Disconnect(true, _cts.Token);
+            _smtpClient.Dispose();
         }
 
         private void ConnectSMTP(int i)
@@ -463,10 +469,8 @@ namespace Project.V1.Lib.Helpers
                 ConnectSMTP(0);
 
                 //await _smtpClient.SendAsync(message, _cts.Token);
-                var sendMail = await _smtpClient.SendAsync(message, _cts.Token);
+                var sendMail = _smtpClient.SendAsync(message, _cts.Token);
                 Log.Information($"Mail sent to customer to {string.Join(", ", message.To.Select(x => x.Name))}");
-
-                await Task.CompletedTask;
 
                 return true;
             }

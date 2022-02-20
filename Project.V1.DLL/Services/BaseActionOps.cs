@@ -1,18 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.V1.Data;
-using Project.V1.Lib.Interfaces;
 using Project.V1.DLL.Helpers;
 using Project.V1.DLL.RequestActions;
+using Project.V1.DLL.Services.Interfaces;
+using Project.V1.Lib.Interfaces;
 using Project.V1.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Project.V1.DLL.Services.Interfaces;
 
 namespace Project.V1.Lib.Services
 {
-    public class BaseActionOps<T> : GenericRepo<T>,  IRequestAction<T> where T : RequestViewModel
+    public class BaseActionOps<T> : GenericRepo<T>, IRequestAction<T> where T : RequestViewModel
     {
         private RequestStateBase<T> _state;
         private readonly ApplicationDbContext _context;
@@ -36,6 +35,8 @@ namespace Project.V1.Lib.Services
         public bool Reject(T request, Dictionary<string, object> variables, string reason) => _state.Reject(this, request, variables, reason);
 
         public bool Rework(T request, Dictionary<string, object> variables) => _state.Rework(this, request, variables);
+
+        public bool Restart(T request, Dictionary<string, object> variables) => _state.Restart(this, request, variables);
 
         public void SetTransitionState(RequestStateBase<T> newState)
         {

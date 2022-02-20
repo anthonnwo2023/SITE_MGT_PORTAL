@@ -1,20 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Grids;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Pages.Acceptance.Engineer
+﻿namespace Project.V1.Web.Pages.Acceptance.Engineer
 {
     public partial class EngineerWorklist
     {
@@ -68,7 +52,8 @@ namespace Project.V1.Web.Pages.Acceptance.Engineer
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
                     var userRegionIds = User.Regions.Select(x => x.Id);
 
-                    RequestEngWorklists = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && (x.Status == "Pending" || x.Status == "Reworked"))).OrderByDescending(x => x.DateCreated).ToList();
+                    RequestEngWorklists = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && (x.Status == "Pending" || x.Status == "Reworked"
+                                            || x.Status == "Restarted"))).OrderByDescending(x => x.DateCreated).ToList();
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
                     Spectrums = await ISpectrum.Get(x => x.IsActive);

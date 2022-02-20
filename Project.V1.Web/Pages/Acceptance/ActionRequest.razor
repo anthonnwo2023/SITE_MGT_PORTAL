@@ -187,14 +187,17 @@ else
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 mt-3">
-                    <div class="form-group">
-                        <div class="col-sm-12 p-0 mt-3 text-right">
-                            <SfButton OnClick="HsndleCancelRequest" CssClass="px-2 py-2" type="button" IsPrimary="false" IconCss="@CancelIconCss"
-                                  IconPosition="IconPosition.Right">Cancel Request</SfButton>
+                @if(!RequestModel.Status.Equals("Cancelled"))
+                {
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <div class="col-sm-12 p-0 mt-3 text-right">
+                                <SfButton OnClick="HsndleCancelRequest" CssClass="px-2 py-2" type="button" IsPrimary="false" IconCss="@CancelIconCss"
+                                      IconPosition="IconPosition.Right">Cancel Request</SfButton>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </div>                    
+                }
             </div>
         </div>
     </EditForm>

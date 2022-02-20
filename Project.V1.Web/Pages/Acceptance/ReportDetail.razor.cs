@@ -1,19 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Inputs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Pages.Acceptance
+﻿namespace Project.V1.Web.Pages.Acceptance
 {
     public partial class ReportDetail : IDisposable
     {
@@ -34,7 +19,7 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] protected IUser IUser { get; set; }
 
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
-
+        public string UploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
         public List<PathInfo> Paths { get; set; }
@@ -49,6 +34,11 @@ namespace Project.V1.Web.Pages.Acceptance
         public List<BaseBandModel> Basebands { get; set; }
         public RequestViewModel RequestModel { get; set; }
         public string RequestStatus { get; set; }
+
+        private void RedirectCancelled(MouseEventArgs args)
+        {
+            NavMan.NavigateTo($"acceptance/worklist/{Id}");
+        }
 
         private static readonly string[] States = new string[]
 {

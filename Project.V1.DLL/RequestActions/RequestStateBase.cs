@@ -5,7 +5,6 @@ using Project.V1.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
@@ -20,6 +19,13 @@ namespace Project.V1.DLL.RequestActions
         public virtual Task<bool> EnterState(IRequestAction<T> request, List<T> requests, Dictionary<string, object> variables)
         {
             return Task.FromResult(false);
+        }
+
+        public virtual bool Restart(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        {
+            Log.Information("Cannot restart this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
         }
 
         public virtual bool Accept(IRequestAction<T> request, T requests, Dictionary<string, object> variables)

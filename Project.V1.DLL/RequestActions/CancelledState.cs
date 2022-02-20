@@ -9,6 +9,11 @@ namespace Project.V1.DLL.RequestActions
 {
     public class CancelledState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
+        public override bool Restart(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        {
+            return request.TransitionState(new RestartedState<T>(), requests, variables);
+        }
+
         public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
         {
             try
