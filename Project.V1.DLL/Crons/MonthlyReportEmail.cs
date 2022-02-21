@@ -93,8 +93,8 @@ namespace Project.V1.DLL.Crons
 
 
                 var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
-                var MonthlyRequests = RequestSummary.GetVendorRequests("Month", yesterDay, MinDateTime, MaxDateTime);
-                var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", yesterDay);
+                var MonthlyRequests = RequestSummary.GetVendorRequests(MinDateTime, MaxDateTime);
+                var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests(MinDateTime, MaxDateTime);
 
                 var AllVendorMthRequest = MonthlyRequests.GroupBy(x => x.Vendor).ToList();
                 var AllProjectMthRequest = MonthlyProjectTypeRequests.GroupBy(x => x.ProjectType).ToList();
@@ -115,9 +115,10 @@ namespace Project.V1.DLL.Crons
 
                     var regionMonthRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                         && x.EngineerAssigned.DateApproved.Date >= MinDateTime.Date && x.EngineerAssigned.DateApproved.Date < MaxDateTime.Date
-                                        && !x.Spectrum.Name.Contains("MOD")
+                                        //&& !x.Spectrum.Name.Contains("MOD")
                                         && x.Region.Name.ToUpper() == region.ToUpper()
-                                        && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
+                                        //&& x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"
+                                        ))
                                          .Select(x => new AcceptanceDTO
                                          {
                                              SiteId = x.SiteId,
@@ -125,6 +126,7 @@ namespace Project.V1.DLL.Crons
                                              State = x.State,
                                              Vendor = x.Requester.Vendor.Name,
                                              ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
+                                             ProjectTypeName = x.ProjectType.Name,
                                              TechType = x.TechType.Name,
                                              Spectrum = x.Spectrum.Name,
                                              AcceptanceCount = 1,
@@ -158,6 +160,7 @@ namespace Project.V1.DLL.Crons
                                          State = x.State,
                                          Vendor = x.Requester.Vendor.Name,
                                          ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
+                                         ProjectTypeName = x.ProjectType.Name,
                                          TechType = x.TechType.Name,
                                          Spectrum = x.Spectrum.Name,
                                          AcceptanceCount = 1,
@@ -392,7 +395,7 @@ namespace Project.V1.DLL.Crons
                         rowBody.AddCell(request.Vendor, null, null, null, CellTDProperties);
                         rowBody.AddCell(request.DateSubmitted.ToString("d"), null, null, null, CellTDProperties);
                         rowBody.AddCell((request.DateAccepted.HasValue) ? request.DateAccepted.Value.ToString("d") : null, null, null, null, CellTDProperties);
-                        rowBody.AddCell(request.ProjectType, null, null, null, CellTDProperties);
+                        rowBody.AddCell(request.ProjectTypeName, null, null, null, CellTDProperties);
                         rowBody.AddCell(request.State.Trim(), null, null, null, CellTDProperties);
                     }
 

@@ -84,9 +84,9 @@ namespace Project.V1.DLL.Crons
                 var MinDateTime = new DateTime(yesterDay.Year, yesterDay.Month, 1).Date;
                 var MaxDateTime = new DateTime(yesterDay.Year, yesterDay.Month, lastDayOfMth).AddDays(1).Date;
 
-                var MonthlyRequests = RequestSummary.GetVendorRequests("Month", yesterDay, MinDateTime, MaxDateTime);
-                var DailyRequests = RequestSummary.GetVendorRequests("Day", yesterDay, MinDateTime, MaxDateTime);
-                var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", yesterDay);
+                var MonthlyRequests = RequestSummary.GetVendorRequests(MinDateTime, MaxDateTime);
+                var DailyRequests = RequestSummary.GetVendorRequests(yesterDay.Date, DateTime.Now.Date);
+                var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests(MinDateTime, MaxDateTime);
 
                 var VendorMthRequest = MonthlyRequests.GroupBy(x => x.Vendor).ToList();
                 var VendorDailyRequest = DailyRequests.GroupBy(x => x.Vendor).ToList();

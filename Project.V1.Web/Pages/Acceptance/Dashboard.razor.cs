@@ -16,8 +16,8 @@
 
         public DateTime DateData { get; set; } = DateTime.Now;
         public DateTime PrevDate { get; set; } = DateTime.MinValue;
-        public DateTime MinDateTime { get; set; }
-        public DateTime MaxDateTime { get; set; }
+        public DateTime MinDateTime { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 0, 0, 0);
+        public DateTime MaxDateTime { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month), 0, 0, 0).AddDays(1);
         public bool DateIsToday { get; set; } = true;
         public bool DateWthMth { get; set; } = true;
 
@@ -53,9 +53,11 @@
         protected async Task SetMyDate(ChangedEventArgs<DateTime> value)
         {
             DateData = value.Value;
+            DateIsToday = DateData.Date == DateTime.Now.Date;
+            DateWthMth = DateData.Date >= MinDateTime && DateData.Date < MaxDateTime;
 
             //RequestSummary.Initialize(IProjectType, IVendor, IRequest);
-            DailyRequests = RequestSummary.GetVendorRequests("Day", DateData, MinDateTime, MaxDateTime, DateIsToday, DateWthMth);
+            DailyRequests = RequestSummary.GetVendorRequests(DateData.Date, DateData.AddDays(1).Date);
 
             int lastDayOfMth = DateTime.DaysInMonth(DateData.Year, DateData.Month);
 
@@ -66,8 +68,8 @@
 
             if (!shouldNotReload)
             {
-                MonthlyRequests = RequestSummary.GetVendorRequests("Month", DateData, MinDateTime, MaxDateTime, DateIsToday, DateWthMth);
-                MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", DateData, DateIsToday, DateWthMth);
+                MonthlyRequests = RequestSummary.GetVendorRequests(MinDateTime, MaxDateTime);
+                MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests(MinDateTime, MaxDateTime);
 
                 PrevDate = DateData;
             }
@@ -83,9 +85,9 @@
                 {
                     RequestSummary.Initialize(IProjectType, IVendor, IRequest);
 
-                    MonthlyRequests = RequestSummary.GetVendorRequests("Month", DateData, MinDateTime, MaxDateTime, DateIsToday, DateWthMth);
-                    DailyRequests = RequestSummary.GetVendorRequests("Day", DateData, MinDateTime, MaxDateTime, DateIsToday, DateWthMth);
-                    MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", DateData, DateIsToday, DateWthMth);
+                    MonthlyRequests = RequestSummary.GetVendorRequests(MinDateTime, MaxDateTime);
+                    DailyRequests = RequestSummary.GetVendorRequests(DateData.Date, DateData.AddDays(1).Date);
+                    MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests(MinDateTime, MaxDateTime);
 
                     await Task.CompletedTask;
                 }

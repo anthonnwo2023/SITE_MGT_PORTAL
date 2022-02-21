@@ -82,6 +82,23 @@ namespace Project.V1.Web
                     //.WithCronSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 7, 30))
                     .WithDescription("Daily Report Reminder Trigger")
                 );
+
+                jobKey = new JobKey("4 Hourly Report job", "SMP group");
+
+                q.AddJob<FourtlyHourlyReportEmail>(j => j
+                    .StoreDurably()
+                    .WithIdentity(jobKey)
+                    .WithDescription("4 Hourly Report Reminder")
+                );
+
+                q.AddTrigger(t => t
+                    .WithIdentity("4 Hourly Report Reminder Trigger")
+                    .ForJob(jobKey)
+                    .StartNow()
+                    .WithCronSchedule(Configuration.GetValue<string>("Scheduler:Hourly4Report"))
+                    //.WithCronSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 7, 30))
+                    .WithDescription("Daily Report Reminder Trigger")
+                );
             });
 
             // ASP.NET Core hosting

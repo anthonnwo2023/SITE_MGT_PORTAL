@@ -103,7 +103,7 @@ namespace Project.V1.DLL.Helpers
             };
         }
 
-        public static List<AcceptanceDTO> GetProjectTypeRequests(string requestType, DateTime DateData, bool DateIsToday = true, bool DateWthMth = true)
+        public static List<AcceptanceDTO> GetProjectTypeRequests(DateTime MinDateTime, DateTime MaxDateTime)
         {
             var requests = new List<AcceptanceDTO>();
 
@@ -130,20 +130,6 @@ namespace Project.V1.DLL.Helpers
                 requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", ProjectType = projectType });
             }
 
-            int firstDatOfMth = 1;
-            int lastDayOfMth = DateTime.DaysInMonth(DateData.Year, DateData.Month);
-
-            if (requestType == "Day")
-            {
-                lastDayOfMth = DateData.Day;
-                firstDatOfMth = lastDayOfMth;
-                DateIsToday = DateData.Date == DateTime.Now.Date;
-            }
-
-            var MinDateTime = new DateTime(DateData.Year, DateData.Month, firstDatOfMth).Date;
-            var MaxDateTime = new DateTime(DateData.Year, DateData.Month, lastDayOfMth).AddDays(1).Date;
-            DateWthMth = DateData.Date >= MinDateTime && DateData.Date < MaxDateTime;
-
             requests.AddRange((Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
                                 && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
@@ -164,8 +150,7 @@ namespace Project.V1.DLL.Helpers
             return requests;
         }
 
-        public static List<AcceptanceDTO> GetVendorRequests(string requestType, DateTime DateData, DateTime MinDateTime,
-            DateTime MaxDateTime, bool DateIsToday = true, bool DateWthMth = true)
+        public static List<AcceptanceDTO> GetVendorRequests(DateTime MinDateTime, DateTime MaxDateTime)
         {
             var requests = new List<AcceptanceDTO>();
             var vendors = Vendor.Get(x => x.IsActive && x.ShouldSummerize).GetAwaiter().GetResult();
@@ -183,20 +168,6 @@ namespace Project.V1.DLL.Helpers
                 requests.Add(new AcceptanceDTO { UMTSPhyCount = 0, Spectrum = "3G PHY", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", Vendor = vendor.Name });
             }
-
-            int firstDatOfMth = 1;
-            int lastDayOfMth = DateTime.DaysInMonth(DateData.Year, DateData.Month);
-
-            if (requestType == "Day")
-            {
-                lastDayOfMth = DateData.Day;
-                firstDatOfMth = lastDayOfMth;
-                DateIsToday = DateData.Date == DateTime.Now.Date;
-            }
-
-            MinDateTime = new DateTime(DateData.Year, DateData.Month, firstDatOfMth).Date;
-            MaxDateTime = new DateTime(DateData.Year, DateData.Month, lastDayOfMth).AddDays(1).Date;
-            DateWthMth = DateData.Date >= MinDateTime && DateData.Date < MaxDateTime;
 
             requests.AddRange((Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
