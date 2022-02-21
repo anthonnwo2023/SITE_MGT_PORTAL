@@ -22,6 +22,7 @@ namespace Project.V1.DLL.Crons
         private readonly IRequest _request;
         private readonly ICLogger _logger;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly string RecipientsCSV = "Ogonna.Aneke@mtn.com,chinedu.obi@ericsson.com,mtnnocsl@huawei.com,akinola@huawei.com,Joseph.Yakubu@mtn.com,he.jin2@zte.com.cn,Abraham.Uanzekin@mtn.com,Akeem.Alabi@mtn.com,Harold.Obodozie@mtn.com,Olayinka.Esan@mtn.com,Olabode.Aluko@mtn.com,Peter.Okewumi@mtn.com,Oladipo.Bajo@mtn.com,Henry.Obukoadata@mtn.com,lei.yifang@zte.com.cn,#NIDPSOReports.NG@mtn.com,gao.shuang@zte.com.cn,nity.dangwal@zte.com.cn,zengruile@huawei.com,iakhidenor@gmail.com,zhang.yabo111@zte.com.cn,#MTNNigeriaTSSNWG.NG@mtn.com,leey.liyi@huawei.com,cui.haibo5@zte.com.cn,Chinedu.Ezeigweneme@mtn.com,#RFOptimization.NG@mtn.com,Esther.Igbinakenzua@mtn.com,frederick.kpam@ericsson.com,stephen.caoguodong@huawei.com,Abayomi.Onafuye@mtn.com,nnamdi.osuji@huawei.com,stephen.seyi.ademoloye@ericsson.com,tosin.adedapo@ericsson.com,adebayo.sulaiman.oshijirin@ericsson.com,samuel.ola1@huawei.com,irorere.lawrence.osakhienuwa@huawei.com,ejiofor.asogwa@ericsson.com,satish.satish@zte.com.cn,tang.mingxin1@zte.com.cn,Olufunso.Oluwapojuwomi@mtn.com,amah.Jackson@mtn.com,#NIDRAI.NG@mtn.com,tola.daramola@ericsson.com,ragavendra.kumar@ericsson.com,oluwadare.awe@ericsson.com,abimbola.nwankwonta@ericsson.com,eddie.zhangfan@huawei.com,Olayemi.Awofisoye@huawei.com,olawale.aminu@huawei.com,femi.ajayi@zte.com.cn,oghenekevwe.kofi@ericsson.com,kehinde.akingbagbohun@huawei.com,patrick.okaka@huawei.com,ekene.anthony.ibedu@huawei.com,#RFPlanningEngr.NG@mtn.com,uzoma.joenkamuke@huawei.com,Oluwaseun.Onabajo@huawei.com,duqisheng@huawei.com,imoh.umobong@ericsson.com,asuku.aliu.mohammed@ericsson.com,nokia-opt@list.nokia.com,Titilayo.Oguntokun@mtn.com,maxz.chooi@huawei.com,osukoya.ayodele@huawei.com,bola.badie.zaki@huawei.com,alabi.shukrat.mopelola@huawei.com,Young.Omereonye@mtn.com,yakubu.oke.ext@nokia.com,muhammad.t.khan.ext@nokia.com,MohammadReza.Rajabi@mtn.com,oyebode.olumide.temitayo@huawei.com,Rasheed.Bello@mtn.com,Kayode.Olufuwa@mtn.com,Ayodeji.Oni@mtn.com,Peter.Erin@mtn.com,ogunbiyi.timilehin.oladapo@huawei.com,Albert.Chukwuma@mtn.com,augustine.solomon@huawei.com,xue.ningyi@zte.com.cn,hu.shaodong@zte.com.cn,Iyilary@zte.com.cn,wang.huiwen30@zte.com.cn,peng.weidong@zte.com.cn,liu.gang5@zte.com.cn,mohd.zuheb.shakeel@ericsson.com,adeboye.dayo@huawei.com,zhanghaitao11@huawei.com,wangguangxi@huawei.com,pengzhenxing@huawei.com,hazem.amaher@huawei.com,Adeniran.Adepoju@mtn.com,Muhammad.Ashraf@mtn.com,Adeel.Ahmed1@mtn.com,#TxAccessPlanningHQ.NG@mtn.com,jesse.obuotor@nokia.com,adebanji.adeyemi@nokia.com,yuguda.hamisu.ext@nokia.com,fehintola.olayemi.ext@nokia.com,waqar.mehmood@nokia.com,chijioke.okoli@nokia.com,huzhili@huawei.com,Tochukwu.Alaekee@mtn.com,#networkaccessplanning&optimizationhq.ng@mtn.com";
         private readonly List<string> tableColumnNames = new() { "S/N", "TECH", "Spectrum", "SiteID", "Region", "Vendor", "Submission Date", "Acceptance Date", "Scope", "State" };
 
         private readonly Dictionary<string, string> VendorRecipientsCSV = new()
@@ -90,15 +91,21 @@ namespace Project.V1.DLL.Crons
 
                 var regions = regionUsers.SelectMany(x => x.Key).Distinct().ToList();
 
+
+                var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
                 var MonthlyRequests = RequestSummary.GetVendorRequests("Month", yesterDay, MinDateTime, MaxDateTime);
                 var MonthlyProjectTypeRequests = RequestSummary.GetProjectTypeRequests("Month", yesterDay);
+
+                var AllVendorMthRequest = MonthlyRequests.GroupBy(x => x.Vendor).ToList();
+                var AllProjectMthRequest = MonthlyProjectTypeRequests.GroupBy(x => x.ProjectType).ToList();
+
+                var tableMonthlyAll = GenerateSummaryTable(AllProjectMthRequest, summaryTableHeader, yesterDay);
+                tableMonthlyAll += GenerateSummaryTable(AllVendorMthRequest, summaryTableHeader, yesterDay, "vendor");
 
                 foreach (var region in regions)
                 {
                     var engineers = regionUsers.Where(x => x.Key.Contains(region)).SelectMany(x => x.ToList()).Select(x => x.Email);
                     var engineerRecipientCSV = string.Join(",", engineers);
-
-                    var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
                     var VendorMthRequest = MonthlyRequests.Where(x => x.Region == region).GroupBy(x => x.Vendor).ToList();
                     var ProjectMthRequest = MonthlyProjectTypeRequests.Where(x => x.Region == region).GroupBy(x => x.ProjectType).ToList();
 
@@ -158,6 +165,7 @@ namespace Project.V1.DLL.Crons
                                          DateAccepted = x.EngineerAssigned.DateApproved
                                      }).ToList();
 
+                SendNotification(yesterDay, tableMonthlyAll, RecipientsCSV, $"Tuning Acceptance {yesterDay:yyyy-MMMM}");
                 SendVendorSpecificAccecptanceNotification(yesterDay, lastMonthRequests);
             }
             catch (Exception ex)
@@ -222,7 +230,7 @@ namespace Project.V1.DLL.Crons
             };
 
             mvm.Subject = subject;
-            mvm.From = new SenderBody { Name = "SMP Portal", Address = "smp_request@mtnnigeria.net" };
+            mvm.From = new SenderBody { Name = "SMP Portal", Address = "smp_request@mtn.com" };
 
             CancellationTokenSource cts = new();
             HelperFunctionFactory<DailyReportEmail> hff = new(cts);

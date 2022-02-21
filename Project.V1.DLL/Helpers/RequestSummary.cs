@@ -19,6 +19,7 @@ namespace Project.V1.DLL.Helpers
         public int UMTSPhyCount { get; set; }
         public int LTEPhyCount { get; set; }
         public string ProjectType { get; set; }
+        public string ProjectTypeName { get; set; }
         public DateTime DateSubmitted { get; set; }
         public DateTime? DateAccepted { get; set; }
         public string EngineerComment { get; set; }
@@ -152,6 +153,7 @@ namespace Project.V1.DLL.Helpers
                                     Region = x.Region.Name,
                                     Vendor = x.Requester.Vendor.Name,
                                     ProjectType = GetProjectTypeName(x.ProjectType.Name),
+                                    ProjectTypeName = x.ProjectType.Name,
                                     TechType = x.TechType.Name,
                                     Spectrum = GetSpectrumName(x.Spectrum.Name),
                                     AcceptanceCount = 1,
