@@ -183,6 +183,8 @@ public class RequestViewModel : IDisposable
         }
     }
 
+    public string RequesterName => Requester.Name;
+
     public string Vendor => Requester.Vendor.Name;
 
     public string Engineer => EngineerAssigned?.Fullname.Trim();

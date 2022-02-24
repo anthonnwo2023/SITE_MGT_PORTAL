@@ -386,8 +386,11 @@ namespace Project.V1.Lib.Helpers
             _smtpClient.Dispose();
         }
 
-        private void ConnectSMTP(int i)
+        private async Task<bool> ConnectSMTP()
         {
+            var response = false;
+            var count = 0;
+
             try
             {
                 if (!_smtpClient.IsConnected)
@@ -396,14 +399,22 @@ namespace Project.V1.Lib.Helpers
                     //client.Authenticate("no-reply@classicholdingscompany.com", "mz8Ql1!5");
                     lock (_smtpLock)
                         _smtpClient.Connect("172.24.32.68", 25, false, _cts.Token);
+
+                    return true;
                 }
+
+                return true;
             }
             catch (Exception)
             {
-                i += 1;
+                count += 1;
 
-                if (i < 60)
-                    ConnectSMTP(i++);
+                await Task.Delay(100);
+
+                while (response == false && count < 60)
+                    response = await ConnectSMTP();
+
+                return response;
             }
         }
 
@@ -465,12 +476,20 @@ namespace Project.V1.Lib.Helpers
 
             try
             {
+                var isConnected = await ConnectSMTP();
 
-                ConnectSMTP(0);
+                if (isConnected)
+                {
+                    //await _smtpClient.SendAsync(message, _cts.Token);
+                    var sendMail = _smtpClient.SendAsync(message, _cts.Token);
+                    Log.Information($"Mail sent to customer to {string.Join(", ", message.To.Select(x => x.Name))}");
+                }
+                else
+                {
+                    Log.Information($"Mail failed to send to customer: {string.Join(", ", message.To.Select(x => x.Name))}");
 
-                //await _smtpClient.SendAsync(message, _cts.Token);
-                var sendMail = _smtpClient.SendAsync(message, _cts.Token);
-                Log.Information($"Mail sent to customer to {string.Join(", ", message.To.Select(x => x.Name))}");
+                    return false;
+                }
 
                 return true;
             }

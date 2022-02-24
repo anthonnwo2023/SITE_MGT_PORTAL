@@ -40,6 +40,10 @@ else
         <GridColumns>
             <GridColumn Field="@nameof(RequestViewModel.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
             </GridColumn>
+            <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" Width="80" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit">
+            </GridForeignColumn>
+            <GridColumn Field="@nameof(RequestViewModel.RequesterName)" HeaderText="Requester" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
             <GridColumn Field="@nameof(RequestViewModel.UniqueId)" HeaderText="Unique Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModel.BulkBatchNumber)" HeaderText="Batch Number" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
@@ -53,8 +57,6 @@ else
                 </GridColumn>*@
             @*<GridColumn Field="@nameof(RequestViewModel.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                 </GridColumn>*@
-            <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit">
-            </GridForeignColumn>
             <GridForeignColumn Field="@nameof(RequestViewModel.RegionId)" Visible="false" HeaderText="Region" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Regions" EditType="EditType.DropDownEdit">
             </GridForeignColumn>
             <GridColumn Field="@nameof(RequestViewModel.Status)" HeaderText="Status" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
