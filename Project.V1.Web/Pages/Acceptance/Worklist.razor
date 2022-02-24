@@ -40,7 +40,7 @@ else
         <GridColumns>
             <GridColumn Field="@nameof(RequestViewModel.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
             </GridColumn>
-            <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" Width="80" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit">
+            <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" Width="100" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit">
             </GridForeignColumn>
             <GridColumn Field="@nameof(RequestViewModel.RequesterName)" HeaderText="Requester" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>

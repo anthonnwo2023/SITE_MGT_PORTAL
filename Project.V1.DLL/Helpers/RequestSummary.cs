@@ -80,7 +80,7 @@ namespace Project.V1.DLL.Helpers
                 //"RT CAPEX" => "Rural Telephony",
                 "UPGRADE" => "UPGRADE Accepted",
                 var pType when pType.Contains("UPGRADE") => "UPGRADE Accepted",
-                var pType when pType.StartsWith("RT ") => "Rural Telephony",
+                var pType when pType.StartsWith("RT ") && pType.ToUpper() != "RT DONOR" => "Rural Telephony",
                 _ => projectType
             };
         }
@@ -144,7 +144,7 @@ namespace Project.V1.DLL.Helpers
                                     Spectrum = GetSpectrumName(x.Spectrum.Name),
                                     AcceptanceCount = 1,
                                     UMTSPhyCount = GetPhysicalTechCount("3G", x.Spectrum.Name),
-                                    LTEPhyCount = GetPhysicalTechCount("4G", x.Spectrum.Name),
+                                    LTEPhyCount = (x.ProjectType.Name.ToUpper().Equals("RT DONOR") == false) ? GetPhysicalTechCount("4G", x.Spectrum.Name) : 0,
                                 }).ToList());
 
             return requests;
