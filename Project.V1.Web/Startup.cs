@@ -187,9 +187,6 @@ namespace Project.V1.Web
 
             ServiceActivator.Configure(app.ApplicationServices);
 
-            // migrate any database changes on startup (includes initial db creation)
-            context.Database.Migrate();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -197,6 +194,9 @@ namespace Project.V1.Web
             }
             else
             {
+                // migrate any database changes on startup (includes initial db creation)
+                context.Database.Migrate();
+
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();

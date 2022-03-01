@@ -44,17 +44,22 @@ namespace Project.V1.Web.Pages
 
         public bool ShouldRequirePassword { get; set; } = false;
 
-        //[RequiredWhen(nameof(ShouldRequirePassword), true, AllowEmptyStrings = false, ErrorMessage = "Password is required for vendor accounts.")]
-        //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string SelectedUserPassword { get; set; }
+        public SecureInput SecureUserInput { get; set; } = new();
 
-        //[RequiredWhen(nameof(ShouldRequirePassword), true, AllowEmptyStrings = false, ErrorMessage = "Password is required for vendor accounts.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare(nameof(SelectedUserPassword), ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
+        public class SecureInput
+        {
+            //[RequiredWhen(nameof(ShouldRequirePassword), true, AllowEmptyStrings = false, ErrorMessage = "Password is required for vendor accounts.")]
+            //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string SelectedUserPassword { get; set; } = "password";
+
+            //[RequiredWhen(nameof(ShouldRequirePassword), true, AllowEmptyStrings = false, ErrorMessage = "Password is required for vendor accounts.")]
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare(nameof(SelectedUserPassword), ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; } = "password";
+        }
 
         protected SfGrid<VendorModel> Grid_Vendor { get; set; }
         protected SfGrid<ExpandoObject> Grid_IdentityRole { get; set; }
@@ -386,7 +391,7 @@ namespace Project.V1.Web.Pages
 
                         var user = data as ApplicationUser;
 
-                        bool result = await IUser.UpdateUser(user, SelectedUserPassword, SelectedUserRoles.ToList());
+                        bool result = await IUser.UpdateUser(user, SecureUserInput.SelectedUserPassword, SelectedUserRoles.ToList());
 
                         if (result)
                         {
@@ -582,7 +587,7 @@ namespace Project.V1.Web.Pages
 
                         var user = data as ApplicationUser;
 
-                        (bool result, string response) = await IUser.CreateUser(user, SelectedUserPassword, SelectedUserRoles.ToList());
+                        (bool result, string response) = await IUser.CreateUser(user, SecureUserInput.SelectedUserPassword, SelectedUserRoles.ToList());
 
                         if (result)
                         {
@@ -738,13 +743,30 @@ namespace Project.V1.Web.Pages
             }
         }
 
+        public void OnPasswordInput(InputEventArgs args)
+        {
+            SecureUserInput.SelectedUserPassword = args.Value;
+
+            StateHasChanged();
+        }
+
+        public void OnConfirmPasswordInput(InputEventArgs args)
+        {
+            SecureUserInput.ConfirmPassword = args.Value;
+
+            StateHasChanged();
+        }
+
         public async Task ActionBegin<T>(ActionEventArgs<T> args, string model = null) where T : class
         {
             if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
             {
                 if (model == "ApplicationUser")
                 {
-                    SelectedUserRoles = ((dynamic)args.RowData).Roles;
+                    string[] roles = (string[])((dynamic)args.RowData).Roles;
+                    var userRoles = IdentityRoles.Where(x => roles.Contains(((dynamic)x).Name as string)).Select(x => (string)((dynamic)x).Id).ToArray();
+
+                    SelectedUserRoles = userRoles;
                     SelectedUserProjects = ((((dynamic)args.RowData).Projects as List<ClaimViewModel>) == null) ? Array.Empty<string>()
                         : (((dynamic)args.RowData).Projects as List<ClaimViewModel>).Select(x => x.Id).ToArray();
                     SelectedUserRegions = ((((dynamic)args.RowData).Regions as List<RegionViewModel>) == null) ? Array.Empty<string>()

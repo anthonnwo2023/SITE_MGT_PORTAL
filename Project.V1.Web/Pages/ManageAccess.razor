@@ -35,7 +35,7 @@
                 <div class="card-body px-2">
                     <!-- Row -->
                     <div class="row" style="margin-right: 0px; margin-left:0px;">
-                        <div class="col-lg-6 miniTable">
+                        <div class="col-lg-12 miniTable">
                             <p class="d-flex">
                                 @*<a href="access/vendor/create" class="btn btn-sm w-auto btn-primary">Create Vendor</a>*@
                                 <span class="border float-right px-3 font-weight-bold">Vendors</span>
@@ -49,13 +49,17 @@
                                     <GridColumns>
                                         <GridColumn Field="@nameof(VendorModel.Id)" Visible="false" IsPrimaryKey="true">
                                         </GridColumn>
-                                        <GridColumn Field="@nameof(VendorModel.Name)" HeaderText="Vendor Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        <GridColumn Field="@nameof(VendorModel.Name)" HeaderText="Vendor Name" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                        Width="150">
                                         </GridColumn>
-                                        <GridColumn Field="@nameof(VendorModel.MailList)" HeaderText="Mail List" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        <GridColumn Field="@nameof(VendorModel.MailList)" HeaderText="Mail List" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                        Width="750">
                                         </GridColumn>
-                                        <GridColumn Field="@nameof(VendorModel.IsActive)" HeaderText="Is Active?" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        <GridColumn Field="@nameof(VendorModel.IsActive)" HeaderText="Is Active?" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                        Width="140">
                                         </GridColumn>
-                                        <GridColumn Field="@nameof(VendorModel.ShouldSummerize)" HeaderText="Should Summerize?" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                        <GridColumn Field="@nameof(VendorModel.ShouldSummerize)" HeaderText="Should Summerize?" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                        Width="160">
                                         </GridColumn>
                                         <GridColumn Field="@nameof(VendorModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
                                                     Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
@@ -242,10 +246,10 @@
                                                     @{
                                                         var user = (context as ApplicationUser);
 
-                                                        var userRoles = IdentityRoles.Where(x => user.Roles.Contains(((dynamic)x).Id as string)).ToList();
-                                                        var roleNames = userRoles.Select(x => ((dynamic)x).Name as string).ToArray();
+                                                        //var userRoles = IdentityRoles.Where(x => user.Roles.Contains(((dynamic)x).Name as string)).ToList();
+                                                        //var roleNames = userRoles.Select(x => ((dynamic)x).Name as string).ToArray();
 
-                                                        <span>@(string.Join(" - ", roleNames))</span>
+                                                        <span>@(string.Join(" - ", user.Roles))</span>
                                                     }
                                                 </Template>
                                                 <EditTemplate>
@@ -292,18 +296,18 @@
                                                     </SfMultiSelect>
                                                 </EditTemplate>
                                             </GridColumn>
-                                            <GridColumn Visible="false" HeaderText="Password" TextAlign="TextAlign.Left">
+                                            <GridColumn Visible="false" HeaderText="Password" TextAlign="TextAlign.Left" ShowInColumnChooser="false">
                                                 <EditTemplate>
-                                                    <SfTextBox Placeholder="Password" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(SelectedUserPassword)" Type="InputType.Password">
+                                                    <SfTextBox Placeholder="Password" FloatLabelType="@FloatLabelType.Auto" Input="OnPasswordInput" Type="InputType.Password">
                                                     </SfTextBox>
-                                                    <ValidationMessage For="@(() => SelectedUserPassword)" />
+                                                    <ValidationMessage For="@(() => SecureUserInput.SelectedUserPassword)" />
                                                 </EditTemplate>
                                             </GridColumn>
-                                            <GridColumn Visible="false" HeaderText="Confirm Password" TextAlign="TextAlign.Left">
+                                            <GridColumn Visible="false" HeaderText="Confirm Password" TextAlign="TextAlign.Left" ShowInColumnChooser="false">
                                                 <EditTemplate>
-                                                    <SfTextBox Placeholder="Confirm Password" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(ConfirmPassword)" Type="InputType.Password">
+                                                    <SfTextBox Placeholder="Confirm Password" FloatLabelType="@FloatLabelType.Auto" Input="OnConfirmPasswordInput" Type="InputType.Password">
                                                     </SfTextBox>
-                                                    <ValidationMessage For="@(() => ConfirmPassword)" />
+                                                    <ValidationMessage For="@(() => SecureUserInput.ConfirmPassword)" />
                                                 </EditTemplate>
                                             </GridColumn>
                                             <GridColumn Field="@nameof(ApplicationUser.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">

@@ -229,7 +229,7 @@ namespace Project.V1.Lib.Services
 
                 users.ForEach(async (user) =>
                 {
-                    user.Roles = (await _userManager.GetRolesAsync(user)).ToArray();
+                    user.Roles = (await user.UserRoles).ToArray();
                 });
 
                 return users;
@@ -252,7 +252,7 @@ namespace Project.V1.Lib.Services
 
                 users.ForEach(async (user) =>
                 {
-                    user.Roles = (await GetUserRolesId(user)).ToArray();
+                    user.Roles = (await user.UserRoles).ToArray();
                 });
 
                 return users;

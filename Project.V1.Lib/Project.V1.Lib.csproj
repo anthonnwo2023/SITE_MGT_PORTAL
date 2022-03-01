@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\ServiceActivator.cs" />
     <Compile Remove="Helpers\ADHelper.cs" />
     <Compile Remove="Helpers\AppState.cs" />
     <Compile Remove="Helpers\ClaimsExtension.cs" />
