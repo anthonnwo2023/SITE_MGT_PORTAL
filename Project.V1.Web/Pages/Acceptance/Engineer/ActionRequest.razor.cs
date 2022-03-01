@@ -183,6 +183,7 @@
                         await InitializeForm();
 
                         RequestModel = (await IRequest.GetById(x => x.Id == Id));
+                        RequestModel.EngineerAssigned.DateApproved = DateTime.UtcNow;
 
                         DateTime dt = DateTime.Now;
                         //EnableSpecial = (dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month));
@@ -273,28 +274,30 @@
             }
         }
 
-        private bool ProcessAction<T>(T requestClass, Dictionary<string, object> variables, dynamic requests) where T : RequestViewModel
+        private bool ProcessAction<T>(T requestObj, Dictionary<string, object> variables, dynamic request) where T : RequestViewModel
         {
             try
             {
-                requestClass.EngineerAssigned.IsActioned = true;
-                requestClass.EngineerAssigned.Fullname = User.Fullname;
-                requestClass.EngineerAssigned.Email = User.Email;
-                requestClass.EngineerAssigned.PhoneNo = User.PhoneNumber;
-                requestClass.EngineerAssigned.IsApproved = (Input.Status == "Accepted");
-                requestClass.EngineerAssigned.ApproverComment = Input.Comment;
-                requestClass.EngineerAssigned.DateAssigned = DateTimeOffset.UtcNow.DateTime;
-                requestClass.EngineerAssigned.DateActioned = DateTimeOffset.UtcNow.DateTime;
-                requestClass.Status = Input.Status;
+                requestObj.EngineerAssigned.IsActioned = true;
+                requestObj.EngineerAssigned.Fullname = User.Fullname;
+                requestObj.EngineerAssigned.Email = User.Email;
+                requestObj.EngineerAssigned.PhoneNo = User.PhoneNumber;
+                requestObj.EngineerAssigned.IsApproved = (Input.Status == "Accepted");
+                requestObj.EngineerAssigned.ApproverComment = Input.Comment;
+                requestObj.EngineerAssigned.DateAssigned = DateTimeOffset.UtcNow.DateTime;
+                requestObj.EngineerAssigned.DateActioned = DateTimeOffset.UtcNow.DateTime;
+                requestObj.Status = Input.Status;
 
-                if (requestClass.EngineerAssigned.IsApproved)
+                if (requestObj.EngineerAssigned.IsApproved)
                 {
-                    requestClass.EngineerAssigned.DateApproved = (requestClass.EngineerAssigned.DateApproved == DateTime.MinValue) ? DateTimeOffset.UtcNow.DateTime : requestClass.EngineerAssigned.DateApproved;
+                    requestObj.EngineerAssigned.DateApproved = (requestObj.EngineerAssigned.DateApproved.Date == DateTime.Now.Date) ? DateTimeOffset.UtcNow.DateTime : requestObj.EngineerAssigned.DateApproved;
 
-                    return requests.Accept(requestClass, variables);
+                    return request.Accept(requestObj, variables);
                 }
 
-                return requests.Reject(requestClass, variables, requestClass.EngineerAssigned.ApproverComment);
+                requestObj.EngineerAssigned.DateApproved = DateTime.MinValue;
+
+                return request.Reject(requestObj, variables, requestObj.EngineerAssigned.ApproverComment);
             }
             catch
             {

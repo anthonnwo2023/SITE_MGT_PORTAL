@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Project.V1.Lib.Services
 {
-    public class BaseActionOps<T> : GenericRepo<T>, IRequestAction<T> where T : RequestViewModel
+    public class BaseActionOps<T> : GenericRepo<T>, IRequestAction<T> where T : RequestViewModel, new()
     {
         private RequestStateBase<T> _state;
         private readonly ApplicationDbContext _context;

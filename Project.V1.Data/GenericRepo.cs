@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Project.V1.Data
 {
-    public class GenericRepo<T> : IDisposable, IGenericRepo<T> where T : class
+    public class GenericRepo<T> : IDisposable, IGenericRepo<T> where T : class, new()
     {
         private readonly ApplicationDbContext _context = null;
         private readonly Logger _logger;
@@ -36,7 +36,7 @@ namespace Project.V1.Data
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, new { }, ex);
-                return default;
+                return new();
             }
         }
 
@@ -67,7 +67,7 @@ namespace Project.V1.Data
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, new { }, ex);
-                return default;
+                return new();
             }
         }
 
@@ -87,7 +87,7 @@ namespace Project.V1.Data
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, new { }, ex);
-                return default;
+                return new();
             }
         }
 
