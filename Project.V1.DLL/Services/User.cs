@@ -377,6 +377,7 @@ namespace Project.V1.Lib.Services
                     userExists.JobTitle = user.JobTitle;
                     userExists.Department = user.Department;
                     userExists.IsActive = user.IsActive;
+                    userExists.ShowAllRegionReport = user.ShowAllRegionReport;
                     userExists.VendorId = user.VendorId;
 
                     foreach (var region in user.Regions)

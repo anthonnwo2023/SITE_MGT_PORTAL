@@ -31,6 +31,8 @@ public class ApplicationUser : IdentityUser, IDisposable
     [NotMapped]
     public bool IsMTNUser { get; set; }
 
+    public bool ShowAllRegionReport { get; set; }
+
     public bool IsADLoaded { get; set; }
 
     public bool IsNewPassword { get; set; }

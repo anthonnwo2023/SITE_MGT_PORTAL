@@ -1,16 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Shared
+﻿namespace Project.V1.Web.Shared
 {
     public partial class LoginDisplay
     {
@@ -57,6 +45,7 @@ namespace Project.V1.Web.Shared
                 "LS" => "live",
                 "EM" => "eq-matching",
                 "EO" => "eq-ordering",
+                "SH&U" => "halt",
                 _ => "Buggy Link"
             };
         }
@@ -70,6 +59,7 @@ namespace Project.V1.Web.Shared
                 "LS" => "Live Site",
                 "EM" => "Equipment Matching",
                 "EO" => "Equipment Ordering",
+                "SH&U" => "Site Halt & Unhalt",
                 _ => "Buggy Link"
             };
         }

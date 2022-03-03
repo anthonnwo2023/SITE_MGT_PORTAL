@@ -24,8 +24,8 @@ namespace Project.V1.DLL.Crons
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly List<string> tableColumnNames = new() { "S/N", "TECH", "Spectrum", "SiteID", "Region", "Vendor", "Submission Date", "Acceptance Date", "Scope", "Status", "State" };
 
-        private Dictionary<string, int> TotalRow = new();
-        private Dictionary<string, int> TotalRowInit = new()
+        private readonly Dictionary<string, int> TotalRow = new();
+        private readonly Dictionary<string, int> TotalRowInit = new()
         {
             { "2G", 0 },
             { "3G", 0 },
@@ -58,7 +58,7 @@ namespace Project.V1.DLL.Crons
             { "valign", "middle" },
         };
 
-        private List<string> Statuses = new()
+        private readonly List<string> Statuses = new()
         {
             "Pending",
             "Reworked",
@@ -135,7 +135,7 @@ namespace Project.V1.DLL.Crons
             }
         }
 
-        private async void SendNotification(string table, string recipients, string subject, bool isGeneral = true)
+        private async void SendNotification(string table, string recipients, string subject)
         {
             var mvm = new MailerViewModel<DailyReportEmail>
             {

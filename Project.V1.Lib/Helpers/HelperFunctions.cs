@@ -305,7 +305,7 @@ namespace Project.V1.Lib.Helpers
             return mvm;
         }
 
-        public static MailerViewModel<T> BuildMailObject<T>(T mObj, SendEmailActionObj emailObj, string role, string requestType = null) where T : class
+        public static MailerViewModel<T> BuildMailObject<T>(T mObj, SendEmailActionObj emailObj, string role) where T : class
         {
             var requests = ((dynamic)mObj) as RequestViewModel;
 
@@ -372,7 +372,7 @@ namespace Project.V1.Lib.Helpers
     {
         private readonly CancellationTokenSource _cts;
         private readonly SmtpClient _smtpClient;
-        private readonly object _smtpLock = new object();
+        private readonly object _smtpLock = new();
 
         public HelperFunctionFactory(CancellationTokenSource cts)
         {

@@ -1,0 +1,15 @@
+﻿@page "/halt"
+@layout MainLayoutHalt
+
+<PageTitlePat Title="SMP (Site Halt & Unhalt) - Dashboard" />
+
+<BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+<SfChart Title="Olympic Medals">
+    <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+	
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@MedalDetails" XName="X" YName="Y" Type="ChartSeriesType.Line">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>

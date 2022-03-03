@@ -1,19 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
-using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Pages
+﻿namespace Project.V1.Web.Pages
 {
     public partial class Dashboard
     {
@@ -86,7 +71,22 @@ namespace Project.V1.Web.Pages
                 "LS" => "This application is used to manage live sites that are already active on the network.",
                 "EM" => "This application is used to manage equipment matching, identifying all equipments available at network sites.",
                 "EO" => "This application is used to manage inventory of equipment ordered for specific sites.",
+                "SH&U" => "This application is used to manage both the halting and unhalting process",
                 _ => "This is possibly a bug. Please notify TSS"
+            };
+        }
+
+        protected static string GetAppLink(string app)
+        {
+            return app switch
+            {
+                "SA" => "acceptance",
+                "HS" => "holistic",
+                "LS" => "live",
+                "EM" => "eq-matching",
+                "EO" => "eq-ordering",
+                "SH&U" => "halt",
+                _ => "Buggy Link"
             };
         }
 
@@ -99,19 +99,7 @@ namespace Project.V1.Web.Pages
                 "LS" => "Live Site",
                 "EM" => "Equipment Matching",
                 "EO" => "Equipment Ordering",
-                _ => "Buggy Link"
-            };
-        }
-
-        private static string GetAppLink(string app)
-        {
-            return app switch
-            {
-                "SA" => "acceptance",
-                "HS" => "holistic",
-                "LS" => "live",
-                "EM" => "eq-matching",
-                "EO" => "eq-ordering",
+                "SH&U" => "Site Halt & Unhalt",
                 _ => "Buggy Link"
             };
         }
@@ -125,6 +113,7 @@ namespace Project.V1.Web.Pages
                 "LS" => "images/live.jpg",
                 "EM" => "images/eq-matching.jpg",
                 "EO" => "images/eq-ordering.jpg",
+                "SH&U" => "images/app-placeholder.png",
                 _ => "images/app-placeholder.png"
             };
         }

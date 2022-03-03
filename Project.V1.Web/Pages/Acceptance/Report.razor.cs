@@ -149,11 +149,17 @@
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
                     Vendor = await IVendor.GetById(x => x.Id == User.VendorId);
 
-                    Requests = await IRequest.Get(x => x.Requester.VendorId == User.VendorId, x => x.OrderByDescending(y => y.DateCreated));
-
-                    if (Vendor.Name == "MTN Nigeria")
+                    if (User.ShowAllRegionReport)
+                    {
+                        Requests = await IRequest.Get(x => x.Id != null, x => x.OrderByDescending(y => y.DateCreated));
+                    }
+                    else if (Vendor.Name == "MTN Nigeria")
                     {
                         Requests = await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId), x => x.OrderByDescending(y => y.DateCreated));
+                    }
+                    else
+                    {
+                        Requests = await IRequest.Get(x => x.Requester.VendorId == User.VendorId, x => x.OrderByDescending(y => y.DateCreated));
                     }
 
                     TechTypes = await ITechType.Get(x => x.IsActive);

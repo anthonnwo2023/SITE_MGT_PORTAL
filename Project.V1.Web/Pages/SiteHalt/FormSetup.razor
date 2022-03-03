@@ -1,0 +1,30 @@
+﻿@page "/halt/setup"
+@layout MainLayoutHalt
+
+<PageTitlePat Title="SMP (Site Halt & Unhalt) - Request Setup" />
+
+<style type="text/css">
+    .miniTable {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    .e-dlg-overlay {
+        opacity: .8 !important;
+    }
+
+    #UserTable, #UserTable_header_table {
+        /*table-layout: unset !important;*/
+    }
+</style>
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/worklist-black.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4 text-white" style="padding: 4rem 2rem;">
+        Site Halt & Unhalt Setup
+    </div>
+</div>
+
+<div>
+    <BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+</div>

@@ -312,6 +312,8 @@
                                             </GridColumn>
                                             <GridColumn Field="@nameof(ApplicationUser.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
                                             </GridColumn>
+                                            <GridColumn Field="@nameof(ApplicationUser.ShowAllRegionReport)" HeaderText="See All Region Report" DisplayAsCheckBox="true" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+                                            </GridColumn>
                                             <GridColumn Field="@nameof(ApplicationUser.LastLoginDate)" HeaderText="Last Login" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
                                                         Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" EditorSettings="@DateEditReadonlyParams" AllowEditing="false" DefaultValue="@(DateTime.Now.AddHours(1))">
                                             </GridColumn>
