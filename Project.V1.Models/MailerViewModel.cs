@@ -175,6 +175,8 @@ public class MailerViewModel<T> where T : class
                                                                     <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
                                                                 </p>
                                                                 <p><b>" + Greetings + @"</b></p>
+                                                                <p> Site Id : <b>" + ((dynamic)Request).SiteId + @" </b></p>
+                                                                <p> Spectrum : <b>" + ((dynamic)Request).Spectrum.Name + @" </b></p>
                                                                 <p> Region : <b>" + ((dynamic)Request).Region.Name + @" </b></p>
                                                                 <p> Unique Id : <b>" + ((dynamic)Request).UniqueId + @"</b></p>
                                                                 <p> Requester : <b>" + ((dynamic)Request).Requester.Name + @" </b></p>

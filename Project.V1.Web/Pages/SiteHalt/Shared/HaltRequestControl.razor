@@ -112,6 +112,7 @@
             <ButtonGroupButton>Un-halt</ButtonGroupButton>
             <ButtonGroupButton>Decomission</ButtonGroupButton>
         </SfButtonGroup>
+        <ValidationMessage For="@(() => RequestModel.RequestType)" />
     </div>
 
     <div class="multiline col-12 p-0 mt-5">
@@ -143,22 +144,22 @@
 
     <div class="row mt-5">
         <div class="col-md-4">
-            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Radio Frequency SM" 
-                DataSource="@FirstLevelApprovers" @bind-Value="RequestModel.FirstApproverId">
+            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Radio Frequency SM"
+                        DataSource="@FirstLevelApprovers" @bind-Value="RequestModel.FirstApproverId">
                 <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
             <ValidationMessage For="@(() => RequestModel.FirstApproverId)" />
         </div>
         <div class="col-md-4">
-            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Second Approver" 
-                DataSource="@SecondLevelApprovers" @bind-Value="RequestModel.SecondApproverId">
+            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Second Approver"
+                        DataSource="@SecondLevelApprovers" @bind-Value="RequestModel.SecondApproverId">
                 <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
             <ValidationMessage For="@(() => RequestModel.SecondApproverId)" />
         </div>
         <div class="col-md-4">
-            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver" 
-                DataSource="@ThirdLevelApprovers" @bind-Value="RequestModel.ThirdApproverId">
+            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver"
+                        DataSource="@ThirdLevelApprovers" @bind-Value="RequestModel.ThirdApproverId">
                 <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
             </SfDropDownList>
             <ValidationMessage For="@(() => RequestModel.ThirdApproverId)" />

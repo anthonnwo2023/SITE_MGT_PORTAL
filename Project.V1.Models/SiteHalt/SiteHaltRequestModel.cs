@@ -2,6 +2,9 @@
 {
     public class SiteHaltRequestModel
     {
+        [Required]
+        public string RequestType { get; set; }
+
         public string SiteIds { get; set; }
 
         public string Reason { get; set; }

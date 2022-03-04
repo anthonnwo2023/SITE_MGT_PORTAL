@@ -45,7 +45,7 @@
                 "LS" => "live",
                 "EM" => "eq-matching",
                 "EO" => "eq-ordering",
-                "SH&U" => "halt",
+                "H|U|D" => "halt",
                 _ => "Buggy Link"
             };
         }
@@ -59,7 +59,7 @@
                 "LS" => "Live Site",
                 "EM" => "Equipment Matching",
                 "EO" => "Equipment Ordering",
-                "SH&U" => "Site Halt & Unhalt",
+                "H|U|D" => "Halt | Unhalt | Decom",
                 _ => "Buggy Link"
             };
         }

@@ -71,7 +71,7 @@
                 "LS" => "This application is used to manage live sites that are already active on the network.",
                 "EM" => "This application is used to manage equipment matching, identifying all equipments available at network sites.",
                 "EO" => "This application is used to manage inventory of equipment ordered for specific sites.",
-                "SH&U" => "This application is used to manage both the halting and unhalting process",
+                "H|U|D" => "This application is used to manage both the halting and unhalting process",
                 _ => "This is possibly a bug. Please notify TSS"
             };
         }
@@ -85,7 +85,7 @@
                 "LS" => "live",
                 "EM" => "eq-matching",
                 "EO" => "eq-ordering",
-                "SH&U" => "halt",
+                "H|U|D" => "halt",
                 _ => "Buggy Link"
             };
         }
@@ -99,7 +99,7 @@
                 "LS" => "Live Site",
                 "EM" => "Equipment Matching",
                 "EO" => "Equipment Ordering",
-                "SH&U" => "Site Halt & Unhalt",
+                "H|U|D" => "Halt | Unhalt | Decom",
                 _ => "Buggy Link"
             };
         }
@@ -113,7 +113,7 @@
                 "LS" => "images/live.jpg",
                 "EM" => "images/eq-matching.jpg",
                 "EO" => "images/eq-ordering.jpg",
-                "SH&U" => "images/app-placeholder.png",
+                "H|U|D" => "images/app-placeholder.png",
                 _ => "images/app-placeholder.png"
             };
         }

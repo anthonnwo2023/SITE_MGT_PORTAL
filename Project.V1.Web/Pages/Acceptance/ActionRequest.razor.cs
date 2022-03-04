@@ -314,7 +314,7 @@ public partial class ActionRequest : IDisposable
             if (UploadFiles != null)
             {
                 string ext = Path.GetExtension(UploadFiles.FileInfo.Name);
-                bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
+                bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, RequestModel.SSVReportIsWaiver);
 
                 (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension);
 
@@ -333,7 +333,7 @@ public partial class ActionRequest : IDisposable
                     return;
                 }
 
-                RequestModel.SSVReportIsWaiver = WaiverUploadSelected;
+                //RequestModel.SSVReportIsWaiver = WaiverUploadSelected;
             }
 
             RequestModel.Status = RequestStatus;
