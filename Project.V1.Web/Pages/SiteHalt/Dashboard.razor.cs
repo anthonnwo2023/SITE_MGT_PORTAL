@@ -12,7 +12,7 @@
         {
             Paths = new()
             {
-                new PathInfo { Name = $"Site Halt & Unhalt", Link = "halt" },
+                new PathInfo { Name = $"Halt | Unhalt | Decom", Link = "hud" },
             };
         }
 

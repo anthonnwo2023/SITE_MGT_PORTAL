@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Project.V1.DLL.Helpers;
 using Project.V1.Lib.Helpers;
 using Project.V1.Models;
 using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
@@ -48,7 +51,7 @@ namespace Project.V1.Lib.Services.Login
                     userADData.Vendor = Vendor;
 
                     Log.Information("AD User Login validation successful. ", new { username, Vendor = Vendor.Id, UserADData = JsonSerializer.Serialize(userADData) });
-                    ApplicationUser user = await LoginObject.User.GetUserByUsername(username.ToLower(), false);
+                    ApplicationUser user = await LoginObject.UserManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
 
                     if (user != null)
                     {
@@ -61,6 +64,13 @@ namespace Project.V1.Lib.Services.Login
                         Log.Information("AD User AppData. ", new { username, Vendor = vendorId });
 
                         user.Roles = (await LoginObject.User.GetUserRoles(user)).ToArray();
+                        List<ClaimListManager> userClaims = (LoginObject.ClaimService.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                        {
+                            Category = u.Key,
+                            Claims = u.ToList().FormatClaimSelection(user)
+                        }).ToList();
+
+                        user.Projects = userClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
                         await LoginObject.SignInManager.SignInAsync(user, true);
 
                         return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, SignInResult.Success, userADData);

@@ -3,20 +3,20 @@
     public partial class Worklist
     {
         public List<PathInfo> Paths { get; set; }
-        [Inject] public IHttpContextAccessor Context { get; set; }
         [Inject] protected IUserAuthentication UserAuth { get; set; }
         [Inject] protected IUser IUser { get; set; }
         [Inject] protected NavigationManager NavMan { get; set; }
         [Inject] public ICLogger Logger { get; set; }
+        [Inject] public IHUDRequest IHUDRequest { get; set; }
 
-        //List<RequestViewModel> Requests { get; set; } = new();
+        List<SiteHaltRequestModel> HUDWorklistRequests { get; set; } = new();
 
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
 
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-        //protected SfGrid<RequestViewModel> Grid_Request { get; set; }
+        protected SfGrid<SiteHaltRequestModel> Grid_Request { get; set; }
 
         public List<string> ToolbarItems = new() { "Search" };
 
@@ -24,8 +24,8 @@
         {
             Paths = new()
             {
-                new PathInfo { Name = $"My Worklist", Link = "halt/worklist" },
-                new PathInfo { Name = $"Site Halt & Unhalt", Link = "halt" },
+                new PathInfo { Name = $"My Worklist", Link = "hud/worklist" },
+                new PathInfo { Name = $"Halt | Unhalt | Decom", Link = "hud" },
             };
         }
 
@@ -43,7 +43,7 @@
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    //Requests = (await IRequest.Get(x => x.Requester.Vendor.Name == User.Vendor.Name && x.Status == "Rejected")).OrderByDescending(x => x.EngineerAssigned.DateActioned).ToList();
+                    HUDWorklistRequests = (await IHUDRequest.Get(x => x.Requester.Username == User.UserName && x.Status.Contains("Disapprove"), x => x.OrderByDescending(y => y.DateCreated))).ToList();
 
                 }
                 catch (Exception ex)

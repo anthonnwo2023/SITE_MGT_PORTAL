@@ -105,64 +105,137 @@
 
 @if (RequestModel != null)
 {
-    <div class="multiline col-12 p-0">
-        <label for="filePath" class="col-form-label custom-font mb-3" style="">Request Type</label><br />
-        <SfButtonGroup CssClass="e-flat">
-            <ButtonGroupButton>Halt</ButtonGroupButton>
-            <ButtonGroupButton>Un-halt</ButtonGroupButton>
-            <ButtonGroupButton>Decomission</ButtonGroupButton>
-        </SfButtonGroup>
-        <ValidationMessage For="@(() => RequestModel.RequestType)" />
+    <div class="multiline col-12 p-0 mt-3">
+        <div class="col-md-12 row" style="">
+            @if (RequestModel.SupportingDocument != null)
+            {
+                <div class="col-md-3">
+                    <a target="_blank" href="Documents/HUD/Request.SupportingDocument" class="btn btn-warning"><i class="fas fa-paperclip icon"></i>Supporting Document</a>
+                </div>
+            }
+            @if (RequestModel.UniqueId != null)
+            {
+                <div class="col-md-3">
+                    <label class="custom-label e-label-top d-block">Unique Id</label>
+                    <span class="custom-label e-label-top d-block">@RequestModel.UniqueId</span>
+                </div>
+            }
+            <div class="col-md-6">
+                <label for="filePath" class="col-form-label custom-font mb-1" style="">Request Type</label><br />
+                <SfButtonGroup CssClass="e-flat mb-31" Mode="Syncfusion.Blazor.SplitButtons.SelectionMode.Single">
+                    @if (ShouldEnable)
+                    {
+                        <ButtonGroupButton Selected='@(RequestModel.RequestAction == "Halt")' @onclick='e => SetRequestType(e, "Halt")'>Halt</ButtonGroupButton>
+                        <ButtonGroupButton Selected='@(RequestModel.RequestAction == "UnHalt")' @onclick='e => SetRequestType(e, "UnHalt")'>Un-halt</ButtonGroupButton>
+                        <ButtonGroupButton Selected='@(RequestModel.RequestAction == "Decomission")' @onclick='e => SetRequestType(e, "Decomission")'>Decomission</ButtonGroupButton>
+                    }
+                    else
+                    {
+                        <ButtonGroupButton IsToggle="false" Selected='@(RequestModel.RequestAction == "Halt")' Disabled='@(RequestModel.RequestAction != "Halt")'>Halt</ButtonGroupButton>
+                        <ButtonGroupButton IsToggle="false" Selected='@(RequestModel.RequestAction == "UnHalt")' Disabled='@(RequestModel.RequestAction != "UnHalt")'>Un-halt</ButtonGroupButton>
+                        <ButtonGroupButton IsToggle="false" Selected='@(RequestModel.RequestAction == "Decomission")' Disabled='@(RequestModel.RequestAction != "Decomission")'>Decomission</ButtonGroupButton>
+                    }
+                </SfButtonGroup>
+
+                <ValidationMessage For="@(() => RequestModel.RequestAction)" />
+            </div>
+        </div>
     </div>
 
-    <div class="multiline col-12 p-0 mt-5">
-        <SfTextBox CssClass="textarea" FloatLabelType="@FloatLabelType.Auto" Multiline=true Placeholder="Enter Site IDs separated by comma or space"
+    <div class="multiline col-12 mt-4">
+        <SfTextBox CssClass="@((ShouldEnable) ? "textarea" : "d-none textarea")" FloatLabelType="@FloatLabelType.Auto" Multiline=true Placeholder="Enter Site IDs separated by comma or space"
                Blur="BlurHandler" @bind-Value="RequestModel.SiteIds"></SfTextBox>
+        <ValidationMessage For="@(() => RequestModel.SiteIds)" />
     </div>
+    @if (!ShouldEnable && ShowCopyText)
+    {
+        <div class="col-12 mt-1 p-0 mb-0">
 
-    <div class="col-12 mt-1 p-0 mb-3">
-        <SfChip @ref="SiteIDChips" EnableDelete="true">
-            <ChipEvents Deleted="@OnDelete"></ChipEvents>
+            <a href="javascript:void(0)" class="text-black float-right font-weight-bold" @onclick="CopyTextToClipboard">Copy to clipboard</a>
+
+        </div>
+    }
+    <div class="col-12 mt-1 p-0 mb-3 @(!ShouldEnable ? "border" : "")">
+        <SfChip @ref="SiteIDChips" EnableDelete="@ShouldEnable">
+            @if (ShouldEnable)
+            {
+                <ChipEvents Deleted="@OnDelete"></ChipEvents>
+            }
         </SfChip>
     </div>
 
-    <div class="row">
-        <div class="col-md-6 mt-1">
-            <SfTextBox CssClass="textarea" FloatLabelType="@FloatLabelType.Auto" Multiline=true Placeholder="Request Reason"
+    <div class="row col-12">
+        <div class="col-md-4 mt-1">
+            <SfTextBox Enabled="ShouldEnable" CssClass="textarea" FloatLabelType="@FloatLabelType.Auto" Multiline="true" Placeholder="Request Reason"
                    @bind-Value="RequestModel.Reason"></SfTextBox>
+            <ValidationMessage For="@(() => RequestModel.Reason)" />
         </div>
 
-        <div class="col-md-6 mt-1">
-            <label for="filePath" class="col-form-label custom-font" style="">Supporting Document</label>
-            <SfUploader AllowMultiple="false" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
+        @if (ShouldEnable)
+        {
+            <div class="col-md-4 mt-1">
+                <label for="filePath" class="col-form-label custom-font" style="">Supporting Document</label>
+                <SfUploader Enabled="ShouldEnable" AllowMultiple="false" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass="textarea"
                     @ref="SF_Uploader" @bind-Value="RequestModel.SupportingDocument">
-                <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange="OnFileSSVUploadChange"></UploaderEvents>
-            </SfUploader>
-            <ValidationMessage For="@(() => RequestModel.SupportingDocument)" />
-        </div>
-    </div>
+                    <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange="OnFileSSVUploadChange"></UploaderEvents>
+                </SfUploader>
+                <ValidationMessage For="@(() => RequestModel.SupportingDocument)" />
+            </div>
+        }
+        else
+        {
+            <div class="col-md-4 mt-1">
+                <SfTextBox Enabled="false" CssClass="" FloatLabelType="@FloatLabelType.Auto" Placeholder="Request Status"
+                   Value="@RequestModel.GetStatusString"></SfTextBox>
+            </div>
+        }
 
-    <div class="row mt-5">
-        <div class="col-md-4">
-            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Radio Frequency SM"
-                        DataSource="@FirstLevelApprovers" @bind-Value="RequestModel.FirstApproverId">
-                <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
-            </SfDropDownList>
-            <ValidationMessage For="@(() => RequestModel.FirstApproverId)" />
-        </div>
-        <div class="col-md-4">
-            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Second Approver"
-                        DataSource="@SecondLevelApprovers" @bind-Value="RequestModel.SecondApproverId">
-                <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
-            </SfDropDownList>
-            <ValidationMessage For="@(() => RequestModel.SecondApproverId)" />
-        </div>
-        <div class="col-md-4">
-            <SfDropDownList TValue="string" TItem="ApplicationUser" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver"
-                        DataSource="@ThirdLevelApprovers" @bind-Value="RequestModel.ThirdApproverId">
-                <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
-            </SfDropDownList>
-            <ValidationMessage For="@(() => RequestModel.ThirdApproverId)" />
+
+        <div class="col-md-4 mt-1">
+            <SfMultiSelect Enabled="ShouldEnable" TValue="string[]" TItem="TechTypeModel" AllowCustomValue="false" AllowFiltering="false" Value="RequestModel.TechTypeIds"
+                       Placeholder="Technology" Mode="VisualMode.CheckBox" DataSource="@IRequestList.TechTypes" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto">
+                <MultiSelectFieldSettings Value="Id" Text="Name"></MultiSelectFieldSettings>
+                <MultiSelectEvents TItem="TechTypeModel" TValue="string[]" ValueChange="@TechSelectHandler"></MultiSelectEvents>
+            </SfMultiSelect>
+            <ValidationMessage For="@(() => RequestModel.TechTypeIds)" />
         </div>
     </div>
+    @if (RequestModel.RequestAction != "UnHalt")
+    {
+        <div class="row col-12 mt-5">
+            <div class="col-md-4">
+                @{
+                    bool approverIsActioned = RequestModel.FirstApprover == null ? false : RequestModel.FirstApprover.IsActioned;
+                }
+                <SfDropDownList Enabled="@(ShouldEnable && !approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Radio Frequency SM"
+                        DataSource="@FirstLevelApprovers" @bind-Value="RequestModel.FirstApproverId">
+                    <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver1")'></DropDownListEvents>
+                    <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
+                </SfDropDownList>
+                <ValidationMessage For="@(() => RequestModel.FirstApproverId)" />
+            </div>
+            <div class="col-md-4">
+                @{
+                    approverIsActioned = RequestModel.SecondApprover == null ? false : RequestModel.SecondApprover.IsActioned;
+                }
+                <SfDropDownList Enabled="@(ShouldEnable && !approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Second Approver"
+                        DataSource="@SecondLevelApprovers" @bind-Value="RequestModel.SecondApproverId">
+                    <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver2")'></DropDownListEvents>
+                    <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
+                </SfDropDownList>
+                <ValidationMessage For="@(() => RequestModel.SecondApproverId)" />
+            </div>
+            <div class="col-md-4">
+                @{
+                    approverIsActioned = RequestModel.ThirdApprover == null ? false : RequestModel.ThirdApprover.IsActioned;
+                }
+                <SfDropDownList Enabled="@(ShouldEnable && !approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver"
+                        DataSource="@ThirdLevelApprovers" @bind-Value="RequestModel.ThirdApproverId">
+                    <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
+                    <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver3")'></DropDownListEvents>
+                </SfDropDownList>
+                <ValidationMessage For="@(() => RequestModel.ThirdApproverId)" />
+            </div>
+        </div>
+    }
 }

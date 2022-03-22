@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
@@ -101,7 +100,7 @@ namespace Project.V1.Data
                 }
                 else
                 {
-                    ((dynamic)item).Id = Guid.NewGuid().ToString();
+                    ((dynamic)item).Id = ((dynamic)item).Id ?? Guid.NewGuid().ToString();
                     ((dynamic)item).DateCreated = DateTime.Now;
 
                     await entity.AddAsync(item);
@@ -122,8 +121,8 @@ namespace Project.V1.Data
         {
             try
             {
-                //requestObj.Id = Guid.NewGuid().ToString();
-                ((dynamic)item).UniqueId = CheckUniqueness(HelperFunctions.GenerateIDUnique(_KeyString));
+                //(item as dynamic).Id = (item as dynamic).Id ?? Guid.NewGuid().ToString();
+                (item as dynamic).UniqueId = CheckUniqueness(HelperFunctions.GenerateIDUnique(_KeyString));
 
                 entity.Add(item);
 
@@ -133,6 +132,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
+                _logger.Error(ex, $"{ex.InnerException} - {ex.Message}");
                 return (false, (ex.InnerException.Message.Contains("unique")) ? $"Duplicate entry already exists" : ex.Message);
             }
         }
@@ -182,7 +182,13 @@ namespace Project.V1.Data
 
         private bool UniqueIdExists(string UniqueId)
         {
-            return entity.Cast<RequestViewModel>().Any(e => e.UniqueId == UniqueId);
+
+            var parameter = Expression.Parameter(typeof(T), "p");
+            var predicate = Expression.Lambda<Func<T, bool>>(
+                Expression.Equal(Expression.PropertyOrField(parameter, "UniqueId"), Expression.Constant(UniqueId)),
+                parameter);
+
+            return entity.Cast<T>().Any(predicate);
         }
 
         public async Task<bool> CreateBulkRequest(List<T> requestObjs)

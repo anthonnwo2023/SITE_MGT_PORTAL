@@ -130,6 +130,7 @@ namespace Project.V1.Web
             services.AddScoped<IUserAuthentication, UserAuthentication>();
             services.AddScoped<ICLogger, CLogger>();
             services.AddScoped<IRequest, SMPRequest>();
+            services.AddScoped<IHUDRequest, DLL.Services.SiteHalt.HUDRequest>();
             services.AddScoped<IClaimService, ClaimService>();
             services.AddScoped<IClaimCategory, ClaimCategory>();
             services.AddScoped<IVendor, Vendor>();
@@ -183,7 +184,7 @@ namespace Project.V1.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTgyNjAyQDMxMzkyZTM0MmUzMGd6TEs1d2REaVFxbDd2K214by9XektvTnVPdFhvd2xWdk1neGs5NlFKY289");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTk4ODMzQDMxMzkyZTM0MmUzMGcxaWNmQjlVUDJrSGZSS3cwU2w1dU43aExreVhPZzZGTDRzUTg1L01OaEU9");
 
             ServiceActivator.Configure(app.ApplicationServices);
 

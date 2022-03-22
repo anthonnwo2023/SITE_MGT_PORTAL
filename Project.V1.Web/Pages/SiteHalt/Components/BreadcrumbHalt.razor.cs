@@ -10,7 +10,7 @@
 
         protected override async Task OnInitializedAsync()
         {
-            if (!await UserAuth.IsAuthenticatedAsync() || !await UserAuth.IsAutorizedForAsync("Site Halt & Unhalt"))
+            if (!await UserAuth.IsAuthenticatedAsync() || !await UserAuth.IsAutorizedForAsync("Halt | Unhalt | Decom"))
             {
                 NavMan.NavigateTo("access-denied");
                 return;

@@ -1,24 +1,33 @@
-﻿namespace Project.V1.Web.Pages.SiteHalt
+﻿using Project.V1.Web.Request;
+
+namespace Project.V1.Web.Pages.SiteHalt
 {
-    public partial class NewRequest
+    public partial class NewRequest : IDisposable
     {
         [Inject] protected IUserAuthentication UserAuth { get; set; }
         [Inject] protected NavigationManager NavMan { get; set; }
         [Inject] public ICLogger Logger { get; set; }
+        [Inject] protected IRequestListObject IRequestList { get; set; }
+        [Inject] protected IHUDRequest IHUDRequest { get; set; }
+        [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
 
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
+        public string RequestSiteIds { get; set; }
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
         public List<PathInfo> Paths { get; set; }
-        public SiteHaltRequestModel SiteHaltRequestModel { get; set; }
+        public SiteHaltRequestModel RequestModel { get; set; }
+        public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
+        public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
+        public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();
 
         private string ToastPosition { get; set; } = "Right";
         public string ToastTitle { get; set; } = "Error Notification";
         public string ToastContent { get; set; }
         public string ToastCss { get; set; } = "e-toast-danger";
 
-        public bool DisableButton { get; set; } = true;
+        public bool DisableButton { get; set; } = false;
         public string UploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
 
         protected SfToast ToastObj { get; set; }
@@ -27,8 +36,8 @@
         {
             Paths = new()
             {
-                new PathInfo { Name = $"New Request", Link = "halt/request" },
-                new PathInfo { Name = $"Halt | Unhalt | Decom", Link = "halt" },
+                new PathInfo { Name = $"New Request", Link = "hud/request" },
+                new PathInfo { Name = $"Halt | Unhalt | Decom", Link = "hud" },
             };
         }
 
@@ -45,7 +54,7 @@
                         NavMan.NavigateTo("access-denied");
                     }
 
-                    SiteHaltRequestModel = new();
+                    await InitializeForm();
                 }
                 catch (Exception ex)
                 {
@@ -66,14 +75,14 @@
         {
             Toast[1].Content = ToastContent;
 
-            await this.ToastObj.Show(Toast[1]);
+            await ToastObj.Show(Toast[1]);
         }
 
         private async void ErrorBtnOnClick()
         {
             Toast[2].Content = ToastContent;
 
-            await this.ToastObj.Show(Toast[2]);
+            await ToastObj.Show(Toast[2]);
         }
 
         public void OnToastClickHandler(ToastClickEventArgs args)
@@ -81,9 +90,11 @@
             args.ClickToClose = true;
         }
 
-        private void EnableDisableActionButton(bool IsSERRUType)
+        private void EnableDisableActionButton(bool shouldEnable)
         {
-            DisableButton = false;
+            DisableButton = shouldEnable;
+
+            StateHasChanged();
         }
 
         private static void OnClear(ClearingEventArgs args)
@@ -96,25 +107,150 @@
             return;
         }
 
-        private static void IsSEValid(bool SEValid)
-        {
-            return;
-        }
         private static async Task<bool> OnFileSSVUploadChange(UploadChangeEventArgs args, string type)
         {
             return await Task.Run(() => true);
+        }
+
+        private async void SaveLargeSiteIDToFile()
+        {
+            var fileName = $"{HelperFunctions.GenerateIDUnique("HUD-SID")}.txt";
+
+            var (isWritten, message) = TextFileExtension.Initialize("HUD_SiteID", fileName).GetStream().WriteToFile(RequestModel.SiteIds);
+
+            //var (isWritten, message) = await TextFileExtension.Initialize("HUD_SiteID", fileName).GetStream().WriteToFile(RequestModel.SiteIds);
+
+            if (isWritten)
+            {
+                RequestModel.HasLargeSiteIdCount = true;
+                RequestModel.SiteIds = fileName;
+            }
+            else
+            {
+                await ThrowError(message);
+                UploadIconCss = "fas fa-paper-plane ml-2";
+                return;
+            }
         }
 
         protected async Task HandleValidSubmit()
         {
             try
             {
-                await Task.CompletedTask;
+                RequestSiteIds = RequestModel.SiteIds;
+
+                if (RequestModel.SiteIds.Length > 1999)
+                {
+                    SaveLargeSiteIDToFile();
+                }
+
+                await ProcessRequest();
             }
             catch (Exception ex)
             {
+                RequestModel.SiteIds = RequestSiteIds;
+                DisableButton = false;
+                UploadIconCss = "fas fa-paper-plane ml-2";
                 Logger.LogError("Error creating request. ", new { }, ex);
             }
+        }
+
+        private async Task ThrowSuccess(string message)
+        {
+            ToastContent = message;
+            await Task.Delay(200);
+            SuccessBtnOnClick();
+        }
+
+        private async Task ThrowError(string message)
+        {
+            ToastContent = message;
+            await Task.Delay(200);
+            ErrorBtnOnClick();
+        }
+
+        protected void ChangeRequestType(SiteHaltRequestModel requestModel)
+        {
+            RequestModel = RequestModel.CopyTo(new HUDRequest(IHUDRequest, IRequestList.User));
+            RequestModel.User = IRequestList.User;
+        }
+
+        private async Task InitializeForm()
+        {
+            UploadIconCss = "fas fa-paper-plane ml-2";
+            Principal = (await AuthenticationStateTask).User;
+
+            await IRequestList.Initialize(Principal, "HUDObject");
+
+            RequestModel = new();
+            RequestModel.TempStatus = "Pending";
+            RequestModel.TempComment = " ";
+
+            BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD RF SM")).Select(x => new RequestApproverModel
+            {
+                Id = Guid.NewGuid().ToString(),
+                Fullname = x.Fullname,
+                ApproverType = "FA",
+                Email = x.Email,
+                PhoneNo = x.PhoneNumber,
+                Username = x.UserName,
+                Title = x.JobTitle,
+            }).ToList();
+
+            BaseSecondLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver"))
+                .Where(x => !BaseFirstLevelApprovers.Select(y => y.Username).Contains(x.UserName)).Select(x => new RequestApproverModel
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Fullname = x.Fullname,
+                    ApproverType = "SA",
+                    Email = x.Email,
+                    PhoneNo = x.PhoneNumber,
+                    Username = x.UserName,
+                    Title = x.JobTitle,
+                }).ToList();
+
+            BaseThirdLevelApprovers = BaseSecondLevelApprovers;
+        }
+
+        private async Task ProcessRequest()
+        {
+            DisableButton = true;
+            UploadIconCss = "fas fa-spin fa-spinner ml-2";
+
+            RequestModel.Id = Guid.NewGuid().ToString();
+
+            if (RequestModel.RequestAction != "UnHalt")
+            {
+                RequestModel.FirstApprover.RequestId = RequestModel.Id;
+                RequestModel.SecondApprover.RequestId = RequestModel.Id;
+                RequestModel.ThirdApprover.RequestId = RequestModel.Id;
+            }
+
+            RequestModel.TechTypes = IRequestList.TechTypes.Where(x => RequestModel.TechTypeIds.Contains(x.Id)).ToList();
+
+            var (Saved, Message) = await RequestModel.Create();
+
+            if (!Saved)
+            {
+                if (Message.Length > 0) await ThrowError(Message);
+                UploadIconCss = "fas fa-paper-plane ml-2";
+                return;
+            }
+
+            var siteIds = RequestModel.SiteIds;
+            RequestModel.SiteIds = RequestSiteIds;
+
+            await RequestModel.SetCreateState(null);
+            RequestModel.SiteIds = siteIds;
+
+            DisableButton = false;
+            await ThrowSuccess(Message);
+            await InitializeForm();
+        }
+
+        public void Dispose()
+        {
+            RequestModel.Dispose();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Project.V1.DLL.RequestActions
 {
     public class AcceptedState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
-        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
+        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
         {
             try
             {
@@ -49,6 +49,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='green'><b>Request Accepted</b></font> - See Details below:",
                         Comment = request.EngineerAssigned.ApproverComment,
+                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/worklist/{request.Id}",
@@ -69,6 +70,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='green'><b>Request Accepted</b></font> - See Details below:",
                         Comment = request.EngineerAssigned.ApproverComment,
+                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Engineer Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = request.EngineerAssigned.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{request.Id}",

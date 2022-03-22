@@ -1,0 +1,13 @@
+﻿global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using Project.V1.Data;
+global using Project.V1.Lib.Helpers;
+global using Project.V1.Lib.Services;
+global using Project.V1.Models;
+global using Serilog;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Security.Claims;
+global using System.Threading.Tasks;

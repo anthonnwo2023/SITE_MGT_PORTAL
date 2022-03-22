@@ -29,7 +29,7 @@
                     <div class="card ml-3 mr-4 mb-4 float-left" style="width: @($"{width}%"); cursor: pointer;" @onclick='() => LoadLinkData(abbr)'>
                         <img src="@(GetAppImage(abbr))" class="card-img-top" alt="app-image">
                         <div class="card-body">
-                            <h5 class="card-title">@GetAppName(abbr)</h5>
+                            <h5 class="card-title">@HelperFunctions.GetTypeName(abbr)</h5>
                         </div>
                     </div>
                 }

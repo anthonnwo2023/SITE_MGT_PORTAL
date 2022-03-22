@@ -81,7 +81,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         {
             Principal = (await AuthenticationStateTask).User;
 
-            await IRequestList.Initialize(Principal);
+            await IRequestList.Initialize(Principal, "SMPObject");
 
             if (RequestModel.TechTypeId != null)
                 IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));

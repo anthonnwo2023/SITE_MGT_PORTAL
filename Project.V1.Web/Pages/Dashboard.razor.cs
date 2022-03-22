@@ -28,10 +28,10 @@
             {
                 try
                 {
-                    if (!await UserAuth.IsAutorizedForAsync("Can:ManageAccess"))
-                    {
-                        NavMan.NavigateTo("acceptance");
-                    }
+                    //if (!await UserAuth.IsAutorizedForAsync("Can:ManageAccess"))
+                    //{
+                    //    NavMan.NavigateTo("acceptance");
+                    //}
 
                     ClaimsPrincipal user = (await AuthenticationStateTask).User;
                     ApplicationUser userData = await IUser.GetUserByUsername(user.Identity.Name);
@@ -56,8 +56,8 @@
         protected void LoadLinkData(string app)
         {
             AppDescription = GetAppDescription(app);
-            AppName = GetAppName(app);
-            AppLink = GetAppLink(app);
+            AppName = HelperFunctions.GetTypeName(app);
+            AppLink = HelperFunctions.GetAppLink(app);
             AppImage = GetAppImage(app);
             AppButtonVisible = "block";
         }
@@ -73,34 +73,6 @@
                 "EO" => "This application is used to manage inventory of equipment ordered for specific sites.",
                 "H|U|D" => "This application is used to manage both the halting and unhalting process",
                 _ => "This is possibly a bug. Please notify TSS"
-            };
-        }
-
-        protected static string GetAppLink(string app)
-        {
-            return app switch
-            {
-                "SA" => "acceptance",
-                "HS" => "holistic",
-                "LS" => "live",
-                "EM" => "eq-matching",
-                "EO" => "eq-ordering",
-                "H|U|D" => "halt",
-                _ => "Buggy Link"
-            };
-        }
-
-        protected static string GetAppName(string app)
-        {
-            return app switch
-            {
-                "SA" => "Site Acceptance",
-                "HS" => "Holistic Site",
-                "LS" => "Live Site",
-                "EM" => "Equipment Matching",
-                "EO" => "Equipment Ordering",
-                "H|U|D" => "Halt | Unhalt | Decom",
-                _ => "Buggy Link"
             };
         }
 

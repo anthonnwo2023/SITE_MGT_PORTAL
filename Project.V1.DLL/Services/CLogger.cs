@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Project.V1.Lib.Interfaces;
 using Project.V1.Lib.Helpers;
+using Project.V1.Lib.Interfaces;
 using Serilog;
 using System;
 
@@ -10,14 +9,12 @@ namespace Project.V1.Lib.Services
     public class CLogger : ICLogger
     {
         private string LoggedInUser { get; set; }
-        public IConfiguration Configuration { get; }
 
-        public CLogger(IConfiguration configuration)
+        public CLogger()
         {
             HttpContextAccessor httpContextAccessor = new();
             LoggedInUser = httpContextAccessor.HttpContext?.User.Identity.Name;
 
-            Configuration = configuration;
             Log.Logger = HelperFunctions.GetSerilogLogger();
         }
 

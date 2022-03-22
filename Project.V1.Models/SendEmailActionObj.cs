@@ -10,9 +10,13 @@ public class SendEmailActionObj
 
     public string Comment { get; set; }
 
+    public string Subject { get; set; }
+
     public string M2Uname { get; set; }
 
     public string Link { get; set; }
+
+    public string Body { get; set; }
 
     public string BodyType { get; set; }
 

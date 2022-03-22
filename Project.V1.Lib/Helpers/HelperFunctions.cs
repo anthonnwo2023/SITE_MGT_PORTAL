@@ -31,6 +31,21 @@ namespace Project.V1.Lib.Helpers
         //    await Task.Run(() => serviceAction.SetTransitionState(state));
         //}
 
+
+        public static string GetAppLink(string app)
+        {
+            return app switch
+            {
+                "SA" => "acceptance",
+                "HS" => "holistic",
+                "LS" => "live",
+                "EM" => "eq-matching",
+                "EO" => "eq-ordering",
+                "H|U|D" => "hud",
+                _ => "_"
+            };
+        }
+
         public static string GetTypeName(this string typeAbbr)
         {
             return typeAbbr switch
@@ -40,19 +55,22 @@ namespace Project.V1.Lib.Helpers
                 "LS" => "Live Site",
                 "EM" => "Equipment Matching",
                 "EO" => "Equipment Ordering",
-                _ => "",
+                "H|U|D" => "Halt | Unhalt | Decom",
+                _ => ""
             };
         }
 
-        public static RequestApproverModel ModelApprover(string appType, string requestId)
+        public static RequestApproverModel ModelApprover(string appType, string requestId, ApplicationUser user = null)
         {
             return new RequestApproverModel
             {
                 Id = Guid.NewGuid().ToString(),
                 RequestId = requestId,
-                Username = " ",
-                Fullname = " ",
-                Email = " ",
+                Username = (user == null) ? " " : user.UserName,
+                Fullname = (user == null) ? " " : user.Fullname,
+                Email = (user == null) ? " " : user.Email,
+                PhoneNo = (user == null) ? " " : user.PhoneNumber,
+                Title = (user == null) ? " " : user.JobTitle,
                 ApproverType = appType,
                 DateApproved = DateTime.MinValue,
                 DateAssigned = DateTime.MinValue
@@ -235,11 +253,11 @@ namespace Project.V1.Lib.Helpers
         {
             CancellationTokenSource cts = new();
             HelperFunctionFactory<T> hff = new(cts);
-            var rType = ((dynamic)request).RequestType;
+            //var rType = ((dynamic)request).RequestType;
 
-            ((dynamic)request).RequestType = (((dynamic)request).RequestType as string).GetTypeName();
-            MailerViewModel<T> mvm = BuildMailObject(request, emailObj, role);
-            ((dynamic)request).RequestType = rType;
+            //((dynamic)request).RequestType = (((dynamic)request).RequestType as string).GetTypeName();
+            MailerViewModel<T> mvm = BuildMailObject(request, emailObj);
+            //((dynamic)request).RequestType = rType;
 
             await hff.SendRequestMessage(mvm);
         }
@@ -249,7 +267,7 @@ namespace Project.V1.Lib.Helpers
             CancellationTokenSource cts = new();
             HelperFunctionFactory<T> hff = new(cts);
 
-            MailerViewModel<T> mvm = BuildMailObject(requests, emailObj, role, requestType);
+            MailerViewModel<T> mvm = BuildMailObject(requests, emailObj, requestType);
 
             await hff.SendRequestMessage(mvm);
         }
@@ -270,7 +288,7 @@ namespace Project.V1.Lib.Helpers
             return Start(dateTime).AddDays(1).AddTicks(-1);
         }
 
-        public static MailerViewModel<T> BuildMailObject<T>(List<T> mObj, SendEmailActionObj emailObj, string role, string requestType = null) where T : class
+        public static MailerViewModel<T> BuildMailObject<T>(List<T> mObj, SendEmailActionObj emailObj, string requestType = null) where T : class
         {
             var requests = ((dynamic)mObj) as List<RequestViewModel>;
             var request = requests.FirstOrDefault();
@@ -290,7 +308,7 @@ namespace Project.V1.Lib.Helpers
                 Greetings = emailObj.Greetings,
                 To = emailObj.To,
                 CC = emailObj.CC,
-                Subject = ($"Site Acceptance Bulk Request ({mailRequestObject.Region}) - {mailRequestObject.BatchNumber} {role} Notice").Replace("  ", " "),
+                Subject = emailObj.Subject,
                 From = new SenderBody { Name = "SMP Portal", Address = "smp_request@mtn.com" },
                 Request = mailRequestObject,
                 MailToUsername = emailObj.M2Uname,
@@ -305,10 +323,8 @@ namespace Project.V1.Lib.Helpers
             return mvm;
         }
 
-        public static MailerViewModel<T> BuildMailObject<T>(T mObj, SendEmailActionObj emailObj, string role) where T : class
+        public static MailerViewModel<T> BuildMailObject<T>(T mObj, SendEmailActionObj emailObj) where T : class
         {
-            var requests = ((dynamic)mObj) as RequestViewModel;
-
             MailerViewModel<T> mvm = new()
             {
                 Name = emailObj.Name,
@@ -316,17 +332,27 @@ namespace Project.V1.Lib.Helpers
                 Greetings = emailObj.Greetings,
                 To = emailObj.To,
                 CC = emailObj.CC,
-                Subject = ($"Site Acceptance Request ({((dynamic)mObj).Region.Name}) - {((dynamic)mObj).BulkBatchNumber} {role} Notice").Replace("  ", " "),
+                Body = emailObj.Body,
+                Subject = emailObj.Subject,
                 From = new SenderBody { Name = "SMP Portal", Address = "smp_request@mtn.com" },
                 Request = ((dynamic)mObj),
                 MailToUsername = emailObj.M2Uname,
                 Comment = emailObj.Comment,
                 RequestLink = emailObj.Link,
-                RequestType = requests.RequestType.GetTypeName()
+                RequestType = GetTypeName((mObj as dynamic).RequestType)
             };
 
-            mvm.CreateMailBody = mvm.CreateMailBody;
-            mvm.MailBody = mvm.BulkCreateMailBody;
+            if ((mObj as dynamic).RequestType == "SA")
+            {
+                mvm.CreateSAMailBody = mvm.CreateSAMailBody;
+                mvm.MailBody = mvm.CreateSAMailBody;
+            }
+
+            if ((mObj as dynamic).RequestType == "H|U|D")
+            {
+                mvm.CreateHUDMailBody = mvm.CreateHUDMailBody;
+                mvm.MailBody = mvm.CreateHUDMailBody;
+            }
 
             return mvm;
         }
@@ -497,10 +523,6 @@ namespace Project.V1.Lib.Helpers
             {
                 Log.Error(ex.Message + ": " + ex.StackTrace);
                 return false;
-            }
-            finally
-            {
-                //await _smtpClient.DisconnectAsync(true, _cts.Token);
             }
         }
     }

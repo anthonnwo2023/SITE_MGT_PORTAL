@@ -13,6 +13,6 @@
         public List<BaseBandModel> Basebands { get; set; }
         public ApplicationUser User { get; set; }
 
-        Task Initialize(ClaimsPrincipal Principal);
+        Task Initialize(ClaimsPrincipal Principal, string objType);
     }
 }

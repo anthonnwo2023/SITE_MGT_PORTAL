@@ -36,6 +36,7 @@ namespace Project.V1.DLL.Helpers
                 user.JobTitle = userADData.Title;
                 user.Department = userADData.Department;
                 user.IsADLoaded = true;
+                user.IsNewPassword = false;
                 user.UserType = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("Internal"));
             }
 

@@ -1,7 +1,7 @@
-﻿@page "/halt/request"
+﻿@page "/hud/request"
 @layout MainLayoutHalt
 
-<PageTitlePat Title="SMP (Site Halt & Unhalt) - New Request" />
+<PageTitlePat Title="SMP (Halt | Unhalt | Decom) - New Request" />
 
 <style type="text/css">
     .custom-font {
@@ -82,13 +82,13 @@
 
 <div class="col-sm-12 m-0 p-0" style="background: url('images/celltower-black.jpg'); background-size: cover; background-position: center right;">
     <div class="display-4 text-white" style="padding: 4rem 2rem;">
-        Halt | Unhalt | Decom
+        New Request
     </div>
 </div>
 
-<BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+<BreadcrumbHalt OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
 
-@if (SiteHaltRequestModel == null)
+@if (RequestModel == null)
 {
     <PageLoading />
 }
@@ -102,19 +102,20 @@ else
         </SfToast>
     </div>
 
-    <EditForm Model="@SiteHaltRequestModel" OnValidSubmit='HandleValidSubmit' class="">
+    <EditForm Model="@RequestModel" OnValidSubmit='HandleValidSubmit' class="">
         <ObjectGraphDataAnnotationsValidator />
 
         <div class="col-md-12" style="">
             <div class="col-md-12">
-                <HaltRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="true" RequestModel="@SiteHaltRequestModel"
-                                OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileSSVUploadChange(e, "SSV")' CheckValid='IsSEValid' 
-                                ShowRequired="true" />
+                <HaltRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="true" RequestModel="@RequestModel"
+                                OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileSSVUploadChange(e, "SSV")'
+                                ShowRequired="true" OnRequestTypeChange="ChangeRequestType" BaseSecondLevelApprovers="BaseSecondLevelApprovers"
+                                BaseThirdLevelApprovers="BaseThirdLevelApprovers" BaseFirstLevelApprovers="BaseFirstLevelApprovers"/>
 
-                <div class="col-md-3 mt-3 p-0">
+                <div class="col-md-3 mt-3">
                     <div class="form-group">
                         <div class="col-sm-12 p-0 mt-4">
-                            <SfButton Disabled="@DisableButton" CssClass="px-2" type="submit" IsPrimary="true" IconCss="@UploadIconCss"
+                            <SfButton CssClass="px-2" type="submit" IsPrimary="true" IconCss="@UploadIconCss"
                                   IconPosition="IconPosition.Right">Create Request</SfButton>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
-﻿@page "/halt/engineer/worklist"
+﻿@page "/hud/engineer/worklist"
 @layout MainLayoutHalt
 
-<PageTitlePat Title="SMP (Site Halt & Unhalt) - My Worklist" />
+<PageTitlePat Title="SMP (Halt | Unhalt | Decom) - Engineer Worklist" />
 
 <div class="col-sm-12 m-0 p-0" style="background: url('images/worklist-black.jpg'); background-size: cover; background-position: center right;">
     <div class="display-4 text-white" style="padding: 4rem 2rem;">
@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<BreadcrumbAccess OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+<BreadcrumbHalt OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
 
 <style type="text/css">
     .miniTable {
@@ -24,13 +24,276 @@
     .e-dlg-overlay {
         opacity: .8 !important;
     }
+
+    .e-footer-content .e-input-group {
+        width: 75%;
+        float: left;
+    }
+
+    #target {
+        min-height: 400px;
+    }
+
+    .e-dialog .e-dlg-header-content {
+        background-color: #3f51b5;
+    }
+
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn {
+            top: 5px;
+            left: -11px;
+        }
+
+    .e-dialog .e-dlg-header {
+        position: relative;
+    }
+
+    .e-dialog .e-footer-content {
+        padding: 15px;
+    }
+
+    .e-dialog .e-dlg-content {
+        padding: 0;
+    }
+
+    .e-dialog .e-dlg-header-content {
+        padding: 6px;
+    }
+
+    .e-open-icon::before {
+        content: "\e782";
+    }
+
+    #template {
+        display: inline-block;
+        padding: 0px 10px;
+        vertical-align: middle;
+        height: 40px;
+        line-height: 40px;
+    }
+
+    input {
+        width: 75%;
+        float: left;
+    }
+
+    .e-icon-settings.e-icons {
+        float: left;
+        position: relative;
+        left: 14%;
+        top: -33px;
+    }
+
+    .dialogContent .dialogText {
+        font-size: 13px;
+        padding: 5%;
+        word-wrap: break-word;
+        border-radius: 6px;
+        text-align: justify;
+        font-style: initial;
+        display: block;
+    }
+
+    .e-dlg-header .e-icon-settings, .e-icon-btn {
+        color: #fff;
+    }
+
+    .dialogContent .dialogText, .dialogContent .dialogText {
+        background-color: #f5f5f5;
+    }
+
+    .e-dialog .e-footer-content {
+        border-top: 0.5px solid rgba(0, 0, 0, 0.42);
+    }
+
+    .dialogContent {
+        display: block;
+        font-size: 15px;
+        word-wrap: break-word;
+        text-align: center;
+        font-style: italic;
+        border-radius: 6px;
+        padding: 3%;
+        position: relative;
+    }
+
+    .bootstrap .dialogContent {
+        top: 7px;
+    }
+
+    .control-wrapper .e-control.e-dialog {
+        width: 30%;
+    }
+
+    .e-dialog .e-dlg-header-content .e-icon-dlg-close {
+        color: #fff;
+    }
+
+    .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:hover,
+    .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:focus {
+        background-color: rgba(255,255,255, 0.10);
+    }
+
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:active .e-icon-dlg-close,
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:focus .e-icon-dlg-close,
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:hover .e-icon-dlg-close {
+            color: #fff;
+        }
+
+    .e-dialog .e-dlg-header-content .e-dlg-header .e-avatar.template-image {
+        vertical-align: middle;
+        display: inline-block;
+        width: 60px;
+    }
+
+    input[id^="dropdownlist"] {
+        text-align: center;
+    }
 </style>
 
-@*@if (RequestEngWorklists == null)
+@if (HUDEngineerRequests == null)
 {
     <PageLoading />
 }
 else
-{
+{    
+    <div class="col-md-12">
+        <SfToast CssClass="@ToastCss" ID="toast_default" @ref="ToastObj" Timeout=0 Icon="e-circle_info"
+             ShowCloseButton="true" NewestOnTop="true">
+            <ToastPosition X="@ToastPosition"></ToastPosition>
+            <ToastEvents OnClick="@OnToastClickHandler"></ToastEvents>
+        </SfToast>
+    </div>
+    @if (RequestModel is not null)
+    {
+        <EditForm Model="@RequestModel" class="">
+            <ObjectGraphDataAnnotationsValidator />
+            <SfDialog Height="25%" Width="800px" ShowCloseIcon="true" @bind-Visible="@Visibility">
+                <DialogTemplates>
+                    <Header>
+                        <span class="template-image e-avatar-xsmall e-avatar-circle"><img src="images/logo.png" alt="logo" style="width: 60px" class="mr-auto"></span>
+                        <div id="template" title="Re-assign" class="e-icon-settings">Re-assign approvers for @RequestUniqueId</div>
+                    </Header>
+                    <Content>
+                        <div class="dialogContent">
+                            <div class="row col-12">
+                                <div class="col-md-4">
+                                    @{
+                                        bool approverIsActioned = RequestModel.FirstApprover == null ? false : RequestModel.FirstApprover.IsActioned;
+                                    }
+                                    <SfDropDownList Enabled="@(!approverIsActioned)" TValue="string" CssClass="text-center" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Radio Frequency SM"
+                                            DataSource="@FirstLevelApprovers" @bind-Value="RequestModel.FirstApproverId">
+                                        <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver1")'></DropDownListEvents>
+                                        <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                    <ValidationMessage For="@(() => RequestModel.FirstApproverId)" />
+                                </div>
+                                <div class="col-md-4">
+                                    @{
+                                        approverIsActioned = RequestModel.SecondApprover == null ? false : RequestModel.SecondApprover.IsActioned;
+                                    }
+                                    <SfDropDownList Enabled="@(!approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Second Approver"
+                                            DataSource="@SecondLevelApprovers" @bind-Value="RequestModel.SecondApproverId">
+                                        <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver2")'></DropDownListEvents>
+                                        <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                    <ValidationMessage For="@(() => RequestModel.SecondApproverId)" />
+                                </div>
+                                <div class="col-md-4">
+                                    @{
+                                        approverIsActioned = RequestModel.ThirdApprover == null ? false : RequestModel.ThirdApprover.IsActioned;
+                                    }
+                                    <SfDropDownList Enabled="@(!approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver"
+                                            DataSource="@ThirdLevelApprovers" @bind-Value="RequestModel.ThirdApproverId">
+                                        <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
+                                        <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver3")'></DropDownListEvents>
+                                    </SfDropDownList>
+                                    <ValidationMessage For="@(() => RequestModel.ThirdApproverId)" />
+                                </div>
+                            </div>
+                        </div>
+                    </Content>
+                    <FooterTemplate>
+                        <SfButton Disabled="DisableBtn" OnClick="UpdateApprovers" CssClass="px-2" type="submit" data-ripple="true" IsPrimary="true" IconCss="@ButtonIconCss" @ref="UpdateButton"
+                          IconPosition="IconPosition.Right">Update Request</SfButton>
+                    </FooterTemplate>
+                </DialogTemplates>
+                <DialogEvents Closed="@DialogClosed"></DialogEvents>
+            </SfDialog>
+        </EditForm>
+    }
 
-}*@
+    <SfGrid ID="CompletedRequestTable" DataSource="@HUDEngineerRequests" AllowPaging="true" AllowSorting="true"
+        Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
+        <GridPageSettings PageSize="10"></GridPageSettings>
+        <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+        <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" ShowDeleteConfirmDialog="true"></GridEditSettings>
+        <GridColumns>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.RequesterName)" Width="180" HeaderText="Requester" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.UniqueId)" Width="180" HeaderText="Unique Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.GetSiteIds)" Width="430" ClipMode="ClipMode.EllipsisWithTooltip" HeaderText="Site IDs" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.RequestAction)" Width="150" HeaderText="Request Type" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.GetStatusString)" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.DateCreated)" Width="150" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">
+            </GridColumn>
+            <GridColumn HeaderText="Doc." Width="100">
+                <Template>
+                    @{
+                    var request = (context as SiteHaltRequestModel);
+
+                    if (request.SupportingDocument != null)
+                    {
+                        <a title="Supporting Document" target="_blank" href="Documents/HUD/@request.SupportingDocument" class="btn btn-warning">
+                            <i class="fas fa-fw fa-paperclip"></i>
+                        </a>
+                    }
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="" Width="80">
+            <Template>
+                @{
+                    var request = (context as SiteHaltRequestModel);
+                    var index = HUDEngineerRequests.IndexOf(request);
+
+                    if (request.RequestAction != "UnHalt")
+                        if (!UpdateButtons[index])
+                        {
+                            <a title="Update Approvers" href="javascript:void(0)" @onclick='e => ShowUpdateApproverDialog(e, request.Id)' class="btn btn-primary"><i class="fas fa-pen"></i></a>
+                        }
+                        else
+                        {
+                            <a title="Processing Approvers" href="javascript:void(0)" class="btn btn-warning"><i class="@ButtonProcessingIconCss"></i></a>
+                        }
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="" Width="80">
+            <Template>
+                @{
+                    var request = (context as SiteHaltRequestModel);
+                    var index = HUDEngineerRequests.IndexOf(request);
+
+                    if (!CompleteButtons[index])
+                    {
+                        <SfButton CssClass="btn btn-success bg-dark p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonCompleteIconCss" OnClick='e => CompleteRequest(e, request)'
+                          IconPosition="IconPosition.Top"></SfButton>
+                    }
+                    else
+                    {
+                        <SfButton CssClass="btn btn-warning p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonProcessingIconCss"
+                          IconPosition="IconPosition.Top"></SfButton>
+                    }
+                }
+            </Template>
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+}

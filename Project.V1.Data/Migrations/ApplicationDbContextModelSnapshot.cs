@@ -751,6 +751,69 @@ namespace Project.V1.Data.Migrations.Staging
                     b.ToTable("TBL_RFACCEPT_REQUESTS");
                 });
 
+            modelBuilder.Entity("Project.V1.Models.SiteHalt.SiteHaltRequestModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<string>("FirstApproverId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<bool>("HasLargeSiteIdCount")
+                        .HasColumnType("NUMBER(1)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("RequestAction")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("RequestType")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("RequesterId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<string>("SecondApproverId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<bool>("ShouldRequireApprovers")
+                        .HasColumnType("NUMBER(1)");
+
+                    b.Property<string>("SiteIds")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("SupportingDocument")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("ThirdApproverId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<string>("UniqueId")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FirstApproverId");
+
+                    b.HasIndex("RequesterId");
+
+                    b.HasIndex("SecondApproverId");
+
+                    b.HasIndex("ThirdApproverId");
+
+                    b.ToTable("TBL_RFHUD_REQUESTS");
+                });
+
             modelBuilder.Entity("Project.V1.Models.SpectrumViewModel", b =>
                 {
                     b.Property<string>("Id")
@@ -911,6 +974,21 @@ namespace Project.V1.Data.Migrations.Staging
                         .IsUnique();
 
                     b.ToTable("TBL_RFACCEPT_VENDORS");
+                });
+
+            modelBuilder.Entity("SiteHaltRequestModelTechTypeModel", b =>
+                {
+                    b.Property<string>("SiteHaltRequestsId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<string>("TechTypesId")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.HasKey("SiteHaltRequestsId", "TechTypesId");
+
+                    b.HasIndex("TechTypesId");
+
+                    b.ToTable("TBL_RFHUD_REQUESTS_TECH", (string)null);
                 });
 
             modelBuilder.Entity("ApplicationUserRegionViewModel", b =>
@@ -1101,6 +1179,33 @@ namespace Project.V1.Data.Migrations.Staging
                     b.Navigation("TechType");
                 });
 
+            modelBuilder.Entity("Project.V1.Models.SiteHalt.SiteHaltRequestModel", b =>
+                {
+                    b.HasOne("Project.V1.Models.RequestApproverModel", "FirstApprover")
+                        .WithMany()
+                        .HasForeignKey("FirstApproverId");
+
+                    b.HasOne("Project.V1.Models.RequesterData", "Requester")
+                        .WithMany()
+                        .HasForeignKey("RequesterId");
+
+                    b.HasOne("Project.V1.Models.RequestApproverModel", "SecondApprover")
+                        .WithMany()
+                        .HasForeignKey("SecondApproverId");
+
+                    b.HasOne("Project.V1.Models.RequestApproverModel", "ThirdApprover")
+                        .WithMany()
+                        .HasForeignKey("ThirdApproverId");
+
+                    b.Navigation("FirstApprover");
+
+                    b.Navigation("Requester");
+
+                    b.Navigation("SecondApprover");
+
+                    b.Navigation("ThirdApprover");
+                });
+
             modelBuilder.Entity("Project.V1.Models.SpectrumViewModel", b =>
                 {
                     b.HasOne("Project.V1.Models.TechTypeModel", "TechType")
@@ -1108,6 +1213,21 @@ namespace Project.V1.Data.Migrations.Staging
                         .HasForeignKey("TechTypeId");
 
                     b.Navigation("TechType");
+                });
+
+            modelBuilder.Entity("SiteHaltRequestModelTechTypeModel", b =>
+                {
+                    b.HasOne("Project.V1.Models.SiteHalt.SiteHaltRequestModel", null)
+                        .WithMany()
+                        .HasForeignKey("SiteHaltRequestsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Project.V1.Models.TechTypeModel", null)
+                        .WithMany()
+                        .HasForeignKey("TechTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

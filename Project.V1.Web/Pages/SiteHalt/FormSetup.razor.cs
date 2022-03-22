@@ -97,8 +97,8 @@ namespace Project.V1.Web.Pages.SiteHalt
         {
             Paths = new()
             {
-                new PathInfo { Name = $"Request Setup", Link = "acceptance/setup" },
-                new PathInfo { Name = $"Acceptance", Link = "acceptance" },
+                new PathInfo { Name = $"Request Setup", Link = "hud/setup" },
+                new PathInfo { Name = $"Halt | Unhalt | Decom", Link = "hud" },
             };
         }
 

@@ -1,0 +1,189 @@
+﻿@page "/hud/engineer/worklist/{id}"
+@layout MainLayoutHalt
+
+<PageTitlePat Title="SMP (Halt | Unhalt | Decom) - Action Request" />
+
+<style type="text/css">
+    .custom-font {
+        font-size: 13px;
+        font-weight: 400;
+        color: rgba(0,0,0,0.42);
+        padding-top: 0px;
+    }
+
+    .validation-message {
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    #toast_type .e-toast-icon.e-icons {
+        height: auto;
+        font-size: 30px;
+    }
+
+    .toast-icons.e-success::before {
+        content: "\e701";
+    }
+
+    .toast-icons.e-error::before {
+        content: "\e700";
+    }
+
+    .toast-icons.e-info::before {
+        content: "\e704";
+    }
+
+    .toast-icons.e-warning::before {
+        content: "\e703";
+    }
+
+    #toast_types {
+        text-align: center;
+    }
+
+    @@font-face {
+        font-family: 'Toast_icons';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .toast-icons {
+        font-family: 'Toast_icons' !important;
+        speak: none;
+        font-size: 55px;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    textarea {
+        height: 65px;
+        resize: none !important;
+    }
+
+    .custom-label {
+        color: rgba(0,0,0,0.84) !important;
+        font-size: 13px !important;
+    }
+
+    .e-input[disabled], .e-input-group .e-input[disabled], .e-input-group.e-control-wrapper .e-input[disabled], .e-input-group.e-disabled, .e-input-group.e-control-wrapper.e-disabled, .e-float-input input[disabled], .e-float-input.e-control-wrapper input[disabled], .e-float-input textarea[disabled], .e-float-input.e-control-wrapper textarea[disabled], .e-float-input.e-disabled, .e-float-input.e-control-wrapper.e-disabled {
+        -webkit-text-fill-color: rgba(0,0,0,0.82) !important;
+    }
+</style>
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/celltower.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4 text-white" style="padding: 4rem 2rem;">
+        Halt | Unhalt | Decomission Action
+    </div>
+</div>
+
+<BreadcrumbHalt OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+
+@if (RequestToAction == null)
+{
+    <PageLoading />
+}
+else
+{
+    <div class="col-md-12">
+        <SfToast CssClass="@ToastCss" ID="toast_default" @ref="ToastObj" Timeout="10000" Icon="e-circle_info"
+             ShowCloseButton="true" NewestOnTop="true" ShowProgressBar="true">
+            <ToastPosition X="@ToastPosition"></ToastPosition>
+        </SfToast>
+    </div>
+    <div class="col-md-12 row px-4" style="">
+        @if (RequestToAction.SupportingDocument != null)
+        {
+            <div class="col-md-3">
+                <a target="_blank" href="Documents/HUD/RequestToAction.SupportingDocument" class="btn btn-warning"><i class="fas fa-envelope icon"></i>Supporting Document</a>
+            </div>
+        }
+        <div class="col-md-3">
+            <label class="custom-label e-label-top d-block">Unique Id</label>
+            <span class="custom-label e-label-top d-block">@RequestToAction.UniqueId</span>
+        </div>
+    </div>
+
+    <EditForm Model="@RequestToAction">
+        <ObjectGraphDataAnnotationsValidator />
+        <div class="col-md-12" style="">
+            <div class="col-md 12 row">
+                <HaltRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="true" RequestModel="@RequestToAction"
+                                OnClear="OnClear" OnRemove="OnRemove" ShowRequired="true"
+                                BaseSecondLevelApprovers="BaseSecondLevelApprovers" BaseThirdLevelApprovers="BaseThirdLevelApprovers" 
+                                BaseFirstLevelApprovers="BaseFirstLevelApprovers"/>
+
+                <div class="col-md-12 row">
+                    <div class="py-2 bg-light mb-3 col-12"></div>
+                    <h3 class="col-12">Requester</h3>
+
+                    <div class="py-1 bg-light mb-3 col-12"></div>
+
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Name" Value="@RequestToAction.Requester.Name" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Phone Number" Value="@RequestToAction.Requester.Phone" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Email" Value="@RequestToAction.Requester.Email" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Vendor" Value="@RequestToAction.Requester.Vendor.Name" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+    <EditForm Model="@RequestToAction" OnValidSubmit='HandleValidSubmit' class="">
+        <ObjectGraphDataAnnotationsValidator />
+        <div class="col-md-12 mb-3" style="">
+            <div class="col-md 12 row">
+                <div class="py-2 bg-light mb-3 col-12"></div>
+                <h3 class="col-12">Engineer's Section</h3>
+
+                <div class="py-1 bg-light mb-3 col-12"></div>
+                <div class="col-md-4 mt-3">
+                    <SfDropDownList TItem="ProjectStatus" DataSource="@ProjectStatuses" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+                                Placeholder="Action Status" style="font-size: 10px;" @bind-Value="RequestToAction.Status">
+                        <DropDownListFieldSettings Text="Name" Value="Status"></DropDownListFieldSettings>
+                    </SfDropDownList>
+                    <ValidationMessage For="@(() => RequestToAction.Status)" />
+                </div>
+                <div class="col-md-4 mt-3">
+                    <div class="form-group">
+                        <SfTextBox Multiline="true" Placeholder="Reason for Action" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestToAction.TempComment)">
+                        </SfTextBox>
+                        <ValidationMessage For="@(() => RequestToAction.TempComment)" />
+                    </div>
+                </div>
+                <div class="col-md-12 mt-3">
+                    <div class="form-group">
+                        <div class="col-sm-12 p-0 mt-4">
+                            <SfButton CssClass="px-2" type="submit" IsPrimary="true" IconCss="@ButtonIconCss"
+                                  IconPosition="IconPosition.Right">Action Request</SfButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}

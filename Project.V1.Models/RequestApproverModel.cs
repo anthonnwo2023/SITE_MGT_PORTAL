@@ -1,8 +1,12 @@
-﻿namespace Project.V1.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Project.V1.Models;
 
 [Table("TBL_RFACCEPT_APPROVER")]
 public class RequestApproverModel : PersonModel
 {
+    private UserManager<ApplicationUser> _userManager { get; set; } = ServiceActivator.GetScope().ServiceProvider.GetService<UserManager<ApplicationUser>>();
+
     public string RequestId { get; set; }
 
     public string ApproverType { get; set; }
@@ -22,4 +26,6 @@ public class RequestApproverModel : PersonModel
     [Required]
     [Display(Name = "Date Actioned")]
     public DateTime DateApproved { get; set; }
+
+    public string UserId => _userManager.FindByNameAsync(Username).Result?.Id;
 }

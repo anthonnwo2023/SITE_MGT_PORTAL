@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
 {
-    public class RequestStateBase<T> where T : RequestViewModel, IDisposable
+    public class RequestStateBase<T> where T : class
     {
-        public virtual Task<bool> EnterState(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        public virtual Task<bool> EnterState(IRequestAction<T> request, T requests, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
         {
             return Task.FromResult(false);
         }
@@ -19,6 +19,34 @@ namespace Project.V1.DLL.RequestActions
         public virtual Task<bool> EnterState(IRequestAction<T> request, List<T> requests, Dictionary<string, object> variables)
         {
             return Task.FromResult(false);
+        }
+
+        public virtual bool Approve(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        {
+            Log.Information("Cannot approve this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
+        }
+
+        public virtual bool Update(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        {
+            Log.Information("Cannot update this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
+        }
+
+        public virtual bool Complete(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        {
+            Log.Information("Cannot complete this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
+        }
+
+        public virtual bool Disapprove(IRequestAction<T> request, T requests, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
+        {
+            Log.Information("Cannot disapprove this request. " + JsonConvert.SerializeObject(request));
+
+            return false;
         }
 
         public virtual bool Restart(IRequestAction<T> request, T requests, Dictionary<string, object> variables)

@@ -73,6 +73,17 @@
             //        $('table').DataTable();
             //    });
             //}, 500);
+
+        window.copyToClipboard = (strContent) => {
+            navigator.clipboard.writeText(strContent).then(function() {
+                console.log('Async: Copying to clipboard was successful!');
+            }, function(err) {
+                console.error('Async: Could not copy text: ', err);
+            });
+            /* Alert the copied text */
+            alert("Copied the text: " + strContent);
+            return;
+        }
     </script>
     @*<script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>*@
     <script src="~/lib/bootstrap/js/bootstrap.js"></script>

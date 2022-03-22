@@ -300,7 +300,7 @@ namespace Project.V1.Web.Pages.Acceptance
             BulkWaiverUploadSelected = false;
             ShowInvalidDialog = false;
 
-            await IRequestList.Initialize(Principal);
+            await IRequestList.Initialize(Principal, "SMPObject");
             FileUploader.Initialize(IRequestList, Logger);
             IRequestList.Spectrums = new();
             ShowOffPeakNotice = IsPeakPeriod();

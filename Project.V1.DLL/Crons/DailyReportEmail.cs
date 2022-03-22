@@ -122,6 +122,7 @@ namespace Project.V1.DLL.Crons
                                      }).ToList();
 
                 var yesterdaysAllRequests = (await _request.Get(x => x.DateSubmitted.Date == yesterDay.Date
+                                            || x.EngineerAssigned.DateActioned.Date == yesterDay.Date
                                             || x.EngineerAssigned.DateApproved.Date == yesterDay.Date))
                                      .Select(x => new AcceptanceDTO
                                      {

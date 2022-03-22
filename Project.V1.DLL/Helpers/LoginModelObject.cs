@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Project.V1.Data;
 using Project.V1.DLL.Interface;
 using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
 using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
 
 namespace Project.V1.DLL.Helpers
 {
@@ -20,19 +15,19 @@ namespace Project.V1.DLL.Helpers
         private static IRegion _region;
         private static IRequest _request;
         private static ICLogger _logger;
+        private static IClaimService _claimService;
         private static IConfiguration _configuration;
         private static UserManager<ApplicationUser> _userManager;
         private static RoleManager<IdentityRole> _roleManager;
         private static SignInManager<ApplicationUser> _signInManager;
         private static IHttpContextAccessor _contextAccessor;
-        private static ApplicationDbContext _context;
 
         public static IUser User { get => _user; }
         public static IVendor Vendor { get => _vendor; }
         public static IRegion Region { get => _region; }
         public static IRequest Request { get => _request; }
         public static ICLogger Logger { get => _logger; }
-        public static ApplicationDbContext Context { get => _context; }
+        public static IClaimService ClaimService { get => _claimService; }
         public static IConfiguration Configuration { get => _configuration; }
         public static IHttpContextAccessor ContextAccessor { get => _contextAccessor; }
         public static UserManager<ApplicationUser> UserManager { get => _userManager; }
@@ -48,12 +43,12 @@ namespace Project.V1.DLL.Helpers
             _region = serviceScope.ServiceProvider.GetService<IRegion>();
             _request = serviceScope.ServiceProvider.GetService<IRequest>();
             _logger = serviceScope.ServiceProvider.GetService<ICLogger>();
+            _claimService = serviceScope.ServiceProvider.GetService<IClaimService>();
             _configuration = serviceScope.ServiceProvider.GetService<IConfiguration>();
             _userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
             _roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
             _signInManager = serviceScope.ServiceProvider.GetService<SignInManager<ApplicationUser>>();
             _contextAccessor = serviceScope.ServiceProvider.GetService<IHttpContextAccessor>();
-            _context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
 
             //using (var serviceScope = ServiceActivator.GetScope())
             //{

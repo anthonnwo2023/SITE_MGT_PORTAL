@@ -5,7 +5,7 @@
 @using Serilog
 
 <div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="dashboard">Site Halt & Unhalt</a>
+    <a class="navbar-brand" href="hud">Halt | Unhalt | Decom</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,14 +14,14 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="halt" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" href="hud" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Dashboard
             </NavLink>
         </li>
         @if (Principal.HasClaim(x => x.Type == "Can:AddRequest"))
         {
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="halt/request" Match="NavLinkMatch.All">
+                <NavLink class="nav-link" href="hud/request" Match="NavLinkMatch.All">
                     <span class="oi oi-battery-empty" aria-hidden="true"></span> New Request
                 </NavLink>
             </li>
@@ -29,80 +29,33 @@
         @if (Principal.HasClaim(x => x.Type == "Can:ReworkRequest"))
         {
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="halt/worklist" Match="NavLinkMatch.Prefix">
-                    <span class="oi oi-box" aria-hidden="true"></span> My Worklist
+                <NavLink class="nav-link" href="hud/worklist" Match="NavLinkMatch.Prefix">
+                    <span class="oi oi-box" aria-hidden="true"></span> My Worklist <span class="e-badge ml-2">@HUDRejectedWorklistCount</span>
+                </NavLink>
+            </li>
+        }
+        @if (Principal.HasClaim(x => x.Type == "Can:ApproveHUD"))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="hud/approver/worklist" Match="NavLinkMatch.Prefix">
+                    <span class="oi oi-box" aria-hidden="true"></span> Approve Request
                 </NavLink>
             </li>
         }
         @if (Principal.HasClaim(x => x.Type == "Can:UpdateRequest"))
         {
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="halt/engineer/worklist" Match="NavLinkMatch.Prefix">
+                <NavLink class="nav-link" href="hud/engineer/worklist" Match="NavLinkMatch.Prefix">
                     <span class="oi oi-box" aria-hidden="true"></span> Engineer Worklist
                 </NavLink>
             </li>
         }
-
-        <li class="nav-item px-3">
-            <NavLink class="nav-link expand-menu" style="cursor: pointer;" @onclick="() => expandReportNav = !expandReportNav">
-                <span class="oi oi-bar-chart" aria-hidden="true"></span>
-                <span class="w-100 d-flex flex-row align-items-center">
-                    Reports
-                    @if (!expandReportNav)
-                    {
-                        <i class="oi oi-chevron-right text-right ml-auto"></i>
-                    }
-                    else
-                    {
-                        <i class="oi oi-chevron-bottom text-right ml-auto"></i>
-                    }
-                </span>
-            </NavLink>
-            <ul class="nav flex-column">
-                @if (expandReportNav)
-                {
-                    @if (Principal.HasClaim(x => x.Type == "Can:ViewReport"))
-                    {
-                        <li class="nav-item px-3">
-                            <NavLink class="nav-link" href="halt/reports/general" Match="NavLinkMatch.All">
-                                <span class="fas fa-chart-bar mr-2" aria-hidden="true"></span> General
-                            </NavLink>
-                        </li>
-                    }
-                }
-            </ul>
-        </li>
-
-        @if (Principal.HasClaim(x => x.Type == "Can:ManageSetupSH"))
+        @if (Principal.HasClaim(x => x.Type == "Can:ViewReport"))
         {
             <li class="nav-item px-3">
-                <NavLink class="nav-link expand-menu" style="cursor: pointer;" @onclick="() => expandManageNav = !expandManageNav">
-                    <span class="oi oi-cog" aria-hidden="true"></span>
-                    <span class="w-100 d-flex flex-row align-items-center">
-                        Manage
-                        @if (!expandManageNav)
-                        {
-                            <i class="oi oi-chevron-right text-right ml-auto"></i>
-                        }
-                        else
-                        {
-                            <i class="oi oi-chevron-bottom text-right ml-auto"></i>
-                        }
-                    </span>
+                <NavLink class="nav-link" href="hud/reports/general" Match="NavLinkMatch.All">
+                    <span class="fas fa-chart-bar mr-2" aria-hidden="true"></span> Report
                 </NavLink>
-                <ul class="nav flex-column">
-                    @if (expandManageNav)
-                    {
-                        @if (Principal.HasClaim(x => x.Type == "Can:ManageSetupSA"))
-                        {
-                            <li class="nav-item px-3">
-                                <NavLink class="nav-link" href="halt/setup" Match="NavLinkMatch.All">
-                                    <span class="oi oi-task" aria-hidden="true"></span> Setup
-                                </NavLink>
-                            </li>
-                        }
-                    }
-                </ul>
             </li>
         }
 

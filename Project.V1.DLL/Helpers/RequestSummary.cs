@@ -130,10 +130,11 @@ namespace Project.V1.DLL.Helpers
                 requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", ProjectType = projectType });
             }
 
-            requests.AddRange((Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
+            requests.AddRange(Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
+                                && x.Requester.Vendor.ShouldSummerize
                                 && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
-                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell").GetAwaiter().GetResult())
+                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell").GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
                                 {
                                     Region = x.Region.Name,
@@ -169,12 +170,13 @@ namespace Project.V1.DLL.Helpers
                 requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", Vendor = vendor.Name });
             }
 
-            requests.AddRange((Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
+            requests.AddRange(Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
+                                && x.Requester.Vendor.ShouldSummerize
                                 //&& !x.Spectrum.Name.Contains("RT")
                                 && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
                                 && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"
-                                )).GetAwaiter().GetResult()
+                                ).GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
                                 {
                                     Region = x.Region.Name,

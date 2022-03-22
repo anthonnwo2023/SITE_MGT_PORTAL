@@ -178,7 +178,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
                 default:
                     {
-                        return LocalRedirect($"{Request.PathBase}/{GetRedirectUrl(UserSignInResult.Roles.First())}?rt={UserSignInResult.UserType}");
+                        return LocalRedirect($"{Request.PathBase}/{GetRedirectUrl(UserSignInResult)}?rt={UserSignInResult.UserType}");
                     }
             }
         }
@@ -193,15 +193,20 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
             return (password == "Network@55555" || password == "Password@2020");
         }
 
-        private static string GetRedirectUrl(string role)
+        private static string GetRedirectUrl(SignInResponse response)
         {
-            string uri = "acceptance/request";
+            string uri = "dashboard";
+            var abbr = string.Empty;
 
-            uri = role switch
+            if (response.User.Projects.Any())
             {
-                "User" => "acceptance",
-                "Engineer" => "acceptance",
-                "Admin" or "Super Admin" => "dashboard",
+                var claimNameChunk = response.User.Projects[0].Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => x[..1].ToUpper());
+                abbr = string.Join("", claimNameChunk);
+            }
+
+            uri = response.User.Projects.Count switch
+            {
+                var count when count == 1 => HelperFunctions.GetAppLink(abbr),
                 _ => uri,
             };
 

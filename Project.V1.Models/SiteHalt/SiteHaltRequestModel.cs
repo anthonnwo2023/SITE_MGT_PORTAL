@@ -1,29 +1,162 @@
-﻿namespace Project.V1.Models.SiteHalt
+﻿namespace Project.V1.Models.SiteHalt;
+
+[Table("TBL_RFHUD_REQUESTS")]
+public class SiteHaltRequestModel : IDisposable
 {
-    public class SiteHaltRequestModel
+    [Key]
+    public string Id { get; set; }
+
+    public string UniqueId { get; set; }
+
+    [Required]
+    //[Column(TypeName = "blob")]
+    public string RequestAction { get; set; }
+
+    public string RequestType { get; set; } = "H|U|D";
+
+    public string GetSiteIds
     {
-        [Required]
-        public string RequestType { get; set; }
+        get
+        {
+            if (SiteIds == null)
+                return null;
 
-        public string SiteIds { get; set; }
+            return (SiteIds.Contains(".txt"))
+               ? TextFileExtension.Initialize("HUD_SiteID", SiteIds).ReadFromFile() : SiteIds;
+        }
+    }
 
-        public string Reason { get; set; }
+    [Required]
+    public string SiteIds { get; set; }
 
-        public string SupportingDocument { get; set; }
+    [Required]
+    public string Reason { get; set; }
 
-        public string FirstApproverId { get; set; }
+    public string SupportingDocument { get; set; }
 
-        [ForeignKey(nameof(FirstApproverId))]
-        public virtual RequestApproverModel FirstApprover { get; set; }
+    public string Status { get; set; }
 
-        public string SecondApproverId { get; set; }
+    public bool ShouldRequireApprovers { get; set; }
 
-        [ForeignKey(nameof(SecondApproverId))]
-        public virtual RequestApproverModel SecondApprover { get; set; }
+    public bool HasLargeSiteIdCount { get; set; }
 
-        public string ThirdApproverId { get; set; }
+    [Required(ErrorMessage = "The Technology field is required.")]
+    [NotMapped]
+    public string[] TechTypeIds { get; set; }
 
-        [ForeignKey(nameof(ThirdApproverId))]
-        public virtual RequestApproverModel ThirdApprover { get; set; }
+    public virtual List<TechTypeModel> TechTypes { get; set; }
+
+    public string RequesterId { get; set; }
+
+    [ForeignKey(nameof(RequesterId))]
+    public virtual RequesterData Requester { get; set; }
+
+    [NotMapped]
+    public ApplicationUser User { get; set; }
+
+    [NotMapped]
+    [RequiredWhen(nameof(TempStatus), "Disapproved", AllowEmptyStrings = false, ErrorMessage = "The Comment is required.")]
+    public string TempComment { get; set; }
+
+    [NotMapped]
+    [Required(ErrorMessage = "The status is required.")]
+    public string TempStatus { get; set; }
+
+    public string GetStatusString => Status switch
+    {
+        var status when status.EndsWith("Approved") => GetApproveMessage(true),
+        var status when status.EndsWith("Disapproved") => GetApproveMessage(false),
+        _ => Status
+    };
+
+    public string GetApproveMessage(bool check)
+    {
+        var message = check ? "Approved" : "Disapproved";
+        var extra = string.Empty;
+
+        if (FirstApprover?.IsActioned == true)
+            extra = " By RF SM";
+        if (SecondApprover?.IsActioned == true)
+            extra = $" By {SecondApprover.Fullname} (Second Approver)";
+        if (ThirdApprover?.IsActioned == true)
+            extra = $" By {ThirdApprover.Fullname} (Last Approver)";
+
+        return message + extra;
+    }
+
+    public string GetApproverComment => GetCommentForApprover();
+
+    public string GetCommentForApprover()
+    {
+        var comment = string.Empty;
+
+        if (FirstApprover?.IsActioned == true)
+            comment = FirstApprover.ApproverComment;
+        if (SecondApprover?.IsActioned == true)
+            comment = SecondApprover.ApproverComment;
+        if (ThirdApprover?.IsActioned == true)
+            comment = ThirdApprover.ApproverComment;
+
+        return comment;
+    }
+
+    [RequiredWhen(nameof(ShouldRequireApprovers), true, AllowEmptyStrings = false, ErrorMessage = "The Approver is required.")]
+    public string FirstApproverId { get; set; }
+
+    [ForeignKey(nameof(FirstApproverId))]
+    public virtual RequestApproverModel FirstApprover { get; set; }
+
+    [RequiredWhen(nameof(ShouldRequireApprovers), true, AllowEmptyStrings = false, ErrorMessage = "The Approver is required.")]
+    public string SecondApproverId { get; set; }
+
+    [ForeignKey(nameof(SecondApproverId))]
+    public virtual RequestApproverModel SecondApprover { get; set; }
+
+    [RequiredWhen(nameof(ShouldRequireApprovers), true, AllowEmptyStrings = false, ErrorMessage = "The Approver is required.")]
+    public string ThirdApproverId { get; set; }
+
+    [ForeignKey(nameof(ThirdApproverId))]
+    public virtual RequestApproverModel ThirdApprover { get; set; }
+
+    public DateTime DateCreated { get; set; }
+
+    public string RequesterName => Requester?.Name;
+
+    public virtual Task<(bool, string)> Create()
+    {
+        Id = Guid.NewGuid().ToString();
+        Requester = GenerateRequestData(User);
+        RequesterId = Requester.Id;
+        DateCreated = DateTime.Now;
+        Status = "Pending";
+
+        return Task.Run(() => (false, $"Request could not be created. Not Implemented"));
+    }
+
+    public virtual Task SetCreateState(RequestApproverModel ActionedBy)
+    {
+        return Task.Run(() => "");
+    }
+
+    protected static RequesterData GenerateRequestData(ApplicationUser User)
+    {
+        return new RequesterData
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = User?.Fullname,
+            Department = User?.Department,
+            Email = User?.Email,
+            Phone = User?.PhoneNumber,
+            Title = User?.JobTitle,
+            Username = User?.UserName,
+            VendorId = User?.VendorId
+        };
+    }
+
+    public Dictionary<string, object> Variables => new() { { "User", User?.UserName }, { "App", "hud" } };
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
     }
 }

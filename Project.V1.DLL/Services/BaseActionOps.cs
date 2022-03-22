@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Project.V1.Lib.Services
 {
-    public class BaseActionOps<T> : GenericRepo<T>, IRequestAction<T> where T : RequestViewModel, new()
+    public class BaseActionOps<T> : GenericRepo<T>, IRequestAction<T> where T : class, new()
     {
         private RequestStateBase<T> _state;
         private readonly ApplicationDbContext _context;
@@ -28,6 +28,14 @@ namespace Project.V1.Lib.Services
             _entities = context.Set<T>();
         }
 
+        public bool Approve(T request, Dictionary<string, object> variables) => _state.Approve(this, request, variables);
+
+        public bool Update(T request, Dictionary<string, object> variables) => _state.Update(this, request, variables);
+
+        public bool Disapprove(T request, Dictionary<string, object> variables, RequestApproverModel ActionedBy) => _state.Disapprove(this, request, variables, ActionedBy);
+
+        public bool Complete(T request, Dictionary<string, object> variables) => _state.Complete(this, request, variables);
+
         public bool Accept(T request, Dictionary<string, object> variables) => _state.Accept(this, request, variables);
 
         public bool Cancel(T request, Dictionary<string, object> variables) => _state.Cancel(this, request, variables);
@@ -43,10 +51,10 @@ namespace Project.V1.Lib.Services
             _state = newState;
         }
 
-        public bool TransitionState(RequestStateBase<T> newState, T requests, Dictionary<string, object> variables)
+        public bool TransitionState(RequestStateBase<T> newState, T requests, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
         {
             _state = newState;
-            return _state.EnterState(this, requests, variables).GetAwaiter().GetResult();
+            return _state.EnterState(this, requests, variables, ActionedBy).GetAwaiter().GetResult();
         }
 
         public void TransitionState(RequestStateBase<T> newState, List<T> requests, Dictionary<string, object> variables)
@@ -55,18 +63,18 @@ namespace Project.V1.Lib.Services
             _state.EnterState(this, requests, variables);
         }
 
-        private static async Task<RequestStateBase<T>> BuildState(T requestClass, string requestType)
+        private static async Task<RequestStateBase<T>> BuildState(T requestClass, string requestType, string folder = null)
         {
-            return await Task.FromResult(Factory.CreateObject<RequestStateBase<T>, T>(requestClass.Status, requestType));
+            return await Task.FromResult(Factory.CreateObject<RequestStateBase<T>, T>(requestClass, requestType, folder));
         }
 
-        public async Task<bool> SetCreateState(T request, dynamic variables)
+        public async Task<bool> SetCreateState(T request, dynamic variables, string folder = null, RequestApproverModel ActionedBy = null)
         {
             try
             {
-                RequestStateBase<T> state = await BuildState(request, "");
+                RequestStateBase<T> state = await BuildState(request, "", folder);
 
-                TransitionState(state, request, variables);
+                TransitionState(state, request, variables, ActionedBy);
 
                 return true;
             }
@@ -92,9 +100,9 @@ namespace Project.V1.Lib.Services
             }
         }
 
-        public async Task SetState(T requestClass)
+        public async Task SetState(T requestClass, string folder = null)
         {
-            RequestStateBase<T> state = await BuildState(requestClass, "");
+            RequestStateBase<T> state = await BuildState(requestClass, "", folder);
 
             await Task.Run(() => SetTransitionState(state));
         }

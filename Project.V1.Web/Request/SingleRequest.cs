@@ -49,7 +49,7 @@ public class SingleRequest : RequestBase
 
     public override async Task SetCreateState()
     {
-        await _request.SetCreateState(Request, Variables);
+        await _request.SetCreateState(Request, Variables, null, null);
     }
 
     private async Task<(bool Saved, string Error)> SaveSingleRequest(FilesManager file, bool toClose)

@@ -20,6 +20,7 @@
         [Inject] protected IProjectType IProjectType { get; set; }
         [Inject] protected IProjects IProject { get; set; }
         [Inject] protected ISummerConfig ISummerConfig { get; set; }
+        [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
 
         List<RequestViewModel> Requests { get; set; }
         List<RegionViewModel> Regions { get; set; }
@@ -93,6 +94,7 @@
 
                 ExcelExportProperties ExportProperties = new();
                 ExportProperties.FileName = $"General_Report{DateTimeOffset.UtcNow:ddMMyyyy.Hmmss}.xlsx";
+                ExportProperties.IncludeHiddenColumn = true;
 
                 await Grid_Request.ExcelExport(ExportProperties);
                 await Grid_Request.HideColumnsAsync(hiddenCols);
@@ -153,7 +155,7 @@
                     {
                         Requests = await IRequest.Get(x => x.Id != null, x => x.OrderByDescending(y => y.DateCreated));
                     }
-                    else if (Vendor.Name == "MTN Nigeria")
+                    else if (Vendor.Name == "MTN Nigeria" || (await UserManager.IsInRoleAsync(User, "User")))
                     {
                         Requests = await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId), x => x.OrderByDescending(y => y.DateCreated));
                     }

@@ -14,15 +14,15 @@ namespace Project.V1.DLL.RequestActions
     {
         public override bool Accept(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
-            return request.TransitionState(new AcceptedState<T>(), requests, variables);
+            return request.TransitionState(new AcceptedState<T>(), requests, variables, null);
         }
 
         public override bool Reject(IRequestAction<T> request, T requests, Dictionary<string, object> variables, string reason)
         {
-            return request.TransitionState(new RejectedState<T>(), requests, variables);
+            return request.TransitionState(new RejectedState<T>(), requests, variables, null);
         }
 
-        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
+        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
         {
             try
             {
@@ -72,6 +72,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Notification of New Request - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='blue'><b>Request Restarted</b></font> - See Details below:",
                         Comment = "",
+                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = user.UserName.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/worklist/detail/{request.Id}",
@@ -95,6 +96,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Notification of New Request for approval - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='blue'><b>Request Restarted</b></font> - See Details below:",
                         Comment = "",
+                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} RF Team Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = "", // requests.Manager.Username.ToLower().Trim(),
                         To = regionEngineers.ToList(),

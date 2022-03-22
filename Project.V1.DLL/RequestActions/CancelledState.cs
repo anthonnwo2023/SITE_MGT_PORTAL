@@ -11,10 +11,10 @@ namespace Project.V1.DLL.RequestActions
     {
         public override bool Restart(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
-            return request.TransitionState(new RestartedState<T>(), requests, variables);
+            return request.TransitionState(new RestartedState<T>(), requests, variables, null);
         }
 
-        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables)
+        public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
         {
             try
             {
@@ -54,6 +54,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='red'><b>Request Cancelled</b></font> - See Details below:",
                         Comment = "",
+                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{request.Id}",
@@ -74,6 +75,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='red'><b>Request Cancelled</b></font> - See Details below:",
                         Comment = "",
+                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Engineer Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{request.Id}",

@@ -1,0 +1,81 @@
+﻿@page "/hud/approver/worklist"
+@layout MainLayoutHalt
+
+<PageTitlePat Title="SMP (Halt | Unhalt | Decom) - Approver Worklist" />
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/worklist-black.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4 text-white" style="padding: 4rem 2rem;">
+        Approver Worklist
+    </div>
+</div>
+
+<BreadcrumbHalt OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
+
+<style type="text/css">
+    .miniTable {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    #UserTable, #UserTable_header_table {
+        /*table-layout: unset !important;*/
+    }
+
+    .e-dlg-overlay {
+        opacity: .8 !important;
+    }
+</style>
+
+@if (HUDApproverRequests == null)
+{
+    <PageLoading />
+}
+else
+{
+    <SfGrid ID="CompletedRequestTable" DataSource="@HUDApproverRequests" AllowPaging="true" AllowSorting="true" RowHeight="70"
+        Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
+        <GridPageSettings PageSize="10"></GridPageSettings>
+        <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+        <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" ShowDeleteConfirmDialog="true"></GridEditSettings>
+        <GridColumns>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.RequesterName)" Width="180" HeaderText="Requester" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.UniqueId)" Width="180" HeaderText="Unique Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.GetSiteIds)" Width="550" ClipMode="ClipMode.EllipsisWithTooltip" HeaderText="Site IDs" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.RequestAction)" Width="150" HeaderText="Request Type" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.GetStatusString)" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Field="@nameof(SiteHaltRequestModel.DateCreated)" Width="150" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                    Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">
+            </GridColumn>
+            <GridColumn HeaderText="Support Doc." Width="100">
+                <Template>
+                    @{
+                        var request = (context as SiteHaltRequestModel);
+
+                        if (request.SupportingDocument != null)
+                        {
+                            <a title="Supporting Document" target="_blank" href="Documents/HUD/@request.SupportingDocument" class="btn btn-warning">
+                                <i class="fas fa-fw fa-paperclip"></i>
+                            </a>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn HeaderText="" Width="80">
+                <Template>
+                    @{
+                        var request = (context as SiteHaltRequestModel);
+
+                        <a title="Action Request" href="hud/approver/worklist/@request.Id" class="btn btn-warning"><i class="fas fa-bars"></i></a>
+                    }
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+}

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Project.V1.Models;
+using Project.V1.Models.SiteHalt;
 using System;
 
 namespace Project.V1.Data
@@ -20,6 +21,9 @@ namespace Project.V1.Data
 
             //modelBuilder.HasDefaultSchema("INHOUSE_DEV"); // Use uppercase!
 
+
+            modelBuilder.Entity<SiteHaltRequestModel>()
+                .HasMany(p => p.TechTypes).WithMany(p => p.SiteHaltRequests).UsingEntity(j => j.ToTable("TBL_RFHUD_REQUESTS_TECH"));
             modelBuilder.Entity<ApplicationUser>().ToTable("TBL_RFACCEPT_ASP_USERS");
             modelBuilder.Entity<IdentityRole>().ToTable("TBL_RFACCEPT_ASP_ROLES");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("TBL_RFACCEPT_ASP_USERROLES");
@@ -55,6 +59,7 @@ namespace Project.V1.Data
 
         public DbSet<StaticReportModel> StaticReport { get; set; }
         public DbSet<RequestViewModel> Requests { get; set; }
+        public DbSet<SiteHaltRequestModel> HUDRequests { get; set; }
         public DbSet<RegionViewModel> Regions { get; set; }
         public DbSet<AntennaMakeModel> AntennaMakes { get; set; }
         public DbSet<AntennaTypeModel> AntennaTypes { get; set; }
