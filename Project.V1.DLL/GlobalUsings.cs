@@ -2,9 +2,11 @@
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Project.V1.Data;
+global using Project.V1.DLL.Services.Interfaces;
 global using Project.V1.Lib.Helpers;
 global using Project.V1.Lib.Services;
 global using Project.V1.Models;
+global using Project.V1.Models.SiteHalt;
 global using Serilog;
 global using System;
 global using System.Collections.Generic;

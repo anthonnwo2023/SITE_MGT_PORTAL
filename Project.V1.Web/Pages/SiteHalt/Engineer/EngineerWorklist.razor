@@ -155,7 +155,7 @@
     <PageLoading />
 }
 else
-{    
+{
     <div class="col-md-12">
         <SfToast CssClass="@ToastCss" ID="toast_default" @ref="ToastObj" Timeout=0 Icon="e-circle_info"
              ShowCloseButton="true" NewestOnTop="true">
@@ -263,15 +263,16 @@ else
                     var request = (context as SiteHaltRequestModel);
                     var index = HUDEngineerRequests.IndexOf(request);
 
-                    if (request.RequestAction != "UnHalt")
-                        if (!UpdateButtons[index])
-                        {
-                            <a title="Update Approvers" href="javascript:void(0)" @onclick='e => ShowUpdateApproverDialog(e, request.Id)' class="btn btn-primary"><i class="fas fa-pen"></i></a>
-                        }
-                        else
-                        {
-                            <a title="Processing Approvers" href="javascript:void(0)" class="btn btn-warning"><i class="@ButtonProcessingIconCss"></i></a>
-                        }
+                    if (HUDEngineerRequests.Count > 0)
+                        if (request.RequestAction != "UnHalt")
+                            if (!UpdateButtons[index])
+                            {
+                                <a title="Update Approvers" href="javascript:void(0)" @onclick='e => ShowUpdateApproverDialog(e, request.Id)' class="btn btn-primary"><i class="fas fa-pen"></i></a>
+                            }
+                            else
+                            {
+                                <a title="Processing Approvers" href="javascript:void(0)" class="btn btn-warning"><i class="@ButtonProcessingIconCss"></i></a>
+                            }
                 }
             </Template>
         </GridColumn>

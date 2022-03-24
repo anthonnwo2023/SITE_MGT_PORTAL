@@ -51,13 +51,13 @@
             Logger = logger;
         }
 
-        public static async Task<(string, string, string)> StartUpload(bool allowedExtension, FilesManager file, bool toClose)
+        public static async Task<(string uploadResp, string filePath, string uploadError)> StartUpload(bool allowedExtension, FilesManager file, bool toClose)
         {
             switch (allowedExtension)
             {
                 case true:
                     {
-                        (string error, string path) = await UploadFile(file, toClose);
+                        var (error, path) = UploadFile(file, toClose);
 
                         if (path.Length > 0)
                         {
@@ -72,22 +72,19 @@
             }
         }
 
-        private static async Task<(string, string)> UploadFile(FilesManager bufile, bool toClose)
+        private static (string error, string path) UploadFile(FilesManager bufile, bool toClose)
         {
             try
             {
-                return await Task.Run<(string, string)>(() =>
+                bufile.UploadFile.Stream.WriteTo(bufile.Filestream);
+
+                if (toClose)
                 {
-                    bufile.UploadFile.Stream.WriteTo(bufile.Filestream);
+                    bufile.Filestream.Close();
+                    bufile.UploadFile.Stream.Close();
+                }
 
-                    if (toClose)
-                    {
-                        bufile.Filestream.Close();
-                        bufile.UploadFile.Stream.Close();
-                    }
-
-                    return ("", bufile.UploadPath);
-                });
+                return ("", bufile.UploadPath); ;
             }
             catch (Exception ex)
             {

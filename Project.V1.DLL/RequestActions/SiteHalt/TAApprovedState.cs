@@ -1,12 +1,4 @@
-﻿using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Project.V1.Models.SiteHalt;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Project.V1.DLL.RequestActions.SiteHalt
+﻿namespace Project.V1.DLL.RequestActions.SiteHalt
 {
     public class TAApprovedState<T> : RequestStateBase<T> where T : SiteHaltRequestModel, IDisposable
     {
@@ -59,8 +51,8 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
             emailObj = GenerateMailBody("TAApprover", request, application);
             await SendNotification(request, emailObj, "TAApprover");
 
-            emailObj = GenerateMailBody("RFTeam", request, application);
-            await SendNotification(request, emailObj, "RFTeam");
+            emailObj = GenerateMailBody("Stakeholders", request, application);
+            await SendNotification(request, emailObj, "Stakeholders");
         }
 
         private static SendEmailActionObj GenerateMailBody(string mailType, T request, string application)
@@ -110,13 +102,13 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                     };
                 },
 
-                ["RFTeam"] = () =>
+                ["Stakeholders"] = () =>
                 {
                     return new SendEmailActionObj
                     {
                         Name = "Hello Team",
                         Title = "Update Notification on Request - See Below Request Details",
-                        Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by ({(request as dynamic).ThirdApprover.Fullname})</b></font>, but awaiting task to be completed approval - See Details below:",
+                        Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Final Request Approval given by {(request as dynamic).ThirdApprover.Fullname}</b></font>, awaiting task to be completed - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
                         Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Action Notice"),
                         BodyType = "",

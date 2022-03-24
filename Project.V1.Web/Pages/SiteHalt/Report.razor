@@ -232,7 +232,7 @@ else
             </GridColumn>
             <GridColumn Field="@nameof(SiteHaltRequestModel.RequestAction)" Width="150" HeaderText="Request Type" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
-            <GridColumn Field="@nameof(SiteHaltRequestModel.GetStatusString)" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            <GridColumn Field="@nameof(SiteHaltRequestModel.GetStatusString)" ClipMode="ClipMode.EllipsisWithTooltip" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
             <GridColumn Field="@nameof(SiteHaltRequestModel.DateCreated)" Width="150" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
                     Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">

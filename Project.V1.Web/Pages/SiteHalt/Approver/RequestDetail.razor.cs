@@ -76,7 +76,7 @@ public partial class RequestDetail
         {
             try
             {
-                if (!await UserAuth.IsAutorizedForAsync("Can:ReworkRequest"))
+                if (!await UserAuth.IsAutorizedForAsync("Can:ApproveHUD"))
                 {
                     NavMan.NavigateTo("access-denied");
                 }

@@ -61,11 +61,6 @@
 
                     HUDReportRequests = (await IHUDRequest.Get(null, x => x.OrderByDescending(y => y.DateCreated)));
 
-                    HUDReportRequests.ForEach(x =>
-                    {
-                        x.SiteIds = (x.SiteIds.Contains(".txt")) ? TextFileExtension.Initialize("HUD_SiteID", x.SiteIds).ReadFromFile() : x.SiteIds;
-                    });
-
                     CompleteButtons = new bool[HUDReportRequests.Count];
                     UpdateButtons = new bool[HUDReportRequests.Count];
 

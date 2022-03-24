@@ -53,7 +53,7 @@
         @if (Principal.HasClaim(x => x.Type == "Can:ViewReport"))
         {
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="hud/reports/general" Match="NavLinkMatch.All">
+                <NavLink class="nav-link" href="hud/reports/general" Match="NavLinkMatch.Prefix">
                     <span class="fas fa-chart-bar mr-2" aria-hidden="true"></span> Report
                 </NavLink>
             </li>

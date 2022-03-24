@@ -237,6 +237,7 @@ public partial class EngineerWorklist : IDisposable
 
             if (ProcessAction(request, IHUDRequest))
             {
+                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed")).ToList();
                 ToastContent = $"Request ({request.UniqueId}) completed successfully.";
                 SuccessBtnOnClick();
                 return;

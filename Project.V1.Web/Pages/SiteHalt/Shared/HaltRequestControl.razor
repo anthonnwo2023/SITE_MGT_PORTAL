@@ -107,10 +107,10 @@
 {
     <div class="multiline col-12 p-0 mt-3">
         <div class="col-md-12 row" style="">
-            @if (RequestModel.SupportingDocument != null)
+            @if (!ShouldEnable && RequestModel.SupportingDocument != null)
             {
                 <div class="col-md-3">
-                    <a target="_blank" href="Documents/HUD/Request.SupportingDocument" class="btn btn-warning"><i class="fas fa-paperclip icon"></i>Supporting Document</a>
+                    <a target="_blank" href="Documents/HUD/@RequestModel.SupportingDocument" class="btn btn-warning"><i class="fas fa-paperclip icon"></i> Supporting Document</a>
                 </div>
             }
             @if (RequestModel.UniqueId != null)
@@ -175,7 +175,7 @@
         {
             <div class="col-md-4 mt-1">
                 <label for="filePath" class="col-form-label custom-font" style="">Supporting Document</label>
-                <SfUploader Enabled="ShouldEnable" AllowMultiple="false" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass="textarea"
+                <SfUploader Enabled="ShouldEnable" AllowMultiple="false" MinFileSize="1000" MaxFileSize=@MaxFileSize AutoUpload="true" CssClass=""
                     @ref="SF_Uploader" @bind-Value="RequestModel.SupportingDocument">
                     <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange="OnFileSSVUploadChange"></UploaderEvents>
                 </SfUploader>
