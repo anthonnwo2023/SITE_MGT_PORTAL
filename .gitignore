@@ -33,6 +33,7 @@ bld/
 [Ll]og/
 [Ll]ogs/
 [Dd]ocuments/
+[Hh]UD_SiteID/
 
 appsettings*.json
 log-*.json
