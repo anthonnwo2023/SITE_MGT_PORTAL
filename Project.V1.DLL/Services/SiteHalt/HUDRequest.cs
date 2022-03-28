@@ -6,7 +6,7 @@ using Project.V1.Models.SiteHalt;
 
 namespace Project.V1.DLL.Services.SiteHalt
 {
-    public class HUDRequest : BaseActionOps<SiteHaltRequestModel>, IHUDRequest
+    public class HUDRequest : BaseActionOps<SiteHUDRequestModel>, IHUDRequest
     {
         public HUDRequest(ApplicationDbContext context, ICLogger logger)
             : base(context, "HUD", logger)

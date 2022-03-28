@@ -70,6 +70,26 @@ namespace Project.V1.Data
             }
         }
 
+        public async Task<int> Count(Expression<Func<T, bool>> filter = null)
+        {
+            try
+            {
+                IQueryable<T> query = entity;
+
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                return await query.CountAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message, new { }, ex);
+                return new();
+            }
+        }
+
         public async Task<T> GetById(Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null)
         {
             try

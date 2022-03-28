@@ -288,6 +288,24 @@ namespace Project.V1.Lib.Helpers
             return Start(dateTime).AddDays(1).AddTicks(-1);
         }
 
+        /// <summary>
+        /// Gets the Last day in a month of a DateTime
+        /// </summary>
+        public static DateTime FirstDay(this DateTime dateTime)
+        {
+            return new DateTime(dateTime.Year, dateTime.Month, 1, dateTime.Hour, dateTime.Minute, dateTime.Second);
+        }
+
+        /// <summary>
+        /// Gets the Last day in a month of a DateTime
+        /// </summary>
+        public static DateTime LastDay(this DateTime dateTime)
+        {
+            var lastDay = DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
+
+            return new DateTime(dateTime.Year, dateTime.Month, lastDay, dateTime.Hour, dateTime.Minute, dateTime.Second);
+        }
+
         public static MailerViewModel<T> BuildMailObject<T>(List<T> mObj, SendEmailActionObj emailObj, string requestType = null) where T : class
         {
             var requests = ((dynamic)mObj) as List<RequestViewModel>;

@@ -22,7 +22,7 @@ namespace Project.V1.Data
             //modelBuilder.HasDefaultSchema("INHOUSE_DEV"); // Use uppercase!
 
 
-            modelBuilder.Entity<SiteHaltRequestModel>()
+            modelBuilder.Entity<SiteHUDRequestModel>()
                 .HasMany(p => p.TechTypes).WithMany(p => p.SiteHaltRequests).UsingEntity(j => j.ToTable("TBL_RFHUD_REQUESTS_TECH"));
             modelBuilder.Entity<ApplicationUser>().ToTable("TBL_RFACCEPT_ASP_USERS");
             modelBuilder.Entity<IdentityRole>().ToTable("TBL_RFACCEPT_ASP_ROLES");
@@ -59,7 +59,7 @@ namespace Project.V1.Data
 
         public DbSet<StaticReportModel> StaticReport { get; set; }
         public DbSet<RequestViewModel> Requests { get; set; }
-        public DbSet<SiteHaltRequestModel> HUDRequests { get; set; }
+        public DbSet<SiteHUDRequestModel> HUDRequests { get; set; }
         public DbSet<RegionViewModel> Regions { get; set; }
         public DbSet<AntennaMakeModel> AntennaMakes { get; set; }
         public DbSet<AntennaTypeModel> AntennaTypes { get; set; }

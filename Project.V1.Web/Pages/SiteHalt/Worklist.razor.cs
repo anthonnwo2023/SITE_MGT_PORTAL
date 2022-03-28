@@ -9,14 +9,14 @@
         [Inject] public ICLogger Logger { get; set; }
         [Inject] public IHUDRequest IHUDRequest { get; set; }
 
-        List<SiteHaltRequestModel> HUDWorklistRequests { get; set; } = new();
+        List<SiteHUDRequestModel> HUDWorklistRequests { get; set; } = new();
 
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
 
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-        protected SfGrid<SiteHaltRequestModel> Grid_Request { get; set; }
+        protected SfGrid<SiteHUDRequestModel> Grid_Request { get; set; }
 
         public List<string> ToolbarItems = new() { "Search" };
 

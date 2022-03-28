@@ -18,5 +18,6 @@ namespace Project.V1.Lib.Interfaces
         Task<(bool, string)> CreateRequest(T item);
         Task<bool> CreateBulkRequest(List<T> requestObjs);
         Task<bool> UpdateRequest(T item, Expression<Func<T, bool>> IdFilter);
+        Task<int> Count(Expression<Func<T, bool>> filter = null);
     }
 }

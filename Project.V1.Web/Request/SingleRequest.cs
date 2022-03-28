@@ -96,6 +96,7 @@ public class SingleRequest : RequestBase
             Request.DateSubmitted = DateTime.Now;
             Request.Status = "Pending";
             Request.RequestType = "SA";
+            Request.DateUserActioned = DateTime.Now;
             //Request.SSVReportIsWaiver = WaiverUploadSelected;
 
             Request.EngineerAssigned = HelperFunctions.ModelApprover("EA", Request.Id);

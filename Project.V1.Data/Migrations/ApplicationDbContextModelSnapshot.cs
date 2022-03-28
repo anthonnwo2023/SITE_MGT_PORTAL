@@ -17,7 +17,7 @@ namespace Project.V1.Data.Migrations.Staging
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -621,6 +621,9 @@ namespace Project.V1.Data.Migrations.Staging
                     b.Property<DateTime>("DateSubmitted")
                         .HasColumnType("TIMESTAMP(7)");
 
+                    b.Property<DateTime?>("DateUserActioned")
+                        .HasColumnType("TIMESTAMP(7)");
+
                     b.Property<string>("ETilt")
                         .HasColumnType("NVARCHAR2(2000)");
 
@@ -751,7 +754,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.ToTable("TBL_RFACCEPT_REQUESTS");
                 });
 
-            modelBuilder.Entity("Project.V1.Models.SiteHalt.SiteHaltRequestModel", b =>
+            modelBuilder.Entity("Project.V1.Models.SiteHalt.SiteHUDRequestModel", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("NVARCHAR2(450)");
@@ -976,7 +979,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.ToTable("TBL_RFACCEPT_VENDORS");
                 });
 
-            modelBuilder.Entity("SiteHaltRequestModelTechTypeModel", b =>
+            modelBuilder.Entity("SiteHUDRequestModelTechTypeModel", b =>
                 {
                     b.Property<string>("SiteHaltRequestsId")
                         .HasColumnType("NVARCHAR2(450)");
@@ -1179,7 +1182,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.Navigation("TechType");
                 });
 
-            modelBuilder.Entity("Project.V1.Models.SiteHalt.SiteHaltRequestModel", b =>
+            modelBuilder.Entity("Project.V1.Models.SiteHalt.SiteHUDRequestModel", b =>
                 {
                     b.HasOne("Project.V1.Models.RequestApproverModel", "FirstApprover")
                         .WithMany()
@@ -1215,9 +1218,9 @@ namespace Project.V1.Data.Migrations.Staging
                     b.Navigation("TechType");
                 });
 
-            modelBuilder.Entity("SiteHaltRequestModelTechTypeModel", b =>
+            modelBuilder.Entity("SiteHUDRequestModelTechTypeModel", b =>
                 {
-                    b.HasOne("Project.V1.Models.SiteHalt.SiteHaltRequestModel", null)
+                    b.HasOne("Project.V1.Models.SiteHalt.SiteHUDRequestModel", null)
                         .WithMany()
                         .HasForeignKey("SiteHaltRequestsId")
                         .OnDelete(DeleteBehavior.Cascade)

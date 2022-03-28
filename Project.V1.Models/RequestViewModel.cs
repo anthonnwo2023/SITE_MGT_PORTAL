@@ -156,6 +156,8 @@ public class RequestViewModel : IDisposable
 
     public DateTime DateSubmitted { get; set; }
 
+    public DateTime? DateUserActioned { get; set; }
+
     public DateTime DateCreated { get; set; }
 
     public string RequesterId { get; set; }
@@ -179,7 +181,7 @@ public class RequestViewModel : IDisposable
     {
         get
         {
-            return (EngineerAssigned.DateApproved == DateTime.MinValue) ? (EngineerAssigned.DateActioned == DateTime.MinValue) ? null : EngineerAssigned.DateActioned : EngineerAssigned.DateApproved;
+            return (EngineerAssigned.DateApproved == DateTime.MinValue) ? (EngineerAssigned.DateActioned == DateTime.MinValue) ? DateUserActioned.GetValueOrDefault() : EngineerAssigned.DateActioned : EngineerAssigned.DateApproved;
         }
     }
 

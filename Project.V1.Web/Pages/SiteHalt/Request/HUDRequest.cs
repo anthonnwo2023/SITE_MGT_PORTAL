@@ -1,6 +1,6 @@
 ﻿namespace Project.V1.Web.Pages.SiteHalt.Request
 {
-    public class HUDRequest : SiteHaltRequestModel
+    public class HUDRequest : SiteHUDRequestModel
     {
         private readonly IHUDRequest _request;
 

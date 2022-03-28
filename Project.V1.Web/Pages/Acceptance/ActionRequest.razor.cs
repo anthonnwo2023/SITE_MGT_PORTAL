@@ -384,6 +384,8 @@ public partial class ActionRequest : IDisposable
     {
         try
         {
+            requestClass.DateUserActioned = DateTime.Now;
+
             if (requestClass.Status == "Cancelled")
             {
                 return requests.Cancel(requestClass, variables);

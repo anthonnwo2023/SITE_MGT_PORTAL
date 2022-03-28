@@ -11,7 +11,7 @@ public partial class EngineerWorklist : IDisposable
     [Inject] public IHUDRequest IHUDRequest { get; set; }
     [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
 
-    List<SiteHaltRequestModel> HUDEngineerRequests { get; set; } = new();
+    List<SiteHUDRequestModel> HUDEngineerRequests { get; set; } = new();
     public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();
@@ -24,7 +24,7 @@ public partial class EngineerWorklist : IDisposable
     public ApplicationUser User { get; set; }
     public bool Visibility { get; set; } = true;
     public bool DisableBtn { get; set; } = true;
-    public SiteHaltRequestModel RequestModel { get; set; }
+    public SiteHUDRequestModel RequestModel { get; set; }
     private string RequestUniqueId { get; set; }
     public string ButtonIconCss { get; set; } = "fas fa-paper-plane ml-2";
     public string ButtonCompleteIconCss { get; set; } = "fas fa-check m-1 text-white";
@@ -47,7 +47,7 @@ public partial class EngineerWorklist : IDisposable
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    protected SfGrid<SiteHaltRequestModel> Grid_Request { get; set; }
+    protected SfGrid<SiteHUDRequestModel> Grid_Request { get; set; }
     protected SfButton UpdateButton { get; set; }
     protected bool[] CompleteButtons { get; set; }
     protected bool[] UpdateButtons { get; set; }
@@ -186,11 +186,6 @@ public partial class EngineerWorklist : IDisposable
         DisableBtn = true;
     }
 
-    protected async Task HandleValidSubmit()
-    {
-        //await UpdateApprovers(RequestModel);
-    }
-
     protected async Task<bool> UpdateApprovers()
     {
         var index = HUDEngineerRequests.IndexOf(RequestModel);
@@ -226,7 +221,7 @@ public partial class EngineerWorklist : IDisposable
         args.ClickToClose = true;
     }
 
-    protected async void CompleteRequest(MouseEventArgs args, SiteHaltRequestModel request)
+    protected async void CompleteRequest(MouseEventArgs args, SiteHUDRequestModel request)
     {
         var index = HUDEngineerRequests.IndexOf(request);
         CompleteButtons[index] = true;
@@ -257,7 +252,7 @@ public partial class EngineerWorklist : IDisposable
         }
     }
 
-    private bool ProcessAction<T>(T requestObj, dynamic request) where T : SiteHaltRequestModel
+    private bool ProcessAction<T>(T requestObj, dynamic request) where T : SiteHUDRequestModel
     {
         try
         {

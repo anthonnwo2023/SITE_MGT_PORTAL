@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions.SiteHalt
 {
-    public class ToUpdateRequest<T> : RequestStateBase<T> where T : SiteHaltRequestModel, IDisposable
+    public class ToUpdateRequest<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
     {
         public override async Task<bool> EnterState(IRequestAction<T> _request, T request, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
         {

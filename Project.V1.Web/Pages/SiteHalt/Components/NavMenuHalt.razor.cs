@@ -3,8 +3,6 @@
     public partial class NavMenuHalt : IDisposable
     {
         private bool collapseNavMenu = true;
-        private bool expandReportNav;
-        private bool expandManageNav;
 
         private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
         public ClaimsPrincipal Principal { get; set; }

@@ -9,8 +9,8 @@ public partial class HaltRequestControl
     [Parameter] public bool ShowCopyText { get; set; } = true;
     [Parameter] public bool ShowRequired { get; set; }
     [Parameter] public bool ShowSSVUpload { get; set; } = true;
-    [Parameter] public SiteHaltRequestModel RequestModel { get; set; }
-    [Parameter] public EventCallback<SiteHaltRequestModel> OnRequestTypeChange { get; set; }
+    [Parameter] public SiteHUDRequestModel RequestModel { get; set; }
+    [Parameter] public EventCallback<SiteHUDRequestModel> OnRequestTypeChange { get; set; }
     [Parameter] public List<FilesManager> UploadedRequestFiles { get; set; }
     [Parameter] public EventCallback<bool> OnCheckValidButton { get; set; }
     [Parameter] public EventCallback<ClearingEventArgs> OnClear { get; set; }

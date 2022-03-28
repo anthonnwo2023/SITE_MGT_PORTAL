@@ -5,5 +5,5 @@
 public class TechTypeModel : ObjectBase
 {
 
-    public virtual List<SiteHaltRequestModel> SiteHaltRequests { get; set; }
+    public virtual List<SiteHUDRequestModel> SiteHaltRequests { get; set; }
 }

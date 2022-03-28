@@ -1,15 +1,328 @@
 ﻿@page "/hud"
+
 @layout MainLayoutHalt
 
 <PageTitlePat Title="SMP (Halt | Unhalt | Decom) - Dashboard" />
 
+<style type="text/css">
+    .custom-font {
+        font-size: 13px;
+        font-weight: 400;
+        color: rgba(0,0,0,0.82);
+        padding-top: 0px;
+    }
+
+    .validation-message {
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    #toast_type .e-toast-icon.e-icons {
+        height: auto;
+        font-size: 30px;
+    }
+
+    .toast-icons.e-success::before {
+        content: "\e701";
+    }
+
+    .toast-icons.e-error::before {
+        content: "\e700";
+    }
+
+    .toast-icons.e-info::before {
+        content: "\e704";
+    }
+
+    .toast-icons.e-warning::before {
+        content: "\e703";
+    }
+
+    #toast_types {
+        text-align: center;
+    }
+
+    @@font-face {
+        font-family: 'Toast_icons';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .toast-icons {
+        font-family: 'Toast_icons' !important;
+        speak: none;
+        font-size: 55px;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .e-dialog .e-dlg-header {
+        color: red;
+        font-size: 13px;
+        font-weight: normal;
+    }
+
+    .e-dialog .e-dlg-content {
+        color: red;
+        font-size: 10px;
+        font-weight: normal;
+        line-height: normal;
+    }
+
+    .dialog-header-custom {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .miniTable {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    #UserTable, #UserTable_header_table {
+        /*table-layout: unset !important;*/
+    }
+
+    .e-dlg-overlay {
+        opacity: .8 !important;
+    }
+
+    .e-footer-content .e-input-group {
+        width: 75%;
+        float: left;
+    }
+
+    #target {
+        min-height: 400px;
+    }
+
+    .e-dialog .e-dlg-header-content {
+        background-color: #3f51b5;
+    }
+
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn {
+            top: 5px;
+            left: -11px;
+        }
+
+    .e-dialog .e-dlg-header {
+        position: relative;
+    }
+
+    .e-dialog .e-footer-content {
+        padding: 15px;
+    }
+
+    .e-dialog .e-dlg-content {
+        padding: 0;
+    }
+
+    .e-dialog .e-dlg-header-content {
+        padding: 6px;
+    }
+
+    .e-open-icon::before {
+        content: "\e782";
+    }
+
+    #template {
+        display: inline-block;
+        padding: 0px 10px;
+        vertical-align: middle;
+        height: 40px;
+        line-height: 40px;
+    }
+
+    input {
+        width: 75%;
+        float: left;
+    }
+
+    .e-icon-settings.e-icons {
+        float: left;
+        position: relative;
+        left: 14%;
+        top: -33px;
+    }
+
+    .dialogContent .dialogText {
+        font-size: 13px;
+        padding: 5%;
+        word-wrap: break-word;
+        border-radius: 6px;
+        text-align: justify;
+        font-style: initial;
+        display: block;
+    }
+
+    .e-dlg-header .e-icon-settings, .e-icon-btn {
+        color: #fff;
+    }
+
+    .dialogContent .dialogText, .dialogContent .dialogText {
+        background-color: #f5f5f5;
+    }
+
+    .e-dialog .e-footer-content {
+        border-top: 0.5px solid rgba(0, 0, 0, 0.42);
+    }
+
+    .dialogContent {
+        display: block;
+        font-size: 15px;
+        word-wrap: break-word;
+        text-align: center;
+        font-style: italic;
+        border-radius: 6px;
+        padding: 3%;
+        position: relative;
+    }
+
+    .bootstrap .dialogContent {
+        top: 7px;
+    }
+
+    .control-wrapper .e-control.e-dialog {
+        width: 30%;
+    }
+
+    .e-dialog .e-dlg-header-content .e-icon-dlg-close {
+        color: #fff;
+    }
+
+    .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:hover,
+    .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:focus {
+        background-color: rgba(255,255,255, 0.10);
+    }
+
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:active .e-icon-dlg-close,
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:focus .e-icon-dlg-close,
+        .e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn:hover .e-icon-dlg-close {
+            color: #fff;
+        }
+
+    .e-dialog .e-dlg-header-content .e-dlg-header .e-avatar.template-image {
+        vertical-align: middle;
+        display: inline-block;
+        width: 60px;
+    }
+
+    input[id^="dropdownlist"] {
+        text-align: center;
+    }
+</style>
+
+<div class="col-sm-12 m-0 p-0" style="background: url('images/celltower-black.jpg'); background-size: cover; background-position: center right;">
+    <div class="display-4 text-white" style="padding: 4rem 2rem;">
+        Dashboard
+    </div>
+</div>
+
 <BreadcrumbHalt OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
 
-<SfChart Title="Olympic Medals">
-    <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-	
+
+<SfChart Title="Request Received MoM (Last 12 Months)" CustomClass="mt-3" SelectionMode="Syncfusion.Blazor.Charts.SelectionMode.Series">
+    <ChartPrimaryXAxis LabelFormat="d" ValueType="Syncfusion.Blazor.Charts.ValueType.DateTimeCategory" />
+
+    <ChartAxes>
+        <ChartAxis Name="ZAxis" OpposedPosition="true" />
+    </ChartAxes>
+
+    <ChartEvents OnAxisLabelClick="AxisLabelClickEvent"></ChartEvents>
+
+    <ChartTooltipSettings Enable="true" Header="Month Count" Format="<b>${series.name} : ${point.y}</b>"></ChartTooltipSettings>
+    <ChartZoomSettings EnableMouseWheelZooming="true" EnablePinchZooming="true" EnableSelectionZooming="true"></ChartZoomSettings>
+    <ChartCrosshairSettings Enable="true"></ChartCrosshairSettings>
+
     <ChartSeriesCollection>
-        <ChartSeries DataSource="@MedalDetails" XName="X" YName="Y" Type="ChartSeriesType.Line">
+        <ChartSeries DataSource="@ChartDataDB" Name="Halt" XName="Date" YName="HaltCount" Type="ChartSeriesType.Column"
+                     LegendShape="LegendShape.Circle">
+            <ChartMarker  Height="10" Width="10" Shape="ChartShape.Diamond">
+                <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
+            </ChartMarker>
+        </ChartSeries>
+        <ChartSeries DataSource="@ChartDataDB" Name="Un Halt" XName="Date" YName="UnHaltCount" Type="ChartSeriesType.Column"
+                     LegendShape="LegendShape.Circle">
+            <ChartMarker Height="10" Width="10" Shape="ChartShape.Diamond">
+                <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
+            </ChartMarker>
+        </ChartSeries>
+        <ChartSeries DataSource="@ChartDataDB" Name="Decomission" XName="Date" YName="DecomCount" YAxisName="ZAxis"
+                     LegendShape="LegendShape.Circle">
+            <ChartMarker Height="10" Width="10" Shape="ChartShape.Diamond">
+                <ChartDataLabel Visible="true" Position="Syncfusion.Blazor.Charts.LabelPosition.Middle" />
+            </ChartMarker>
         </ChartSeries>
     </ChartSeriesCollection>
+
+    <ChartLegendSettings Visible="true" Position="LegendPosition.Top" Alignment="Alignment.Center" />
+
+    @*    <ChartLegendSettings Visible="true" Position="LegendPosition.Custom" Alignment="Alignment.Far">
+        <ChartLocation X="200" Y="150"/>
+        </ChartLegendSettings>*@
+
 </SfChart>
+
+@{
+    if(DailyChartPopUpData is not null)
+    {
+        <SfDialog Width="80%" ShowCloseIcon="true" @bind-Visible="@Visibility">
+            <DialogTemplates>
+                <Header>
+                    <span class="template-image e-avatar-xsmall e-avatar-circle"><img src="images/logo.png" alt="logo" style="width: 60px" class="mr-auto"></span>
+                    <div id="template" title="Requests" class="e-icon-settings">Requests Received on @ChartDataDate</div>
+                </Header>
+                <Content>
+                    <div class="dialogContent">
+                        <div class="row col-12">
+                            <SfGrid DataSource="@DailyChartPopUpData" AllowPaging="true" AllowSorting="true"
+                                Toolbar="@ToolbarItems" @ref="Grid_DailyRequest" ShowColumnChooser="true">
+                                <GridPageSettings PageSize="5"></GridPageSettings>
+                                <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+                                <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" ShowDeleteConfirmDialog="false"></GridEditSettings>
+                                <GridColumns>
+                                    <GridColumn Field="@nameof(SiteHUDRequestModel.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(SiteHUDRequestModel.RequesterName)" Width="180" HeaderText="Requester" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(SiteHUDRequestModel.UniqueId)" Width="180" HeaderText="Unique Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(SiteHUDRequestModel.GetSiteIds)" ClipMode="ClipMode.EllipsisWithTooltip" Width="430" HeaderText="Site IDs" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(SiteHUDRequestModel.RequestAction)" Width="150" HeaderText="Request Type" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(SiteHUDRequestModel.GetStatusString)" ClipMode="ClipMode.EllipsisWithTooltip" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(SiteHUDRequestModel.DateCreated)" Width="150" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
+                                            Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">
+                                    </GridColumn>
+                                    <GridColumn HeaderText="Doc." Width="100">
+                                        <Template>
+                                            @{
+                                                var request = (context as SiteHUDRequestModel);
+
+                                                if (request.SupportingDocument != null)
+                                                {
+                                                    <a title="Supporting Document" target="_blank" href="Documents/HUD/@request.SupportingDocument" class="btn btn-warning">
+                                                        <i class="fas fa-fw fa-paperclip"></i>
+                                                    </a>
+                                                }
+                                            }
+                                        </Template>
+                                    </GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                    </div>
+                </Content>
+            </DialogTemplates>
+            <DialogEvents Closed="@DialogClosed"></DialogEvents>
+        </SfDialog>   
+    }
+}

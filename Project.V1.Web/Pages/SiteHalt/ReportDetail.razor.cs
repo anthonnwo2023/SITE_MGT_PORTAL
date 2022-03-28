@@ -12,7 +12,7 @@
 
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
-        public SiteHaltRequestModel ReportRequest { get; set; }
+        public SiteHUDRequestModel ReportRequest { get; set; }
         [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
         public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
         public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();

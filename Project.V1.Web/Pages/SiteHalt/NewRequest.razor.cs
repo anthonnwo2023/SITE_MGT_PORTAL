@@ -20,7 +20,7 @@ public partial class NewRequest : IDisposable
     public string UploadFileName { get; set; }
     public string UploadPath { get; set; }
     public List<FilesManager> UploadedRequestFiles { get; set; } = new();
-    public SiteHaltRequestModel RequestModel { get; set; }
+    public SiteHUDRequestModel RequestModel { get; set; }
     public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();
@@ -250,7 +250,7 @@ public partial class NewRequest : IDisposable
         ErrorBtnOnClick();
     }
 
-    protected void ChangeRequestType(SiteHaltRequestModel requestModel)
+    protected void ChangeRequestType(SiteHUDRequestModel requestModel)
     {
         RequestModel = RequestModel.CopyTo(new HUDRequest(IHUDRequest, IRequestList.User));
         RequestModel.User = IRequestList.User;

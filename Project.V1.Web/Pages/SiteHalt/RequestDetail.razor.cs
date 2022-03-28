@@ -16,7 +16,7 @@ namespace Project.V1.Web.Pages.SiteHalt
 
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
-        public SiteHaltRequestModel RequestToUpdate { get; set; }
+        public SiteHUDRequestModel RequestToUpdate { get; set; }
         public string RequestSiteIds { get; set; }
         [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
         public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
@@ -206,7 +206,7 @@ namespace Project.V1.Web.Pages.SiteHalt
             }
         }
 
-        private bool ProcessAction<T>(T requestObj, dynamic request) where T : SiteHaltRequestModel
+        private bool ProcessAction<T>(T requestObj, dynamic request) where T : SiteHUDRequestModel
         {
             try
             {

@@ -13,7 +13,7 @@ public partial class RequestDetail : IDisposable
 
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
-    public SiteHaltRequestModel RequestToAction { get; set; }
+    public SiteHUDRequestModel RequestToAction { get; set; }
     [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
     public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
@@ -222,7 +222,7 @@ public partial class RequestDetail : IDisposable
         }
     }
 
-    private bool ProcessAction<T>(T requestObj, Dictionary<string, object> variables, dynamic request) where T : SiteHaltRequestModel
+    private bool ProcessAction<T>(T requestObj, Dictionary<string, object> variables, dynamic request) where T : SiteHUDRequestModel
     {
         try
         {

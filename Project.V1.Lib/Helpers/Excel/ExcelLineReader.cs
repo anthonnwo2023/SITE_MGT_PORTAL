@@ -4,10 +4,8 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace Project.V1.Lib.Helpers.Excel
@@ -167,19 +165,20 @@ namespace Project.V1.Lib.Helpers.Excel
         }
 
         // function that creates an object from the given data row
-        public static T CreateItemFromRow<T>(DataRow row) where T : new()
-        {
-            // create a new object
-            T item = new();
+        //public static T CreateItemFromRow<T>(DataRow row) where T : new()
+        //{
+        //    // create a new object
+        //    T item = new();
 
-            // set the item
-            SetItemFromRow(item, row);
+        //    // set the item
+        //    SetItemFromRow(item, row);
 
-            // return 
-            return item;
-        }
+        //    // return 
+        //    return item;
+        //}
 
         // function that creates an object from the given data row
+
         public static T CreateItemFromRowMapper<T>(DataRow row) where T : new()
         {
             // create a new object
@@ -192,21 +191,21 @@ namespace Project.V1.Lib.Helpers.Excel
             return item;
         }
 
-        public static void SetItemFromRow<T1>(T1 item, DataRow row) where T1 : new()
-        {
-            // go through each column
-            foreach (DataColumn c in row.Table.Columns)
-            {
-                // find the property for the column
-                PropertyInfo p = item.GetType().GetProperty(c.ColumnName);
+        //public static void SetItemFromRow<T1>(T1 item, DataRow row) where T1 : new()
+        //{
+        //    // go through each column
+        //    foreach (DataColumn c in row.Table.Columns)
+        //    {
+        //        // find the property for the column
+        //        PropertyInfo p = item.GetType().GetProperty(c.ColumnName);
 
-                // if exists, set the value
-                if (p != null && row[c] != DBNull.Value)
-                {
-                    p.SetValue(item, row[c], null);
-                }
-            }
-        }
+        //        // if exists, set the value
+        //        if (p != null && row[c] != DBNull.Value)
+        //        {
+        //            p.SetValue(item, row[c], null);
+        //        }
+        //    }
+        //}
 
         private static string GetExcelColumnName(Type type, string propertyName)
         {
@@ -219,55 +218,55 @@ namespace Project.V1.Lib.Helpers.Excel
             return "";
         }
 
-        private static void ParsePrimitive(PropertyInfo prop, object entity, object value)
-        {
-            if (prop.PropertyType == typeof(string))
-            {
-                prop.SetValue(entity, value.ToString().Trim(), null);
-            }
-            if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(int?))
-            {
-                if (value == null)
-                {
-                    prop.SetValue(entity, null, null);
-                }
-                else
-                {
-                    prop.SetValue(entity, int.Parse(value.ToString()), null);
-                }
-            }
-            if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(Nullable<DateTime>))
-            {
-                bool isValid = DateTime.TryParse(value.ToString(), out DateTime date);
+        //private static void ParsePrimitive(PropertyInfo prop, object entity, object value)
+        //{
+        //    if (prop.PropertyType == typeof(string))
+        //    {
+        //        prop.SetValue(entity, value.ToString().Trim(), null);
+        //    }
+        //    if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(int?))
+        //    {
+        //        if (value == null)
+        //        {
+        //            prop.SetValue(entity, null, null);
+        //        }
+        //        else
+        //        {
+        //            prop.SetValue(entity, int.Parse(value.ToString()), null);
+        //        }
+        //    }
+        //    if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(Nullable<DateTime>))
+        //    {
+        //        bool isValid = DateTime.TryParse(value.ToString(), out DateTime date);
 
-                if (isValid)
-                {
-                    prop.SetValue(entity, date, null);
-                }
-                else
-                {
-                    //Making an assumption here about the format of dates in the source data.
-                    isValid = DateTime.TryParseExact(value.ToString(), "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.AssumeLocal, out date);
-                    if (isValid)
-                    {
-                        prop.SetValue(entity, date, null);
-                    }
-                }
-            }
-            if (prop.PropertyType == typeof(decimal))
-            {
-                prop.SetValue(entity, decimal.Parse(value.ToString()), null);
-            }
-            if (prop.PropertyType == typeof(double) || prop.PropertyType == typeof(double?))
-            {
-                bool isValid = double.TryParse(value.ToString(), out _);
+        //        if (isValid)
+        //        {
+        //            prop.SetValue(entity, date, null);
+        //        }
+        //        else
+        //        {
+        //            //Making an assumption here about the format of dates in the source data.
+        //            isValid = DateTime.TryParseExact(value.ToString(), "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.AssumeLocal, out date);
+        //            if (isValid)
+        //            {
+        //                prop.SetValue(entity, date, null);
+        //            }
+        //        }
+        //    }
+        //    if (prop.PropertyType == typeof(decimal))
+        //    {
+        //        prop.SetValue(entity, decimal.Parse(value.ToString()), null);
+        //    }
+        //    if (prop.PropertyType == typeof(double) || prop.PropertyType == typeof(double?))
+        //    {
+        //        bool isValid = double.TryParse(value.ToString(), out _);
 
-                if (isValid)
-                {
-                    prop.SetValue(entity, double.Parse(value.ToString()), null);
-                }
-            }
-        }
+        //        if (isValid)
+        //        {
+        //            prop.SetValue(entity, double.Parse(value.ToString()), null);
+        //        }
+        //    }
+        //}
 
         public static void SetItemFromRowMapper<T1>(T1 item, DataRow row) where T1 : new()
         {
@@ -320,18 +319,18 @@ namespace Project.V1.Lib.Helpers.Excel
             }
         }
 
-        public static void Map(DataRow row, PropertyInfo prop, object entity, string columnName)
-        {
-            if (!String.IsNullOrWhiteSpace(columnName) && row.Table.Columns.Contains(columnName))
-            {
-                var propertyValue = row[columnName];
+        //public static void Map(DataRow row, PropertyInfo prop, object entity, string columnName)
+        //{
+        //    if (!String.IsNullOrWhiteSpace(columnName) && row.Table.Columns.Contains(columnName))
+        //    {
+        //        var propertyValue = row[columnName];
 
-                if (propertyValue != DBNull.Value)
-                {
-                    ParsePrimitive(prop, entity, row[columnName]);
-                }
-            }
-        }
+        //        if (propertyValue != DBNull.Value)
+        //        {
+        //            ParsePrimitive(prop, entity, row[columnName]);
+        //        }
+        //    }
+        //}
 
         private static bool IsAllowedHeaders(List<string> ExpectedHeaders, List<string> dtHeaders)
         {

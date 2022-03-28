@@ -9,14 +9,14 @@ public partial class ApproverWorklist : IDisposable
     [Inject] protected IUser IUser { get; set; }
     [Inject] public IHUDRequest IHUDRequest { get; set; }
 
-    List<SiteHaltRequestModel> HUDApproverRequests { get; set; } = new();
+    List<SiteHUDRequestModel> HUDApproverRequests { get; set; } = new();
 
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    protected SfGrid<SiteHaltRequestModel> Grid_Request { get; set; }
+    protected SfGrid<SiteHUDRequestModel> Grid_Request { get; set; }
 
     public List<string> ToolbarItems = new() { "Search" };
 

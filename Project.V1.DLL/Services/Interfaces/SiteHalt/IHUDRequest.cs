@@ -3,7 +3,7 @@ using System;
 
 namespace Project.V1.DLL.Services.Interfaces.SiteHalt
 {
-    public interface IHUDRequest : IRequestAction<SiteHaltRequestModel>, IDisposable
+    public interface IHUDRequest : IRequestAction<SiteHUDRequestModel>, IDisposable
     {
     }
 }

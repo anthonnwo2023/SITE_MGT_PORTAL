@@ -10,7 +10,7 @@
         [Inject] public IHUDRequest IHUDRequest { get; set; }
         [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
 
-        List<SiteHaltRequestModel> HUDReportRequests { get; set; } = new();
+        List<SiteHUDRequestModel> HUDReportRequests { get; set; } = new();
         public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
         public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
         public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();
@@ -18,7 +18,7 @@
         public List<RequestApproverModel> FirstLevelApprovers { get; set; } = new();
         public List<RequestApproverModel> SecondLevelApprovers { get; set; } = new();
         public List<RequestApproverModel> ThirdLevelApprovers { get; set; } = new();
-        public SiteHaltRequestModel RequestModel { get; set; }
+        public SiteHUDRequestModel RequestModel { get; set; }
 
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
@@ -27,7 +27,7 @@
 
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-        protected SfGrid<SiteHaltRequestModel> Grid_Request { get; set; }
+        protected SfGrid<SiteHUDRequestModel> Grid_Request { get; set; }
         protected bool[] CompleteButtons { get; set; }
         protected bool[] UpdateButtons { get; set; }
         private string RequestUniqueId { get; set; }

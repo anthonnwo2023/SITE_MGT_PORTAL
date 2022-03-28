@@ -13,7 +13,7 @@ public partial class RequestDetail
 
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
-    public SiteHaltRequestModel RequestToApprove { get; set; }
+    public SiteHUDRequestModel RequestToApprove { get; set; }
     [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
     public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
@@ -213,7 +213,7 @@ public partial class RequestDetail
         }
     }
 
-    private bool ProcessAction<T>(T requestObj, dynamic request) where T : SiteHaltRequestModel
+    private bool ProcessAction<T>(T requestObj, dynamic request) where T : SiteHUDRequestModel
     {
         try
         {

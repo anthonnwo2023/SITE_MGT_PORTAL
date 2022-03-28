@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions.SiteHalt
 {
-    public class DisapprovedState<T> : RequestStateBase<T> where T : SiteHaltRequestModel, IDisposable
+    public class DisapprovedState<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
     {
         public override bool Restart(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
