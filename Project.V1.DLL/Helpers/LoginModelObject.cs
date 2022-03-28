@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Interfaces;
 
@@ -17,6 +16,7 @@ namespace Project.V1.DLL.Helpers
         private static ICLogger _logger;
         private static IClaimService _claimService;
         private static IConfiguration _configuration;
+        private static ApplicationDbContext _context;
         private static UserManager<ApplicationUser> _userManager;
         private static RoleManager<IdentityRole> _roleManager;
         private static SignInManager<ApplicationUser> _signInManager;
@@ -30,6 +30,7 @@ namespace Project.V1.DLL.Helpers
         public static IClaimService ClaimService { get => _claimService; }
         public static IConfiguration Configuration { get => _configuration; }
         public static IHttpContextAccessor ContextAccessor { get => _contextAccessor; }
+        public static ApplicationDbContext Context { get => _context; }
         public static UserManager<ApplicationUser> UserManager { get => _userManager; }
         public static RoleManager<IdentityRole> RoleManager { get => _roleManager; }
         public static SignInManager<ApplicationUser> SignInManager { get => _signInManager; }
@@ -45,6 +46,7 @@ namespace Project.V1.DLL.Helpers
             _logger = serviceScope.ServiceProvider.GetService<ICLogger>();
             _claimService = serviceScope.ServiceProvider.GetService<IClaimService>();
             _configuration = serviceScope.ServiceProvider.GetService<IConfiguration>();
+            _context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
             _userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
             _roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
             _signInManager = serviceScope.ServiceProvider.GetService<SignInManager<ApplicationUser>>();

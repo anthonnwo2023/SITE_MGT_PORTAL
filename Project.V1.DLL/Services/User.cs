@@ -1,18 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Project.V1.Data;
-using Project.V1.DLL.Services.Interfaces;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
 using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.V1.Lib.Services
 {
@@ -416,7 +406,8 @@ namespace Project.V1.Lib.Services
 
                         foreach (string roleId in RoleIds)
                         {
-                            await _userManager.AddToRoleAsync(userExists, (await _roleManager.FindByIdAsync(roleId)).Name);
+                            var role = await _roleManager.FindByIdAsync(roleId);
+                            await _userManager.AddToRoleAsync(userExists, role.Name);
                         }
                     }
                     else

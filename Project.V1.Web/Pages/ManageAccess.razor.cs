@@ -1,5 +1,4 @@
-﻿using Syncfusion.Blazor.DropDowns;
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.Threading;
 
 namespace Project.V1.Web.Pages
@@ -52,13 +51,13 @@ namespace Project.V1.Web.Pages
             //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
-            public string SelectedUserPassword { get; set; } = "password";
+            public string SelectedUserPassword { get; set; }
 
             //[RequiredWhen(nameof(ShouldRequirePassword), true, AllowEmptyStrings = false, ErrorMessage = "Password is required for vendor accounts.")]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare(nameof(SelectedUserPassword), ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; } = "password";
+            public string ConfirmPassword { get; set; }
         }
 
         protected SfGrid<VendorModel> Grid_Vendor { get; set; }
