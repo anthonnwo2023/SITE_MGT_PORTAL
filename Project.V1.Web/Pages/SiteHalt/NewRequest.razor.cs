@@ -214,7 +214,9 @@ public partial class NewRequest : IDisposable
     {
         try
         {
+            DisableButton = true;
             RequestSiteIds = HUDRequestModel.SiteIds;
+            UploadIconCss = "fas fa-spin fa-spinner ml-2";
 
             if (HUDRequestModel.SiteIds.Length > 1999)
             {
