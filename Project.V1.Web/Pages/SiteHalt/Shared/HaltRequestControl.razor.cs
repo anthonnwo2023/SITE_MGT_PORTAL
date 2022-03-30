@@ -98,11 +98,11 @@ public partial class HaltRequestControl
                 {
                     SiteIDChips.AddChip(new()
                     {
-                        Text = chip,
-                        Value = chip,
+                        Text = chip.ToUpper(),
+                        Value = chip.ToUpper(),
                     });
 
-                    CurrentChips.Add(chip);
+                    CurrentChips.Add(chip.ToUpper());
                 }
             }
 

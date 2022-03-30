@@ -98,7 +98,7 @@ namespace Project.V1.Web.Pages.SiteHalt
             {
                 try
                 {
-                    if (!await UserAuth.IsAutorizedForAsync("Can:UpdateRequest"))
+                    if (!await UserAuth.IsAutorizedForAsync("Can:ReworkRequest"))
                     {
                         NavMan.NavigateTo("access-denied");
                     }
