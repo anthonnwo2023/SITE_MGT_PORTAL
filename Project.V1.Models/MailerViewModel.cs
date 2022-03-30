@@ -286,7 +286,6 @@ public class MailerViewModel<T> where T : class
                                                                 <p> Email : <b> " + ((dynamic)Request).Requester.Email + @" </b></p>
                                                                 " + Body + @"
                                                                 <p> Date Created: <b> " + ((dynamic)Request).DateCreated + @" </b></p>
-                                                                <p> Approval Status: <b> " + ((dynamic)Request).Status + @" </b></p>
                                                                 <p> Comment: " + ((dynamic)Request).Reason + @" </p>
                                                                 <p> Click <a href = '" + RequestLink + @"'> HERE </a> to login and view request</p>
                                                                 <p><b></b></span></p>

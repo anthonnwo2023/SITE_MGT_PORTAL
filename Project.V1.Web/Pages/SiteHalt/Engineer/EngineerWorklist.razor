@@ -257,41 +257,42 @@ else
                 }
             </Template>
         </GridColumn>
-        <GridColumn HeaderText="" Width="80">
+        @*<GridColumn HeaderText="" Width="80">
             <Template>
-                @{
-                    var request = (context as SiteHUDRequestModel);
-                    var index = HUDEngineerRequests.IndexOf(request);
+            @{
+            var request = (context as SiteHUDRequestModel);
+            var index = HUDEngineerRequests.IndexOf(request);
 
-                    if (HUDEngineerRequests.Count > 0)
-                        if (request.RequestAction != "UnHalt")
-                            if (!UpdateButtons[index])
-                            {
-                                <a title="Update Approvers" href="javascript:void(0)" @onclick='e => ShowUpdateApproverDialog(e, request.Id)' class="btn btn-primary"><i class="fas fa-pen"></i></a>
-                            }
-                            else
-                            {
-                                <a title="Processing Approvers" href="javascript:void(0)" class="btn btn-warning"><i class="@ButtonProcessingIconCss"></i></a>
-                            }
-                }
+            if (HUDEngineerRequests.Count > 0)
+            if (request.RequestAction != "UnHalt")
+            if (!UpdateButtons[index])
+            {
+            <a title="Update Approvers" href="javascript:void(0)" @onclick='e => ShowUpdateApproverDialog(e, request.Id)' class="btn btn-primary"><i class="fas fa-pen"></i></a>
+            }
+            else
+            {
+            <a title="Processing Approvers" href="javascript:void(0)" class="btn btn-warning"><i class="@ButtonProcessingIconCss"></i></a>
+            }
+            }
             </Template>
-        </GridColumn>
+            </GridColumn>*@
         <GridColumn HeaderText="" Width="80">
             <Template>
                 @{
                     var request = (context as SiteHUDRequestModel);
                     var index = HUDEngineerRequests.IndexOf(request);
 
-                    if (!CompleteButtons[index])
-                    {
-                        <SfButton CssClass="btn btn-success bg-dark p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonCompleteIconCss" OnClick='e => CompleteRequest(e, request)'
+                    if (HUDEngineerRequests.Count() > 0)
+                        if (!CompleteButtons[index])
+                        {
+                            <SfButton CssClass="btn btn-success bg-dark p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonCompleteIconCss" OnClick='e => CompleteRequest(e, request)'
                           IconPosition="IconPosition.Top"></SfButton>
-                    }
-                    else
-                    {
-                        <SfButton CssClass="btn btn-warning p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonProcessingIconCss"
+                        }
+                        else
+                        {
+                            <SfButton CssClass="btn btn-warning p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonProcessingIconCss"
                           IconPosition="IconPosition.Top"></SfButton>
-                    }
+                        }
                 }
             </Template>
         </GridColumn>
