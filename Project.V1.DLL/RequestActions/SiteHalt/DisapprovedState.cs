@@ -44,7 +44,7 @@
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + request.Requester.Name,
+                        Name = "Hello " + request.Requester.Name.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='red'><b>Request Disapproved by {ActionedBy.Fullname}</b></font> - See Details below:",
                         Comment = ActionedBy.ApproverComment,
@@ -65,11 +65,11 @@
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + ActionedBy.Fullname,
+                        Name = "Hello " + ActionedBy.Fullname.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='red'><b>Request Disapproved</b></font> - See Details below:",
                         Comment = ActionedBy.ApproverComment,
-                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Approver Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Notice"),
                         BodyType = "",
                         M2Uname = ActionedBy.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/genaral/{request.Id}",

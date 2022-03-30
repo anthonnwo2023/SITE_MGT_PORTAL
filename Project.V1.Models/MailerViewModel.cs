@@ -270,6 +270,7 @@ public class MailerViewModel<T> where T : class
                                                             <td align=left valign=top>
                                                                 <span style='font-size: 13 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'>
                                                                     <br /><p>" + Name + @",<br /></p>
+                                                                    <p><b></b></p>
                                                                 </span>
                                                             </td>
                                                         </tr>
@@ -284,12 +285,10 @@ public class MailerViewModel<T> where T : class
                                                                 <p> Requester : <b> " + ((dynamic)Request).Requester.Name + @" </b></p>  
                                                                 <p> Email : <b> " + ((dynamic)Request).Requester.Email + @" </b></p>
                                                                 " + Body + @"
-                                                                <p> Request Type: <b> " + RequestType + @" </b></p>
                                                                 <p> Date Created: <b> " + ((dynamic)Request).DateCreated + @" </b></p>
                                                                 <p> Approval Status: <b> " + ((dynamic)Request).Status + @" </b></p>
                                                                 <p> Comment: " + ((dynamic)Request).Reason + @" </p>
                                                                 <p> Click <a href = '" + RequestLink + @"'> HERE </a> to login and view request</p>
-                                                                <p> Kindly contact TSS team for further clarification </p>
                                                                 <p><b></b></span></p>
                                                                 <p>
                                                                     <span style = 'font-size: 6 px; color:#000000; font-family:Trebuchet MS, Myriad Pro, Arial'> Thank you.<br><br> Technical Systems Support Team<br> <br>

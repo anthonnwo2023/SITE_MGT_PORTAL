@@ -65,11 +65,12 @@
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + request.Requester.Name,
+                        Name = "Hello " + request.Requester.Name.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by ({(request as dynamic).ThirdApprover.Fullname})</b></font>, awaiting task to be completed - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
                         Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Body = $"<p> Approver 1 : <b>{(request as dynamic).FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{(request as dynamic).SecondApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p><p> Approver 3 : <b>{(request as dynamic).ThirdApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>",
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
@@ -86,11 +87,12 @@
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + (request as dynamic).ThirdApprover.Fullname,
+                        Name = "Hello " + (request as dynamic).ThirdApprover.Fullname.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved</b></font> - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
                         Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Body = $"<p> Approver 1 : <b>{(request as dynamic).FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{(request as dynamic).SecondApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p><p> Approver 3 : <b>{(request as dynamic).ThirdApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>",
                         BodyType = "",
                         M2Uname = (request as dynamic).ThirdApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
@@ -112,6 +114,7 @@
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Final Request Approval given by {(request as dynamic).ThirdApprover.Fullname}</b></font>, awaiting task to be completed - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
                         Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Action Notice"),
+                        Body = $"<p> Approver 1 : <b>{(request as dynamic).FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{(request as dynamic).SecondApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p><p> Approver 3 : <b>{(request as dynamic).ThirdApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>",
                         BodyType = "",
                         M2Uname = (request as dynamic).ThirdApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{(request as dynamic).Id}",

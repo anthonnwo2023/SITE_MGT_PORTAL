@@ -58,7 +58,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + user.Fullname,
+                        Name = "Hello " + user.Fullname.Trim(),
                         Title = "Notification of New Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='blue'><b>Request Restarted</b></font> - See Details below:",
                         Comment = $"{(request as dynamic).SiteIds}",
@@ -79,11 +79,11 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                 {
                     var emailObj = new SendEmailActionObj
                     {
-                        Name = "Hello " + (request as dynamic).FirstApprover.Fullname,
+                        Name = "Hello " + (request as dynamic).FirstApprover.Fullname.Trim(),
                         Title = "Notification of New Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='blue'><b>Restarted Request</b></font> - See Details below:",
                         Comment = $"{(request as dynamic).SiteIds}",
-                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} RF SM Approval Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} RF SM Action Notice"),
                         BodyType = "",
                         M2Uname = (request as dynamic).FirstApprover.Username?.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/{(request as dynamic).Id}",

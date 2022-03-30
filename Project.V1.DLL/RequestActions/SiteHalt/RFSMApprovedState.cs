@@ -59,7 +59,7 @@
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + request.Requester.Name,
+                        Name = "Hello " + request.Requester.Name.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by RF Senior Manager ({(request as dynamic).FirstApprover.Fullname})</b></font>, awaiting next approval - See Details below:",
                         Comment = (request as dynamic).FirstApprover.ApproverComment,
@@ -80,7 +80,7 @@
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + (request as dynamic).FirstApprover.Fullname,
+                        Name = "Hello " + (request as dynamic).FirstApprover.Fullname.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved</b></font> - See Details below:",
                         Comment = (request as dynamic).FirstApprover.ApproverComment,
@@ -101,11 +101,11 @@
                 {
                     return new SendEmailActionObj
                     {
-                        Name = "Hello " + (request as dynamic).SecondApprover.Fullname,
+                        Name = "Hello " + (request as dynamic).SecondApprover.Fullname.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by RF Senior Manager ({(request as dynamic).FirstApprover.Fullname})</b></font>, but awaiting your approval - See Details below:",
                         Comment = (request as dynamic).FirstApprover.ApproverComment,
-                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Approval Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Action Notice"),
                         BodyType = "",
                         M2Uname = (request as dynamic).SecondApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{(request as dynamic).Id}",
