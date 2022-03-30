@@ -180,6 +180,7 @@ namespace Project.V1.Web.Pages.SiteHalt
             try
             {
                 ButtonIconCss = "fas fa-spin fa-spinner ml-2";
+                DisableButton = true;
 
                 if (RequestToUpdate.SiteIds.Length > 1999)
                 {
@@ -196,6 +197,7 @@ namespace Project.V1.Web.Pages.SiteHalt
                     return;
                 }
 
+                DisableButton = false;
                 RequestToUpdate.SiteIds = RequestSiteIds;
                 await ThrowError("An error occurred, request could not be updated.");
             }

@@ -19,6 +19,7 @@ public partial class RequestDetail
     public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();
     private string ApproverClass { get; set; } = "FA";
+    public bool DisableButton { get; set; } = false;
 
     public RequestApproverModel FAApprover { get; set; }
     public RequestApproverModel SAApprover { get; set; }
@@ -181,6 +182,7 @@ public partial class RequestDetail
         try
         {
             ButtonIconCss = "fas fa-spin fa-spinner ml-2";
+            DisableButton = true;
 
             await IHUDRequest.SetState(RequestToApprove, "SiteHalt");
 
@@ -194,6 +196,7 @@ public partial class RequestDetail
             }
 
             ToastContent = "An error occurred, request could not be updated.";
+            DisableButton = false;
 
             await Task.Delay(200);
 
