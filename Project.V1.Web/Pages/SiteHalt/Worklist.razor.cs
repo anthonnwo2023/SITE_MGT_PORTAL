@@ -9,7 +9,7 @@
         [Inject] public ICLogger Logger { get; set; }
         [Inject] public IHUDRequest IHUDRequest { get; set; }
 
-        List<SiteHUDRequestModel> HUDWorklistRequests { get; set; } = new();
+        protected List<SiteHUDRequestModel> HUDMyWorklist { get; set; } = new();
 
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
@@ -43,7 +43,7 @@
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    HUDWorklistRequests = (await IHUDRequest.Get(x => x.Requester.Username == User.UserName && x.Status.Contains("Disapprove"), x => x.OrderByDescending(y => y.DateCreated))).ToList();
+                    HUDMyWorklist = (await IHUDRequest.Get(x => x.Requester.Username == User.UserName && x.Status.Contains("Disapprove"), x => x.OrderByDescending(y => y.DateCreated))).ToList();
 
                 }
                 catch (Exception ex)

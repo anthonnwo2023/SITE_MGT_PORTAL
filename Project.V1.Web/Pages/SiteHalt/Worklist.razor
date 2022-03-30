@@ -26,13 +26,13 @@
     }
 </style>
 
-@if (HUDWorklistRequests == null)
+@if (HUDMyWorklist == null)
 {
     <PageLoading />
 }
 else
 {
-    <SfGrid ID="RejectedRequestTable" DataSource="@HUDWorklistRequests" AllowPaging="true" AllowSorting="true"
+    <SfGrid ID="RejectedRequestTable" DataSource="@HUDMyWorklist" AllowPaging="true" AllowSorting="true"
         Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
         <GridPageSettings PageSize="5"></GridPageSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>

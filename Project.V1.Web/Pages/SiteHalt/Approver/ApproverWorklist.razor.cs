@@ -46,7 +46,7 @@ public partial class ApproverWorklist : IDisposable
 
                 HUDApproverRequests = (await IHUDRequest.Get(x => (x.FirstApprover.Username == User.UserName && !x.FirstApprover.IsActioned)
                     || (x.FirstApprover.IsApproved && x.SecondApprover.Username == User.UserName && !x.SecondApprover.IsActioned)
-                    || (x.FirstApprover.IsApproved && x.SecondApprover.IsApproved && x.ThirdApprover.Username == User.UserName && !x.ThirdApprover.IsActioned))).ToList();
+                    || (x.FirstApprover.IsApproved && x.SecondApprover.IsApproved && x.ThirdApprover.Username == User.UserName && !x.ThirdApprover.IsActioned), x => x.OrderByDescending(y => y.DateCreated))).ToList();
             }
             catch (Exception ex)
             {
