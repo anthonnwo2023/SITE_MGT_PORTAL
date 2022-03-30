@@ -1,12 +1,4 @@
-﻿using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Project.V1.Models.SiteHalt;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Project.V1.DLL.RequestActions.SiteHalt
+﻿namespace Project.V1.DLL.RequestActions.SiteHalt
 {
     public class RFSMApprovedState<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
     {
@@ -33,15 +25,16 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
 
                 request.Status = "FAApproved";
 
-                await _request.UpdateRequest(request, x => x.Id == request.Id);
+                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id);
 
-                await SendEmail(application, request);
+                if (isSaved)
+                    await SendEmail(application, request);
 
                 return true;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, ex.Message);
+                Log.Logger.Error(ex, $"{ex.Message}, {ex.InnerException}");
                 return false;
             }
         }
@@ -70,7 +63,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by RF Senior Manager ({(request as dynamic).FirstApprover.Fullname})</b></font>, awaiting next approval - See Details below:",
                         Comment = (request as dynamic).FirstApprover.ApproverComment,
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
@@ -91,7 +84,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved</b></font> - See Details below:",
                         Comment = (request as dynamic).FirstApprover.ApproverComment,
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
                         BodyType = "",
                         M2Uname = (request as dynamic).FirstApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
@@ -112,7 +105,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by RF Senior Manager ({(request as dynamic).FirstApprover.Fullname})</b></font>, but awaiting your approval - See Details below:",
                         Comment = (request as dynamic).FirstApprover.ApproverComment,
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Approval Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Approval Notice"),
                         BodyType = "",
                         M2Uname = (request as dynamic).SecondApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{(request as dynamic).Id}",

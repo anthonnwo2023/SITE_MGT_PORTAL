@@ -129,6 +129,7 @@ else
         <div class="col-md-12" style="">
             <div class="col-md 12 row">
                 <SingleRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="true" RequestModel="@RequestModel" 
+                    OnSpectrumChanged="SpectrumChange"
                      OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileUploadChange(e, "SSV")' CheckValid='IsSEValid'
                      ShowRequired="true"/>
                 

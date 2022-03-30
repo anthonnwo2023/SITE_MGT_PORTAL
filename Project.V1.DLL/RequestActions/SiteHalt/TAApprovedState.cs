@@ -30,15 +30,16 @@
 
                 request.Status = "TAApproved";
 
-                await _request.UpdateRequest(request, x => x.Id == request.Id);
+                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id);
 
-                await SendEmail(application, request);
+                if (isSaved)
+                    await SendEmail(application, request);
 
                 return true;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, ex.Message);
+                Log.Logger.Error(ex, $"{ex.Message}, {ex.InnerException}");
                 return false;
             }
         }
@@ -68,7 +69,7 @@
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by ({(request as dynamic).ThirdApprover.Fullname})</b></font>, awaiting task to be completed - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
@@ -89,7 +90,7 @@
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved</b></font> - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
                         BodyType = "",
                         M2Uname = (request as dynamic).ThirdApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
@@ -110,7 +111,7 @@
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Final Request Approval given by {(request as dynamic).ThirdApprover.Fullname}</b></font>, awaiting task to be completed - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Action Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Action Notice"),
                         BodyType = "",
                         M2Uname = (request as dynamic).ThirdApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{(request as dynamic).Id}",

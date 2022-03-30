@@ -88,7 +88,7 @@
 
 <BreadcrumbHalt OnAuthenticationCheck="AuthenticationCheck" Paths="@Paths" />
 
-@if (RequestModel == null)
+@if (HUDRequestModel == null)
 {
     <PageLoading />
 }
@@ -102,12 +102,12 @@ else
         </SfToast>
     </div>
 
-    <EditForm Model="@RequestModel" OnValidSubmit='HandleValidSubmit' class="">
+    <EditForm Model="@HUDRequestModel" OnValidSubmit='HandleValidSubmit' class="">
         <ObjectGraphDataAnnotationsValidator />
 
         <div class="col-md-12" style="">
             <div class="col-md-12">
-                <HaltRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="true" RequestModel="@RequestModel"
+                <HaltRequestControl OnCheckValidButton="@EnableDisableActionButton" ShouldEnable="true" HUDRequestModel="@HUDRequestModel"
                                 OnClear="OnClear" OnRemove="OnRemove" OnFileSSVUploadChange='e => OnFileUploadChange(e, "HUD")'
                                 ShowRequired="true" OnRequestTypeChange="ChangeRequestType" BaseSecondLevelApprovers="BaseSecondLevelApprovers"
                                 BaseThirdLevelApprovers="BaseThirdLevelApprovers" BaseFirstLevelApprovers="BaseFirstLevelApprovers"/>

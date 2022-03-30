@@ -78,7 +78,7 @@ public partial class EngineerWorklist : IDisposable
                 User = await IUser.GetUserByUsername(Principal.Identity.Name);
                 var userRegionIds = User.Regions.Select(x => x.Id);
 
-                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed")).ToList();
+                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed", x => x.OrderByDescending(y => y.DateCreated))).ToList();
                 CompleteButtons = new bool[HUDEngineerRequests.Count];
                 UpdateButtons = new bool[HUDEngineerRequests.Count];
 

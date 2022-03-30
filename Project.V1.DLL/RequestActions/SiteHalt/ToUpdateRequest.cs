@@ -1,12 +1,4 @@
-﻿using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Project.V1.Models.SiteHalt;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Project.V1.DLL.RequestActions.SiteHalt
+﻿namespace Project.V1.DLL.RequestActions.SiteHalt
 {
     public class ToUpdateRequest<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
     {
@@ -51,7 +43,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Updated by ()</b></font> - See Details below:",
                         Comment = (request as dynamic).ThirdApprover.ApproverComment,
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
                         BodyType = "",
                         Body = $"<p> Approver 1 : <b>{(request as dynamic).FirstApprover?.Fullname} </b></p><p> Approver 2 : <b>{(request as dynamic).SecondApprover?.Fullname} </b></p><p> Approver 3 : <b>{(request as dynamic).ThirdApprover?.Fullname} </b></p>",
                         M2Uname = request.Requester.Username.ToLower().Trim(),

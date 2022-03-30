@@ -10,6 +10,7 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] public ICLogger Logger { get; set; }
         [Inject] protected IRequest IRequest { get; set; }
         [Inject] protected ISpectrum ISpectrum { get; set; }
+        [Inject] protected IProjectType IProjectType { get; set; }
         [Inject] protected IRequestListObject IRequestList { get; set; }
         [Inject] AppState AppState { get; set; }
 
@@ -133,6 +134,11 @@ namespace Project.V1.Web.Pages.Acceptance
                     BulkRequestInvalidData.Add(RequestModel);
                 }
             }
+        }
+
+        private async void SpectrumChange(string spectrumId)
+        {
+            IRequestList.ProjectTypes = await IProjectType.Get(x => x.SpectrumId == spectrumId);
         }
 
         protected override void OnInitialized()
@@ -303,6 +309,7 @@ namespace Project.V1.Web.Pages.Acceptance
             await IRequestList.Initialize(Principal, "SMPObject");
             FileUploader.Initialize(IRequestList, Logger);
             IRequestList.Spectrums = new();
+            IRequestList.ProjectTypes = new();
             ShowOffPeakNotice = IsPeakPeriod();
 
             RequestModel = new();
@@ -330,11 +337,13 @@ namespace Project.V1.Web.Pages.Acceptance
             ShowInvalidDialog = false;
             BulkWaiverUploadSelected = false;
             IRequestList.Spectrums = new();
+            IRequestList.ProjectTypes = new();
 
             if (BulkUploadSelected)
             {
                 UploadedRequestFiles.AddRange(InitializeUploadFiles());
                 IRequestList.Spectrums = ISpectrum.Get(x => x.IsActive).GetAwaiter().GetResult().OrderBy(x => x.Name).ToList();
+                IRequestList.ProjectTypes = IProjectType.Get(x => x.IsActive).GetAwaiter().GetResult().OrderBy(x => x.Name).ToList();
             }
 
             EnableDisableActionButton(IsRRUType);

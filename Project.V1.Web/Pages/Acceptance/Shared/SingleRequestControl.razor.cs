@@ -10,6 +10,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Parameter] public RequestViewModel RequestModel { get; set; }
         [Parameter] public EventCallback<bool> CheckValid { get; set; }
         [Parameter] public List<FilesManager> UploadedRequestFiles { get; set; }
+        [Parameter] public EventCallback<string> OnSpectrumChanged { get; set; }
         [Parameter] public EventCallback<bool> OnCheckValidButton { get; set; }
         [Parameter] public EventCallback<ClearingEventArgs> OnClear { get; set; }
         [Parameter] public EventCallback<RemovingEventArgs> OnRemove { get; set; }
@@ -20,6 +21,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Inject] protected IRequest IRequest { get; set; }
         [Inject] protected IRequestListObject IRequestList { get; set; }
         [Inject] protected ISpectrum ISpectrum { get; set; }
+        [Inject] protected IProjectType IProjectType { get; set; }
         [Inject] protected IUser IUser { get; set; }
 
 
@@ -84,7 +86,10 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             await IRequestList.Initialize(Principal, "SMPObject");
 
             if (RequestModel.TechTypeId != null)
-                IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+                IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId, x => x.OrderBy(y => y.Name));
+
+            if (RequestModel.SpectrumId != null)
+                IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive && x.SpectrumId == RequestModel.SpectrumId, x => x.OrderBy(y => y.Name));
 
             await OnCheckValidButton.InvokeAsync(false);
 
@@ -137,22 +142,17 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
 
         public async Task OnSpectrumChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, SpectrumViewModel> args)
         {
-            var specturm = IRequestList.Spectrums.FirstOrDefault(x => x.Id == args.Value)?.Name;
+            var specturm = IRequestList.Spectrums.FirstOrDefault(x => x.Id == args.Value);
 
-            if (specturm == null)
-            {
-                IsRRUType = false;
-            }
-            else
+            IsRRUType = false;
+
+            if (specturm?.Name != null)
             {
                 await CheckIfSEValid();
 
-                IsRRUType = false;
+                IsRRUType = specturm.Name.Contains("RRU");
 
-                if (specturm.Contains("RRU"))
-                {
-                    IsRRUType = true;
-                }
+                await OnSpectrumChanged.InvokeAsync(specturm.Id);
             }
 
             await OnCheckValidButton.InvokeAsync(IsRRUType);

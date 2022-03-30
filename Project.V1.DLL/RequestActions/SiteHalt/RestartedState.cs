@@ -1,11 +1,4 @@
 ﻿using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Project.V1.Models.SiteHalt;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions.SiteHalt
 {
@@ -32,15 +25,16 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
             {
                 string application = variables["App"] as string;
 
-                await _request.UpdateRequest(request, x => x.Id == request.Id);
+                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id);
 
-                await SendEmail(application, request);
+                if (isSaved)
+                    await SendEmail(application, request);
 
                 return true;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, ex.Message);
+                Log.Logger.Error(ex, $"{ex.Message}, {ex.InnerException}");
                 return false;
             }
         }
@@ -68,7 +62,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                         Title = "Notification of New Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='blue'><b>Request Restarted</b></font> - See Details below:",
                         Comment = $"{(request as dynamic).SiteIds}",
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Notice"),
                         BodyType = "",
                         M2Uname = user.UserName.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/general/{(request as dynamic).Id}",
@@ -89,7 +83,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                         Title = "Notification of New Request - See Below Request Details",
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='blue'><b>Restarted Request</b></font> - See Details below:",
                         Comment = $"{(request as dynamic).SiteIds}",
-                        Subject = ($"Halt | Unhalt | Decomission (HUD) {(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} RF SM Approval Notice"),
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} RF SM Approval Notice"),
                         BodyType = "",
                         M2Uname = (request as dynamic).FirstApprover.Username?.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/{(request as dynamic).Id}",

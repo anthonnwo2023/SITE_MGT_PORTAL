@@ -9,7 +9,7 @@ public partial class HaltRequestControl
     [Parameter] public bool ShowCopyText { get; set; } = true;
     [Parameter] public bool ShowRequired { get; set; }
     [Parameter] public bool ShowSSVUpload { get; set; } = true;
-    [Parameter] public SiteHUDRequestModel RequestModel { get; set; }
+    [Parameter] public SiteHUDRequestModel HUDRequestModel { get; set; }
     [Parameter] public EventCallback<SiteHUDRequestModel> OnRequestTypeChange { get; set; }
     [Parameter] public List<FilesManager> UploadedRequestFiles { get; set; }
     [Parameter] public EventCallback<bool> OnCheckValidButton { get; set; }
@@ -53,7 +53,7 @@ public partial class HaltRequestControl
     //};
     private async Task CopyTextToClipboard()
     {
-        await JSRuntime.InvokeVoidAsync("copyToClipboard", RequestModel.SiteIds);
+        await JSRuntime.InvokeVoidAsync("copyToClipboard", HUDRequestModel.SiteIds);
     }
 
     private void OnDelete(ChipDeletedEventArgs args)
@@ -65,7 +65,7 @@ public partial class HaltRequestControl
         if (CurrentChips.Contains(args.Text))
             CurrentChips.Remove(args.Text);
 
-        RequestModel.SiteIds = string.Join(", ", CurrentChips);
+        HUDRequestModel.SiteIds = string.Join(", ", CurrentChips);
 
         //await OnCheckValidButton.InvokeAsync(true);
 
@@ -106,30 +106,30 @@ public partial class HaltRequestControl
                 }
             }
 
-        RequestModel.SiteIds = (ShouldEnable) ? string.Join(", ", CurrentChips) : RequestModel.SiteIds;
+        HUDRequestModel.SiteIds = (ShouldEnable) ? string.Join(", ", CurrentChips) : HUDRequestModel.SiteIds;
 
         StateHasChanged();
     }
 
     private void BlurHandler(FocusOutEventArgs args)
     {
-        CreateChips(RequestModel.GetSiteIds);
+        CreateChips(HUDRequestModel.GetSiteIds);
     }
 
     private async void SetRequestType(MouseEventArgs args, string value)
     {
-        RequestModel.RequestAction = string.Empty;
-        RequestModel.ShouldRequireApprovers = !string.IsNullOrWhiteSpace(RequestModel.SiteIds);
+        HUDRequestModel.RequestAction = string.Empty;
+        HUDRequestModel.ShouldRequireApprovers = !string.IsNullOrWhiteSpace(HUDRequestModel.SiteIds);
 
         if (!string.IsNullOrWhiteSpace(value))
         {
-            RequestModel.ShouldRequireApprovers = !value.Equals("UnHalt");
+            HUDRequestModel.ShouldRequireApprovers = !value.Equals("UnHalt");
 
-            RequestModel.RequestAction = value;
+            HUDRequestModel.RequestAction = value;
 
-            await OnRequestTypeChange.InvokeAsync(RequestModel);
+            await OnRequestTypeChange.InvokeAsync(HUDRequestModel);
 
-            CreateChips(RequestModel.GetSiteIds);
+            CreateChips(HUDRequestModel.GetSiteIds);
         }
 
         StateHasChanged();
@@ -165,11 +165,11 @@ public partial class HaltRequestControl
         //    RequestModel.SiteIds = (RequestModel.SiteIds.Contains(".txt"))
         //        ? TextFileExtension.Initialize("HUD_SiteID", RequestModel.SiteIds).ReadFromFile() : RequestModel.SiteIds;
 
-        if (RequestModel.ThirdApprover != null)
-            SecondLevelApprovers.Remove(SecondLevelApprovers.FirstOrDefault(x => x.Username == RequestModel.ThirdApprover.Username));
+        if (HUDRequestModel.ThirdApprover != null)
+            SecondLevelApprovers.Remove(SecondLevelApprovers.FirstOrDefault(x => x.Username == HUDRequestModel.ThirdApprover.Username));
 
-        if (RequestModel.SecondApprover != null)
-            ThirdLevelApprovers.Remove(ThirdLevelApprovers.FirstOrDefault(x => x.Username == RequestModel.SecondApprover.Username));
+        if (HUDRequestModel.SecondApprover != null)
+            ThirdLevelApprovers.Remove(ThirdLevelApprovers.FirstOrDefault(x => x.Username == HUDRequestModel.SecondApprover.Username));
 
         await IRequestList.Initialize(Principal, "HUDObject");
     }
@@ -183,8 +183,8 @@ public partial class HaltRequestControl
     {
         if (firstRender)
         {
-            if (!string.IsNullOrWhiteSpace(RequestModel.GetSiteIds))
-                CreateChips(RequestModel.GetSiteIds);
+            if (!string.IsNullOrWhiteSpace(HUDRequestModel.GetSiteIds))
+                CreateChips(HUDRequestModel.GetSiteIds);
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -199,28 +199,28 @@ public partial class HaltRequestControl
 
         if (approver.Equals("approver1"))
         {
-            RequestModel.FirstApprover = args.ItemData;
+            HUDRequestModel.FirstApprover = args.ItemData;
         }
 
         if (approver.Equals("approver2"))
         {
-            var approver3 = (!string.IsNullOrWhiteSpace(RequestModel.ThirdApproverId))
-                ? BaseThirdLevelApprovers.FirstOrDefault(x => x.Id == RequestModel.ThirdApproverId)
+            var approver3 = (!string.IsNullOrWhiteSpace(HUDRequestModel.ThirdApproverId))
+                ? BaseThirdLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.ThirdApproverId)
                 : new RequestApproverModel();
             ThirdLevelApprovers.Remove(args.ItemData);
             SecondLevelApprovers.Remove(approver3);
 
-            RequestModel.SecondApprover = args.ItemData;
+            HUDRequestModel.SecondApprover = args.ItemData;
         }
         if (approver.Equals("approver3"))
         {
-            var approver2 = (!string.IsNullOrWhiteSpace(RequestModel.SecondApproverId))
-                ? BaseSecondLevelApprovers.FirstOrDefault(x => x.Id == RequestModel.SecondApproverId)
+            var approver2 = (!string.IsNullOrWhiteSpace(HUDRequestModel.SecondApproverId))
+                ? BaseSecondLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.SecondApproverId)
                 : new RequestApproverModel();
             SecondLevelApprovers.Remove(args.ItemData);
             ThirdLevelApprovers.Remove(approver2);
 
-            RequestModel.ThirdApprover = args.ItemData;
+            HUDRequestModel.ThirdApprover = args.ItemData;
         }
 
         StateHasChanged();
@@ -228,6 +228,6 @@ public partial class HaltRequestControl
 
     private void TechSelectHandler(MultiSelectChangeEventArgs<string[]> args)
     {
-        RequestModel.TechTypeIds = args?.Value;
+        HUDRequestModel.TechTypeIds = args?.Value;
     }
 }

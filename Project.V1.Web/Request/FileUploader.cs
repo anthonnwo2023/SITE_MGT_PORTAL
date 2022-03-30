@@ -159,11 +159,11 @@
 
                             request.AntennaMakeId = (request.AntennaMakeId != null) ? AntennaMakes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.AntennaMakeId.ToUpper())?.Id : request.AntennaMakeId;
                             request.AntennaTypeId = (request.AntennaTypeId != null) ? AntennaTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.AntennaTypeId.ToUpper())?.Id : request.AntennaTypeId;
-                            request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper())?.Id : request.ProjectTypeId;
                             request.RegionId = (request.RegionId != null) ? Regions.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.RegionId.ToUpper())?.Id : request.RegionId;
                             request.SummerConfigId = (request.SummerConfigId != null) ? SummerConfigs.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.SummerConfigId.ToUpper())?.Id : request.SummerConfigId;
                             request.TechTypeId = (request.TechTypeId != null) ? TechTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.TechTypeId.ToUpper())?.Id : request.TechTypeId;
                             request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.SpectrumId.ToUpper() && x.TechTypeId == request.TechTypeId)?.Id : request.SpectrumId;
+                            request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper() && x.SpectrumId == request.SpectrumId)?.Id : request.ProjectTypeId;
                             request.ProjectNameId = (request.ProjectNameId != null) ? Projects.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectNameId.ToUpper())?.Id : request.ProjectNameId;
 
                             requests.Add(request);
@@ -183,13 +183,13 @@
             if (!valid) return ("Technology", valid);
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.RegionId.ToUpper(), Regions);
             if (!valid) return (error, valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.SpectrumId.ToUpper() && x.TechType.Name == request.TechTypeId, Spectrums);
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.SpectrumId.ToUpper() && x.TechType.Name.ToUpper() == request.TechTypeId.ToUpper(), Spectrums);
             if (!valid) return (error, valid);
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.State.ToUpper(), NigerianStates);
             if (!valid) return ("State", valid);
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectNameId.ToUpper(), Projects);
             if (!valid) return ("Project Name", valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper(), ProjectTypes); ;
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper() && x.Spectrum.Name.ToUpper() == request.SpectrumId.ToUpper(), ProjectTypes);
             if (!valid) return ("Project Type", valid);
 
             if (string.IsNullOrEmpty(request.SiteName))

@@ -1,4 +1,6 @@
-﻿namespace Project.V1.Web.Pages.Acceptance;
+﻿using Project.V1.Web.Request;
+
+namespace Project.V1.Web.Pages.Acceptance;
 
 public partial class ActionRequest : IDisposable
 {
@@ -7,15 +9,9 @@ public partial class ActionRequest : IDisposable
     [Inject] protected NavigationManager NavMan { get; set; }
     [Inject] public ICLogger Logger { get; set; }
     [Inject] protected IRequest IRequest { get; set; }
-    [Inject] protected IRegion IRegion { get; set; }
+    [Inject] protected IRequestListObject IRequestList { get; set; }
     [Inject] protected ISpectrum ISpectrum { get; set; }
-    [Inject] protected ISummerConfig ISummerConfig { get; set; }
     [Inject] protected IProjectType IProjectType { get; set; }
-    [Inject] protected IProjects IRRUType { get; set; }
-    [Inject] protected ITechType ITechType { get; set; }
-    [Inject] protected IAntennaType IAntennaType { get; set; }
-    [Inject] protected IAntennaMake IAntennaMake { get; set; }
-    [Inject] protected IBaseBand IBaseBand { get; set; }
     [Inject] protected IUser IUser { get; set; }
     [Inject] AppState AppState { get; set; }
 
@@ -24,15 +20,7 @@ public partial class ActionRequest : IDisposable
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
     public List<PathInfo> Paths { get; set; }
-    public List<RegionViewModel> Regions { get; set; }
-    public List<SummerConfigModel> SummerConfigs { get; set; }
-    public List<ProjectTypeModel> ProjectTypes { get; set; }
-    public List<ProjectModel> RRUTypes { get; set; }
-    public List<TechTypeModel> TechTypes { get; set; }
-    public List<AntennaMakeModel> AntennaMakes { get; set; }
-    public List<AntennaTypeModel> AntennaTypes { get; set; }
     public List<SpectrumViewModel> Spectrums { get; set; }
-    public List<BaseBandModel> Basebands { get; set; }
     public RequestViewModel RequestModel { get; set; }
     public InputModel Input { get; set; } = new();
     public string PageText { get; set; } = "Action";
@@ -178,17 +166,10 @@ public partial class ActionRequest : IDisposable
         Principal = (await AuthenticationStateTask).User;
         User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-
-        Regions = await IRegion.Get(x => x.IsActive);
-        SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
-        ProjectTypes = await IProjectType.Get(x => x.IsActive);
-        RRUTypes = (User.Vendor.Name == "MTN Nigeria") ? (await IRRUType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IRRUType.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
-        TechTypes = await ITechType.Get(x => x.IsActive);
-        AntennaTypes = await IAntennaType.Get(x => x.IsActive);
-        AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
-        Basebands = (Principal.IsInRole("Super Admin"))
-            ? await IBaseBand.Get(x => x.IsActive)
-            : await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId);
+        await IRequestList.Initialize(Principal, "SMPObject");
+        FileUploader.Initialize(IRequestList, Logger);
+        IRequestList.Spectrums = new();
+        IRequestList.ProjectTypes = new();
 
         RequestModel = new();
         Input = new();
@@ -205,6 +186,11 @@ public partial class ActionRequest : IDisposable
 
         [Required]
         public string Status { get; set; }
+    }
+
+    private async void SpectrumChange(string spectrumId)
+    {
+        IRequestList.ProjectTypes = await IProjectType.Get(x => x.SpectrumId == spectrumId);
     }
 
     protected async Task AuthenticationCheck(bool isAuthenticated)

@@ -4,4 +4,8 @@
 [Index(new string[] { nameof(Name) }, IsUnique = true)]
 public class ProjectTypeModel : ObjectBase
 {
+    public string SpectrumId { get; set; }
+
+    [ForeignKey(nameof(SpectrumId))]
+    public virtual SpectrumViewModel Spectrum { get; set; }
 }

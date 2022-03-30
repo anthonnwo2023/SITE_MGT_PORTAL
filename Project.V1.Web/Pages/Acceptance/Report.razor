@@ -47,10 +47,10 @@ else
                 <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit"
                                Width="80" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
-                <GridColumn Field="@nameof(RequestViewModel.UniqueId)" HeaderText="Unique Id" TextAlign="TextAlign.Left"
+                <GridColumn Visible="false" Field="@nameof(RequestViewModel.UniqueId)" HeaderText="Unique Id" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridColumn Field="@nameof(RequestViewModel.BulkBatchNumber)" HeaderText="Batch Number" TextAlign="TextAlign.Left"
+                <GridColumn Visible="false" Field="@nameof(RequestViewModel.BulkBatchNumber)" HeaderText="Batch Number" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.Vendor)" HeaderText="Vendor" TextAlign="TextAlign.Left" AllowSearching="true"
@@ -68,7 +68,7 @@ else
                 <GridForeignColumn Field="@nameof(RequestViewModel.RegionId)" HeaderText="Region" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Regions" EditType="EditType.DropDownEdit"
                                Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit"
                                Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.Bandwidth)" HeaderText="Bandwidth" TextAlign="TextAlign.Left"
@@ -107,7 +107,7 @@ else
                 <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.ProjectNameId)" HeaderText="Project Name" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Projects" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.ProjectTypeId)" HeaderText="Project Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@ProjectTypes" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectTypeId)" HeaderText="Project Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@ProjectTypes" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.ProjectYear)" HeaderText="Project Year" TextAlign="TextAlign.Center"
@@ -150,7 +150,7 @@ else
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                         Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.DateActioned)" HeaderText="Date Actioned" TextAlign="TextAlign.Center"
+                <GridColumn Field="@nameof(RequestViewModel.DateActioned)" HeaderText="Date Actioned" TextAlign="TextAlign.Center"
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                         Width="160" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
@@ -163,7 +163,7 @@ else
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.EngineerComment)" HeaderText="Engineer Comment" TextAlign="TextAlign.Left"
                         Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
-                <GridColumn HeaderText="Bulk" Width="100" AllowFiltering="false">
+                <GridColumn Visible="false" HeaderText="Bulk" Width="100" AllowFiltering="false">
                     <Template>
                         @{
                         var request = (context as RequestViewModel);
@@ -175,7 +175,7 @@ else
                     }
                 </Template>
             </GridColumn>
-            <GridColumn HeaderText="SSV" Width="80" AllowFiltering="false">
+            <GridColumn Visible="false" HeaderText="SSV" Width="80" AllowFiltering="false">
                 <Template>
                     @{
                         var request = (context as RequestViewModel);
