@@ -53,7 +53,7 @@
                     var userRegionIds = User.Regions.Select(x => x.Id);
 
                     RequestEngWorklists = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && (x.Status == "Pending" || x.Status == "Reworked"
-                                            || x.Status == "Restarted"), x => x.OrderByDescending(x => x.DateCreated), "Requester,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
+                                            || x.Status == "Restarted"), x => x.OrderByDescending(x => x.DateCreated), "Requester.Vendor")).ToList();
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
                     Spectrums = await ISpectrum.Get(x => x.IsActive);

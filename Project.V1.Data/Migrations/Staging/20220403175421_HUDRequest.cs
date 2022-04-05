@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 #nullable disable
 
@@ -81,13 +81,13 @@ namespace Project.V1.Data.Migrations.Staging
                         column: x => x.TechTypesId,
                         principalTable: "TBL_RFACCEPT_TECHTYPES",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_TBL_RFHUD_REQUESTS_TECH_TBL_RFHUD_REQUESTS_HUDRequestsId",
                         column: x => x.HUDRequestsId,
                         principalTable: "TBL_RFHUD_REQUESTS",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
