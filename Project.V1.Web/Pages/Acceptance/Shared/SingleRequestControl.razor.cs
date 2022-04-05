@@ -86,7 +86,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             await IRequestList.Initialize(Principal, "SMPObject");
 
             if (RequestModel.TechTypeId != null)
-                IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId, x => x.OrderBy(y => y.Name));
+                IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId, x => x.OrderBy(y => y.Name), "TechType");
 
             if (RequestModel.SpectrumId != null)
                 IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive && x.SpectrumId == RequestModel.SpectrumId, x => x.OrderBy(y => y.Name), "Spectrum");
@@ -124,7 +124,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             try
             {
                 IsRRUType = false;
-                IRequestList.Spectrums = (await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive)).OrderBy(x => x.Name).ToList();
+                IRequestList.Spectrums = (await ISpectrum.Get(x => x.TechTypeId == args.Value && x.IsActive, x => x.OrderBy(y => y.Name), "TechType")).ToList();
             }
             catch (Exception ex)
             {

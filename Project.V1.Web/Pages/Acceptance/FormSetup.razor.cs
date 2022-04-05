@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq.Expressions;
+using System.Threading;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -357,8 +358,8 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             cts.Token.ThrowIfCancellationRequested();
 
-            string spectrumId = data.Id;
-            var (result, error) = await genericRepo.Delete(data, x => x.Id == spectrumId);
+            string itemId = data.Id;
+            var (result, error) = await genericRepo.Delete(data, x => x.Id == itemId);
 
             await HandleOpResponse(grid, error, data);
 
@@ -366,11 +367,11 @@ namespace Project.V1.Web.Pages.Acceptance
             return result as T;
         }
 
-        private async Task<T> ProcessAdd<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid) where T : ObjectBase
+        private async Task<T> ProcessAdd<T>(IGenericRepo<T> genericRepo, T data, SfGrid<T> grid, Expression<Func<T, bool>> filter) where T : ObjectBase
         {
             cts.Token.ThrowIfCancellationRequested();
 
-            var Exists = await genericRepo.GetById(x => x.Name == data.Name);
+            var Exists = await genericRepo.GetById(filter);
 
             if (Exists?.Name == null)
             {
@@ -507,7 +508,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(ISpectrum, data as SpectrumViewModel, Grid_Spectrum);
+                        var result = await ProcessAdd(ISpectrum, data as SpectrumViewModel, Grid_Spectrum, x => x.Name == (data as SpectrumViewModel).Name);
 
                         return result as T;
                     }
@@ -520,7 +521,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(IRegion, data as RegionViewModel, Grid_Region);
+                        var result = await ProcessAdd(IRegion, data as RegionViewModel, Grid_Region, x => x.Name == (data as RegionViewModel).Name);
 
                         return result as T;
                     }
@@ -533,7 +534,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(IAntennaMake, data as AntennaMakeModel, Grid_AntennaMake);
+                        var result = await ProcessAdd(IAntennaMake, data as AntennaMakeModel, Grid_AntennaMake, x => x.Name == (data as AntennaMakeModel).Name);
 
                         return result as T;
                     }
@@ -546,7 +547,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(IAntennaType, data as AntennaTypeModel, Grid_AntennaType);
+                        var result = await ProcessAdd(IAntennaType, data as AntennaTypeModel, Grid_AntennaType, x => x.Name == (data as AntennaTypeModel).Name);
 
                         return result as T;
                     }
@@ -559,7 +560,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(ISummerConfig, data as SummerConfigModel, Grid_SummerConfig);
+                        var result = await ProcessAdd(ISummerConfig, data as SummerConfigModel, Grid_SummerConfig, x => x.Name == (data as SummerConfigModel).Name);
 
                         return result as T;
                     }
@@ -572,7 +573,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(IProjectType, data as ProjectTypeModel, Grid_ProjectType);
+                        var dataObj = data as ProjectTypeModel;
+
+                        var result = await ProcessAdd(IProjectType, dataObj, Grid_ProjectType, x => x.Name == dataObj.Name && x.SpectrumId == dataObj.SpectrumId);
 
                         return result as T;
                     }
@@ -585,7 +588,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(ITechType, data as TechTypeModel, Grid_TechType);
+                        var result = await ProcessAdd(ITechType, data as TechTypeModel, Grid_TechType, x => x.Name == (data as TechTypeModel).Name);
 
                         return result as T;
                     }
@@ -598,7 +601,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 {
                     try
                     {
-                        var result = await ProcessAdd(IBaseBand, data as BaseBandModel, Grid_BaseBand);
+                        var result = await ProcessAdd(IBaseBand, data as BaseBandModel, Grid_BaseBand, x => x.Name == (data as BaseBandModel).Name);
 
                         return result as T;
                     }
@@ -825,7 +828,7 @@ namespace Project.V1.Web.Pages.Acceptance
             //}
             if (args.RequestType == Syncfusion.Blazor.Grids.Action.Save)
             {
-                await InitData(model);
+                //await InitData(model);
             }
             //else if (args.RequestType == Syncfusion.Blazor.Grids.Action.Delete)
             //{
