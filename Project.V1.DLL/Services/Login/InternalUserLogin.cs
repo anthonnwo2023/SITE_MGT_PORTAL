@@ -1,17 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using Project.V1.DLL.Helpers;
-using Project.V1.Lib.Helpers;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Project.V1.Lib.Services.Login
 {
@@ -64,7 +55,7 @@ namespace Project.V1.Lib.Services.Login
                         Log.Information("AD User AppData. ", new { username, Vendor = vendorId });
 
                         user.Roles = (await LoginObject.User.GetUserRoles(user)).ToArray();
-                        List<ClaimListManager> userClaims = (LoginObject.ClaimService.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                        List<ClaimListManager> userClaims = (LoginObject.ClaimService.Get(y => y.IsActive, null, "Category").GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                         {
                             Category = u.Key,
                             Claims = u.ToList().FormatClaimSelection(user)

@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Project.V1.DLL.Helpers;
-using Project.V1.Lib.Helpers;
-using Project.V1.Models;
-using Serilog;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Project.V1.DLL.Helpers;
 
 namespace Project.V1.Lib.Services.Login
 {
@@ -25,7 +17,7 @@ namespace Project.V1.Lib.Services.Login
             if (user != null)
             {
                 user.Roles = (await LoginObject.User.GetUserRoles(user)).ToArray();
-                List<ClaimListManager> userClaims = (LoginObject.ClaimService.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                List<ClaimListManager> userClaims = (LoginObject.ClaimService.Get(y => y.IsActive, null, "Category").GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                 {
                     Category = u.Key,
                     Claims = u.ToList().FormatClaimSelection(user)
