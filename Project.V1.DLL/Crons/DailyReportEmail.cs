@@ -1,18 +1,11 @@
 ﻿using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Helpers.HTML.Table;
 using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
 using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Project.V1.DLL.Crons
 {
@@ -103,7 +96,7 @@ namespace Project.V1.DLL.Crons
                 var yesterdaysRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                     && x.EngineerAssigned.DateApproved.Date == yesterDay.Date
                                     && !x.Spectrum.Name.Contains("MOD")
-                                    && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"))
+                                    && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell", null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum"))
                                      .Select(x => new AcceptanceDTO
                                      {
                                          SiteId = x.SiteId,
@@ -123,7 +116,7 @@ namespace Project.V1.DLL.Crons
 
                 var yesterdaysAllRequests = (await _request.Get(x => x.DateSubmitted.Date == yesterDay.Date
                                             || x.EngineerAssigned.DateActioned.Date == yesterDay.Date
-                                            || x.EngineerAssigned.DateApproved.Date == yesterDay.Date))
+                                            || x.EngineerAssigned.DateApproved.Date == yesterDay.Date, null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum"))
                                      .Select(x => new AcceptanceDTO
                                      {
                                          SiteId = x.SiteId,

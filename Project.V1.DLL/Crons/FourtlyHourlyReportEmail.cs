@@ -1,19 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Project.V1.DLL.Helpers;
+﻿using Project.V1.DLL.Helpers;
 using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Helpers.HTML.Table;
 using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
 using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Project.V1.DLL.Crons
 {
@@ -94,7 +86,7 @@ namespace Project.V1.DLL.Crons
                 var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
 
                 var regionMonthRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
-                                        && Statuses.Contains(x.Status)))
+                                        && Statuses.Contains(x.Status), null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum"))
                                          .Select(x => new AcceptanceDTO
                                          {
                                              SiteId = x.SiteId,

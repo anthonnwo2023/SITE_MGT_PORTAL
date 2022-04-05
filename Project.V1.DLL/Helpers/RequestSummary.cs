@@ -1,9 +1,5 @@
 ﻿using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
 using Project.V1.DLL.Services.Interfaces.FormSetup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Project.V1.DLL.Helpers
 {
@@ -134,7 +130,7 @@ namespace Project.V1.DLL.Helpers
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
                                 && x.Requester.Vendor.ShouldSummerize
                                 && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
-                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell").GetAwaiter().GetResult()
+                                && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell", null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum").GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
                                 {
                                     Region = x.Region.Name,
@@ -176,7 +172,7 @@ namespace Project.V1.DLL.Helpers
                                 //&& !x.Spectrum.Name.Contains("RT")
                                 && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
                                 && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"
-                                ).GetAwaiter().GetResult()
+                                , null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum").GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
                                 {
                                     Region = x.Region.Name,
