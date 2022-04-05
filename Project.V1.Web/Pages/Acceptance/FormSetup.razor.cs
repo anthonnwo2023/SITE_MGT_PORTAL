@@ -1,5 +1,4 @@
-﻿using Syncfusion.Blazor.DropDowns;
-using System.Threading;
+﻿using System.Threading;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -373,7 +372,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
             var Exists = await genericRepo.GetById(x => x.Name == data.Name);
 
-            if (Exists == null)
+            if (Exists?.Name == null)
             {
                 var (result, error) = await genericRepo.Create(data);
 
