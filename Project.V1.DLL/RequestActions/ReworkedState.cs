@@ -1,11 +1,4 @@
 ﻿using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
 {
@@ -45,7 +38,9 @@ namespace Project.V1.DLL.RequestActions
         {
             ApplicationUser user = await LoginObject.User.GetUserByUsername(request.Requester.Username);
 
-            var regionEngineers = (await LoginObject.UserManager.GetUsersInRoleAsync("Engineer")).Where(x => x.Regions.Select(x => x.Id).Contains(request.RegionId)).Select(x => new SenderBody
+            var engineers = await LoginObject.UserManager.GetUsersInRoleAsync("Engineer");
+
+            var regionEngineers = engineers.Where(x => x.Regions.Select(x => x.Id).Contains(request.RegionId)).Select(x => new SenderBody
             {
                 Name = x.Fullname,
                 Address = x.Email

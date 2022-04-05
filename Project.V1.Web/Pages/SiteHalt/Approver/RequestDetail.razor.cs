@@ -85,7 +85,7 @@ public partial class RequestDetail
                 Principal = (await AuthenticationStateTask).User;
                 User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                RequestToApprove = (await IHUDRequest.GetById(x => x.Id == Id));
+                RequestToApprove = await IHUDRequest.GetById(x => x.Id == Id, null, "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes");
                 RequestToApprove.FirstApproverId = RequestToApprove.FirstApprover.Id;
                 RequestToApprove.SecondApproverId = RequestToApprove.SecondApprover.Id;
                 RequestToApprove.ThirdApproverId = RequestToApprove.ThirdApprover.Id;
@@ -146,6 +146,8 @@ public partial class RequestDetail
                     {
                         x.Id = RequestToApprove.ThirdApprover.Id;
                     }
+
+                    x.ApproverType = "TA";
                 });
 
             }
@@ -220,7 +222,7 @@ public partial class RequestDetail
     {
         try
         {
-            requestObj.Status = RequestToApprove.TempStatus;
+            requestObj.Status = $"{ApproverClass}{RequestToApprove.TempStatus}";
 
             if (ApproverClass == "FA")
             {

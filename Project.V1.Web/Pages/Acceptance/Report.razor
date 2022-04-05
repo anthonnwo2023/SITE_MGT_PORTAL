@@ -104,13 +104,13 @@ else
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.Power)" HeaderText="Power - (w)" TextAlign="TextAlign.Left"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.ProjectNameId)" HeaderText="Project Name" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Projects" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectNameId)" HeaderText="Project Name" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Projects" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridForeignColumn Field="@nameof(RequestViewModel.ProjectTypeId)" HeaderText="Project Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@ProjectTypes" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.ProjectYear)" HeaderText="Project Year" TextAlign="TextAlign.Center"
+                <GridColumn Field="@nameof(RequestViewModel.ProjectYear)" HeaderText="Project Year" TextAlign="TextAlign.Center"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
                 <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.SummerConfigId)" HeaderText="Summer Config" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@SummerConfigs" EditType="EditType.DropDownEdit"

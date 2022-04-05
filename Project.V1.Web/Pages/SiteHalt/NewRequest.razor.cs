@@ -293,6 +293,10 @@ public partial class NewRequest : IDisposable
             }).ToList();
 
         BaseThirdLevelApprovers = BaseSecondLevelApprovers;
+        BaseThirdLevelApprovers.ForEach(approver =>
+        {
+            approver.ApproverType = "TA";
+        });
     }
 
     private async Task ProcessRequest()
@@ -333,6 +337,6 @@ public partial class NewRequest : IDisposable
 
     public void Dispose()
     {
-        HUDRequestModel.Dispose();
+        //HUDRequestModel.Dispose();
     }
 }

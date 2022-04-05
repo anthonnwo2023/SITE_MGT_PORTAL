@@ -108,7 +108,7 @@ namespace Project.V1.Lib.Services
             try
             {
                 ApplicationUser NewUser = new();
-                ApplicationUser userExists = await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.UserName == user.UserName);
+                ApplicationUser userExists = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).FirstOrDefaultAsync(x => x.UserName == user.UserName);
 
                 List<VendorModel> Vendors = await _vendor.Get();
                 VendorModel MTN_Vendor = Vendors.FirstOrDefault(x => x.Name.ToUpper() == "MTN NIGERIA");
@@ -169,7 +169,7 @@ namespace Project.V1.Lib.Services
             }
             else
             {
-                ApplicationUser userFound = await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
+                ApplicationUser userFound = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).FirstOrDefaultAsync(x => x.Id == user.Id);
 
                 userFound.IsActive = false;
 
@@ -190,10 +190,10 @@ namespace Project.V1.Lib.Services
             {
                 if (isActive == false)
                 {
-                    return await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
+                    return await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
                 }
 
-                return await _userManager.Users.Include(x => x.Regions).Where(x => x.IsActive == true).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
+                return await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Where(x => x.IsActive == true).FirstOrDefaultAsync(x => x.UserName.ToLower() == Username.ToLower());
             }
             catch (Exception ex)
             {
@@ -204,17 +204,17 @@ namespace Project.V1.Lib.Services
 
         public async Task<ApplicationUser> GetUserById(string UserId)
         {
-            return await _userManager.Users.Include(x => x.Regions).Where(x => x.IsActive == true).FirstOrDefaultAsync(x => x.Id == UserId);
+            return await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Where(x => x.IsActive == true).FirstOrDefaultAsync(x => x.Id == UserId);
         }
 
         public async Task<List<ApplicationUser>> GetUsers(bool isActive = true)
         {
             try
             {
-                List<ApplicationUser> users = await _userManager.Users.Include(x => x.Regions).Where(x => x.IsActive == true).ToListAsync();
+                List<ApplicationUser> users = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Where(x => x.IsActive == true).ToListAsync();
                 if (isActive == false)
                 {
-                    users = await _userManager.Users.Include(x => x.Regions).ToListAsync();
+                    users = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).ToListAsync();
                 }
 
                 users.ForEach(async (user) =>
@@ -234,10 +234,10 @@ namespace Project.V1.Lib.Services
         {
             try
             {
-                List<ApplicationUser> users = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
+                List<ApplicationUser> users = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
                 if (isActive == false)
                 {
-                    users = await _userManager.Users.Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
+                    users = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
                 }
 
                 users.ForEach(async (user) =>
@@ -255,7 +255,7 @@ namespace Project.V1.Lib.Services
 
         private bool UserDataExists(string id)
         {
-            return _userManager.Users.Include(x => x.Regions).Any(e => e.Id == id);
+            return _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Any(e => e.Id == id);
         }
 
         public async Task<List<string>> GetUserRoles(ApplicationUser user)
@@ -295,7 +295,7 @@ namespace Project.V1.Lib.Services
 
         public async Task ChangeUserRole(ApplicationUser user, string toRoleId, bool toAdd)
         {
-            ApplicationUser userExists = await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
+            ApplicationUser userExists = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
             IdentityRole role = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id == toRoleId);
 
             if (toAdd)
@@ -310,7 +310,7 @@ namespace Project.V1.Lib.Services
 
         public async Task ChangeUserRoleByName(ApplicationUser user, string toRoleName, bool toAdd)
         {
-            ApplicationUser userExists = await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
+            ApplicationUser userExists = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
             IdentityRole role = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Name == toRoleName);
 
             if (toAdd)
@@ -327,7 +327,7 @@ namespace Project.V1.Lib.Services
         {
             try
             {
-                ApplicationUser userExists = await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
+                ApplicationUser userExists = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
 
                 if (userExists == null)
                 {
@@ -350,7 +350,7 @@ namespace Project.V1.Lib.Services
         {
             try
             {
-                ApplicationUser userExists = await _userManager.Users.Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
+                ApplicationUser userExists = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).FirstOrDefaultAsync(x => x.Id == user.Id);
 
                 if (userExists == null)
                 {

@@ -986,13 +986,13 @@ namespace Project.V1.Data.Migrations.Staging
 
             modelBuilder.Entity("SiteHUDRequestModelTechTypeModel", b =>
                 {
-                    b.Property<string>("SiteHaltRequestsId")
+                    b.Property<string>("HUDRequestsId")
                         .HasColumnType("NVARCHAR2(450)");
 
                     b.Property<string>("TechTypesId")
                         .HasColumnType("NVARCHAR2(450)");
 
-                    b.HasKey("SiteHaltRequestsId", "TechTypesId");
+                    b.HasKey("HUDRequestsId", "TechTypesId");
 
                     b.HasIndex("TechTypesId");
 
@@ -1236,7 +1236,7 @@ namespace Project.V1.Data.Migrations.Staging
                 {
                     b.HasOne("Project.V1.Models.SiteHalt.SiteHUDRequestModel", null)
                         .WithMany()
-                        .HasForeignKey("SiteHaltRequestsId")
+                        .HasForeignKey("HUDRequestsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

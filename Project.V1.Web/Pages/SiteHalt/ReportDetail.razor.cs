@@ -38,7 +38,7 @@
             {
                 try
                 {
-                    if (!await UserAuth.IsAutorizedForAsync("Can:UpdateRequest"))
+                    if (!await UserAuth.IsAutorizedForAsync("Can:ViewReport"))
                     {
                         NavMan.NavigateTo("access-denied");
                     }
@@ -46,13 +46,13 @@
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    ReportRequest = await IHUDRequest.GetById(x => x.Id == Id);
+                    ReportRequest = await IHUDRequest.GetById(x => x.Id == Id, null, "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes");
 
                     if (ReportRequest.RequestAction != "UnHalt")
                     {
-                        ReportRequest.FirstApproverId = ReportRequest.FirstApprover.Id;
-                        ReportRequest.SecondApproverId = ReportRequest.SecondApprover.Id;
-                        ReportRequest.ThirdApproverId = ReportRequest.ThirdApprover.Id;
+                        ReportRequest.FirstApproverId = ReportRequest.FirstApprover?.Id;
+                        ReportRequest.SecondApproverId = ReportRequest.SecondApprover?.Id;
+                        ReportRequest.ThirdApproverId = ReportRequest.ThirdApprover?.Id;
                     }
 
                     ReportRequest.TechTypeIds = ReportRequest.TechTypes.Select(x => x.Id).ToArray();
@@ -104,6 +104,7 @@
                         {
                             x.Id = ReportRequest.ThirdApprover.Id;
                         }
+                        x.ApproverType = "TA";
                     });
                 }
                 catch (Exception ex)

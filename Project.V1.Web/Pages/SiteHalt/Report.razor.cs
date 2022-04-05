@@ -59,7 +59,7 @@
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    HUDReportRequests = (await IHUDRequest.Get(null, x => x.OrderByDescending(y => y.DateCreated)));
+                    HUDReportRequests = await IHUDRequest.Get(null, x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes");
 
                     CompleteButtons = new bool[HUDReportRequests.Count];
                     UpdateButtons = new bool[HUDReportRequests.Count];
@@ -109,6 +109,7 @@
 
             StateHasChanged();
         }
+
         public async void ShowUpdateApproverDialog(MouseEventArgs args, string requestId)
         {
             RequestModel = HUDReportRequests.FirstOrDefault(x => x.Id == requestId);
@@ -159,7 +160,7 @@
                     }
                 });
 
-            BaseThirdLevelApprovers = BaseSecondLevelApprovers;
+            BaseThirdLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.SecondApproverId)).ToList();
 
             if (RequestModel.ThirdApprover is not null)
                 BaseThirdLevelApprovers.ForEach(x =>
@@ -204,7 +205,14 @@
             {
                 await IHUDRequest.SetState(RequestModel, "SiteHalt");
 
-                return (IHUDRequest as dynamic).Update(RequestModel, RequestModel.Variables);
+                var isUpdated = IHUDRequest.Update(RequestModel, RequestModel.Variables);
+
+                if (isUpdated)
+                {
+                    Visibility = false;
+                    UpdateButtons[index] = false;
+                }
+                return true;
             }
             catch
             {

@@ -12,8 +12,8 @@ using Project.V1.Data;
 namespace Project.V1.Data.Migrations.Staging
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220328085830_Request.UserActionDate")]
-    partial class RequestUserActionDate
+    [Migration("20220403175421_HUDRequest")]
+    partial class HUDRequest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -448,10 +448,15 @@ namespace Project.V1.Data.Migrations.Staging
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(450)");
 
+                    b.Property<string>("SpectrumId")
+                        .HasColumnType("NVARCHAR2(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("SpectrumId");
 
                     b.ToTable("TBL_RFACCEPT_PROJECTTYPES");
                 });
@@ -983,13 +988,13 @@ namespace Project.V1.Data.Migrations.Staging
 
             modelBuilder.Entity("SiteHUDRequestModelTechTypeModel", b =>
                 {
-                    b.Property<string>("SiteHaltRequestsId")
+                    b.Property<string>("HUDRequestsId")
                         .HasColumnType("NVARCHAR2(450)");
 
                     b.Property<string>("TechTypesId")
                         .HasColumnType("NVARCHAR2(450)");
 
-                    b.HasKey("SiteHaltRequestsId", "TechTypesId");
+                    b.HasKey("HUDRequestsId", "TechTypesId");
 
                     b.HasIndex("TechTypesId");
 
@@ -1100,6 +1105,15 @@ namespace Project.V1.Data.Migrations.Staging
                         .HasForeignKey("VendorId");
 
                     b.Navigation("Vendor");
+                });
+
+            modelBuilder.Entity("Project.V1.Models.ProjectTypeModel", b =>
+                {
+                    b.HasOne("Project.V1.Models.SpectrumViewModel", "Spectrum")
+                        .WithMany()
+                        .HasForeignKey("SpectrumId");
+
+                    b.Navigation("Spectrum");
                 });
 
             modelBuilder.Entity("Project.V1.Models.RequesterData", b =>
@@ -1224,7 +1238,7 @@ namespace Project.V1.Data.Migrations.Staging
                 {
                     b.HasOne("Project.V1.Models.SiteHalt.SiteHUDRequestModel", null)
                         .WithMany()
-                        .HasForeignKey("SiteHaltRequestsId")
+                        .HasForeignKey("HUDRequestsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

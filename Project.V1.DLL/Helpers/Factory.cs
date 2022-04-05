@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Project.V1.DLL.Helpers
 {
@@ -83,7 +80,17 @@ namespace Project.V1.DLL.Helpers
                     return $"{folder}.TAApprovedState`1";
                 },
 
-                ["Disapproved"] = (requestType) =>
+                ["FADisapproved"] = (requestType) =>
+                {
+                    return $"{folder}.DisapprovedState`1";
+                },
+
+                ["SADisapproved"] = (requestType) =>
+                {
+                    return $"{folder}.DisapprovedState`1";
+                },
+
+                ["TADisapproved"] = (requestType) =>
                 {
                     return $"{folder}.DisapprovedState`1";
                 },

@@ -44,9 +44,11 @@ public partial class ApproverWorklist : IDisposable
                 User = await IUser.GetUserByUsername(Principal.Identity.Name);
                 var userRegionIds = User.Regions.Select(x => x.Id);
 
-                HUDApproverRequests = (await IHUDRequest.Get(x => (x.FirstApprover.Username == User.UserName && !x.FirstApprover.IsActioned)
-                    || (x.FirstApprover.IsApproved && x.SecondApprover.Username == User.UserName && !x.SecondApprover.IsActioned)
-                    || (x.FirstApprover.IsApproved && x.SecondApprover.IsApproved && x.ThirdApprover.Username == User.UserName && !x.ThirdApprover.IsActioned), x => x.OrderByDescending(y => y.DateCreated))).ToList();
+                List<string> FAStatus = new() { "Pending", "Restarted" };
+
+                HUDApproverRequests = (await IHUDRequest.Get(x => (x.FirstApprover.Username == User.UserName && FAStatus.Contains(x.Status))
+                    || (x.SecondApprover.Username == User.UserName && x.Status.Equals("FAApproved"))
+                    || (x.ThirdApprover.Username == User.UserName && x.Status.Equals("SAApproved")), x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
             }
             catch (Exception ex)
             {

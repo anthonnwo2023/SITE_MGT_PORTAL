@@ -22,6 +22,9 @@ namespace Project.V1.Web.Pages.SiteHalt
         public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
         public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
         public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();
+        public List<FilesManager> UploadedRequestFiles { get; set; } = new();
+        public string UploadFileName { get; set; }
+        public string UploadPath { get; set; }
 
         public bool DisableButton { get; set; } = false;
         public string ButtonIconCss { get; set; } = "fas fa-paper-plane ml-2";
@@ -73,6 +76,62 @@ namespace Project.V1.Web.Pages.SiteHalt
             };
         }
 
+        private FilesManager GetFileStreamObject(UploadFiles UFile, string type, bool fileExists = true)
+        {
+            if (fileExists == false)
+            {
+                return new FilesManager
+                {
+                    Filestream = new(UploadPath, FileMode.Create, FileAccess.Write),
+                    Index = UploadedRequestFiles.Count,
+                    Filename = Path.GetFileName(UploadPath),
+                    UploadFile = UFile,
+                    UploadPath = UploadPath,
+                    UploadType = type,
+                };
+            }
+
+            var file = UploadedRequestFiles.FirstOrDefault(x => x.Filename.ToUpper() == Path.GetFileName(UploadPath).ToUpper());
+
+            file.Filestream = new(UploadPath, FileMode.Create, FileAccess.Write);
+            file.Filename = Path.GetFileName(UploadPath);
+            file.UploadFile = UFile;
+            file.UploadPath = UploadPath;
+            file.UploadType = type;
+
+            return null;
+        }
+
+        private async Task<bool> OnFileUploadChange(UploadChangeEventArgs args, string type)
+        {
+            UploadFiles UploadFile = args.Files.FirstOrDefault();
+
+            string pathBuilt = Path.Combine(Directory.GetCurrentDirectory(), $"Documents\\{type}\\");
+
+            if (!Directory.Exists(pathBuilt))
+            {
+                Directory.CreateDirectory(pathBuilt);
+            }
+
+            string ext = Path.GetExtension(UploadFile.FileInfo.Name);
+            var filenameWOSpecialXters = Path.GetFileNameWithoutExtension(UploadFile.FileInfo.Name).RemoveSpecialCharacters();
+            UploadFileName = "HUD_FN_" + filenameWOSpecialXters + "_" + DateTime.Now.AddHours(1).ToString() + ext;
+            UploadPath = Path.Combine(pathBuilt, UploadFileName.RemoveSpecialCharacters());
+
+            var fileExists = UploadedRequestFiles.Where(x => x.Filename != null).Any(c => c.Filename.Contains(Path.GetFileNameWithoutExtension(UploadFile.FileInfo.Name).RemoveSpecialCharacters()));
+
+            if (!fileExists)
+            {
+                UploadedRequestFiles.Add(GetFileStreamObject(UploadFile, type, fileExists));
+            }
+            else
+            {
+                GetFileStreamObject(UploadFile, type, fileExists);
+            }
+
+            return await Task.Run(() => true);
+        }
+
         private async void SaveLargeSiteIDToFile()
         {
             var fileName = $"{HelperFunctions.GenerateIDUnique("HUD-SID")}.txt";
@@ -92,6 +151,28 @@ namespace Project.V1.Web.Pages.SiteHalt
             }
         }
 
+        private async Task SaveSupportingDocument()
+        {
+            FilesManager file = UploadedRequestFiles.OrderByDescending(x => x.Index).FirstOrDefault(x => x.UploadType == "HUD");
+
+            if (file?.UploadFile != null)
+            {
+                string ext = Path.GetExtension(file.UploadFile.FileInfo.Name);
+
+                await FileUploader.StartUpload(true, file, true)
+                    .ContinueWith(async (response) =>
+                    {
+                        RequestToUpdate.SupportingDocument = Path.GetFileName((await response).filePath);
+
+                        if ((await response).uploadResp.Length != 0 || (await response).uploadError.Length != 0)
+                        {
+                            if ((await response).uploadError.Length > 0) await ThrowError((await response).uploadError);
+                            return;
+                        }
+                    });
+            }
+        }
+
         protected async Task AuthenticationCheck(bool isAuthenticated)
         {
             if (isAuthenticated)
@@ -106,7 +187,7 @@ namespace Project.V1.Web.Pages.SiteHalt
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    RequestToUpdate = await IHUDRequest.GetById(x => x.Id == Id);
+                    RequestToUpdate = await IHUDRequest.GetById(x => x.Id == Id, null, "FirstApprover,SecondApprover,ThirdApprover,TechTypes");
                     RequestToUpdate.TempComment = " ";
                     RequestToUpdate.TempStatus = RequestToUpdate.Status;
 
@@ -165,6 +246,7 @@ namespace Project.V1.Web.Pages.SiteHalt
                         {
                             x.Id = RequestToUpdate.ThirdApprover.Id;
                         }
+                        x.ApproverType = "TA";
                     });
                 }
                 catch (Exception ex)
@@ -182,24 +264,19 @@ namespace Project.V1.Web.Pages.SiteHalt
                 ButtonIconCss = "fas fa-spin fa-spinner ml-2";
                 DisableButton = true;
 
+
+                await IHUDRequest.SetState(RequestToUpdate, "SiteHalt");
+
                 if (RequestToUpdate.SiteIds.Length > 1999)
                 {
                     SaveLargeSiteIDToFile();
                 }
 
-                await IHUDRequest.SetState(RequestToUpdate, "SiteHalt");
-
-                if (ProcessAction(RequestToUpdate, IHUDRequest))
-                {
-                    AppState.TriggerRequestRecount();
-                    NavMan.NavigateTo("hud/worklist");
-
-                    return;
-                }
-
-                DisableButton = false;
-                RequestToUpdate.SiteIds = RequestSiteIds;
-                await ThrowError("An error occurred, request could not be updated.");
+                await SaveSupportingDocument()
+                    .ContinueWith((result) =>
+                    {
+                        ProcessAction(RequestToUpdate, IHUDRequest).Wait();
+                    });
             }
             catch (Exception ex)
             {
@@ -208,7 +285,7 @@ namespace Project.V1.Web.Pages.SiteHalt
             }
         }
 
-        private bool ProcessAction<T>(T requestObj, dynamic request) where T : SiteHUDRequestModel
+        private async Task ProcessAction<T>(T requestObj, dynamic request) where T : SiteHUDRequestModel
         {
             try
             {
@@ -219,11 +296,27 @@ namespace Project.V1.Web.Pages.SiteHalt
                 requestObj.SecondApprover.IsActioned = false;
                 requestObj.ThirdApprover.IsActioned = false;
 
-                return request.Restart(requestObj, RequestToUpdate.Variables);
+                var isUpdated = request.Restart(requestObj, RequestToUpdate.Variables);
+
+                if (isUpdated)
+                {
+                    AppState.TriggerRequestRecount();
+                    NavMan.NavigateTo("hud/worklist");
+
+                    return;
+                }
+
+                DisableButton = false;
+                RequestToUpdate.SiteIds = RequestSiteIds;
+                await ThrowError("An error occurred, request could not be updated.");
+                ButtonIconCss = "fas fa-paper-plane ml-2";
             }
             catch
             {
-                return false;
+                DisableButton = false;
+                RequestToUpdate.SiteIds = RequestSiteIds;
+                await ThrowError("An error occurred, request could not be updated.");
+                ButtonIconCss = "fas fa-paper-plane ml-2";
             }
         }
 

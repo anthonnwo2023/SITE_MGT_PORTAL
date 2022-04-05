@@ -23,8 +23,8 @@ namespace Project.V1.Data
 
 
             modelBuilder.Entity<SiteHUDRequestModel>()
-                .HasMany(p => p.TechTypes).WithMany(p => p.SiteHaltRequests).UsingEntity(j => j.ToTable("TBL_RFHUD_REQUESTS_TECH"));
-            modelBuilder.Entity<ApplicationUser>().ToTable("TBL_RFACCEPT_ASP_USERS");
+                .HasMany(p => p.TechTypes).WithMany(p => p.HUDRequests).UsingEntity(j => j.ToTable("TBL_RFHUD_REQUESTS_TECH"));
+            modelBuilder.Entity<ApplicationUser>().ToTable("TBL_RFACCEPT_ASP_USERS").Navigation(e => e.Regions).AutoInclude();
             modelBuilder.Entity<IdentityRole>().ToTable("TBL_RFACCEPT_ASP_ROLES");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("TBL_RFACCEPT_ASP_USERROLES");
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("TBL_RFACCEPT_ASP_USERCLAIMS");
@@ -51,7 +51,8 @@ namespace Project.V1.Data
 
             var config = builder.Build();
 
-            options.UseLazyLoadingProxies();
+            //options.UseLazyLoadingProxies();
+            options.EnableSensitiveDataLogging();
             options.UseOracle(
                 config.GetConnectionString("OracleConnection")
                 );

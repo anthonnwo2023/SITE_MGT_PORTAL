@@ -172,7 +172,7 @@ else
                             <div class="row col-12">
                                 <div class="col-md-4">
                                     @{
-                                        bool approverIsActioned = RequestModel.FirstApprover == null ? false : RequestModel.FirstApprover.IsActioned;
+                                        bool approverIsActioned = RequestModel.FirstApprover == null ? false : (RequestModel.Status.StartsWith("FA") || RequestModel.Status.StartsWith("SA") || RequestModel.Status.StartsWith("TA"));
                                     }
                                     <SfDropDownList Enabled="@(!approverIsActioned)" TValue="string" CssClass="text-center" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Radio Frequency SM"
                                             DataSource="@FirstLevelApprovers" @bind-Value="RequestModel.FirstApproverId">
@@ -183,7 +183,7 @@ else
                                 </div>
                                 <div class="col-md-4">
                                     @{
-                                        approverIsActioned = RequestModel.SecondApprover == null ? false : RequestModel.SecondApprover.IsActioned;
+                                        approverIsActioned = RequestModel.SecondApprover == null ? false : (RequestModel.Status.StartsWith("SA") || RequestModel.Status.StartsWith("TA"));
                                     }
                                     <SfDropDownList Enabled="@(!approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Second Approver"
                                             DataSource="@SecondLevelApprovers" @bind-Value="RequestModel.SecondApproverId">
@@ -194,7 +194,7 @@ else
                                 </div>
                                 <div class="col-md-4">
                                     @{
-                                        approverIsActioned = RequestModel.ThirdApprover == null ? false : RequestModel.ThirdApprover.IsActioned;
+                                        approverIsActioned = RequestModel.ThirdApprover == null ? false : RequestModel.Status.StartsWith("TA");
                                     }
                                     <SfDropDownList Enabled="@(!approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver"
                                             DataSource="@ThirdLevelApprovers" @bind-Value="RequestModel.ThirdApproverId">

@@ -153,15 +153,15 @@
 
                     if (User.ShowAllRegionReport)
                     {
-                        Requests = await IRequest.Get(x => x.Id != null, x => x.OrderByDescending(y => y.DateCreated));
+                        Requests = await IRequest.Get(x => x.Id != null, x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,EngineerAssigned");
                     }
                     else if (Vendor.Name == "MTN Nigeria" || (await UserManager.IsInRoleAsync(User, "User")))
                     {
-                        Requests = await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId), x => x.OrderByDescending(y => y.DateCreated));
+                        Requests = await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId), x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,EngineerAssigned");
                     }
                     else
                     {
-                        Requests = await IRequest.Get(x => x.Requester.VendorId == User.VendorId, x => x.OrderByDescending(y => y.DateCreated));
+                        Requests = await IRequest.Get(x => x.Requester.VendorId == User.VendorId, x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,EngineerAssigned");
                     }
 
                     TechTypes = await ITechType.Get(x => x.IsActive);

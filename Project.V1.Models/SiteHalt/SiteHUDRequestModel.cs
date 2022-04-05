@@ -74,12 +74,12 @@ public class SiteHUDRequestModel : IDisposable
         var message = check ? "Approved" : "Disapproved";
         var extra = string.Empty;
 
-        if (FirstApprover?.IsActioned == true)
-            extra = " By RF SM";
-        if (SecondApprover?.IsActioned == true)
-            extra = $" By {SecondApprover.Fullname} (Second Approver)";
-        if (ThirdApprover?.IsActioned == true)
-            extra = $" By {ThirdApprover.Fullname} (Last Approver)";
+        if (Status.StartsWith("FA"))
+            extra = $" By {FirstApprover.Fullname} (1 of 3)";
+        if (Status.StartsWith("SA"))
+            extra = $" By {SecondApprover.Fullname} (2 of 3)";
+        if (Status.StartsWith("TA"))
+            extra = $" By {ThirdApprover.Fullname} (3 of 3)";
 
         return message + extra;
     }

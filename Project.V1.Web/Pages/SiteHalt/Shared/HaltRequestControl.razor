@@ -207,7 +207,7 @@
                 @{
                     bool approverIsActioned = HUDRequestModel.FirstApprover == null ? false : HUDRequestModel.FirstApprover.IsActioned;
                 }
-                <SfDropDownList Enabled="@(ShouldEnable && !approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Radio Frequency SM"
+                <SfDropDownList Enabled="@(ShouldEnable && !approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="First Approver"
                         DataSource="@FirstLevelApprovers" @bind-Value="HUDRequestModel.FirstApproverId">
                     <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver1")'></DropDownListEvents>
                     <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>

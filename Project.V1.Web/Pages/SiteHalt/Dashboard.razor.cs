@@ -50,7 +50,7 @@ namespace Project.V1.Web.Pages.SiteHalt
                             Date = x.Key,
                             HaltCount = x.Count(y => y.RequestAction == "Halt"),
                             UnHaltCount = x.Count(y => y.RequestAction == "UnHalt"),
-                            DecomCount = x.Count(y => y.RequestAction == "Decomission"),
+                            DecomCount = x.Count(y => y.RequestAction == "Decommission"),
                         }).ToList();
 
                     ChartDataDB.RemoveAll(x => chartDataDB.Any(y => y.Date == x.Date));

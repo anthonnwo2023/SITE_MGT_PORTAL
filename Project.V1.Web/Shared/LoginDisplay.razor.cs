@@ -19,7 +19,7 @@
                 ClaimsPrincipal user = (await AuthenticationStateTask).User;
                 ApplicationUser userData = (user.Identity.Name == null) ? throw new Exception("No logged-in user found") : await IUser.GetUserByUsername(user.Identity.Name);
 
-                AllProjectClaims = (await Claim.Get(y => y.IsActive)).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                AllProjectClaims = (await Claim.Get(y => y.IsActive, null, "Category")).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                 {
                     Category = u.Key,
                     Claims = u.ToList().FormatClaimSelection(userData)

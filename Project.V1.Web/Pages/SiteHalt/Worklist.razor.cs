@@ -43,7 +43,7 @@
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    HUDMyWorklist = (await IHUDRequest.Get(x => x.Requester.Username == User.UserName && x.Status.Contains("Disapprove"), x => x.OrderByDescending(y => y.DateCreated))).ToList();
+                    HUDMyWorklist = (await IHUDRequest.Get(x => x.Requester.Username == User.UserName && x.Status.Contains("Disapprove"), x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
 
                 }
                 catch (Exception ex)

@@ -80,7 +80,7 @@ public partial class RequestDetail : IDisposable
                 Principal = (await AuthenticationStateTask).User;
                 User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                RequestToAction = (await IHUDRequest.GetById(x => x.Id == Id));
+                RequestToAction = await IHUDRequest.GetById(x => x.Id == Id, null, "FirstApprover,SecondApprover,ThirdApprover,TechTypes");
                 RequestToAction.TempComment = " ";
                 RequestToAction.TempStatus = RequestToAction.Status;
 
@@ -139,6 +139,8 @@ public partial class RequestDetail : IDisposable
                     {
                         x.Id = RequestToAction.ThirdApprover.Id;
                     }
+
+                    x.ApproverType = "TA";
                 });
             }
             catch (Exception ex)

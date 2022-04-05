@@ -30,6 +30,16 @@ namespace Project.V1.Data
         {
             try
             {
+                _context.Database.CloseConnection();
+                _context.Database.OpenConnection();
+
+                await entity.LoadAsync();
+
+                await entity.ForEachAsync(x =>
+                {
+                    ReloadEntry(x);
+                });
+
                 return await entity.ToListAsync();
             }
             catch (Exception ex)
@@ -43,18 +53,28 @@ namespace Project.V1.Data
         {
             try
             {
-                IQueryable<T> query = entity;
+                _context.Database.CloseConnection();
+                _context.Database.OpenConnection();
 
-                if (filter != null)
-                {
-                    query = query.Where(filter);
-                }
+                IQueryable<T> query = entity;
 
                 foreach (string includeProperty in includeProperties.Split
                     (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProperty);
                 }
+
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                await query.LoadAsync();
+
+                await query.ForEachAsync(x =>
+                {
+                    ReloadEntry(x);
+                });
 
                 if (orderBy != null)
                 {
@@ -74,6 +94,11 @@ namespace Project.V1.Data
         {
             try
             {
+                _context.Database.CloseConnection();
+                _context.Database.OpenConnection();
+
+                await entity.LoadAsync();
+
                 IQueryable<T> query = entity;
 
                 if (filter != null)
@@ -90,18 +115,50 @@ namespace Project.V1.Data
             }
         }
 
-        public async Task<T> GetById(Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null)
+        private void ReloadEntry(T item, string includeProperties = "")
+        {
+            _context.Entry(item).Reload();
+            _context.Entry(item).GetDatabaseValues();
+
+            _context.Entry(item).Collections.ToList().ForEach(collection =>
+            {
+                collection.Load();
+            });
+
+            foreach (string includeProperty in includeProperties.Split
+                    (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                _context.Entry(item).Collection<T>(includeProperties).Query();
+            }
+        }
+
+        public async Task<T> GetById(Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null, string includeProperties = "")
         {
             try
             {
+                _context.Database.CloseConnection();
+                _context.Database.OpenConnection();
+
+                await entity.LoadAsync();
+
                 IQueryable<T> query = entity;
+
+                foreach (string includeProperty in includeProperties.Split
+                    (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
 
                 if (filter != null)
                 {
                     query = query.Where(filter);
                 }
 
-                return await query.FirstOrDefaultAsync(IdFilter);
+                var item = query.FirstOrDefault(IdFilter);
+
+                ReloadEntry(item);
+
+                return item;
             }
             catch (Exception ex)
             {
