@@ -21,7 +21,6 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         [Inject] protected IRequest IRequest { get; set; }
         [Inject] protected IRequestListObject IRequestList { get; set; }
         [Inject] protected ISpectrum ISpectrum { get; set; }
-        [Inject] protected IProjectType IProjectType { get; set; }
         [Inject] protected IUser IUser { get; set; }
 
 
@@ -87,11 +86,6 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
 
             if (RequestModel.TechTypeId != null)
                 IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId, x => x.OrderBy(y => y.Name), "TechType");
-
-            if (RequestModel.SpectrumId != null)
-            {
-                IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
-            }
 
             await OnCheckValidButton.InvokeAsync(false);
 
