@@ -35,10 +35,10 @@ namespace Project.V1.Data
 
                 await entity.LoadAsync();
 
-                await entity.ForEachAsync(x =>
-                {
-                    ReloadEntry(x);
-                });
+                //await entity.ForEachAsync(x =>
+                //{
+                //    ReloadEntry(x);
+                //});
 
                 return await entity.ToListAsync();
             }
@@ -71,10 +71,10 @@ namespace Project.V1.Data
 
                 await query.LoadAsync();
 
-                await query.ForEachAsync(x =>
-                {
-                    ReloadEntry(x);
-                });
+                //await query.ForEachAsync(x =>
+                //{
+                //    ReloadEntry(x);
+                //});
 
                 if (orderBy != null)
                 {

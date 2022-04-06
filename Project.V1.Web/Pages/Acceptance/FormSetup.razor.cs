@@ -575,7 +575,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     {
                         var dataObj = data as ProjectTypeModel;
 
-                        var result = await ProcessAdd(IProjectType, dataObj, Grid_ProjectType, x => x.Name == dataObj.Name && x.SpectrumId == dataObj.SpectrumId);
+                        var result = await ProcessAdd(IProjectType, dataObj, Grid_ProjectType, x => x.Name == dataObj.Name);
 
                         return result as T;
                     }

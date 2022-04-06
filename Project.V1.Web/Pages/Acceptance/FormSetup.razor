@@ -245,8 +245,6 @@
                                         </GridColumn>
                                         <GridColumn Field="@nameof(ProjectTypeModel.Name)" HeaderText="Project Type" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                         </GridColumn>
-                                        <GridForeignColumn Field="@nameof(ProjectTypeModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit">
-                                        </GridForeignColumn>
                                         <GridColumn Field="@nameof(ProjectTypeModel.IsActive)" HeaderText="Is Active" DisplayAsCheckBox="true" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
                                         </GridColumn>
                                         <GridColumn Field="@nameof(ProjectTypeModel.DateCreated)" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"

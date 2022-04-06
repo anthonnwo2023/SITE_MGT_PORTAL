@@ -190,7 +190,7 @@ public partial class ActionRequest : IDisposable
 
     private async void SpectrumChange(string spectrumId)
     {
-        IRequestList.ProjectTypes = await IProjectType.Get(x => x.SpectrumId == spectrumId);
+        IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive);
     }
 
     protected async Task AuthenticationCheck(bool isAuthenticated)

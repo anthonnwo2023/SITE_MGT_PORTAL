@@ -165,7 +165,7 @@
                             request.SummerConfigId = (request.SummerConfigId != null) ? SummerConfigs.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.SummerConfigId.ToUpper())?.Id : request.SummerConfigId;
                             request.TechTypeId = (request.TechTypeId != null) ? TechTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.TechTypeId.ToUpper())?.Id : request.TechTypeId;
                             request.SpectrumId = (request.SpectrumId != null) ? Spectrums.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.SpectrumId.ToUpper() && x.TechTypeId == request.TechTypeId)?.Id : request.SpectrumId;
-                            request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper() && x.SpectrumId == request.SpectrumId)?.Id : request.ProjectTypeId;
+                            request.ProjectTypeId = (request.ProjectTypeId != null) ? ProjectTypes.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper())?.Id : request.ProjectTypeId;
                             request.ProjectNameId = (request.ProjectNameId != null) ? Projects.FirstOrDefault(x => x.Name.ToUpper().Trim() == request.ProjectNameId.ToUpper())?.Id : request.ProjectNameId;
 
                             requests.Add(request);
@@ -191,7 +191,7 @@
             if (!valid) return ("State", valid);
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectNameId.ToUpper(), Projects);
             if (!valid) return ("Project Name", valid);
-            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper() && x.Spectrum.Name.ToUpper() == request.SpectrumId.ToUpper(), ProjectTypes);
+            (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper(), ProjectTypes);
             if (!valid) return ("Project Type", valid);
 
             if (string.IsNullOrEmpty(request.SiteName))

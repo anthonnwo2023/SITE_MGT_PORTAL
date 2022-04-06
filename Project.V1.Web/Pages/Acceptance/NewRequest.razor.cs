@@ -138,7 +138,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
         private async void SpectrumChange(string spectrumId)
         {
-            IRequestList.ProjectTypes = await IProjectType.Get(x => x.SpectrumId == spectrumId);
+            IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive);
         }
 
         protected override void OnInitialized()
