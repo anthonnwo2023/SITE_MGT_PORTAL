@@ -93,7 +93,7 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
                 if (ShouldEnable == true)
                     IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive && x.SpectrumId == RequestModel.SpectrumId, x => x.OrderBy(y => y.Name), "Spectrum");
                 else
-                    IRequestList.ProjectTypes = await IProjectType.Get(x => x.SpectrumId == RequestModel.SpectrumId, x => x.OrderBy(y => y.Name), "Spectrum");
+                    IRequestList.ProjectTypes = await IProjectType.Get(null, x => x.OrderBy(y => y.Name), "Spectrum");
 
             }
 

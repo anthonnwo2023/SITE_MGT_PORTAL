@@ -72,7 +72,7 @@
 
             Regions = await IRegion.Get(x => x.IsActive);
             SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
-            ProjectTypes = await IProjectType.Get(x => x.IsActive);
+            ProjectTypes = await IProjectType.Get(x => x.IsActive, null, "Spectrum");
             RRUTypes = await IRRUType.Get(x => x.IsActive);
             TechTypes = await ITechType.Get(x => x.IsActive);
             AntennaTypes = await IAntennaType.Get(x => x.IsActive);
@@ -126,7 +126,7 @@
 
                         await InitializeForm();
 
-                        RequestModel = await IRequest.GetById(x => x.Id == Id);
+                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType");
                         RequestStatus = RequestModel.Status;
                         Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId);
 

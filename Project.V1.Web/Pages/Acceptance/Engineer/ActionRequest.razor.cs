@@ -182,7 +182,7 @@
 
                         await InitializeForm();
 
-                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned");
+                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType");
                         RequestModel.EngineerAssigned.DateApproved = DateTime.UtcNow;
 
                         DateTime dt = DateTime.Now;

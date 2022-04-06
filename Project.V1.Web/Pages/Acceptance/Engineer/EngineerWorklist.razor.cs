@@ -57,7 +57,7 @@
                     TechTypes = await ITechType.Get(x => x.IsActive);
                     Regions = await IRegion.Get(x => x.IsActive);
                     Spectrums = await ISpectrum.Get(x => x.IsActive);
-                    ProjectTypes = await IProjectType.Get(x => x.IsActive);
+                    ProjectTypes = await IProjectType.Get(null, null, "Spectrum");
                     Projects = await IProject.Get(x => x.IsActive);
 
                     StateHasChanged();
