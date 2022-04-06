@@ -1,5 +1,4 @@
-﻿using Syncfusion.Blazor.DropDowns;
-using System.Threading;
+﻿using System.Threading;
 
 namespace Project.V1.Web.Pages.SiteHalt
 {
@@ -213,6 +212,7 @@ namespace Project.V1.Web.Pages.SiteHalt
             {
 
             }
+            await Task.CompletedTask;
         }
 
         public async Task ActionComplete<T>(ActionEventArgs<T> args, string model) where T : class
@@ -235,6 +235,7 @@ namespace Project.V1.Web.Pages.SiteHalt
             //{
             //    //await DoDeleteFromGrid(args.RowIndex, model);
             //}
+            await Task.CompletedTask;
 
             StateHasChanged();
         }

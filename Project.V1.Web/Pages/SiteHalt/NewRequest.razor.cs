@@ -20,7 +20,7 @@ public partial class NewRequest : IDisposable
     public string UploadFileName { get; set; }
     public string UploadPath { get; set; }
     public List<FilesManager> UploadedRequestFiles { get; set; } = new();
-    public SiteHUDRequestModel HUDRequestModel { get; set; }
+    public SiteHUDRequestModel HUDRequest { get; set; }
     public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();
@@ -170,14 +170,14 @@ public partial class NewRequest : IDisposable
     {
         var fileName = $"{HelperFunctions.GenerateIDUnique("HUD-SID")}.txt";
 
-        var (isWritten, message) = TextFileExtension.Initialize("HUD_SiteID", fileName).GetStream().WriteToFile(HUDRequestModel.SiteIds);
+        var (isWritten, message) = TextFileExtension.Initialize("HUD_SiteID", fileName).GetStream().WriteToFile(HUDRequest.SiteIds);
 
-        //var (isWritten, message) = await TextFileExtension.Initialize("HUD_SiteID", fileName).GetStream().WriteToFile(HUDRequestModel.SiteIds);
+        //var (isWritten, message) = await TextFileExtension.Initialize("HUD_SiteID", fileName).GetStream().WriteToFile(HUDRequest.SiteIds);
 
         if (isWritten)
         {
-            HUDRequestModel.HasLargeSiteIdCount = true;
-            HUDRequestModel.SiteIds = fileName;
+            HUDRequest.HasLargeSiteIdCount = true;
+            HUDRequest.SiteIds = fileName;
         }
         else
         {
@@ -198,7 +198,7 @@ public partial class NewRequest : IDisposable
             await FileUploader.StartUpload(true, file, true)
                 .ContinueWith(async (response) =>
                 {
-                    HUDRequestModel.SupportingDocument = Path.GetFileName((await response).filePath);
+                    HUDRequest.SupportingDocument = Path.GetFileName((await response).filePath);
 
                     if ((await response).uploadResp.Length != 0 || (await response).uploadError.Length != 0)
                     {
@@ -215,10 +215,10 @@ public partial class NewRequest : IDisposable
         try
         {
             DisableButton = true;
-            RequestSiteIds = HUDRequestModel.SiteIds;
+            RequestSiteIds = HUDRequest.SiteIds;
             UploadIconCss = "fas fa-spin fa-spinner ml-2";
 
-            if (HUDRequestModel.SiteIds.Length > 1999)
+            if (HUDRequest.SiteIds.Length > 1999)
             {
                 SaveLargeSiteIDToFile();
             }
@@ -231,7 +231,7 @@ public partial class NewRequest : IDisposable
         }
         catch (Exception ex)
         {
-            HUDRequestModel.SiteIds = RequestSiteIds;
+            HUDRequest.SiteIds = RequestSiteIds;
             DisableButton = false;
             UploadIconCss = "fas fa-paper-plane ml-2";
             Logger.LogError("Error creating request. ", new { }, ex);
@@ -254,8 +254,8 @@ public partial class NewRequest : IDisposable
 
     protected void ChangeRequestType()
     {
-        HUDRequestModel = HUDRequestModel.CopyTo(new HUDRequest(IHUDRequest, IRequestList.User));
-        HUDRequestModel.User = IRequestList.User;
+        HUDRequest = HUDRequest.CopyTo(new HUDRequest(IHUDRequest, IRequestList.User));
+        HUDRequest.User = IRequestList.User;
     }
 
     private async Task InitializeForm()
@@ -265,9 +265,9 @@ public partial class NewRequest : IDisposable
 
         await IRequestList.Initialize(Principal, "HUDObject");
 
-        HUDRequestModel = new();
-        HUDRequestModel.TempStatus = "Pending";
-        HUDRequestModel.TempComment = " ";
+        HUDRequest = new();
+        HUDRequest.TempStatus = "Pending";
+        HUDRequest.TempComment = " ";
 
         BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD RF SM")).Select(x => new RequestApproverModel
         {
@@ -304,18 +304,18 @@ public partial class NewRequest : IDisposable
         DisableButton = true;
         UploadIconCss = "fas fa-spin fa-spinner ml-2";
 
-        HUDRequestModel.Id = Guid.NewGuid().ToString();
+        HUDRequest.Id = Guid.NewGuid().ToString();
 
-        if (HUDRequestModel.RequestAction != "UnHalt")
+        if (HUDRequest.RequestAction != "UnHalt")
         {
-            HUDRequestModel.FirstApprover.RequestId = HUDRequestModel.Id;
-            HUDRequestModel.SecondApprover.RequestId = HUDRequestModel.Id;
-            HUDRequestModel.ThirdApprover.RequestId = HUDRequestModel.Id;
+            HUDRequest.FirstApprover.RequestId = HUDRequest.Id;
+            HUDRequest.SecondApprover.RequestId = HUDRequest.Id;
+            HUDRequest.ThirdApprover.RequestId = HUDRequest.Id;
         }
 
-        HUDRequestModel.TechTypes = IRequestList.TechTypes.Where(x => HUDRequestModel.TechTypeIds.Contains(x.Id)).ToList();
+        HUDRequest.TechTypes = IRequestList.TechTypes.Where(x => HUDRequest.TechTypeIds.Contains(x.Id)).ToList();
 
-        var (Saved, Message) = await HUDRequestModel.Create();
+        var (Saved, Message) = await HUDRequest.Create();
 
         if (!Saved)
         {
@@ -324,11 +324,11 @@ public partial class NewRequest : IDisposable
             return;
         }
 
-        var siteIds = HUDRequestModel.SiteIds;
-        HUDRequestModel.SiteIds = RequestSiteIds;
+        var siteIds = HUDRequest.SiteIds;
+        HUDRequest.SiteIds = RequestSiteIds;
 
-        await HUDRequestModel.SetCreateState(null);
-        HUDRequestModel.SiteIds = siteIds;
+        await HUDRequest.SetCreateState(null);
+        HUDRequest.SiteIds = siteIds;
 
         DisableButton = false;
         await ThrowSuccess(Message);
@@ -337,6 +337,6 @@ public partial class NewRequest : IDisposable
 
     public void Dispose()
     {
-        //HUDRequestModel.Dispose();
+        //HUDRequest.Dispose();
     }
 }

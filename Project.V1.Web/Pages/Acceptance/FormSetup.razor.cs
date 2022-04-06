@@ -834,7 +834,7 @@ namespace Project.V1.Web.Pages.Acceptance
             //{
             //    //await DoDeleteFromGrid(args.RowIndex, model);
             //}
-
+            await Task.CompletedTask;
             StateHasChanged();
         }
 

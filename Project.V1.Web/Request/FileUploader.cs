@@ -64,6 +64,8 @@
                             return ("", path, error);
                         }
 
+                        await Task.CompletedTask;
+
                         return ($"An Error occurred, could not save specified file", "", error);
                     }
 

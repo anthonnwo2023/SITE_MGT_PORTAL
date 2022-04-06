@@ -78,7 +78,7 @@ public class SiteHUDRequestModel : IDisposable
             extra = $" By {FirstApprover.Fullname} (1 of 3)";
         if (Status.StartsWith("SA"))
             extra = $" By {SecondApprover.Fullname} (2 of 3)";
-        if (Status.StartsWith("TA"))
+        if (Status.StartsWith("TA") && RequestAction != "UnHalt")
             extra = $" By {ThirdApprover.Fullname} (3 of 3)";
 
         return message + extra;

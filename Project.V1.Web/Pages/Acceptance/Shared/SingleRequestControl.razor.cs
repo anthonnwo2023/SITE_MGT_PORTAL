@@ -89,7 +89,13 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
                 IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId, x => x.OrderBy(y => y.Name), "TechType");
 
             if (RequestModel.SpectrumId != null)
-                IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive && x.SpectrumId == RequestModel.SpectrumId, x => x.OrderBy(y => y.Name), "Spectrum");
+            {
+                if (ShouldEnable == true)
+                    IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive && x.SpectrumId == RequestModel.SpectrumId, x => x.OrderBy(y => y.Name), "Spectrum");
+                else
+                    IRequestList.ProjectTypes = await IProjectType.Get(x => x.SpectrumId == RequestModel.SpectrumId, x => x.OrderBy(y => y.Name), "Spectrum");
+
+            }
 
             await OnCheckValidButton.InvokeAsync(false);
 
