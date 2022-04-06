@@ -172,7 +172,7 @@
                     Basebands = await IBaseband.Get(x => x.IsActive);
                     RRUTypes = await IRRUType.Get(x => x.IsActive);
                     Projects = await IProject.Get(x => x.IsActive);
-                    ProjectTypes = await IProjectType.Get(null, null, "Spectrum");
+                    ProjectTypes = await IProjectType.Get(x => x.IsActive);
                     SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
                 }
                 catch (Exception ex)
