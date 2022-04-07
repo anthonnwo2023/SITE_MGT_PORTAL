@@ -226,7 +226,7 @@ else
         Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
         <GridPageSettings PageSize="10"></GridPageSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
-        <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" ShowDeleteConfirmDialog="true"></GridEditSettings>
+        <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="true" ShowDeleteConfirmDialog="false"></GridEditSettings>
         <GridColumns>
             <GridColumn Field="@nameof(SiteHUDRequestModel.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
             </GridColumn>
@@ -283,10 +283,13 @@ else
                     var index = HUDEngineerRequests.IndexOf(request);
 
                     if (HUDEngineerRequests.Count() > 0)
-                        if (!CompleteButtons[index])
+                        if (CompleteIndex < 0)
                         {
+                            //if (!CompleteButtons[CompleteIndex])
+                            //{
                             <SfButton CssClass="btn btn-success bg-dark p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonCompleteIconCss" OnClick='e => CompleteRequest(e, request)'
                           IconPosition="IconPosition.Top"></SfButton>
+                            //}
                         }
                         else
                         {

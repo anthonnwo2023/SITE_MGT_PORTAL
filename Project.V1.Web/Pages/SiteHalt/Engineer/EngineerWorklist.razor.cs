@@ -1,6 +1,6 @@
 ﻿namespace Project.V1.Web.Pages.SiteHalt.Engineer;
 
-public partial class EngineerWorklist : IDisposable
+public partial class EngineerWorklist
 {
     public List<PathInfo> Paths { get; set; }
     [Inject] public IHttpContextAccessor Context { get; set; }
@@ -20,6 +20,7 @@ public partial class EngineerWorklist : IDisposable
     public List<RequestApproverModel> SecondLevelApprovers { get; set; } = new();
     public List<RequestApproverModel> ThirdLevelApprovers { get; set; } = new();
 
+    public int CompleteIndex { get; set; } = -1;
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
     public bool Visibility { get; set; } = true;
@@ -78,7 +79,7 @@ public partial class EngineerWorklist : IDisposable
                 User = await IUser.GetUserByUsername(Principal.Identity.Name);
                 var userRegionIds = User.Regions.Select(x => x.Id);
 
-                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed", x => x.OrderByDescending(y => y.DateCreated))).ToList();
+                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed", x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
                 CompleteButtons = new bool[HUDEngineerRequests.Count];
                 UpdateButtons = new bool[HUDEngineerRequests.Count];
 
@@ -223,8 +224,8 @@ public partial class EngineerWorklist : IDisposable
 
     protected async void CompleteRequest(MouseEventArgs args, SiteHUDRequestModel request)
     {
-        var index = HUDEngineerRequests.IndexOf(request);
-        CompleteButtons[index] = true;
+        CompleteIndex = HUDEngineerRequests.IndexOf(request);
+        CompleteButtons[CompleteIndex] = true;
 
         try
         {
@@ -232,14 +233,18 @@ public partial class EngineerWorklist : IDisposable
 
             if (ProcessAction(request, IHUDRequest))
             {
-                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed")).ToList();
+                //HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed", x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
+
+                await Grid_Request.DeleteRecordAsync("Id", request);
+                await Grid_Request.EndEdit();
+                Grid_Request.Refresh();
                 ToastContent = $"Request ({request.UniqueId}) completed successfully.";
                 SuccessBtnOnClick();
                 return;
             }
 
             ToastContent = "An error occurred, request could not be updated.";
-            CompleteButtons[index] = false;
+            CompleteButtons[CompleteIndex] = false;
 
             await Task.Delay(200);
 
@@ -247,7 +252,7 @@ public partial class EngineerWorklist : IDisposable
         }
         catch (Exception ex)
         {
-            CompleteButtons[index] = false;
+            CompleteButtons[CompleteIndex] = false;
             Logger.LogError(ex.Message, new { }, ex);
         }
     }
@@ -300,10 +305,5 @@ public partial class EngineerWorklist : IDisposable
         DisableBtn = false;
 
         StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-
     }
 }
