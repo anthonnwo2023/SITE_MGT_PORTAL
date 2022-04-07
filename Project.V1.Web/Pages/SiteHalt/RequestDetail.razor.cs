@@ -322,7 +322,7 @@ namespace Project.V1.Web.Pages.SiteHalt
 
         public void Dispose()
         {
-            RequestToUpdate.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

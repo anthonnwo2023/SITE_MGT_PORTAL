@@ -16,7 +16,7 @@ namespace Project.V1.DLL.Crons
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly List<string> tableColumnNames = new() { "S/N", "TECH", "Spectrum", "SiteID", "Region", "Vendor", "Submission Date", "Acceptance Date", "Scope", "Status", "State" };
 
-        private readonly Dictionary<string, int> TotalRow = new();
+        //private readonly Dictionary<string, int> TotalRow = new();
         private readonly Dictionary<string, int> TotalRowInit = new()
         {
             { "2G", 0 },
@@ -38,11 +38,11 @@ namespace Project.V1.DLL.Crons
             { "cellpadding", "2" },
         };
 
-        private readonly Dictionary<string, string> CellTHProperties = new()
-        {
-            { "align", "left" },
-            { "valign", "middle" },
-        };
+        //private readonly Dictionary<string, string> CellTHProperties = new()
+        //{
+        //    { "align", "left" },
+        //    { "valign", "middle" },
+        //};
 
         private readonly Dictionary<string, string> CellTDProperties = new()
         {
@@ -68,7 +68,7 @@ namespace Project.V1.DLL.Crons
 
         public void Dispose()
         {
-
+            GC.SuppressFinalize(this);
         }
 
         public async Task Execute(IJobExecutionContext context)

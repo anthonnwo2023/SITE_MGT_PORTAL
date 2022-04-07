@@ -44,7 +44,7 @@ else
             <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
             <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
             <GridColumns>
-                <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@TechTypes" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.TechTypes" EditType="EditType.DropDownEdit"
                                Width="80" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.UniqueId)" HeaderText="Unique Id" TextAlign="TextAlign.Left"
@@ -65,10 +65,10 @@ else
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.RNCBSC)" HeaderText="RNC/BSC" TextAlign="TextAlign.Left"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.RegionId)" HeaderText="Region" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Regions" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.RegionId)" HeaderText="Region" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.Regions" EditType="EditType.DropDownEdit"
                                Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Spectrums" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.Spectrums" EditType="EditType.DropDownEdit"
                                Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.Bandwidth)" HeaderText="Bandwidth" TextAlign="TextAlign.Left"
@@ -80,10 +80,10 @@ else
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.Longitude)" HeaderText="Longitude" TextAlign="TextAlign.Center"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.AntennaMakeId)" HeaderText="Antenna Make" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@AntennaMakes" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.AntennaMakeId)" HeaderText="Antenna Make" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.AntennaMakes" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.AntennaTypeId)" HeaderText="Antenna Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@AntennaTypes" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.AntennaTypeId)" HeaderText="Antenna Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.AntennaTypes" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.AntennaHeight)" HeaderText="Antenna Height" TextAlign="TextAlign.Left"
@@ -104,16 +104,16 @@ else
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.Power)" HeaderText="Power - (w)" TextAlign="TextAlign.Left"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectNameId)" HeaderText="Project Name" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@Projects" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectNameId)" HeaderText="Project Name" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.Projects" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectTypeId)" HeaderText="Project Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@ProjectTypes" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectTypeId)" HeaderText="Project Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.ProjectTypes" EditType="EditType.DropDownEdit"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridColumn Field="@nameof(RequestViewModel.ProjectYear)" HeaderText="Project Year" TextAlign="TextAlign.Center"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.SummerConfigId)" HeaderText="Summer Config" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@SummerConfigs" EditType="EditType.DropDownEdit"
+                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.SummerConfigId)" HeaderText="Summer Config" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.SummerConfigs" EditType="EditType.DropDownEdit"
                                Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridForeignColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.SoftwareVersion)" HeaderText="Software Version" TextAlign="TextAlign.Left"

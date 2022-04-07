@@ -1,4 +1,6 @@
-﻿namespace Project.V1.Web.Pages.Acceptance
+﻿using Project.V1.Web.Request;
+
+namespace Project.V1.Web.Pages.Acceptance
 {
     public partial class Report
     {
@@ -8,31 +10,12 @@
         [Inject] public IHttpContextAccessor Context { get; set; }
         [Inject] public ICLogger Logger { get; set; }
         [Inject] protected IRequest IRequest { get; set; }
-        [Inject] protected IRegion IRegion { get; set; }
         [Inject] protected IUser IUser { get; set; }
         [Inject] protected IVendor IVendor { get; set; }
-        [Inject] protected ITechType ITechType { get; set; }
-        [Inject] protected ISpectrum ISpectrum { get; set; }
-        [Inject] protected IAntennaMake IAntennaMake { get; set; }
-        [Inject] protected IAntennaType IAntennaType { get; set; }
-        [Inject] protected IBaseBand IBaseband { get; set; }
-        [Inject] protected IProjects IRRUType { get; set; }
-        [Inject] protected IProjectType IProjectType { get; set; }
-        [Inject] protected IProjects IProject { get; set; }
-        [Inject] protected ISummerConfig ISummerConfig { get; set; }
+        [Inject] protected IRequestListObject IRequestList { get; set; }
         [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
 
         List<RequestViewModel> Requests { get; set; }
-        List<RegionViewModel> Regions { get; set; }
-        List<TechTypeModel> TechTypes { get; set; }
-        List<SpectrumViewModel> Spectrums { get; set; }
-        List<AntennaMakeModel> AntennaMakes { get; set; }
-        List<AntennaTypeModel> AntennaTypes { get; set; }
-        List<BaseBandModel> Basebands { get; set; }
-        List<ProjectModel> RRUTypes { get; set; }
-        List<ProjectTypeModel> ProjectTypes { get; set; }
-        List<ProjectModel> Projects { get; set; }
-        List<SummerConfigModel> SummerConfigs { get; set; }
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
         public VendorModel Vendor { get; set; }
@@ -164,16 +147,7 @@
                         Requests = await IRequest.Get(x => x.Requester.VendorId == User.VendorId, x => x.OrderByDescending(y => y.DateCreated), "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType");
                     }
 
-                    TechTypes = await ITechType.Get(x => x.IsActive);
-                    Regions = await IRegion.Get(x => x.IsActive);
-                    Spectrums = await ISpectrum.Get(x => x.IsActive);
-                    AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
-                    AntennaTypes = await IAntennaType.Get(x => x.IsActive);
-                    Basebands = await IBaseband.Get(x => x.IsActive);
-                    RRUTypes = await IRRUType.Get(x => x.IsActive);
-                    Projects = await IProject.Get(x => x.IsActive);
-                    ProjectTypes = await IProjectType.Get(x => x.IsActive);
-                    SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
+                    await IRequestList.Initialize(Principal, "SMPObject");
                 }
                 catch (Exception ex)
                 {

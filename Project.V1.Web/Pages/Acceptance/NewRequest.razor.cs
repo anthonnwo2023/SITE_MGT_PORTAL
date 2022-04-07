@@ -25,7 +25,7 @@ namespace Project.V1.Web.Pages.Acceptance
         public string BulkUploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
         public string SEUploadIconCss { get; set; } = "fas fa-paper-plane ml-2";
 
-        private string BulkUploadColumnError { get; set; }
+        //private string BulkUploadColumnError { get; set; }
         private string BulkUploadError { get; set; }
         private string SaveError { get; set; }
 
@@ -135,7 +135,7 @@ namespace Project.V1.Web.Pages.Acceptance
             }
         }
 
-        private async void SpectrumChange(string spectrumId)
+        private static void SpectrumChange(string spectrumId)
         {
             //IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive);
         }
@@ -572,7 +572,7 @@ namespace Project.V1.Web.Pages.Acceptance
                 requestObject.IsWaiver = BulkWaiverUploadSelected;
 
                 BulkRequest bulkRequest = new(BulkUploadData.requests, UploadedRequestFiles, IRequest);
-                var (SaveStatus, Messages, ValidRequests) = await bulkRequest.Save(requestObject);
+                var (_, Messages, ValidRequests) = await bulkRequest.Save(requestObject);
 
                 if (ValidRequests.Count > 0)
                     await bulkRequest.SetCreateState();

@@ -65,7 +65,7 @@ namespace Project.V1.DLL.Crons
 
         public void Dispose()
         {
-
+            GC.SuppressFinalize(this);
         }
 
         public async Task Execute(IJobExecutionContext context)

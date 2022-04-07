@@ -229,7 +229,7 @@
 
         public void Dispose()
         {
-            HUDReportRequests = null;
+            GC.SuppressFinalize(this);
         }
     }
 }

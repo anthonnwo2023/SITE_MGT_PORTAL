@@ -60,6 +60,6 @@ public partial class ApproverWorklist : IDisposable
 
     public void Dispose()
     {
-        HUDApproverRequests = null;
+        GC.SuppressFinalize(this);
     }
 }

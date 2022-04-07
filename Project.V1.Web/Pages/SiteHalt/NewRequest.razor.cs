@@ -262,6 +262,7 @@ public partial class NewRequest : IDisposable
     {
         UploadIconCss = "fas fa-paper-plane ml-2";
         Principal = (await AuthenticationStateTask).User;
+        UploadedRequestFiles = new();
 
         await IRequestList.Initialize(Principal, "HUDObject");
 
@@ -337,6 +338,6 @@ public partial class NewRequest : IDisposable
 
     public void Dispose()
     {
-        //HUDRequest.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
