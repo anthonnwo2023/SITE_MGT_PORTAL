@@ -1,18 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Project.V1.DLL.Interface;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Grids;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace Project.V1.Web.Pages.Acceptance
+﻿namespace Project.V1.Web.Pages.Acceptance
 {
     public partial class ReportTechPerSite
     {
@@ -97,7 +83,8 @@ namespace Project.V1.Web.Pages.Acceptance
                         return;
                     }
 
-                    RequestsGroup = (await IRequest.Get(x => x.EngineerAssigned.DateApproved != DateTime.MinValue, x => x.OrderByDescending(y => y.DateCreated))).GroupBy(x => x.SiteId)
+                    RequestsGroup = (await IRequest.Get(x => x.EngineerAssigned.DateApproved != DateTime.MinValue
+                    && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD"), x => x.OrderByDescending(y => y.DateCreated), "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Spectrum,TechType,Region")).GroupBy(x => x.SiteId)
                         .Select(x => new RequestViewModel
                         {
                             SiteId = x.Key,

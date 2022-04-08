@@ -194,7 +194,7 @@ namespace Project.V1.Web.Pages
 
             var Exists = await genericRepo.GetById(x => x.Name == data.Name);
 
-            if (Exists == null)
+            if (Exists?.Name == null)
             {
                 var (result, error) = await genericRepo.Create(data);
 
