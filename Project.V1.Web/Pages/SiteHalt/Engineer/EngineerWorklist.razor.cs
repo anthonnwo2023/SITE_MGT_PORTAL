@@ -50,7 +50,7 @@ public partial class EngineerWorklist
 
     protected SfGrid<SiteHUDRequestModel> Grid_Request { get; set; }
     protected SfButton UpdateButton { get; set; }
-    protected bool[] CompleteButtons { get; set; }
+    protected bool[] CompletingButtons { get; set; }
     protected bool[] UpdateButtons { get; set; }
 
     public List<string> ToolbarItems = new() { "Search" };
@@ -80,7 +80,7 @@ public partial class EngineerWorklist
                 var userRegionIds = User.Regions.Select(x => x.Id);
 
                 HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed", x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
-                CompleteButtons = new bool[HUDEngineerRequests.Count];
+                CompletingButtons = new bool[HUDEngineerRequests.Count];
                 UpdateButtons = new bool[HUDEngineerRequests.Count];
 
                 StateHasChanged();
@@ -225,7 +225,7 @@ public partial class EngineerWorklist
     protected async void CompleteRequest(MouseEventArgs args, SiteHUDRequestModel request)
     {
         CompleteIndex = HUDEngineerRequests.IndexOf(request);
-        CompleteButtons[CompleteIndex] = true;
+        CompletingButtons[CompleteIndex] = true;
 
         try
         {
@@ -239,12 +239,13 @@ public partial class EngineerWorklist
                 await Grid_Request.EndEdit();
                 Grid_Request.Refresh();
                 ToastContent = $"Request ({request.UniqueId}) completed successfully.";
+                CompletingButtons[CompleteIndex] = false;
                 SuccessBtnOnClick();
                 return;
             }
 
             ToastContent = "An error occurred, request could not be updated.";
-            CompleteButtons[CompleteIndex] = false;
+            CompletingButtons[CompleteIndex] = false;
 
             await Task.Delay(200);
 
@@ -252,7 +253,7 @@ public partial class EngineerWorklist
         }
         catch (Exception ex)
         {
-            CompleteButtons[CompleteIndex] = false;
+            CompletingButtons[CompleteIndex] = false;
             Logger.LogError(ex.Message, new { }, ex);
         }
     }

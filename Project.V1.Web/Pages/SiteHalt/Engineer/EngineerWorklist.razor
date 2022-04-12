@@ -280,22 +280,30 @@ else
             <Template>
                 @{
                     var request = (context as SiteHUDRequestModel);
-                    var index = HUDEngineerRequests.IndexOf(request);
+                    CompleteIndex = HUDEngineerRequests.IndexOf(request);
 
-                    if (HUDEngineerRequests.Count() > 0)
-                        if (CompleteIndex < 0)
+                    //if (HUDEngineerRequests.Count() > 0)
+                    if (CompleteIndex < 0)
+                    {
+                        //if (!CompleteButtons[CompleteIndex])
+                        //{
+                        <SfButton CssClass="btn btn-success bg-dark p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonCompleteIconCss" OnClick='e => CompleteRequest(e, request)'
+                          IconPosition="IconPosition.Top"></SfButton>
+                        //}
+                    }
+                    else
+                    {
+                        if (!CompletingButtons[CompleteIndex])
                         {
-                            //if (!CompleteButtons[CompleteIndex])
-                            //{
                             <SfButton CssClass="btn btn-success bg-dark p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonCompleteIconCss" OnClick='e => CompleteRequest(e, request)'
                           IconPosition="IconPosition.Top"></SfButton>
-                            //}
                         }
                         else
                         {
                             <SfButton CssClass="btn btn-warning p-2" IsPrimary="true" type="button" data-ripple="true" IconCss="@ButtonProcessingIconCss"
                           IconPosition="IconPosition.Top"></SfButton>
                         }
+                    }
                 }
             </Template>
         </GridColumn>

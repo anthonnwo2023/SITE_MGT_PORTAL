@@ -39,48 +39,48 @@ namespace Project.V1.Web.Pages.Acceptance
         {
             if (args.Item.Id == "ReportTable_excelexport") //Id is combination of Grid's ID and itemname
             {
-                var hiddenCols = new string[] {
-                    "Vendor",
-                    "Site Name",
-                    "RNC/BSC",
-                    "Spectrum",
-                    "Bandwidth",
-                    "Latitude",
-                    "Longitude",
-                    "Antenna Make",
-                    "Antenna Type",
-                    "Antenna Height",
-                    "M Tilt",
-                    "E Tilt",
-                    "Baseband",
-                    "RRU Type",
-                    "Power - (w)",
-                    "Project Name",
-                    "Project Type",
-                    "Project Year",
-                    "Summer Config",
-                    "Software Version",
-                    "RRU Power - (w)",
-                    "CSFB Status GSM",
-                    "CSFB Status WCDMA",
-                    "RET Configured",
-                    "Carrier Aggregation",
-                    "Engineer",
-                    "Date Integrated",
-                    "Date Submitted",
-                    "Date Actioned",
-                    "Requester Comment",
-                    "Engineer Comment",
-                };
+                //var hiddenCols = new string[] {
+                //    "Vendor",
+                //    "Site Name",
+                //    "RNC/BSC",
+                //    "Spectrum",
+                //    "Bandwidth",
+                //    "Latitude",
+                //    "Longitude",
+                //    "Antenna Make",
+                //    "Antenna Type",
+                //    "Antenna Height",
+                //    "M Tilt",
+                //    "E Tilt",
+                //    "Baseband",
+                //    "RRU Type",
+                //    "Power - (w)",
+                //    "Project Name",
+                //    "Project Type",
+                //    "Project Year",
+                //    "Summer Config",
+                //    "Software Version",
+                //    "RRU Power - (w)",
+                //    "CSFB Status GSM",
+                //    "CSFB Status WCDMA",
+                //    "RET Configured",
+                //    "Carrier Aggregation",
+                //    "Engineer",
+                //    "Date Integrated",
+                //    "Date Submitted",
+                //    "Date Actioned",
+                //    "Requester Comment",
+                //    "Engineer Comment",
+                //};
 
-                await Grid_Request.ShowColumnsAsync(hiddenCols);
+                //await Grid_Request.ShowColumnsAsync(hiddenCols);
 
                 ExcelExportProperties ExportProperties = new();
                 ExportProperties.FileName = $"General_Report{DateTimeOffset.UtcNow:ddMMyyyy.Hmmss}.xlsx";
-                ExportProperties.IncludeHiddenColumn = true;
+                ExportProperties.IncludeHiddenColumn = false;
 
                 await Grid_Request.ExcelExport(ExportProperties);
-                await Grid_Request.HideColumnsAsync(hiddenCols);
+                //await Grid_Request.HideColumnsAsync(hiddenCols);
             }
 
             if (args.Item.Id == "ReportGroupTable_excelexport") //Id is combination of Grid's ID and itemname

@@ -171,6 +171,8 @@
                     }
                 });
 
+            BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.ThirdApproverId)).ToList();
+
             RequestUniqueId = RequestModel?.UniqueId;
 
             if (RequestModel.FirstApprover is not null)
