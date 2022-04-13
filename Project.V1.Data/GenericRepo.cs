@@ -53,8 +53,8 @@ namespace Project.V1.Data
         {
             try
             {
-                _context.Database.CloseConnection();
-                _context.Database.OpenConnection();
+                //_context.Database.CloseConnection();
+                //_context.Database.OpenConnection();
 
                 IQueryable<T> query = entity;
 

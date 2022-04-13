@@ -218,7 +218,7 @@ else
 
     <SfGrid DataSource="@HUDReportRequests" AllowPaging="true" AllowSorting="true"
         Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
-        <GridPageSettings PageSize="5" ></GridPageSettings>
+        <GridPageSettings PageSize="10" PageSizes="true" ></GridPageSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
         <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" ShowDeleteConfirmDialog="false"></GridEditSettings>
         <GridColumns>

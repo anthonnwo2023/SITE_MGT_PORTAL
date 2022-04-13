@@ -39,7 +39,7 @@ else
             Width="100%">
             <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModel"></GridEvents>
             <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-            <GridPageSettings PageSize="10"></GridPageSettings>
+            <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
             <GridSearchSettings></GridSearchSettings>
             <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
             <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>

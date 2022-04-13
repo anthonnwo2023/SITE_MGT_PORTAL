@@ -34,7 +34,7 @@ public class SiteHUDRequestModel : IDisposable
 
     public string SupportingDocument { get; set; }
 
-    public string Status { get; set; }
+    public string Status { get; set; } = "";
 
     public bool ShouldRequireApprovers { get; set; }
 
