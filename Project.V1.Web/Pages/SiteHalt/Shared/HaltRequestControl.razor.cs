@@ -6,6 +6,7 @@ namespace Project.V1.Web.Pages.SiteHalt.Shared;
 public partial class HaltRequestControl
 {
     [Parameter] public bool ShouldEnable { get; set; }
+    [Parameter] public bool ShowStatus { get; set; }
     [Parameter] public bool ShowCopyText { get; set; } = true;
     [Parameter] public bool ShowRequired { get; set; }
     [Parameter] public bool ShowSSVUpload { get; set; } = true;

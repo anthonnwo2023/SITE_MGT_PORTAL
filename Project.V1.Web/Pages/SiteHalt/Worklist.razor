@@ -44,12 +44,12 @@ else
             </GridColumn>
             <GridColumn Field="@nameof(SiteHUDRequestModel.UniqueId)" Width="180" HeaderText="Unique Id" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
-            <GridColumn Field="@nameof(SiteHUDRequestModel.GetSiteIds)" Width="550" ClipMode="ClipMode.EllipsisWithTooltip" HeaderText="Site IDs" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
+            <GridColumn Field="@nameof(SiteHUDRequestModel.GetSiteIds)" Width="750" ClipMode="ClipMode.EllipsisWithTooltip" HeaderText="Site IDs" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
             <GridColumn Field="@nameof(SiteHUDRequestModel.RequestAction)" Width="150" HeaderText="Request Type" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
-            <GridColumn Field="@nameof(SiteHUDRequestModel.GetStatusString)" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
-            </GridColumn>
+            @*<GridColumn Field="@nameof(SiteHUDRequestModel.GetStatusString)" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>*@
             <GridColumn Field="@nameof(SiteHUDRequestModel.DateCreated)" Width="150" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
                     Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">
             </GridColumn>

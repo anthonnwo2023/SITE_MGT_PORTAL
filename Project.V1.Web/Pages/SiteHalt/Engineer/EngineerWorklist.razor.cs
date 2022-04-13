@@ -239,7 +239,7 @@ public partial class EngineerWorklist
                 await Grid_Request.EndEdit();
                 Grid_Request.Refresh();
                 ToastContent = $"Request ({request.UniqueId}) completed successfully.";
-                CompletingButtons[CompleteIndex] = false;
+                CompletingButtons = new bool[Grid_Request.TotalItemCount];
                 SuccessBtnOnClick();
                 return;
             }
