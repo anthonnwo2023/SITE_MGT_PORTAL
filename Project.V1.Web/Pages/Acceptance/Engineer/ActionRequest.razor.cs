@@ -125,13 +125,17 @@
         private void OnClear(ClearingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload();
+            }
         }
 
         private void OnRemove(RemovingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload();
+            }
         }
 
         public async Task OnTechChange(List<SpectrumViewModel> spectrums)
@@ -182,7 +186,7 @@
 
                         await InitializeForm();
 
-                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType");
+                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum");
                         RequestModel.EngineerAssigned.DateApproved = DateTime.UtcNow;
 
                         DateTime dt = DateTime.Now;

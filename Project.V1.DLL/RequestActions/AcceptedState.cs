@@ -1,11 +1,4 @@
-﻿using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Project.V1.DLL.RequestActions
+﻿namespace Project.V1.DLL.RequestActions
 {
     public class AcceptedState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
@@ -15,11 +8,16 @@ namespace Project.V1.DLL.RequestActions
             {
                 string application = variables["App"] as string;
 
-                await _request.UpdateRequest(request, x => x.Id == request.Id);
+                bool isAcceptedDone = await _request.UpdateRequest(request, x => x.Id == request.Id);
 
-                await SendEmail(application, request);
+                if (isAcceptedDone)
+                {
+                    await SendEmail(application, request);
 
-                return true;
+                    return true;
+                }
+
+                return false;
             }
             catch (Exception ex)
             {
@@ -49,7 +47,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='green'><b>Request Accepted</b></font> - See Details below:",
                         Comment = request.EngineerAssigned.ApproverComment,
-                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Notice").Replace("  ", " "),
+                        Subject = ($"Site Acceptance Request ({request.Region.Name}) - {request.UniqueId} Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = request.Requester.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/worklist/{request.Id}",
@@ -70,7 +68,7 @@ namespace Project.V1.DLL.RequestActions
                         Title = "Update Notification on Request - See Below Request Details",
                         Greetings = $"Site Acceptance Request : <font color='green'><b>Request Accepted</b></font> - See Details below:",
                         Comment = request.EngineerAssigned.ApproverComment,
-                        Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Engineer Notice").Replace("  ", " "),
+                        Subject = ($"Site Acceptance Request ({request.Region.Name}) - {request.UniqueId} Engineer Notice").Replace("  ", " "),
                         BodyType = "",
                         M2Uname = request.EngineerAssigned.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{request.Id}",

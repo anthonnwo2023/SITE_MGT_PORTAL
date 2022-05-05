@@ -211,7 +211,7 @@ public partial class ActionRequest : IDisposable
 
                     await InitializeForm();
 
-                    RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType");
+                    RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum");
                     RequestStatus = RequestModel.Status;
                     Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId);
 
