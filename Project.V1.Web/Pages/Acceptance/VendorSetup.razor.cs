@@ -1,21 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.DLL.Services.Interfaces.FormSetup;
-using Project.V1.Lib.Extensions;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
-using Syncfusion.Blazor.Calendars;
-using Syncfusion.Blazor.DropDowns;
-using Syncfusion.Blazor.Grids;
-using Syncfusion.Blazor.Notifications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 
 namespace Project.V1.Web.Pages.Acceptance
 {
@@ -290,7 +273,7 @@ namespace Project.V1.Web.Pages.Acceptance
 
                         var Exists = await IProjects.GetById(x => x.Name == (data as ProjectModel).Name && x.VendorId == (data as ProjectModel).VendorId);
 
-                        if (Exists == null)
+                        if (Exists?.Name == null)
                         {
                             var (result, error) = await IProjects.Create(data as ProjectModel);
 

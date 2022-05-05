@@ -19,7 +19,9 @@ public class SiteHUDRequestModel : IDisposable
         get
         {
             if (SiteIds == null)
+            {
                 return null;
+            }
 
             return (SiteIds.Contains(".txt"))
                ? TextFileExtension.Initialize("HUD_SiteID", SiteIds).ReadFromFile() : SiteIds;
@@ -75,11 +77,19 @@ public class SiteHUDRequestModel : IDisposable
         var extra = string.Empty;
 
         if (Status.StartsWith("FA"))
+        {
             extra = $" By {FirstApprover.Fullname} (1 of 3)";
+        }
+
         if (Status.StartsWith("SA"))
+        {
             extra = $" By {SecondApprover.Fullname} (2 of 3)";
+        }
+
         if (Status.StartsWith("TA") && RequestAction != "UnHalt")
+        {
             extra = $" By {ThirdApprover.Fullname} (3 of 3)";
+        }
 
         return message + extra;
     }
@@ -91,13 +101,60 @@ public class SiteHUDRequestModel : IDisposable
         var comment = string.Empty;
 
         if (FirstApprover?.IsActioned == true)
+        {
             comment = FirstApprover.ApproverComment;
+        }
+
         if (SecondApprover?.IsActioned == true)
+        {
             comment = SecondApprover.ApproverComment;
+        }
+
         if (ThirdApprover?.IsActioned == true)
+        {
             comment = ThirdApprover.ApproverComment;
+        }
 
         return comment;
+    }
+
+    public string FirstApproverName
+    {
+        get
+        {
+            if (FirstApprover == null)
+            {
+                return null;
+            }
+
+            return FirstApprover.Fullname;
+        }
+    }
+
+    public string SecondApproverName
+    {
+        get
+        {
+            if (SecondApprover == null)
+            {
+                return null;
+            }
+
+            return SecondApprover.Fullname;
+        }
+    }
+
+    public string ThirdApproverName
+    {
+        get
+        {
+            if (ThirdApprover == null)
+            {
+                return null;
+            }
+
+            return ThirdApprover.Fullname;
+        }
     }
 
     [RequiredWhen(nameof(ShouldRequireApprovers), true, AllowEmptyStrings = false, ErrorMessage = "The Approver is required.")]

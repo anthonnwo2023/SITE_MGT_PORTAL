@@ -8,6 +8,7 @@ namespace Project.V1.Lib.Helpers.Excel
         public static void ConvertColumnTypeTo<TTargetType>(this DataTable dt, string columnName, Func<object, TTargetType> valueConverter)
         {
             var rowIndex = 1;
+            dynamic val = null;
 
             try
             {
@@ -23,7 +24,18 @@ namespace Project.V1.Lib.Helpers.Excel
                 // Get and convert the values of the old column, and insert them into the new
                 foreach (DataRow dr in dt.Rows)
                 {
-                    dr[dc.ColumnName] = valueConverter(Convert.ToString(dr[columnName]));
+                    var a = valueConverter.Method.ReturnType;
+                    if (a.Name == typeof(DateTime).Name)
+                    {
+                        val = dr[columnName];
+                        dr[dc.ColumnName] = valueConverter(dr[columnName]);
+                    }
+                    else
+                    {
+                        val = dr[columnName];
+                        dr[dc.ColumnName] = valueConverter(Convert.ToString(dr[columnName]));
+                    }
+
                     rowIndex++;
                 }
 
@@ -35,7 +47,7 @@ namespace Project.V1.Lib.Helpers.Excel
             }
             catch
             {
-                throw new Exception($"Error processing upload:  Row: {rowIndex} Column: {columnName}. Could not convert datatype");
+                throw new ArgumentException($"Error processing upload:  Row: {rowIndex} Column: {columnName} Val: {val}. Could not convert datatype", columnName);
             }
         }
     }

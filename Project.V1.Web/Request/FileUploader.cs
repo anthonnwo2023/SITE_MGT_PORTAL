@@ -91,7 +91,9 @@
             catch (Exception ex)
             {
                 if (File.Exists(bufile.UploadPath))
+                {
                     File.Delete(bufile.UploadPath);
+                }
 
                 return (ex.Message, "");
             }
@@ -126,7 +128,7 @@
 
                     Logger.LogError($"{error.ErrorDesc} : {error.ErrorType}", new { Created = error.CreatedBy, error.DateCreated });
 
-                    return (error.ErrorType, new List<RequestViewModel>());
+                    return ($"{error.ErrorDesc} : {error.ErrorType}", new List<RequestViewModel>());
                 }
                 catch (Exception ex)
                 {
@@ -182,51 +184,86 @@
         private static (string column, bool valid) ValidateRow(RequestViewModel request)
         {
             var (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.TechTypeId.ToUpper(), TechTypes);
-            if (!valid) return ("Technology", valid);
+            if (!valid)
+            {
+                return ($"{error} - Technology: {request.TechTypeId}", valid);
+            }
+
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.RegionId.ToUpper(), Regions);
-            if (!valid) return (error, valid);
+            if (!valid)
+            {
+                return ($"{error} - Region: {request.RegionId}", valid);
+            }
+
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.SpectrumId.ToUpper() && x.TechType.Name.ToUpper() == request.TechTypeId.ToUpper(), Spectrums);
-            if (!valid) return (error, valid);
+            if (!valid)
+            {
+                return ($"{error} - Region: {request.SpectrumId}", valid);
+            }
+
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.State.ToUpper(), NigerianStates);
-            if (!valid) return ("State", valid);
+            if (!valid)
+            {
+                return ($"{error} - State: {request.State}", valid);
+            }
+
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectNameId.ToUpper(), Projects);
-            if (!valid) return ("Project Name", valid);
+            if (!valid)
+            {
+                return ($"{error} - Project Name: {request.ProjectNameId}", valid);
+            }
+
             (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.ProjectTypeId.ToUpper(), ProjectTypes);
-            if (!valid) return ("Project Type", valid);
+            if (!valid)
+            {
+                return ($"{error} - Project Type: {request.ProjectTypeId}", valid);
+            }
 
             if (string.IsNullOrEmpty(request.SiteName))
             {
-                error = "Site Name";
+                error = $"Site Name: {request.SiteName}";
                 valid = false;
             }
 
             if (string.IsNullOrEmpty(request.RRUType))
             {
-                error = "RRU Type";
+                error = $"RRU Type: {request.SiteName}";
                 valid = false;
             }
             if (!string.IsNullOrEmpty(request.SummerConfigId))
             {
                 (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.SummerConfigId.ToUpper(), SummerConfigs);
-                if (!valid) return ("Summer Config", valid);
+                if (!valid)
+                {
+                    return ($"Summer Config: {request.SiteName}", valid);
+                }
             }
 
             if (!string.IsNullOrEmpty(request.AntennaMakeId))
             {
                 (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.AntennaMakeId.ToUpper(), AntennaMakes);
-                if (!valid) return ("Antenna Make", valid);
+                if (!valid)
+                {
+                    return ($"Antenna Make: {request.AntennaMakeId}", valid);
+                }
             }
 
             if (!string.IsNullOrEmpty(request.RETConfigured))
             {
                 (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.RETConfigured.ToUpper(), BoolDrops);
-                if (!valid) return ("RET Configured", valid);
+                if (!valid)
+                {
+                    return ($"RET Configured: {request.RETConfigured}", valid);
+                }
             }
 
             if (!string.IsNullOrEmpty(request.AntennaTypeId))
             {
                 (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.AntennaTypeId.ToUpper(), AntennaTypes);
-                if (!valid) return ("Antenna Type", valid);
+                if (!valid)
+                {
+                    return ($"Antenna Type: {request.AntennaTypeId}", valid);
+                }
             }
 
             if (request.TechTypeId != TechTypes.FirstOrDefault(x => x.Name == "4G")?.Id)
@@ -234,7 +271,10 @@
                 if (!string.IsNullOrEmpty(request.CarrierAggregation))
                 {
                     (error, valid) = IsFKValid(x => x.Name.ToUpper().Trim() == request.CarrierAggregation.ToUpper(), BoolDrops);
-                    if (!valid) return ("Carrier Aggregation", valid);
+                    if (!valid)
+                    {
+                        return ($"Carrier Aggregation: {request.CarrierAggregation}", valid);
+                    }
                 }
             }
 

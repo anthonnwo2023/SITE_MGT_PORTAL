@@ -1,6 +1,6 @@
 ﻿namespace Project.V1.DLL.RequestActions.SiteHalt
 {
-    public class RFSMApprovedState<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
+    public class FAApprovedState<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
     {
         public override bool Approve(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {

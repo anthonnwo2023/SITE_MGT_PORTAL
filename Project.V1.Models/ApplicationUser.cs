@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 
 namespace Project.V1.Models;
 
 public class ApplicationUser : IdentityUser, IDisposable
 {
-    private UserManager<ApplicationUser> _userManager { get; set; } = ServiceActivator.GetScope().ServiceProvider.GetService<UserManager<ApplicationUser>>();
+    private UserManager<ApplicationUser> UserManager { get; set; } = ServiceActivator.GetScope().ServiceProvider.GetService<UserManager<ApplicationUser>>();
 
     [NotMapped]
     private bool disposed = false;
@@ -37,7 +36,7 @@ public class ApplicationUser : IdentityUser, IDisposable
 
     public bool IsNewPassword { get; set; }
 
-    public Task<IList<string>> UserRoles => _userManager.GetRolesAsync(this);
+    public Task<IList<string>> UserRoles => UserManager.GetRolesAsync(this);
 
     [NotMapped]
     public string[] Roles { get; set; }

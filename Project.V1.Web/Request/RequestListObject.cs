@@ -42,17 +42,17 @@
         public async Task Initialize(ClaimsPrincipal Principal, string objType)
         {
             User = await IUser.GetUserByUsername(Principal.Identity.Name);
-            TechTypes = (await ITechType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
+            TechTypes = await ITechType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
 
             if (objType == "SMPObject")
             {
-                Regions = (await IRegion.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-                SummerConfigs = (await ISummerConfig.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-                ProjectTypes = (await IProjectType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-                Projects = (User.Vendor.Name == "MTN Nigeria") ? (await IProjects.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList() : (await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId)).OrderBy(x => x.Name).ToList();
-                AntennaMakes = (await IAntennaMake.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-                AntennaTypes = (await IAntennaType.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
-                Spectrums = (await ISpectrum.Get(x => x.IsActive)).OrderBy(x => x.Name).ToList();
+                Regions = await IRegion.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+                SummerConfigs = await ISummerConfig.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+                ProjectTypes = await IProjectType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+                Projects = (User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get(x => x.IsActive, x => x.OrderBy(x => x.Name)) : await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId, x => x.OrderBy(x => x.Name));
+                AntennaMakes = await IAntennaMake.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+                AntennaTypes = await IAntennaType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+                Spectrums = await ISpectrum.Get(x => x.IsActive, x => x.OrderBy(y => y.Name), "TechType");
                 Basebands = (Principal.IsInRole("Super Admin"))
                     ? (await IBaseBand.Get(x => x.IsActive, null, "Vendor")).OrderBy(x => x.Name).ToList()
                     : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId, null, "Vendor")).OrderBy(x => x.Name).ToList();

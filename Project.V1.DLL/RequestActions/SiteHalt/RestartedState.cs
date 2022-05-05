@@ -6,7 +6,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
     {
         public override bool Approve(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
         {
-            return request.TransitionState(new RFSMApprovedState<T>(), requests, variables, null);
+            return request.TransitionState(new FAApprovedState<T>(), requests, variables, null);
         }
 
         public override bool Update(IRequestAction<T> request, T requests, Dictionary<string, object> variables)

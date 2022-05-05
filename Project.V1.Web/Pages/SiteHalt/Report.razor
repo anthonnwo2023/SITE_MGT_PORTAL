@@ -216,11 +216,14 @@ else
         </EditForm>
     }
 
-    <SfGrid DataSource="@HUDReportRequests" AllowPaging="true" AllowSorting="true"
+    <SfGrid ID="HUDReportTable" DataSource="@HUDReportRequests" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowFiltering="true"
         Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true">
-        <GridPageSettings PageSize="10" PageSizes="true" ></GridPageSettings>
+        <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+        <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
+        <GridSearchSettings></GridSearchSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
         <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" ShowDeleteConfirmDialog="false"></GridEditSettings>
+        <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="SiteHUDRequestModel"></GridEvents>
         <GridColumns>
             <GridColumn Field="@nameof(SiteHUDRequestModel.Id)" Visible="false" ShowInColumnChooser="false" IsPrimaryKey="true">
             </GridColumn>
@@ -233,6 +236,12 @@ else
             <GridColumn Field="@nameof(SiteHUDRequestModel.RequestAction)" Width="150" HeaderText="Request Type" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
             <GridColumn Field="@nameof(SiteHUDRequestModel.GetStatusString)" ClipMode="ClipMode.EllipsisWithTooltip" Width="200" HeaderText="Status" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(SiteHUDRequestModel.FirstApproverName)" Width="200" HeaderText="First Approver" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(SiteHUDRequestModel.SecondApproverName)" Width="200" HeaderText="Second Approver" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(SiteHUDRequestModel.ThirdApproverName)" Width="200" HeaderText="Third Approver" TextAlign="TextAlign.Center" ValidationRules="@(new ValidationRules { Required = true })">
             </GridColumn>
             <GridColumn Field="@nameof(SiteHUDRequestModel.DateCreated)" Width="150" HeaderText="Created" TextAlign="TextAlign.Left" ValidationRules="@(new ValidationRules { Required = true })"
                     Format="d" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false">

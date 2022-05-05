@@ -13,29 +13,46 @@ namespace Project.V1.DLL.Helpers
         {
             string state = ProcessRequestState(request, requestType, folder);
 
-            Type[] AssemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
-            Type type = AssemblyTypes.FirstOrDefault(x => x.FullName.Contains(state));
-
+            Type type = GetStateType(state);
             Type requestModel = typeof(U);
 
-            //Type type = Type.GetType("Project.V1.DLL.RequestActions." + state)!;
-
-            return (T)Activator.CreateInstance(type.MakeGenericType(requestModel))!;
+            return CreateInstance<T>(type, requestModel);
         }
 
-        public static string ProcessRequestState(dynamic request, string requestType, string folder)
+        public static Type[] GetAssemblyTypes()
         {
-            var requestStatus = (request as dynamic).Status;
+            return Assembly.GetExecutingAssembly().GetTypes();
+        }
+
+        public static Type GetStateType(string state)
+        {
+            Type[] AssemblyTypes = GetAssemblyTypes();
+
+            return AssemblyTypes.FirstOrDefault(x => x.FullName.EndsWith(state));
+        }
+
+        public static T CreateInstance<T>(Type type, Type model)
+        {
+            return (T)Activator.CreateInstance(type.MakeGenericType(model))!;
+        }
+
+        private static string ProcessRequestState(dynamic request, string requestType, string folder)
+        {
+            var requestStatus = request.Status;
 
             Dictionary<string, Func<string, string>> Processor = new()
             {
                 ["Pending"] = (requestType) =>
                 {
                     if (requestType == "Bulk")
+                    {
                         return $"{folder}.PendingBulkState`1";
+                    }
 
-                    if (folder == "SiteHalt" && (request as dynamic).RequestAction == "UnHalt")
+                    if (folder == "SiteHalt" && request.RequestAction == "UnHalt")
+                    {
                         return $"{folder}.TAApprovedState`1";
+                    }
 
                     return $"DLL.RequestActions.{folder}.PendingState`1".Replace("..", ".");
                 },
@@ -67,7 +84,7 @@ namespace Project.V1.DLL.Helpers
 
                 ["FAApproved"] = (requestType) =>
                 {
-                    return $"{folder}.RFSMApprovedState`1";
+                    return $"{folder}.FAApprovedState`1";
                 },
 
                 ["SAApproved"] = (requestType) =>

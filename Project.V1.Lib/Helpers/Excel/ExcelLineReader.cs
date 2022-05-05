@@ -14,10 +14,11 @@ namespace Project.V1.Lib.Helpers.Excel
     {
         public static (System.Data.DataTable DT, ExcelTransactionError Error) ToDataTable<T>(T RequestObj, string excelExcelFilePath, string userFullname) where T : class
         {
+            ExcelTransactionError ete = new();
+            System.Data.DataTable dt = new();
+
             try
             {
-                System.Data.DataTable dt = new();
-                ExcelTransactionError ete = new();
 
                 if (!ValidateExcelDocument(RequestObj, excelExcelFilePath))
                 {
@@ -85,12 +86,22 @@ namespace Project.V1.Lib.Helpers.Excel
                 dt.ConvertColumnTypeTo("Summer Config", raw => raw.ToString());
                 dt.ConvertColumnTypeTo("Software", raw => raw.ToString());
                 dt.ConvertColumnTypeTo("Project Year", raw => Convert.ToDouble(raw));
+                dt.ConvertColumnTypeTo("Integrated Date", raw => Convert.ToDateTime(raw.ToString()));
 
                 return (dt, ete);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                dt = new System.Data.DataTable();
+                ete = new ExcelTransactionError
+                {
+                    ErrorType = "Invalid Datatype!",
+                    ErrorDesc = ex.Message,
+                    CreatedBy = userFullname,
+                    DateCreated = DateTimeOffset.UtcNow.DateTime
+                };
+
+                return (dt, ete);
             }
         }
 
@@ -152,7 +163,9 @@ namespace Project.V1.Lib.Helpers.Excel
         public static bool IsAllowedExt(string ext, bool isWaiver)
         {
             if (isWaiver)
+            {
                 return (ext == ".msg" || ext == ".eml");
+            }
 
             return (ext == ".xlsx" || ext == ".xls" || ext == ".ppt" || ext == ".pptx");
         }

@@ -30,17 +30,7 @@ namespace Project.V1.Data
         {
             try
             {
-                _context.Database.CloseConnection();
-                _context.Database.OpenConnection();
-
-                await entity.LoadAsync();
-
-                //await entity.ForEachAsync(x =>
-                //{
-                //    ReloadEntry(x);
-                //});
-
-                return await entity.ToListAsync();
+                return await entity.AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
@@ -53,10 +43,7 @@ namespace Project.V1.Data
         {
             try
             {
-                //_context.Database.CloseConnection();
-                //_context.Database.OpenConnection();
-
-                IQueryable<T> query = entity;
+                IQueryable<T> query = entity.AsNoTracking();
 
                 foreach (string includeProperty in includeProperties.Split
                     (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -70,11 +57,6 @@ namespace Project.V1.Data
                 }
 
                 await query.LoadAsync();
-
-                //await query.ForEachAsync(x =>
-                //{
-                //    ReloadEntry(x);
-                //});
 
                 if (orderBy != null)
                 {
@@ -94,11 +76,6 @@ namespace Project.V1.Data
         {
             try
             {
-                _context.Database.CloseConnection();
-                _context.Database.OpenConnection();
-
-                await entity.LoadAsync();
-
                 IQueryable<T> query = entity;
 
                 if (filter != null)
@@ -117,9 +94,6 @@ namespace Project.V1.Data
 
         private void ReloadEntry(T item, string includeProperties = "")
         {
-            _context.Entry(item).Reload();
-            _context.Entry(item).GetDatabaseValues();
-
             _context.Entry(item).Collections.ToList().ForEach(collection =>
             {
                 collection.Load();
@@ -136,11 +110,6 @@ namespace Project.V1.Data
         {
             try
             {
-                _context.Database.CloseConnection();
-                _context.Database.OpenConnection();
-
-                await entity.LoadAsync();
-
                 IQueryable<T> query = entity;
 
                 foreach (string includeProperty in includeProperties.Split
@@ -154,9 +123,9 @@ namespace Project.V1.Data
                     query = query.Where(filter);
                 }
 
-                var item = query.FirstOrDefault(IdFilter);
+                var item = await query.AsNoTracking().FirstOrDefaultAsync(IdFilter);
 
-                ReloadEntry(item);
+                //ReloadEntry(item);
 
                 return item;
             }

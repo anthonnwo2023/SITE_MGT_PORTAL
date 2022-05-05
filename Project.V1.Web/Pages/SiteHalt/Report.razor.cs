@@ -34,7 +34,7 @@
         public bool Visibility { get; set; } = true;
         public bool DisableBtn { get; set; } = true;
 
-        public List<string> ToolbarItems = new() { "Search" };
+        public List<string> ToolbarItems = new() { "Search", "ExcelExport", "ColumnChooser" };
 
         protected override void OnInitialized()
         {
@@ -72,6 +72,17 @@
             }
         }
 
+        public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+        {
+            if (args.Item.Id == "HUDReportTable_excelexport") //Id is combination of Grid's ID and itemname
+            {
+                ExcelExportProperties ExportProperties = new();
+                ExportProperties.FileName = $"General_Report{DateTimeOffset.UtcNow:ddMMyyyy.Hmmss}.xlsx";
+                ExportProperties.IncludeHiddenColumn = false;
+
+                await Grid_Request.ExcelExport(ExportProperties);
+            }
+        }
 
         public void ChangeNonRFSMApprover(ChangeEventArgs<string, RequestApproverModel> args, string approver)
         {

@@ -1,11 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Lib.Helpers;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
 {

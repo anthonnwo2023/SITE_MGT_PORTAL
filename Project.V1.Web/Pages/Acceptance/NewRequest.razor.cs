@@ -205,7 +205,9 @@ namespace Project.V1.Web.Pages.Acceptance
                     uploaderToClear.UploadFile.Stream.Close();
 
                     if (shouldDelete)
+                    {
                         File.Delete(uploaderToClear.UploadPath);
+                    }
                 }
 
                 uploaderToClear.Filestream = null;
@@ -255,19 +257,25 @@ namespace Project.V1.Web.Pages.Acceptance
         private void OnClearRRU(ClearingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload(args.FilesData.First());
+            }
         }
 
         private void OnRemoveRRU(RemovingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload(args.FilesData.First());
+            }
         }
 
         private void OnClear(ClearingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload(args.FilesData.First());
+            }
 
             TotalFileCount--;
             TotalFileSize -= args.FilesData.Sum(x => x.Size) / (1024 * 1024);
@@ -276,7 +284,9 @@ namespace Project.V1.Web.Pages.Acceptance
         private void OnRemove(RemovingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload(args.FilesData.First());
+            }
 
             TotalFileCount--;
             TotalFileSize -= args.FilesData.Sum(x => x.Size) / (1024 * 1024);
@@ -285,13 +295,17 @@ namespace Project.V1.Web.Pages.Acceptance
         private void OnRemoveToNull(RemovingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUploadToNull(args.FilesData.First(), true);
+            }
         }
 
         private void OnClearToNull(ClearingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUploadToNull(args.FilesData.First(), false);
+            }
         }
 
         private async Task InitializeForm()
@@ -545,7 +559,11 @@ namespace Project.V1.Web.Pages.Acceptance
 
             if (!Saved)
             {
-                if (Message.Length > 0) await ThrowError(Message);
+                if (Message.Length > 0)
+                {
+                    await ThrowError(Message);
+                }
+
                 SEUploadIconCss = "fas fa-paper-plane ml-2";
                 return;
             }
@@ -575,7 +593,9 @@ namespace Project.V1.Web.Pages.Acceptance
                 var (_, Messages, ValidRequests) = await bulkRequest.Save(requestObject);
 
                 if (ValidRequests.Count > 0)
+                {
                     await bulkRequest.SetCreateState();
+                }
 
                 await ProcessNotifications(Messages);
 
@@ -586,9 +606,13 @@ namespace Project.V1.Web.Pages.Acceptance
             else
             {
                 if (requestObject.IsWaiver)
+                {
                     await ClearBulkWaiverUpload();
+                }
                 else
+                {
                     await RemoveBulkSSVs();
+                }
 
                 BulkUploadIconCss = "fas fa-paper-plane ml-2";
                 return;
@@ -647,9 +671,13 @@ namespace Project.V1.Web.Pages.Acceptance
             {
                 await SFBulkAcceptance_Uploader.ClearAllAsync();
                 if (BulkWaiverUploadSelected)
+                {
                     await ClearBulkWaiverUpload();
+                }
                 else
+                {
                     await RemoveBulkSSVs();
+                }
 
                 StateHasChanged();
 
@@ -679,8 +707,14 @@ namespace Project.V1.Web.Pages.Acceptance
             foreach (var error in errors)
             {
                 ToastContent = error;
-                if (error.StartsWith("Request Submitted successfully")) SuccessBtnOnClick();
-                else await ThrowError(error);
+                if (error.StartsWith("Request Submitted successfully"))
+                {
+                    SuccessBtnOnClick();
+                }
+                else
+                {
+                    await ThrowError(error);
+                }
             }
         }
 
@@ -731,7 +765,7 @@ namespace Project.V1.Web.Pages.Acceptance
             try
             {
                 UploadFiles UploadFile = args.Files.First();
-                IRequestList.Spectrums = ISpectrum.Get(x => x.IsActive).GetAwaiter().GetResult().OrderBy(x => x.Name).ToList();
+                IRequestList.Spectrums = ISpectrum.Get(x => x.IsActive, x => x.OrderBy(y => y.Name), "TechType").GetAwaiter().GetResult().ToList();
                 FileUploader.Initialize(IRequestList, Logger);
 
                 string pathBuilt = Path.Combine(Directory.GetCurrentDirectory(), $"Documents\\{type}\\");
@@ -781,7 +815,7 @@ namespace Project.V1.Web.Pages.Acceptance
                                 await SFBulkAcceptance_Uploader.ClearAllAsync();
 
                                 EnableDisableActionButton(IsRRUType);
-                                await ThrowError($"No Valid Request found! {BulkUploadData.error} - {BulkUploadError}");
+                                await ThrowError($"No Valid Request found! {BulkUploadData.error} - {BulkUploadError}".TrimEnd('-'));
 
                                 return false;
                             }
