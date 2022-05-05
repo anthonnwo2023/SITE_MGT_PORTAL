@@ -42,7 +42,7 @@ namespace Project.V1.Lib.Services.Login
                     userADData.Vendor = Vendor;
 
                     Log.Information("AD User Login validation successful. ", new { username, Vendor = Vendor.Id, UserADData = JsonSerializer.Serialize(userADData) });
-                    ApplicationUser user = await LoginObject.UserManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+                    ApplicationUser user = await LoginObject.UserManager.Users.Include(x => x.Vendor).FirstOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
 
                     if (user != null)
                     {

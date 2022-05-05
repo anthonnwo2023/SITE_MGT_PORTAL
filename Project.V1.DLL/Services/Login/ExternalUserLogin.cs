@@ -12,7 +12,7 @@ namespace Project.V1.Lib.Services.Login
             VendorModel Vendor = (await LoginObject.Vendor.GetById(x => x.Id == vendorId));
 
             //ApplicationUser user = await LoginObject.User.GetUserByUsername(username.ToLower());
-            ApplicationUser user = await LoginObject.UserManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+            ApplicationUser user = await LoginObject.UserManager.Users.Include(x => x.Vendor).FirstOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
 
             if (user != null)
             {
