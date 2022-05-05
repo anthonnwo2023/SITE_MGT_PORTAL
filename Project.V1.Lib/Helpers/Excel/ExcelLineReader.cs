@@ -170,6 +170,16 @@ namespace Project.V1.Lib.Helpers.Excel
             return (ext == ".xlsx" || ext == ".xls" || ext == ".ppt" || ext == ".pptx");
         }
 
+        public static bool IsAllowedExtReject(string ext, bool isWaiver)
+        {
+            if (isWaiver)
+            {
+                return (ext == ".msg" || ext == ".eml");
+            }
+
+            return (ext == ".xlsx" || ext == ".xls" || ext == ".ppt" || ext == ".pptx" || ext == ".jpeg" || ext == ".jpg" || ext == ".png");
+        }
+
         private static List<string> GetDataTableHeaders(System.Data.DataTable dt)
         {
             return dt.Columns.Cast<DataColumn>()

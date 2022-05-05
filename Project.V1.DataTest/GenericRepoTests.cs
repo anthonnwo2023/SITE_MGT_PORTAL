@@ -1,45 +1,49 @@
-﻿using Autofac.Extras.Moq;
-using Project.V1.Lib.Interfaces;
-using Project.V1.Models;
+﻿using Project.V1.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace Project.V1.DataTest;
 
 public class GenericRepoTests
 {
+    private readonly ITestOutputHelper _output;
+    private readonly DbContextOptions<ApplicationDbContext> _optionsBuilder;
+
+    public GenericRepoTests(ITestOutputHelper output)
+    {
+        _output = output;
+        _optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: "TestDB").Options;
+    }
+
     [Fact]
     public async void Get_WhenCalled_ShouldReturnListOfObject()
     {
-        //var optionsBuilder = new Mock<DbContextOptions<ApplicationDbContext>>();
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        var context = new ApplicationDbContext(optionsBuilder.Options);
+        var genericRepo = new Mock<GenericRepo<ApplicationUser>>(context, "");
 
-        //var store = new Mock<IUserStore<ApplicationUser>>();
-        //store.Setup(x => x.FindByIdAsync("123", CancellationToken.None))
-        //    .ReturnsAsync(new ApplicationUser()
-        //    {
-        //        UserName = "test@email.com",
-        //        Id = "123"
-        //    });
-
-        //var mgr = new UserManager<ApplicationUser>(store.Object, null, null, null, null, null, null, null, null);
-        //var mock = new Mock<ApplicationDbContext>()
-        //    .Setup;
-
-        //var context = new ApplicationDbContext(optionsBuilder.Object);
-        using var mock = AutoMock.GetLoose();
-        //var contextOptions = mock.Mock<DbContextOptions<ApplicationDbContext>>()
-        //    .Setup(x => x)
-        //    .Returns(optionsBuilder.Object);
-
-        //mock.Mock<UserManager<ApplicationUser>>().Setup(x =>)
-        mock.Mock<IGenericRepo<ApplicationUser>>().Setup(x => x.Get())
+        //var user = GetSampleUsers().Result.First();
+        genericRepo.Setup(repo => repo.Get())
             .Returns(GetSampleUsers());
 
-        var userProcessor = mock.Create<IGenericRepo<ApplicationUser>>();
-        var actual = await userProcessor.Get();
+        var repo = genericRepo.Object;
+
+        var actual = await repo.Get();
         var expected = await GetSampleUsers();
 
+        //using var mock = AutoMock.GetLoose();
+
+        //mock.Mock<IGenericRepo<ApplicationUser>>().Setup(x => x.Get())
+        //    .Returns(GetSampleUsers());
+
+        //var userProcessor = mock.Create<IGenericRepo<ApplicationUser>>();
+        //var actual = await userProcessor.Get();
+        //var expected = await GetSampleUsers();
+
+        genericRepo.Verify(repo => repo.Get(), Times.AtMostOnce);
         Assert.True(actual != null);
         Assert.Equal(expected.Count, actual.Count);
 

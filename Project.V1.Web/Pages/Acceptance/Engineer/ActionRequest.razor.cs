@@ -222,20 +222,28 @@
 
                 if (UploadFiles != null)
                 {
+                    List<string> imageExts = new() { ".jpeg", ".jpg", ".png" };
                     string ext = Path.GetExtension(UploadFiles.FileInfo.Name);
 
-                    bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
+                    bool allowedExtension = ExcelProcessor.IsAllowedExtReject(ext, false);
 
-                    (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension);
-
-                    if (uploadResp.Length != 0 || uploadError.Length != 0)
+                    if (!imageExts.Contains(ext))
                     {
-                        ToastContent = "Error occured, could not upload file";
+                        (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension);
 
-                        await Task.Delay(200);
-                        ErrorBtnOnClick();
+                        if (uploadResp.Length != 0 || uploadError.Length != 0)
+                        {
+                            ToastContent = "Error occured, could not upload file";
 
-                        return;
+                            await Task.Delay(200);
+                            ErrorBtnOnClick();
+
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        (string error, string path) = await UploadFile();
                     }
                 }
 
