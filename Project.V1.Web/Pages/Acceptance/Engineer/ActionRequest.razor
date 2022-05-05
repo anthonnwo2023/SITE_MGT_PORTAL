@@ -215,7 +215,7 @@ else
                     <div class="col-md-4 mt-3">
                         <div class="form-group">
                             <label for="filePath" class="col-form-label custom-font" style="margin-left: 10px;">Engineer Reject Report</label>
-                            <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx" MinFileSize="1000" MaxFileSize=15000000 AutoUpload="true" CssClass=""
+                            <SfUploader AllowMultiple="false" Multiple="false" AllowedExtensions=".xls, .xlsx, .jpg, .png, .jpeg" MinFileSize="1000" MaxFileSize=15000000 AutoUpload="true" CssClass=""
                                 @ref="SF_Uploader" @bind-Value="Input.EngineerRejectReport">
                                 <UploaderEvents OnClear="OnClear" OnRemove="OnRemove" ValueChange='e => OnFileUploadChange(e, "EReport")'></UploaderEvents>
                             </SfUploader>
