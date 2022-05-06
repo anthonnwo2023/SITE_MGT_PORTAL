@@ -17,7 +17,7 @@ namespace Project.V1.Lib.Interfaces
         Task<(T, string)> Delete(T item, Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null);
         Task<(bool, string)> CreateRequest(T item);
         Task<bool> CreateBulkRequest(List<T> requestObjs);
-        Task<bool> UpdateRequest(T item, Expression<Func<T, bool>> IdFilter);
+        Task<bool> UpdateRequest(T item, Expression<Func<T, bool>> IdFilter, string includeProperties = "");
         Task<int> Count(Expression<Func<T, bool>> filter = null);
     }
 }

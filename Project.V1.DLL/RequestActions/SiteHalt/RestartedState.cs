@@ -25,10 +25,12 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
             {
                 string application = variables["App"] as string;
 
-                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id);
+                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations);
 
                 if (isSaved)
+                {
                     await SendEmail(application, request);
+                }
 
                 return true;
             }

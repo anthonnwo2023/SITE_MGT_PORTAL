@@ -4,7 +4,7 @@ namespace Project.V1.Models;
 
 public class ApplicationUser : IdentityUser, IDisposable
 {
-    private UserManager<ApplicationUser> UserManager { get; set; } = ServiceActivator.GetScope().ServiceProvider.GetService<UserManager<ApplicationUser>>();
+    private UserManager<ApplicationUser> UserManager => ServiceActivator.GetScope().ServiceProvider.GetService<UserManager<ApplicationUser>>();
 
     [NotMapped]
     private bool disposed = false;

@@ -145,13 +145,17 @@ public partial class ActionRequest : IDisposable
     private void OnClear(ClearingEventArgs args)
     {
         if (args.FilesData.Count > 0)
+        {
             ResetUpload();
+        }
     }
 
     private void OnRemove(RemovingEventArgs args)
     {
         if (args.FilesData.Count > 0)
+        {
             ResetUpload();
+        }
     }
 
     public async Task OnTechChange(List<SpectrumViewModel> spectrums)
@@ -211,7 +215,7 @@ public partial class ActionRequest : IDisposable
 
                     await InitializeForm();
 
-                    RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum");
+                    RequestModel = await IRequest.GetById(x => x.Id == Id, null, RequestViewModel.Navigations);
                     RequestStatus = RequestModel.Status;
                     Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId);
 

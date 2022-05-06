@@ -1,12 +1,4 @@
 ﻿using Project.V1.DLL.Helpers;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Lib.Helpers;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Project.V1.DLL.RequestActions
 {
@@ -28,7 +20,7 @@ namespace Project.V1.DLL.RequestActions
             {
                 string application = variables["App"] as string;
 
-                await _request.UpdateRequest(request, x => x.Id == request.Id);
+                await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations);
 
                 await SendEmail(application, request);
 

@@ -28,7 +28,7 @@ public class ExcelLineReaderTests : IDisposable
     }
 
     [Theory]
-    [InlineData("SA_bulk_request_5_4_202255710PM", "29/04/2022")]
+    //[InlineData("SA_bulk_request_5_4_202255710PM", "29/04/2022")]
     [InlineData("SA_bulk_request_5_3_2022112517PM", "28/04/2022")]
     [InlineData("SA_bulk_request__23__22_04_2022140024", "11/10/2021")]
     public void ToDataTable_ShouldReturnValidIntegrationDate(string filename, string expectedString)

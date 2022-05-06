@@ -186,7 +186,7 @@
 
                         await InitializeForm();
 
-                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum");
+                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, RequestViewModel.Navigations);
                         RequestModel.EngineerAssigned.DateApproved = DateTime.UtcNow;
 
                         DateTime dt = DateTime.Now;
@@ -227,7 +227,7 @@
 
                     bool allowedExtension = ExcelProcessor.IsAllowedExtReject(ext, false);
 
-                    if (!imageExts.Contains(ext))
+                    if (!imageExts.Contains(ext?.ToLower()))
                     {
                         (string uploadResp, string filePath, string uploadError) = await StartUpload(allowedExtension);
 

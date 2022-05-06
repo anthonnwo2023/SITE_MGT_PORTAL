@@ -20,7 +20,7 @@ namespace Project.V1.DLL.RequestActions
             {
                 string application = variables["App"] as string;
 
-                if (await _request.UpdateRequest(request, x => x.Id == request.Id))
+                if (await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations))
                 {
                     await SendEmail(application, request);
                 }

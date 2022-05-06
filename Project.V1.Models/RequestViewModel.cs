@@ -185,6 +185,14 @@ public class RequestViewModel : IDisposable
         }
     }
 
+    public static string Navigations
+    {
+        get
+        {
+            return "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum";
+        }
+    }
+
     public string RequesterName => Requester.Name;
 
     public string Vendor => Requester.Vendor.Name;

@@ -1,11 +1,4 @@
-﻿using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Project.V1.DLL.RequestActions
+﻿namespace Project.V1.DLL.RequestActions
 {
     public class CancelledState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
@@ -20,7 +13,7 @@ namespace Project.V1.DLL.RequestActions
             {
                 string application = variables["App"] as string;
 
-                await _request.UpdateRequest(request, x => x.Id == request.Id);
+                await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations);
 
                 await SendEmail(application, request);
 

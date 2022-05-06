@@ -98,12 +98,16 @@ namespace Project.V1.Data
             {
                 collection.Load();
             });
-
-            foreach (string includeProperty in includeProperties.Split
-                    (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            _context.Entry(item).References.ToList().ForEach(reference =>
             {
-                _context.Entry(item).Collection<T>(includeProperties).Query();
-            }
+                reference.Load();
+            });
+
+            //foreach (string includeProperty in includeProperties.Split
+            //        (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            //{
+            //    _context.Entry(item).Collection<T>(includeProperty).Query();
+            //}
         }
 
         public async Task<T> GetById(Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null, string includeProperties = "")
@@ -123,9 +127,9 @@ namespace Project.V1.Data
                     query = query.Where(filter);
                 }
 
-                var item = await query.AsNoTracking().FirstOrDefaultAsync(IdFilter);
+                var item = await query.FirstOrDefaultAsync(IdFilter);
 
-                //ReloadEntry(item);
+                ReloadEntry(item, includeProperties);
 
                 return item;
             }
@@ -183,7 +187,7 @@ namespace Project.V1.Data
             }
         }
 
-        public async Task<bool> UpdateRequest(T item, Expression<Func<T, bool>> IdFilter)
+        public async Task<bool> UpdateRequest(T item, Expression<Func<T, bool>> IdFilter, string includeProperties = "")
         {
             try
             {
@@ -193,14 +197,21 @@ namespace Project.V1.Data
                 }
                 else
                 {
-                    T itemObj = await entity.FirstOrDefaultAsync(IdFilter);
+                    T itemObj = await GetById(IdFilter, null, includeProperties);
                     _context.Entry(itemObj).CurrentValues.SetValues(item);
 
                     _context.Entry(itemObj).State = EntityState.Modified;
 
                     entity.Update(itemObj);
-                    await Save();
+                    //if (itemObj != null)
+                    //{
+                    //    await _context.UpdateGraphAsync(item);
+                    //    await Save();
 
+                    //    return true;
+                    //}
+
+                    await Save();
                     return true;
                 }
             }

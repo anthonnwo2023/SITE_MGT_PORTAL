@@ -1,10 +1,4 @@
-﻿using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace Project.V1.DLL.RequestActions
 {
@@ -26,7 +20,7 @@ namespace Project.V1.DLL.RequestActions
             {
                 string application = variables["App"] as string;
 
-                if (await _request.UpdateRequest(request, x => x.Id == request.Id))
+                if (await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations))
                 {
                     await SendEmail(application, request);
                 }
