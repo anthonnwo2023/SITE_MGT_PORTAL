@@ -370,25 +370,25 @@ public partial class ActionRequest : IDisposable
         }
     }
 
-    private static bool ProcessAction<T>(T requestClass, Dictionary<string, object> variables, dynamic requests) where T : RequestViewModel
+    private static bool ProcessAction<T>(T request, Dictionary<string, object> variables, dynamic iRequest) where T : RequestViewModel
     {
         try
         {
-            requestClass.DateUserActioned = DateTime.Now;
+            request.DateUserActioned = DateTime.Now;
 
-            if (requestClass.Status == "Cancelled")
+            if (request.Status == "Cancelled")
             {
-                return requests.Cancel(requestClass, variables);
+                return iRequest.Cancel(request, variables);
             }
 
-            if (requestClass.Status == "Reworked")
+            if (request.Status == "Reworked")
             {
-                return requests.Rework(requestClass, variables);
+                return iRequest.Rework(request, variables);
             }
 
-            if (requestClass.Status == "Restarted")
+            if (request.Status == "Restarted")
             {
-                return requests.Restart(requestClass, variables);
+                return iRequest.Restart(request, variables);
             }
 
             return false;

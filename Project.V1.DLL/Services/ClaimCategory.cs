@@ -1,16 +1,11 @@
-﻿using Project.V1.Data;
-using Project.V1.Lib.Interfaces;
-using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using System;
+﻿using Project.V1.Lib.Interfaces;
 
-namespace Project.V1.Lib.Services
+namespace Project.V1.Lib.Services;
+
+public class ClaimCategory : GenericRepo<ClaimCategoryModel>, IClaimCategory, IDisposable
 {
-    public class ClaimCategory : GenericRepo<ClaimCategoryModel>, IClaimCategory, IDisposable
+    public ClaimCategory(ApplicationDbContext context, ICLogger logger)
+        : base(context, null, logger)
     {
-        public ClaimCategory(ApplicationDbContext context)
-            : base(context, null)
-        {
-        }
     }
 }

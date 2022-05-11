@@ -6,7 +6,7 @@ namespace Project.V1.Lib.Services.Login
     {
         public async Task<SignInResponse> DoLogin(string username, string password, string vendorId)
         {
-            Log.Logger = HelperFunctions.GetSerilogLogger();
+            //Log.Logger = HelperFunctions.GetSerilogLogger();
 
             Log.Information("External login process. ", new { Username = username, Vendor = vendorId, UserType = "External" });
             VendorModel Vendor = (await LoginObject.Vendor.GetById(x => x.Id == vendorId));

@@ -644,10 +644,12 @@ namespace Project.V1.Web.Pages
 
         private async Task InitData(string model = null)
         {
-            var ActiveClaims = await Claim.Get(y => y.IsActive);
+            var ActiveClaims = await Claim.Get(y => y.IsActive, null, "Category");
 
             if (model == null || model == "VendorModel")
+            {
                 Vendors = (await IVendor.Get()).OrderBy(x => x.Name).ToList();
+            }
 
             if (model == null || model == "IdentityRole")
             {
@@ -678,10 +680,14 @@ namespace Project.V1.Web.Pages
             }
 
             if (model == null || model == "ClaimViewModel")
+            {
                 ClaimModels = (await IClaim.Get()).OrderBy(x => x.Name).ToList();
+            }
 
             if (model == null || model == "ClaimCategoryModel")
+            {
                 ClaimCategories = (await IClaimCategory.Get()).OrderBy(x => x.Name).ToList();
+            }
 
             if (model == null || model == "ApplicationUser")
             {
@@ -703,7 +709,7 @@ namespace Project.V1.Web.Pages
 
                     user.IsMTNUser = mtnVendor == null || !(mtnVendor.Id == user.VendorId);
                     //user.Roles = (IUser.GetUserRolesId(user).GetAwaiter().GetResult()).ToArray();
-                    List<ClaimListManager> userClaims = (Claim.Get(y => y.IsActive).GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                    List<ClaimListManager> userClaims = (Claim.Get(y => y.IsActive, null, "Category").GetAwaiter().GetResult()).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                     {
                         Category = u.Key,
                         Claims = u.ToList().FormatClaimSelection(user)

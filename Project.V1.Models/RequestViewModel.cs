@@ -181,7 +181,12 @@ public class RequestViewModel : IDisposable
     {
         get
         {
-            return (EngineerAssigned.DateApproved == DateTime.MinValue) ? (EngineerAssigned.DateActioned == DateTime.MinValue) ? DateUserActioned.GetValueOrDefault() : EngineerAssigned.DateActioned : EngineerAssigned.DateApproved;
+            if (Status != "Accepted" && Status != "Rejected")
+            {
+                return DateUserActioned.GetValueOrDefault();
+            }
+
+            return (EngineerAssigned.IsApproved) ? EngineerAssigned.DateApproved : EngineerAssigned.DateActioned;
         }
     }
 

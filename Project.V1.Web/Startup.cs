@@ -174,12 +174,30 @@ namespace Project.V1.Web
                 })
                 .AddRazorRuntimeCompilation();
 
+            services.AddControllers()
+                .AddMvcOptions(opts =>
+                {
+                    opts.Filters.Add<SerilogLoggingActionFilter>();
+                    opts.Filters.Add<SerilogLoggingPageFilter>();
+                })
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                })
+                .AddRazorRuntimeCompilation();
+
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
         }
+        //static IEdmModel GetEdmModel()
+        //{
+        //    ODataConventionModelBuilder builder = new();
+        //    builder.EntitySet<RequestViewModel>("Requests");
+        //    return builder.GetEdmModel();
+        //}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)

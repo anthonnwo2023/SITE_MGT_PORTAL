@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.V1.Lib.Helpers;
 using Project.V1.Lib.Interfaces;
-using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +12,17 @@ namespace Project.V1.Data
     public class GenericRepo<T> : IDisposable, IGenericRepo<T> where T : class, new()
     {
         private readonly ApplicationDbContext _context = null;
-        private readonly Logger _logger;
+        private readonly ICLogger _logger;
         private readonly DbSet<T> entity = null;
         private bool disposed = false;
         private readonly string _KeyString;
 
-        public GenericRepo(ApplicationDbContext context, string KeyString)
+        public GenericRepo(ApplicationDbContext context, string KeyString, ICLogger logger)
         {
             _context = context;
-            _logger = HelperFunctions.GetSerilogLogger();
             _KeyString = KeyString;
             entity = _context.Set<T>();
+            _logger = logger;
         }
 
         public async Task<List<T>> Get()
@@ -34,7 +33,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, new { }, ex);
+                _logger.LogError(ex.Message, new { }, ex);
                 return new();
             }
         }
@@ -67,7 +66,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, new { }, ex);
+                _logger.LogError(ex.Message, new { }, ex);
                 return new();
             }
         }
@@ -87,7 +86,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, new { }, ex);
+                _logger.LogError(ex.Message, new { }, ex);
                 return new();
             }
         }
@@ -135,7 +134,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, new { }, ex);
+                _logger.LogError(ex.Message, new { }, ex);
                 return new();
             }
         }
@@ -162,7 +161,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, new { }, ex);
+                _logger.LogError(ex.Message, new { }, ex);
                 return (default, ex.Message);
             }
         }
@@ -182,7 +181,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"{ex.InnerException} - {ex.Message}");
+                _logger.LogError($"{ex.InnerException} - {ex.Message}", new { }, ex);
                 return (false, (ex.InnerException.Message.Contains("unique")) ? $"Duplicate entry already exists" : ex.Message);
             }
         }
@@ -217,7 +216,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                _logger.LogError(ex.Message, ex);
 
                 throw;
             }
@@ -265,7 +264,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                _logger.LogError(ex.Message, ex);
 
                 return false;
             }
@@ -293,7 +292,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, new { }, ex);
+                _logger.LogError(ex.Message, new { }, ex);
                 return (default, ex.Message);
             }
         }
@@ -321,7 +320,7 @@ namespace Project.V1.Data
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, new { }, ex);
+                _logger.LogError(ex.Message, new { }, ex);
                 return (default, ex.Message);
             }
         }
