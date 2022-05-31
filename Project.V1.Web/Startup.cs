@@ -150,6 +150,7 @@ public class Startup
 
 
         services.ConfigureBlazorizeOptions();
+        services.ConfigureCors();
         services.ConfigureBasicAuthenticationHandler();
         services.ConfigureIdentityOption();
         services.ConfigureValidators();
@@ -290,6 +291,8 @@ public class Startup
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseCors("AllowAll");
 
         //app.UseSession();
 
