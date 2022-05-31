@@ -21,6 +21,11 @@
             collapseNavMenu = !collapseNavMenu;
         }
 
+        private void HandleReloadClick()
+        {
+            NavMan.NavigateTo("hud/approver/worklist", true);
+        }
+
         private void CalStateChanged()
         {
             var request = new SiteHUDRequestModel();
