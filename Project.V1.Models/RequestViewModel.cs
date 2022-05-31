@@ -185,26 +185,30 @@ public class RequestViewModel : IDisposable
             {
                 return DateUserActioned.GetValueOrDefault();
             }
+            if (EngineerAssigned != null)
+            {
+                return (EngineerAssigned.IsApproved) ? EngineerAssigned.DateApproved : EngineerAssigned.DateActioned;
+            }
 
-            return (EngineerAssigned.IsApproved) ? EngineerAssigned.DateApproved : EngineerAssigned.DateActioned;
+            return null;
         }
     }
 
-    public static string Navigations
+    public string Navigations
     {
         get
         {
-            return "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum";
+            return "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum,SummerConfig,ProjectType,ProjectName,TechType";
         }
     }
 
-    public string RequesterName => Requester.Name;
+    public string RequesterName => Requester?.Name;
 
-    public string Vendor => Requester.Vendor.Name;
+    public string Vendor => Requester?.Vendor.Name;
 
     public string Engineer => EngineerAssigned?.Fullname.Trim();
 
-    public string EngineerComment => EngineerAssigned.ApproverComment;
+    public string EngineerComment => EngineerAssigned?.ApproverComment;
 
     public void Dispose()
     {

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\**" />
     <Compile Remove="Cron\**" />
     <Compile Remove="Data\**" />
     <Compile Remove="Extensions\**" />
@@ -12,6 +13,7 @@
     <Compile Remove="Migrations\**" />
     <Compile Remove="Models\**" />
     <Compile Remove="Services\Interfaces\**" />
+    <EmbeddedResource Remove="Controllers\**" />
     <EmbeddedResource Remove="Cron\**" />
     <EmbeddedResource Remove="Data\**" />
     <EmbeddedResource Remove="Extensions\**" />
@@ -19,6 +21,7 @@
     <EmbeddedResource Remove="Migrations\**" />
     <EmbeddedResource Remove="Models\**" />
     <EmbeddedResource Remove="Services\Interfaces\**" />
+    <None Remove="Controllers\**" />
     <None Remove="Cron\**" />
     <None Remove="Data\**" />
     <None Remove="Extensions\**" />
@@ -57,6 +60,7 @@
     <Compile Include="Services\Interfaces\IClaim.cs" />
     <Compile Include="Services\Interfaces\IClaimCategory.cs" />
     <Compile Include="Services\Interfaces\ILTERequest.cs" />
+    <Compile Include="Services\Interfaces\ISSCRequestUpdate.cs" />
     <Compile Include="Services\Interfaces\IStaticReport.cs" />
     <Compile Include="Services\Interfaces\IRequest.cs" />
     <Compile Include="Services\Interfaces\IRequestAction.cs" />
@@ -70,7 +74,7 @@
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="MailKit" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OData.NewtonsoftJson" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
@@ -85,8 +89,8 @@
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
     <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
-    <PackageReference Include="Serilog.Exceptions" Version="8.1.0" />
-    <PackageReference Include="Serilog.Exceptions.EntityFrameworkCore" Version="8.1.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.2.0" />
+    <PackageReference Include="Serilog.Exceptions.EntityFrameworkCore" Version="8.2.0" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="4.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Serilog.Formatting.Elasticsearch" Version="8.4.1" />

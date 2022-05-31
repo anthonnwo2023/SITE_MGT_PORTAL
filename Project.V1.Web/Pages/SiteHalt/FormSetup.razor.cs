@@ -192,7 +192,9 @@ namespace Project.V1.Web.Pages.SiteHalt
         private async Task InitData(string model = null)
         {
             if (model == null)
-                Vendors = await IVendor.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                Vendors = (await IVendor.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
         }
 
         public async Task ActionBegin<T>(ActionEventArgs<T> args, string model = null) where T : class

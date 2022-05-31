@@ -28,6 +28,7 @@
         [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
         protected SfGrid<SiteHUDRequestModel> Grid_Request { get; set; }
+        public bool UserIsAdmin { get; set; }
         protected bool[] CompleteButtons { get; set; }
         protected bool[] UpdateButtons { get; set; }
         private string RequestUniqueId { get; set; }
@@ -59,7 +60,9 @@
                     Principal = (await AuthenticationStateTask).User;
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
-                    HUDReportRequests = await IHUDRequest.Get(null, x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes");
+                    UserIsAdmin = await UserManager.IsInRoleAsync(User, "Admin") || await UserManager.IsInRoleAsync(User, "Super Admin");
+
+                    HUDReportRequests = (await IHUDRequest.Get(null, x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
 
                     CompleteButtons = new bool[HUDReportRequests.Count];
                     UpdateButtons = new bool[HUDReportRequests.Count];
@@ -86,7 +89,10 @@
 
         public void ChangeNonRFSMApprover(ChangeEventArgs<string, RequestApproverModel> args, string approver)
         {
-            if (args.ItemData == null) return;
+            if (args.ItemData == null)
+            {
+                return;
+            }
 
             SecondLevelApprovers = BaseSecondLevelApprovers.ToList();
             ThirdLevelApprovers = BaseThirdLevelApprovers.ToList();
@@ -141,6 +147,7 @@
             }).ToList();
 
             if (RequestModel.FirstApprover is not null)
+            {
                 BaseFirstLevelApprovers.ForEach(x =>
                 {
                     if (x.Username == RequestModel.FirstApprover.Username)
@@ -148,6 +155,7 @@
                         x.Id = RequestModel.FirstApprover.Id;
                     }
                 });
+            }
 
             BaseSecondLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver"))
                 .Where(x => !BaseFirstLevelApprovers.Select(y => y.Username).Contains(x.UserName)).Select(x => new RequestApproverModel
@@ -163,6 +171,7 @@
                 }).ToList();
 
             if (RequestModel.SecondApprover is not null)
+            {
                 BaseSecondLevelApprovers.ForEach(x =>
                 {
                     if (x.Username == RequestModel.SecondApprover.Username)
@@ -170,10 +179,12 @@
                         x.Id = RequestModel.SecondApprover.Id;
                     }
                 });
+            }
 
             BaseThirdLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.SecondApproverId)).ToList();
 
             if (RequestModel.ThirdApprover is not null)
+            {
                 BaseThirdLevelApprovers.ForEach(x =>
                 {
                     if (x.Username == RequestModel.ThirdApprover.Username)
@@ -181,25 +192,36 @@
                         x.Id = RequestModel.ThirdApprover.Id;
                     }
                 });
+            }
 
             BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.ThirdApproverId)).ToList();
 
             RequestUniqueId = RequestModel?.UniqueId;
 
             if (RequestModel.FirstApprover is not null)
+            {
                 RequestModel.FirstApproverId = RequestModel.FirstApprover.Id;
+            }
 
             if (RequestModel.SecondApprover is not null)
+            {
                 RequestModel.SecondApproverId = RequestModel.SecondApprover.Id;
+            }
 
             if (RequestModel.ThirdApprover is not null)
+            {
                 RequestModel.ThirdApproverId = RequestModel.ThirdApprover.Id;
+            }
 
             if (RequestModel.ThirdApprover != null)
+            {
                 SecondLevelApprovers.Remove(SecondLevelApprovers.FirstOrDefault(x => x.Username == RequestModel.ThirdApprover.Username));
+            }
 
             if (RequestModel.SecondApprover != null)
+            {
                 ThirdLevelApprovers.Remove(ThirdLevelApprovers.FirstOrDefault(x => x.Username == RequestModel.SecondApprover.Username));
+            }
 
             FirstLevelApprovers = BaseFirstLevelApprovers.ToList();
             SecondLevelApprovers = BaseSecondLevelApprovers.ToList();

@@ -8,7 +8,7 @@
             {
                 string application = variables["App"] as string;
 
-                bool isAcceptedDone = await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations);
+                bool isAcceptedDone = await _request.UpdateRequest(request, x => x.Id == request.Id, request.Navigations);
 
                 if (isAcceptedDone)
                 {

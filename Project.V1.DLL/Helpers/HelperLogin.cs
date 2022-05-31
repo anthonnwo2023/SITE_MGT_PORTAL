@@ -1,26 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
-using Project.V1.Models;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace Project.V1.DLL.Helpers
+﻿namespace Project.V1.DLL.Helpers
 {
     public static class HelperLogin
     {
         private static async Task<SignInResponse> ProcessSuccessSignInResult(string username, VendorModel Vendor, ApplicationUser user, ADUserDomainModel userADData,
-            SignInResult result)
+            Microsoft.AspNetCore.Identity.SignInResult result)
         {
             if (!user.IsActive)
             {
                 await LoginObject.SignInManager.SignOutAsync();
                 Log.Information("Inactive user account. Signout completed ", new { username, Vendor = JsonSerializer.Serialize(Vendor) });
 
-                return ExtractResponse(user, SignInResult.NotAllowed, "Account is inactive. Please contact Switch Support Team");
+                return ExtractResponse(user, Microsoft.AspNetCore.Identity.SignInResult.NotAllowed, "Account is inactive. Please contact Switch Support Team");
             }
 
             Log.Information("Application Login successful. ", new { username, Vendor = JsonSerializer.Serialize(Vendor), UserADData = JsonSerializer.Serialize(userADData) });
@@ -53,7 +43,7 @@ namespace Project.V1.DLL.Helpers
             }
 
             ApplicationUser user = await LoginObject.UserManager.FindByNameAsync(username);
-            SignInResult result = await LoginObject.SignInManager.PasswordSignInAsync(user, password, true, lockoutOnFailure: true);
+            Microsoft.AspNetCore.Identity.SignInResult result = await LoginObject.SignInManager.PasswordSignInAsync(user, password, true, lockoutOnFailure: true);
             //await loginObject.SignInManager.SignInAsync(user, isPersistent: false);
 
             Log.Information("Application Login successful. ", new { username, Vendor = Vendor.Id });
@@ -73,10 +63,10 @@ namespace Project.V1.DLL.Helpers
                 return await SignInNewUserWithAttributes(newUser, username, password, Vendor);
             }
 
-            return ExtractResponse(newUser, SignInResult.Failed, "Internal error occurred! Login failed.");
+            return ExtractResponse(newUser, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Internal error occurred! Login failed.");
         }
 
-        public static SignInResponse ExtractResponse(ApplicationUser user, SignInResult result, string message, bool isNewPassword = false)
+        public static SignInResponse ExtractResponse(ApplicationUser user, Microsoft.AspNetCore.Identity.SignInResult result, string message, bool isNewPassword = false)
         {
             SignInResponse response = new()
             {
@@ -92,41 +82,41 @@ namespace Project.V1.DLL.Helpers
         }
 
         public static async Task<SignInResponse> PerformSignInOp(string username, string vendorId, VendorModel Vendor, ApplicationUser user,
-            SignInResult result, ADUserDomainModel userADData)
+            Microsoft.AspNetCore.Identity.SignInResult result, ADUserDomainModel userADData)
 
         {
             Log.Information("Performing SignIn Operation. ", new { username, Vendor = Vendor.Id, UserADData = JsonSerializer.Serialize(userADData) });
 
-            Dictionary<SignInResult, Func<string, string, VendorModel, ApplicationUser, SignInResult, ADUserDomainModel, Task<SignInResponse>>> operations = new()
+            Dictionary<Microsoft.AspNetCore.Identity.SignInResult, Func<string, string, VendorModel, ApplicationUser, Microsoft.AspNetCore.Identity.SignInResult, ADUserDomainModel, Task<SignInResponse>>> operations = new()
             {
-                [SignInResult.Success] = async (username, vendorId, Vendor, user, result, userADData) =>
+                [Microsoft.AspNetCore.Identity.SignInResult.Success] = async (username, vendorId, Vendor, user, result, userADData) =>
                 {
                     return await ProcessSuccessSignInResult(username, Vendor, user, userADData, result);
                 },
 
-                [SignInResult.TwoFactorRequired] = async (username, vendorId, Vendor, user, result, userADData) =>
+                [Microsoft.AspNetCore.Identity.SignInResult.TwoFactorRequired] = async (username, vendorId, Vendor, user, result, userADData) =>
                 {
                     user.LastLoginDate = DateTime.Now;
                     _ = LoginObject.UserManager.UpdateAsync(user).Result;
                     return await Task.Run(() => ExtractResponse(user, result, "Login attempt requires 2FA."));
                 },
 
-                [SignInResult.LockedOut] = async (username, vendorId, Vendor, user, result, userADData) =>
+                [Microsoft.AspNetCore.Identity.SignInResult.LockedOut] = async (username, vendorId, Vendor, user, result, userADData) =>
                 {
                     Log.Information("Account is Locked out. ", new { username, Vendor = Vendor.Id, UserADData = JsonSerializer.Serialize(userADData) });
                     return await Task.Run(() => ExtractResponse(user, result, "Account is Locked Out."));
                 },
 
-                [SignInResult.NotAllowed] = async (username, vendorId, Vendor, user, result, userADData) =>
+                [Microsoft.AspNetCore.Identity.SignInResult.NotAllowed] = async (username, vendorId, Vendor, user, result, userADData) =>
                 {
                     Log.Information("Unauthorized Login Attempt.", new { username, Vendor = Vendor.Id, UserADData = JsonSerializer.Serialize(userADData) });
                     return await Task.Run(() => ExtractResponse(user, result, "Unauthorized Login Attempt."));
                 },
 
-                [SignInResult.Failed] = async (username, vendorId, Vendor, user, result, userADData) =>
+                [Microsoft.AspNetCore.Identity.SignInResult.Failed] = async (username, vendorId, Vendor, user, result, userADData) =>
                 {
                     Log.Information("Invalid Login Attempt.", new { username, Vendor = Vendor.Id, UserADData = JsonSerializer.Serialize(userADData) });
-                    return await Task.Run(() => ExtractResponse(user, SignInResult.Failed, "Invalid login attempt."));
+                    return await Task.Run(() => ExtractResponse(user, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Invalid login attempt."));
                 }
             };
 

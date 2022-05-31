@@ -2,15 +2,14 @@
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 
-namespace Project.V1.Web.Middlewares
+namespace Project.V1.Web.Middlewares;
+
+public static class BlazoriseWithLocalStorage
 {
-    public static class BlazoriseWithLocalStorage
+    public static void ConfigureBlazorizeOptions(this IServiceCollection services)
     {
-        public static void ConfigureBlazorizeOptions(this IServiceCollection services)
-        {
-            services.AddBlazorise()
-                  .AddBootstrapProviders()
-                  .AddFontAwesomeIcons();
-        }
+        services.AddBlazorise()
+              .AddBootstrapProviders()
+              .AddFontAwesomeIcons();
     }
 }

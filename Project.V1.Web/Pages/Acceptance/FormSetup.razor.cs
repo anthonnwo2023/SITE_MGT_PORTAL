@@ -759,23 +759,49 @@ namespace Project.V1.Web.Pages.Acceptance
         private async Task InitData(string model = null)
         {
             if (model == null)
-                Vendors = await IVendor.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                Vendors = (await IVendor.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "RegionViewModel")
-                Regions = await IRegion.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                Regions = (await IRegion.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "AntennaTypeModel")
-                AntennaTypes = await IAntennaType.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                AntennaTypes = (await IAntennaType.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "AntennaMakeModel")
-                AntennaMakes = await IAntennaMake.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                AntennaMakes = (await IAntennaMake.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "ProjectTypeModel")
-                ProjectTypes = await IProjectType.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                ProjectTypes = (await IProjectType.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "TechTypeModel")
-                TechTypes = await ITechType.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                TechTypes = (await ITechType.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "BaseBandModel")
-                BaseBands = await IBaseBand.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                BaseBands = (await IBaseBand.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "SummerConfigModel")
-                SummerConfigs = await ISummerConfig.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                SummerConfigs = (await ISummerConfig.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "SpectrumViewModel")
-                Spectrums = await ISpectrum.Get(null, x => x.OrderBy(y => y.Name));
+            {
+                Spectrums = (await ISpectrum.Get(null, x => x.OrderBy(y => y.Name))).ToList();
+            }
         }
 
         public async Task ActionBegin<T>(ActionEventArgs<T> args, string model = null) where T : class

@@ -201,8 +201,8 @@
 
     private void CalStateChanged()
     {
-        RejectedWorklistCount = (LoginObject.Request.Get(x => x.Requester.Username == User.UserName && x.Status == "Rejected", null, "Requester").GetAwaiter().GetResult()).Count;
-        EngineerWorklistCount = (User.Regions.Count <= 0) ? 0 : (LoginObject.Request.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId) && (x.Status == "Pending" || x.Status == "Reworked" || x.Status == "Restarted"), null, "Requester").GetAwaiter().GetResult()).Count;
+        RejectedWorklistCount = (LoginObject.Request.Get(x => x.Requester.Username == User.UserName && x.Status == "Rejected", null, "Requester").GetAwaiter().GetResult()).Count();
+        EngineerWorklistCount = (User.Regions.Count <= 0) ? 0 : (LoginObject.Request.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId) && (x.Status == "Pending" || x.Status == "Reworked" || x.Status == "Restarted"), null, "Requester").GetAwaiter().GetResult()).Count();
 
         InvokeAsync(StateHasChanged);
     }

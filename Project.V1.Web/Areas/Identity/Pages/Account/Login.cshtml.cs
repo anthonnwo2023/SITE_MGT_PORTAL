@@ -102,7 +102,7 @@ namespace Project.V1.Web.Areas.Identity.Pages.Account
 
                 SignInResponse UserSignInResult = new();
 
-                List<VendorModel> Vendors = await _vendor.Get();
+                List<VendorModel> Vendors = (await _vendor.Get()).ToList();
                 VendorList = new SelectList(Vendors, "Id", "Name");
                 VendorModel MTN_Vendor = Vendors.FirstOrDefault(x => x.Name.ToUpper() == "MTN NIGERIA");
 

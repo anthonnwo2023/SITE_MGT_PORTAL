@@ -1,5 +1,14 @@
 ﻿namespace Project.V1.Models.SiteHalt;
 
+
+//[Table("TBL_RFHUD_REQUESTS_TECH")]
+//public class SiteHUDRequestModelTechTypeModel
+//{
+//    public string HUDRequestsId { get; set; }
+//    public string TechTypesId { get; set; }
+//}
+
+
 [Table("TBL_RFHUD_REQUESTS")]
 public class SiteHUDRequestModel : IDisposable
 {
@@ -46,7 +55,7 @@ public class SiteHUDRequestModel : IDisposable
     [NotMapped]
     public string[] TechTypeIds { get; set; }
 
-    public virtual List<TechTypeModel> TechTypes { get; set; }
+    public List<TechTypeModel> TechTypes { get; set; }
 
     public string RequesterId { get; set; }
 
@@ -208,6 +217,14 @@ public class SiteHUDRequestModel : IDisposable
             Username = User?.UserName,
             VendorId = User?.VendorId
         };
+    }
+
+    public string Navigations
+    {
+        get
+        {
+            return "Requester,FirstApprover,SecondApprover,ThirdApprover";
+        }
     }
 
     public Dictionary<string, object> Variables => new() { { "User", User?.UserName }, { "App", "hud" } };

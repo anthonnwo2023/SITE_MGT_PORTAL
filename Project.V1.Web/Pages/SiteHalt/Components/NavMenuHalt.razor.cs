@@ -23,7 +23,9 @@
 
         private void CalStateChanged()
         {
-            HUDRejectedWorklistCount = (IHUDRequest.Get(x => x.Requester.Username == User.UserName && x.Status.EndsWith("Disapproved")).GetAwaiter().GetResult()).Count;
+            var request = new SiteHUDRequestModel();
+
+            HUDRejectedWorklistCount = (IHUDRequest.Get(x => x.Requester.Username == User.UserName && x.Status.EndsWith("Disapproved")).GetAwaiter().GetResult()).Count();
 
             InvokeAsync(StateHasChanged);
         }

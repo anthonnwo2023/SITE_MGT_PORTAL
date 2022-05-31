@@ -34,7 +34,7 @@ public class AntennaTypeTests : IDisposable
 
         mock.Mock<IAntennaType>().Verify(repo => repo.Create(antennaType), Times.Exactly(1));
 
-        var expected = (await GetSampleAntennaTypes())[0];
+        var expected = (await GetSampleAntennaTypes()).ToList()[0];
 
         Assert.Equal(expected.Name, actual.Item1.Name);
     }
@@ -55,7 +55,7 @@ public class AntennaTypeTests : IDisposable
 
         mock.Mock<IAntennaType>().Verify(repo => repo.Update(antennaType, x => x.Id == antennaType.Id), Times.Exactly(1));
 
-        var expected = (await GetSampleAntennaTypes())[0];
+        var expected = (await GetSampleAntennaTypes()).ToList()[0];
 
         Assert.NotEqual(expected.IsActive, actual.Item1.IsActive);
     }
@@ -82,8 +82,8 @@ public class AntennaTypeTests : IDisposable
             .Returns(GetSampleAntennaTypes());
 
         var cls = mock.Create<IAntennaType>();
-        var actual = await cls.Get();
-        var expected = await GetSampleAntennaTypes();
+        var actual = (await cls.Get()).ToList();
+        var expected = (await GetSampleAntennaTypes()).ToList();
 
         mock.Mock<IAntennaType>().Verify(repo => repo.Get(), Times.Exactly(1));
         Assert.True(actual != null);
@@ -97,7 +97,7 @@ public class AntennaTypeTests : IDisposable
         }
     }
 
-    private static async Task<List<AntennaTypeModel>> GetSampleAntennaTypes()
+    private static async Task<IQueryable<AntennaTypeModel>> GetSampleAntennaTypes()
     {
         var users = new List<AntennaTypeModel>()
     {
@@ -124,7 +124,7 @@ public class AntennaTypeTests : IDisposable
         },
     };
 
-        return await Task.FromResult(users);
+        return await Task.FromResult(users.AsQueryable());
     }
 
     public void Dispose()

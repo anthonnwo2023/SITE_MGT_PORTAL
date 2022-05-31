@@ -9,6 +9,7 @@ public partial class NewRequest : IDisposable
     [Inject] public ICLogger Logger { get; set; }
     [Inject] protected IRequestListObject IRequestList { get; set; }
     [Inject] protected IHUDRequest IHUDRequest { get; set; }
+    [Inject] protected ITechType ITechType { get; set; }
     [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
@@ -202,7 +203,11 @@ public partial class NewRequest : IDisposable
 
                     if ((await response).uploadResp.Length != 0 || (await response).uploadError.Length != 0)
                     {
-                        if ((await response).uploadError.Length > 0) await ThrowError((await response).uploadError);
+                        if ((await response).uploadError.Length > 0)
+                        {
+                            await ThrowError((await response).uploadError);
+                        }
+
                         UploadIconCss = "fas fa-paper-plane ml-2";
                         return;
                     }
@@ -314,13 +319,17 @@ public partial class NewRequest : IDisposable
             HUDRequest.ThirdApprover.RequestId = HUDRequest.Id;
         }
 
-        HUDRequest.TechTypes = IRequestList.TechTypes.Where(x => HUDRequest.TechTypeIds.Contains(x.Id)).ToList();
+        HUDRequest.TechTypes = await ITechType.GetTracked(x => HUDRequest.TechTypeIds.Contains(x.Id));
 
         var (Saved, Message) = await HUDRequest.Create();
 
         if (!Saved)
         {
-            if (Message.Length > 0) await ThrowError(Message);
+            if (Message.Length > 0)
+            {
+                await ThrowError(Message);
+            }
+
             UploadIconCss = "fas fa-paper-plane ml-2";
             return;
         }

@@ -44,6 +44,7 @@ namespace Project.V1.Web.Pages.SiteHalt
                     }
 
                     var chartDataDB = (await IHUDRequest.Get(x => x.DateCreated > startDate))
+                        .ToList()
                         .GroupBy(x => x.DateCreated.FirstDay().Start())
                         .Select(x => new ChartData
                         {

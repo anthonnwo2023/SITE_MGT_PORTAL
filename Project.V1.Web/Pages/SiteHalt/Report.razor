@@ -261,7 +261,7 @@ else
             </Template>
         </GridColumn>
         @{
-            if (UserManager.IsInRoleAsync(User, "Admin").Result || UserManager.IsInRoleAsync(User, "Super Admin").Result)
+            if (UserIsAdmin)
             {
                 <GridColumn HeaderText="" Width="80">
                     <Template>

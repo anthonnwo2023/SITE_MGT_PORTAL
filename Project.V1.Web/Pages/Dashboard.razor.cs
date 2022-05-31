@@ -36,7 +36,7 @@
                     ClaimsPrincipal user = (await AuthenticationStateTask).User;
                     ApplicationUser userData = await IUser.GetUserByUsername(user.Identity.Name);
 
-                    UserClaims = (await Claim.Get(y => y.IsActive, null, "Category")).Where(z => z.Category.Name == "Project").GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
+                    UserClaims = (await Claim.Get(y => y.IsActive && y.Category.Name == "Project", null, "Category")).GroupBy(v => v.Category.Name).Select(u => new ClaimListManager
                     {
                         Category = u.Key,
                         Claims = u.ToList().FormatClaimSelection(userData)

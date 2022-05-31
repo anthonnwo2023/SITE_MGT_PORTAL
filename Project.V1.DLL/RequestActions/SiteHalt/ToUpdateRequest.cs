@@ -9,7 +9,7 @@
                 string application = variables["App"] as string;
                 string user = variables["User"] as string;
 
-                await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations);
+                await _request.UpdateRequest(request, x => x.Id == request.Id, request.Navigations);
 
                 //await SendEmail(application, request);
 

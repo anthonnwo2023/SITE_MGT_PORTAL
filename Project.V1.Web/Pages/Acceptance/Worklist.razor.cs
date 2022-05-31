@@ -50,9 +50,9 @@
                     User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
                     Requests = (await IRequest.Get(x => x.Requester.Vendor.Name == User.Vendor.Name && x.Status == "Rejected", x => x.OrderByDescending(x => x.EngineerAssigned.DateActioned), "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType")).ToList();
-                    TechTypes = await ITechType.Get(x => x.IsActive);
-                    Regions = await IRegion.Get(x => x.IsActive);
-                    Spectrums = await ISpectrum.Get(x => x.IsActive);
+                    TechTypes = (await ITechType.Get(x => x.IsActive)).ToList();
+                    Regions = (await IRegion.Get(x => x.IsActive)).ToList();
+                    Spectrums = (await ISpectrum.Get(x => x.IsActive)).ToList();
                 }
                 catch (Exception ex)
                 {

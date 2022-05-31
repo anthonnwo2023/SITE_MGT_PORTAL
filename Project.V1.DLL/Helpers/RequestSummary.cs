@@ -115,6 +115,7 @@ namespace Project.V1.DLL.Helpers
             foreach (var projectType in projectTypes)
             {
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "2G", ProjectType = projectType });
+                requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "L900 RT", ProjectType = projectType });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "3G", ProjectType = projectType });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "U900", ProjectType = projectType });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "Multi Sector", ProjectType = projectType });
@@ -155,6 +156,7 @@ namespace Project.V1.DLL.Helpers
             foreach (var vendor in vendors)
             {
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "2G", Vendor = vendor.Name });
+                requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "L900 RT", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "3G", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "U900", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "Multi Sector", Vendor = vendor.Name });

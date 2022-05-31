@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Project.V1.Lib.Services;
 
-public class User : GenericRepo<ApplicationUser>, IUser, IDisposable
+public class UserService : GenericRepo<ApplicationUser>, IUser, IDisposable
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
@@ -15,7 +15,7 @@ public class User : GenericRepo<ApplicationUser>, IUser, IDisposable
     private readonly IVendor _vendor;
     private readonly ICLogger _logger;
 
-    public User(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IVendor vendor, ICLogger logger,
+    public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IVendor vendor, ICLogger logger,
         SignInManager<ApplicationUser> signInManager, ApplicationDbContext context, IRegion region)
         : base(context, null, logger)
     {
@@ -110,7 +110,7 @@ public class User : GenericRepo<ApplicationUser>, IUser, IDisposable
             ApplicationUser NewUser = new();
             ApplicationUser userExists = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).FirstOrDefaultAsync(x => x.UserName == user.UserName);
 
-            List<VendorModel> Vendors = await _vendor.Get();
+            var Vendors = await _vendor.Get();
             VendorModel MTN_Vendor = Vendors.FirstOrDefault(x => x.Name.ToUpper() == "MTN NIGERIA");
             VendorModel userVendor = Vendors.FirstOrDefault(x => x.Id == user.VendorId);
 
@@ -377,12 +377,12 @@ public class User : GenericRepo<ApplicationUser>, IUser, IDisposable
 
                 userExists.Regions = new List<RegionViewModel>();
 
-                IdentityResult result = await _userManager.UpdateAsync(userExists);
+                //IdentityResult result = await _userManager.UpdateAsync(userExists);
 
                 userExists.Regions.AddRange(regions);
                 //userExists.Regions = user.Regions;
 
-                result = await _userManager.UpdateAsync(userExists);
+                IdentityResult result = await _userManager.UpdateAsync(userExists);
 
                 if (!string.IsNullOrWhiteSpace(Password))
                 {

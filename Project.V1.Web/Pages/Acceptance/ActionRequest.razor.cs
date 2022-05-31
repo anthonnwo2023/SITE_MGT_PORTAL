@@ -1,6 +1,4 @@
-﻿using Project.V1.Web.Request;
-
-namespace Project.V1.Web.Pages.Acceptance;
+﻿namespace Project.V1.Web.Pages.Acceptance;
 
 public partial class ActionRequest : IDisposable
 {
@@ -194,7 +192,7 @@ public partial class ActionRequest : IDisposable
 
     private async void SpectrumChange(string spectrumId)
     {
-        IRequestList.ProjectTypes = await IProjectType.Get(x => x.IsActive);
+        IRequestList.ProjectTypes = (await IProjectType.Get(x => x.IsActive)).ToList();
     }
 
     protected async Task AuthenticationCheck(bool isAuthenticated)
@@ -215,9 +213,9 @@ public partial class ActionRequest : IDisposable
 
                     await InitializeForm();
 
-                    RequestModel = await IRequest.GetById(x => x.Id == Id, null, RequestViewModel.Navigations);
+                    RequestModel = await IRequest.GetById(x => x.Id == Id, null, RequestModel.Navigations);
                     RequestStatus = RequestModel.Status;
-                    Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId);
+                    Spectrums = (await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId)).ToList();
 
                     return;
                 }

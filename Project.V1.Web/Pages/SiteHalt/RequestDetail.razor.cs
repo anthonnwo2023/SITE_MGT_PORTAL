@@ -166,7 +166,11 @@ namespace Project.V1.Web.Pages.SiteHalt
 
                         if ((await response).uploadResp.Length != 0 || (await response).uploadError.Length != 0)
                         {
-                            if ((await response).uploadError.Length > 0) await ThrowError((await response).uploadError);
+                            if ((await response).uploadError.Length > 0)
+                            {
+                                await ThrowError((await response).uploadError);
+                            }
+
                             return;
                         }
                     });

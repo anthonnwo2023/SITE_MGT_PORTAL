@@ -25,7 +25,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
             {
                 string application = variables["App"] as string;
 
-                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations);
+                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id, request.Navigations);
 
                 if (isSaved)
                 {

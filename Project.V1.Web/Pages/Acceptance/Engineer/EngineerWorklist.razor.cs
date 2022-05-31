@@ -54,11 +54,11 @@
 
                     RequestEngWorklists = (await IRequest.Get(x => userRegionIds.Contains(x.RegionId) && (x.Status == "Pending" || x.Status == "Reworked"
                                             || x.Status == "Restarted"), x => x.OrderByDescending(x => x.DateCreated), "Requester.Vendor")).ToList();
-                    TechTypes = await ITechType.Get(x => x.IsActive);
-                    Regions = await IRegion.Get(x => x.IsActive);
-                    Spectrums = await ISpectrum.Get(x => x.IsActive);
-                    ProjectTypes = await IProjectType.Get(x => x.IsActive);
-                    Projects = await IProject.Get(x => x.IsActive);
+                    TechTypes = (await ITechType.Get(x => x.IsActive)).ToList();
+                    Regions = (await IRegion.Get(x => x.IsActive)).ToList();
+                    Spectrums = (await ISpectrum.Get(x => x.IsActive)).ToList();
+                    ProjectTypes = (await IProjectType.Get(x => x.IsActive)).ToList();
+                    Projects = (await IProject.Get(x => x.IsActive)).ToList();
 
                     StateHasChanged();
                 }

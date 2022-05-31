@@ -30,10 +30,12 @@
 
                 request.Status = "TAApproved";
 
-                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id, RequestViewModel.Navigations);
+                bool isSaved = await _request.UpdateRequest(request, x => x.Id == request.Id, request.Navigations);
 
                 if (isSaved)
+                {
                     await SendEmail(application, request);
+                }
 
                 return true;
             }

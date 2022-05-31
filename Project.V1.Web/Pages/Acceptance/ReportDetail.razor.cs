@@ -70,16 +70,16 @@
             User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
 
-            Regions = await IRegion.Get(x => x.IsActive);
-            SummerConfigs = await ISummerConfig.Get(x => x.IsActive);
-            ProjectTypes = await IProjectType.Get(x => x.IsActive, null, "Spectrum");
-            RRUTypes = await IRRUType.Get(x => x.IsActive);
-            TechTypes = await ITechType.Get(x => x.IsActive);
-            AntennaTypes = await IAntennaType.Get(x => x.IsActive);
-            AntennaMakes = await IAntennaMake.Get(x => x.IsActive);
-            Basebands = (Principal.IsInRole("Super Admin"))
-                ? await IBaseBand.Get(x => x.IsActive)
-                : await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId);
+            Regions = (await IRegion.Get(x => x.IsActive)).ToList();
+            SummerConfigs = (await ISummerConfig.Get(x => x.IsActive)).ToList();
+            ProjectTypes = (await IProjectType.Get(x => x.IsActive, null)).ToList();
+            RRUTypes = (await IRRUType.Get(x => x.IsActive)).ToList();
+            TechTypes = (await ITechType.Get(x => x.IsActive)).ToList();
+            AntennaTypes = (await IAntennaType.Get(x => x.IsActive)).ToList();
+            AntennaMakes = (await IAntennaMake.Get(x => x.IsActive)).ToList();
+            Basebands = Principal.IsInRole("Super Admin")
+                ? (await IBaseBand.Get(x => x.IsActive)).ToList()
+                : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId)).ToList();
 
             RequestModel = new();
             RequestModel.DateSubmitted = DateTime.Now;
@@ -100,13 +100,17 @@
         private void OnClear(ClearingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload();
+            }
         }
 
         private void OnRemove(RemovingEventArgs args)
         {
             if (args.FilesData.Count > 0)
+            {
                 ResetUpload();
+            }
         }
         protected async Task AuthenticationCheck(bool isAuthenticated)
         {
@@ -128,7 +132,7 @@
 
                         RequestModel = await IRequest.GetById(x => x.Id == Id, null, "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType,Region,Spectrum");
                         RequestStatus = RequestModel.Status;
-                        Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId);
+                        Spectrums = (await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId)).ToList();
 
                         return;
                     }

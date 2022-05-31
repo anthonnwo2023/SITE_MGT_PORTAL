@@ -20,7 +20,7 @@ namespace Project.V1.Lib.Services.Login
             if (Vendor == null)
             {
                 Log.Information("Inactive vendor selected.", new { username, Vendor = vendorId, VendorData = JsonSerializer.Serialize(Vendor) });
-                return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid vendor selected.");
+                return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Invalid vendor selected.");
             }
 
             string doADLogin = ADHelper.Auth_user(username, password, "MTN");
@@ -34,7 +34,7 @@ namespace Project.V1.Lib.Services.Login
                     if (userADData == null)
                     {
                         Log.Information("Missing AD data after successful login.", new { username, Vendor = Vendor.Id, StackTrace = new NullReferenceException("Missing AD data") });
-                        return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Internal error occurred! Login failed.");
+                        return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Internal error occurred! Login failed.");
                     }
 
                     userADData.Username = username;
@@ -49,7 +49,7 @@ namespace Project.V1.Lib.Services.Login
                         if (!user.IsActive)
                         {
                             Log.Information("User Account Deleted. Contact #TSS", new { username, Vendor = Vendor.Id });
-                            return HelperLogin.ExtractResponse(null, SignInResult.NotAllowed, "User Account Deleted. Contact TSS");
+                            return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.NotAllowed, "User Account Deleted. Contact TSS");
                         }
 
                         Log.Information("AD User AppData. ", new { username, Vendor = vendorId });
@@ -64,7 +64,7 @@ namespace Project.V1.Lib.Services.Login
                         user.Projects = userClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
                         await LoginObject.SignInManager.SignInAsync(user, true);
 
-                        return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, SignInResult.Success, userADData);
+                        return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, Microsoft.AspNetCore.Identity.SignInResult.Success, userADData);
                     }
 
                     ApplicationUser newUser = new()
@@ -92,21 +92,21 @@ namespace Project.V1.Lib.Services.Login
                 catch (Exception ex)
                 {
                     Log.Error("Internal error occurred", new { ex.Message, StactTrace = ex.StackTrace });
-                    return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Internal error occurred.");
+                    return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Internal error occurred.");
                 }
             }
 
             Log.Information("Invalid login attempt.", new { username, Vendor = Vendor.Id });
-            return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
+            return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Invalid login attempt.");
         }
 
         private static async Task<SignInResponse> ProcessSignInResultOldUser(string username, string vendorId, VendorModel MTN_Vendor, ApplicationUser user,
-            SignInResult result, ADUserDomainModel userADData)
+            Microsoft.AspNetCore.Identity.SignInResult result, ADUserDomainModel userADData)
         {
 
             if (user.Vendor.Id != vendorId)
             {
-                return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
+                return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Invalid login attempt.");
             }
 
             return await HelperLogin.PerformSignInOp(username, vendorId, MTN_Vendor, user, result, userADData);

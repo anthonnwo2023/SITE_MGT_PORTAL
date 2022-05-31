@@ -186,7 +186,7 @@
 
                         await InitializeForm();
 
-                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, RequestViewModel.Navigations);
+                        RequestModel = await IRequest.GetById(x => x.Id == Id, null, RequestModel.Navigations);
                         RequestModel.EngineerAssigned.DateApproved = DateTime.UtcNow;
 
                         DateTime dt = DateTime.Now;

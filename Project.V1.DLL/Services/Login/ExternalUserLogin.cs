@@ -24,20 +24,20 @@ namespace Project.V1.Lib.Services.Login
                 }).ToList();
 
                 user.Projects = userClaims.SelectMany(x => x.Claims).Where(x => x.IsSelected).ToList();
-                SignInResult result = await LoginObject.SignInManager.PasswordSignInAsync(username, password, true, lockoutOnFailure: true);
+                Microsoft.AspNetCore.Identity.SignInResult result = await LoginObject.SignInManager.PasswordSignInAsync(username, password, true, lockoutOnFailure: true);
                 return await ProcessSignInResultOldUser(username, vendorId, Vendor, user, result);
             }
 
-            return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
+            return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Invalid login attempt.");
         }
 
         private static async Task<SignInResponse> ProcessSignInResultOldUser(string username, string vendorId, VendorModel Vendor, ApplicationUser user,
-            SignInResult result)
+            Microsoft.AspNetCore.Identity.SignInResult result)
         {
 
             if (user.Vendor.Id != vendorId)
             {
-                return HelperLogin.ExtractResponse(null, SignInResult.Failed, "Invalid login attempt.");
+                return HelperLogin.ExtractResponse(null, Microsoft.AspNetCore.Identity.SignInResult.Failed, "Invalid login attempt.");
             }
 
             return await HelperLogin.PerformSignInOp(username, vendorId, Vendor, user, result, null);

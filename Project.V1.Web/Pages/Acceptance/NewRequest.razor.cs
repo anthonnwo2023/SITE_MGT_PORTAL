@@ -1,6 +1,4 @@
-﻿using Project.V1.Web.Request;
-
-namespace Project.V1.Web.Pages.Acceptance
+﻿namespace Project.V1.Web.Pages.Acceptance
 {
     public partial class NewRequest : IDisposable
     {
@@ -801,7 +799,7 @@ namespace Project.V1.Web.Pages.Acceptance
                     if (type == "Bulk")
                     {
                         bool allowedExtension = ExcelProcessor.IsAllowedExt(ext, false);
-                        IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive);
+                        IRequestList.Spectrums = (await ISpectrum.Get(x => x.IsActive)).ToList();
 
                         (string uploadResp, string filePath, string uploadError) = await FileUploader.StartUpload(allowedExtension, file, true);
 

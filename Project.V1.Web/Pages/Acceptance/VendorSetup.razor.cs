@@ -304,9 +304,14 @@ namespace Project.V1.Web.Pages.Acceptance
         private async Task InitData(string model = null)
         {
             if (model == null)
-                Vendors = await IVendor.Get(x => x.IsActive, x => x.OrderBy(y => y.Name));
+            {
+                Vendors = (await IVendor.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
+            }
+
             if (model == null || model == "ProjectModel")
-                Projects = (User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get(null, x => x.OrderBy(y => y.Name)) : await IProjects.Get(x => x.VendorId == User.VendorId);
+            {
+                Projects = (((User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get(null, x => x.OrderBy(y => y.Name)) : await IProjects.Get(x => x.VendorId == User.VendorId))).ToList();
+            }
         }
 
         protected async Task AuthenticationCheck(bool isAuthenticated)

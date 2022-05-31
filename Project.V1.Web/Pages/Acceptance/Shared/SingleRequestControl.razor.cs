@@ -1,6 +1,4 @@
-﻿using Project.V1.Web.Request;
-
-namespace Project.V1.Web.Pages.Acceptance.Shared
+﻿namespace Project.V1.Web.Pages.Acceptance.Shared
 {
     public partial class SingleRequestControl
     {
@@ -85,12 +83,16 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
             await IRequestList.Initialize(Principal, "SMPObject");
 
             if (RequestModel.TechTypeId != null)
-                IRequestList.Spectrums = await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId, x => x.OrderBy(y => y.Name), "TechType");
+            {
+                IRequestList.Spectrums = (await ISpectrum.Get(x => x.IsActive && x.TechTypeId == RequestModel.TechTypeId, x => x.OrderBy(y => y.Name), "TechType")).ToList();
+            }
 
             await OnCheckValidButton.InvokeAsync(false);
 
             if (!ShowRequired)
+            {
                 ShowRqdClass = "none";
+            }
         }
 
         protected override async Task OnInitializedAsync()
@@ -101,7 +103,9 @@ namespace Project.V1.Web.Pages.Acceptance.Shared
         private async Task CheckIfSEValid()
         {
             if (RequestModel.SiteId == null || RequestModel.SpectrumId == null)
+            {
                 await CheckValid.InvokeAsync(false);
+            }
 
             if (RequestModel.SiteId != null && RequestModel.SpectrumId != null)
             {

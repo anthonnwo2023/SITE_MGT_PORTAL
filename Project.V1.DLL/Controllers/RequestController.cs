@@ -1,21 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace Project.V1.DLL.Controllers;
 
-namespace Project.V1.DLL.Controllers;
-
-[Controller]
-[Authorize]
-[Route("acceptance/api/[controller]")]
+[ApiController]
+[Route("[controller]/[action]")]
 public class RequestController : ControllerBase
 {
-    public RequestController()
-    {
+    //private readonly IRequest _request;
 
-    }
+    //public RequestController(IRequest request)
+    //{
+    //    _request = request;
+    //}
 
-    [HttpGet]
-    public IActionResult Get()
-    {
-        return Ok("I am ok");
-    }
+    //[HttpGet]
+    //[EnableQuery]
+    //public async Task<IQueryable<RequestViewModel>> Get()
+    //{
+    //    return (await _request.Get()).AsQueryable();
+    //}
 }

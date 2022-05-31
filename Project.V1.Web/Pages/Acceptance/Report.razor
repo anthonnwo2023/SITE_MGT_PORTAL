@@ -26,17 +26,17 @@
     }
 </style>
 
-@if (Requests == null)
+@*@if (Requests == null)
 {
     <PageLoading />
 }
 else
-{
-    /*height:calc(100vh - 7rem);*/
+{*@
     <div style="width:calc(100vw - 20rem); ">
-        <SfGrid ID="ReportTable" DataSource="@Requests" AllowPaging="true" AllowSorting="true" AllowTextWrap="true"
+        <SfGrid ID="ReportTable" TValue="RequestViewModel" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Query="@QueryData"
             AllowFiltering="true" Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true" AllowExcelExport="true"
             Width="100%">
+            <SfDataManager Headers="HeaderData" HttpClientInstance="httpClient" Url="odata/acceptance" Adaptor="Adaptors.ODataV4Adaptor"></SfDataManager>
             <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModel"></GridEvents>
             <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
             <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
@@ -215,4 +215,4 @@ else
     </SfGrid>
 </div>
     <div class="my-4"></div>
-}
+@*}*@

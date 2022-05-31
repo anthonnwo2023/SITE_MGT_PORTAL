@@ -25,24 +25,55 @@ namespace Project.V1.Data
             _logger = logger;
         }
 
-        public async Task<List<T>> Get()
+        public async Task<IQueryable<T>> Get()
         {
             try
             {
-                return await entity.AsNoTracking().ToListAsync();
+                return await Task.FromResult(entity.AsNoTracking());
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, new { }, ex);
-                return new();
+                return Array.Empty<T>().AsQueryable();
             }
         }
 
-        public async Task<List<T>> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
+        public async Task<IQueryable<T>> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
         {
             try
             {
-                IQueryable<T> query = entity.AsNoTracking();
+                IQueryable<T> query = entity;
+
+                foreach (string includeProperty in includeProperties.Split
+                    (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                if (orderBy != null)
+                {
+                    return orderBy(query);
+                }
+
+                return await Task.FromResult(query);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, new { }, ex);
+                return Array.Empty<T>().AsQueryable();
+            }
+        }
+
+        public async Task<List<T>> GetTracked(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
+        {
+            try
+            {
+                IQueryable<T> query = entity;
 
                 foreach (string includeProperty in includeProperties.Split
                     (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -91,22 +122,24 @@ namespace Project.V1.Data
             }
         }
 
-        private void ReloadEntry(T item, string includeProperties = "")
+        private async void ReloadEntry(T item)
         {
+            await entity.LoadAsync();
+
             _context.Entry(item).Collections.ToList().ForEach(collection =>
             {
-                collection.Load();
+                if (collection.EntityEntry.State == EntityState.Detached)
+                {
+                    collection.Load();
+                }
             });
             _context.Entry(item).References.ToList().ForEach(reference =>
             {
-                reference.Load();
+                if (reference.EntityEntry.State == EntityState.Detached)
+                {
+                    reference.Load();
+                }
             });
-
-            //foreach (string includeProperty in includeProperties.Split
-            //        (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            //{
-            //    _context.Entry(item).Collection<T>(includeProperty).Query();
-            //}
         }
 
         public async Task<T> GetById(Expression<Func<T, bool>> IdFilter, Expression<Func<T, bool>> filter = null, string includeProperties = "")
@@ -115,10 +148,13 @@ namespace Project.V1.Data
             {
                 IQueryable<T> query = entity;
 
-                foreach (string includeProperty in includeProperties.Split
-                    (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                if (!string.IsNullOrWhiteSpace(includeProperties))
                 {
-                    query = query.Include(includeProperty);
+                    foreach (string includeProperty in includeProperties.Split
+                        (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        query = query.Include(includeProperty);
+                    }
                 }
 
                 if (filter != null)
@@ -128,7 +164,10 @@ namespace Project.V1.Data
 
                 var item = await query.FirstOrDefaultAsync(IdFilter);
 
-                ReloadEntry(item, includeProperties);
+                //if (item != null && (item as dynamic).RequestType == "SA")
+                //{
+                //    //ReloadEntry(item);
+                //}
 
                 return item;
             }

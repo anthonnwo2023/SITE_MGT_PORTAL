@@ -653,11 +653,13 @@ namespace Project.V1.Web.Pages
 
             if (model == null || model == "IdentityRole")
             {
-                RoleClaims = ActiveClaims.OrderBy(x => x.Category.Name).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name).Select(async x => new ClaimListManager
-                {
-                    Category = x.Key,
-                    Claims = await x.ToList().FormatClaimSelection()
-                }).SelectMany(x => (x.GetAwaiter().GetResult()).Claims).ToList();
+                RoleClaims = ActiveClaims.ToList().OrderBy(x => x.Category.Name).Where(x => x.Category.Name != "Project").GroupBy(x => x.Category.Name)
+                    .ToList()
+                    .Select(async x => new ClaimListManager
+                    {
+                        Category = x.Key,
+                        Claims = await x.ToList().FormatClaimSelection()
+                    }).SelectMany(x => (x.GetAwaiter().GetResult()).Claims).ToList();
 
                 IdentityRoles = await Task.FromResult((await Role.Roles.ToListAsync()).OrderBy(x => x.Name).Select(x =>
                 {

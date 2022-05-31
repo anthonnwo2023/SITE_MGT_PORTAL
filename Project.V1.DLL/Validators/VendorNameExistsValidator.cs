@@ -1,8 +1,4 @@
-﻿using Project.V1.DLL.Services.Interfaces;
-using Project.V1.Models;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ESDWorkflow.V1.DLL.Validators
 {
@@ -22,7 +18,7 @@ namespace ESDWorkflow.V1.DLL.Validators
             //InstanceFactory instFactory = new(a);
             //IVendor vendorInterface = instFactory.CreateVendor();
 
-            List<VendorModel> vendors = vendor.Get().GetAwaiter().GetResult();
+            List<VendorModel> vendors = (vendor.Get().GetAwaiter().GetResult()).ToList();
             bool vendorExists = vendors.Any(x => x.Name == value.ToString());
 
             if (!vendorExists)

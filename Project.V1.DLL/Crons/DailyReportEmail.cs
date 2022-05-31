@@ -97,26 +97,28 @@ namespace Project.V1.DLL.Crons
                                     && x.EngineerAssigned.DateApproved.Date == yesterDay.Date
                                     && !x.Spectrum.Name.Contains("MOD")
                                     && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell", null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum"))
-                                     .Select(x => new AcceptanceDTO
-                                     {
-                                         SiteId = x.SiteId,
-                                         Region = x.Region.Name,
-                                         State = x.State,
-                                         Vendor = x.Requester.Vendor.Name,
-                                         ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
-                                         ProjectTypeName = x.ProjectType.Name,
-                                         TechType = x.TechType.Name,
-                                         Spectrum = x.Spectrum.Name,
-                                         AcceptanceCount = 1,
-                                         DateSubmitted = x.DateSubmitted,
-                                         DateAccepted = (!x.EngineerAssigned.DateApproved.Equals(DateTime.MinValue)) ? x.EngineerAssigned.DateApproved : null,
-                                         EngineerComment = x.EngineerAssigned?.ApproverComment,
-                                         Status = x.Status,
-                                     }).ToList();
+                                    .ToList()
+                                    .Select(x => new AcceptanceDTO
+                                    {
+                                        SiteId = x.SiteId,
+                                        Region = x.Region.Name,
+                                        State = x.State,
+                                        Vendor = x.Requester.Vendor.Name,
+                                        ProjectType = RequestSummary.GetProjectTypeName(x.ProjectType.Name),
+                                        ProjectTypeName = x.ProjectType.Name,
+                                        TechType = x.TechType.Name,
+                                        Spectrum = x.Spectrum.Name,
+                                        AcceptanceCount = 1,
+                                        DateSubmitted = x.DateSubmitted,
+                                        DateAccepted = (!x.EngineerAssigned.DateApproved.Equals(DateTime.MinValue)) ? x.EngineerAssigned.DateApproved : null,
+                                        EngineerComment = x.EngineerAssigned?.ApproverComment,
+                                        Status = x.Status,
+                                    }).ToList();
 
                 var yesterdaysAllRequests = (await _request.Get(x => x.DateSubmitted.Date == yesterDay.Date
                                             || x.EngineerAssigned.DateActioned.Date == yesterDay.Date
                                             || x.EngineerAssigned.DateApproved.Date == yesterDay.Date, null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum"))
+                                     .ToList()
                                      .Select(x => new AcceptanceDTO
                                      {
                                          SiteId = x.SiteId,
@@ -276,9 +278,13 @@ namespace Project.V1.DLL.Crons
                         rowHeader.AddCell($"<b>{tData}</b>", null, null, null, CellTDProperties);
 
                         if (totalRow.ContainsKey(tData))
+                        {
                             totalRow[tData] += 0;
+                        }
                         else
+                        {
                             totalRow.Add(tData, 0);
+                        }
                     }
                 }
                 table.EndHead();
@@ -290,12 +296,18 @@ namespace Project.V1.DLL.Crons
                     using (HTMLTable.Row row = table.AddRow())
                     {
                         if (frequency == "day")
+                        {
                             row.AddCell($"<b>Accepted Today: ({itemByVendor.Key})</b>", null, null, null, CellTHProperties);
+                        }
                         else
                         if (type == "project")
+                        {
                             row.AddCell($"<b>{itemByVendor.Key} so far in {date:MMMM}</b>", null, null, null, CellTHProperties);
+                        }
                         else
+                        {
                             row.AddCell($"<b>Accepted so far in {date:MMMM}: ({itemByVendor.Key})</b>", null, null, null, CellTHProperties);
+                        }
 
                         foreach (var name in tableColumnNames)
                         {
@@ -328,16 +340,20 @@ namespace Project.V1.DLL.Crons
                                     row.AddCell(spectSum.ToString(), null, null, null, CellTDProperties);
                                 }
                                 else
+                                {
                                     row.AddCell(spectrumData.Where(x => x.ProjectType.ToUpper() == itemByVendor.Key.ToUpper()).Sum(x => x.AcceptanceCount).ToString(), null, null, null, CellTDProperties);
-
+                                }
                             }
                             else
+                            {
                                 row.AddCell("0", null, null, null, CellTDProperties);
+                            }
                         }
                     }
                 }
 
                 if (type == "vendor" && frequency == "month")
+                {
                     using (HTMLTable.Row row = table.AddRow())
                     {
                         row.AddCell("<b>Monthly Total</b>", "strong", null, null, CellTHProperties);
@@ -347,6 +363,8 @@ namespace Project.V1.DLL.Crons
                             row.AddCell($"<b>{totalRow[colName]}</b>", null, null, null, CellTDProperties);
                         }
                     }
+                }
+
                 TotalRow = totalRow;
                 table.EndBody();
             }
@@ -375,6 +393,7 @@ namespace Project.V1.DLL.Crons
                 foreach (var request in tableData)
                 {
                     if (tableColumnNames.Count == 12)
+                    {
                         using (HTMLTable.Row rowBody = table.AddRow())
                         {
                             rowBody.AddCell(sn.ToString(), null, null, null, CellTDProperties);
@@ -390,7 +409,9 @@ namespace Project.V1.DLL.Crons
                             rowBody.AddCell(request.EngineerComment?.Trim(), null, null, null, CellTDProperties);
                             rowBody.AddCell(request.Status.Trim(), null, null, null, CellTDProperties);
                         }
+                    }
                     else if (tableColumnNames.Count == 10)
+                    {
                         using (HTMLTable.Row rowBody = table.AddRow())
                         {
                             rowBody.AddCell(sn.ToString(), null, null, null, CellTDProperties);
@@ -404,6 +425,7 @@ namespace Project.V1.DLL.Crons
                             rowBody.AddCell(request.ProjectTypeName, null, null, null, CellTDProperties);
                             rowBody.AddCell(request.State.Trim(), null, null, null, CellTDProperties);
                         }
+                    }
 
                     sn++;
                 }
