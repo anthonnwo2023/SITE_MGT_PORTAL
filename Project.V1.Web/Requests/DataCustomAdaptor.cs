@@ -2,30 +2,53 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 
-namespace Project.V1.Web.Request;
+namespace Project.V1.Web.Requests;
 
 public class AcceptanceAdaptor : DataCustomAdaptor<RequestViewModel>
 {
+    private string LoggedInUser { get; set; }
+    private readonly IRequest _request;
+
     public AcceptanceAdaptor()
     {
-        base.GetData("odata/Acceptance");
+        HttpContextAccessor httpContextAccessor = new();
+        LoggedInUser = httpContextAccessor.HttpContext?.User.Identity.Name;
+
+        _request = ServiceActivator.GetScope().ServiceProvider.GetService<IRequest>();
+
+        GetData().GetAwaiter().GetResult();
     }
+
+    public async Task GetData()
+    {
+        var Requests = Array.Empty<RequestViewModel>().AsQueryable();
+
+        var user = await LoginObject.UserManager.FindByNameAsync(LoggedInUser);
+
+        if (user == null)
+            RequestData = Requests;
+
+        var vendor = await LoginObject.Vendor.GetById(x => x.Id == user.VendorId);
+
+        if (user.ShowAllRegionReport)
+        {
+            RequestData = await _request.Get(x => x.Id != null, null, new RequestViewModel().Navigations);
+        }
+        else if (vendor.Name == "MTN Nigeria" || (await LoginObject.UserManager.IsInRoleAsync(user, "User")))
+        {
+            RequestData = await _request.Get(x => user.Regions.Select(x => x.Id).Contains(x.RegionId), null, new RequestViewModel().Navigations);
+        }
+        else
+        {
+            RequestData = await _request.Get(x => x.Requester.VendorId == user.VendorId, x => x.OrderByDescending(y => y.DateCreated), new RequestViewModel().Navigations);
+        }
+    }
+
 }
 
-public class DataCustomAdaptor<T> : DataAdaptor where T : class, new()
+public class DataCustomAdaptor<T> : DataAdaptor where T : class
 {
-    private readonly HttpClient _http;
-    public List<T> RequestData { get; set; }
-
-    public DataCustomAdaptor()
-    {
-        _http = new HttpClient();
-    }
-
-    public async void GetData(string path)
-    {
-        RequestData = await _http.GetFromJsonAsync<List<T>>(path);
-    }
+    public IQueryable<T> RequestData { get; set; }
 
     // Performs data Read operation
     public override object Read(DataManagerRequest dm, string key = null)
@@ -63,11 +86,11 @@ public class DataCustomAdaptor<T> : DataAdaptor where T : class, new()
     }
 
     // Performs Insert operation
-    public override object Insert(DataManager dm, object value, string key)
-    {
-        RequestData.Insert(0, value as T);
-        return value;
-    }
+    //public override object Insert(DataManager dm, object value, string key)
+    //{
+    //    RequestData.Insert(0, value as T);
+    //    return value;
+    //}
 
     // Performs Remove operation
     //public override object Remove(DataManager dm, object value, string keyField, string key)

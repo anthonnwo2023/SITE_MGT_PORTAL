@@ -1,4 +1,4 @@
-﻿using Project.V1.Web.Request;
+﻿using Project.V1.Web.Requests;
 
 namespace Project.V1.Web.Pages.SiteHalt;
 

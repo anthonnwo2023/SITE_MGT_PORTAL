@@ -36,7 +36,7 @@ else
         <SfGrid ID="ReportTable" TValue="RequestViewModel" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Query="@QueryData"
             AllowFiltering="true" Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true" AllowExcelExport="true"
             Width="100%">
-            <SfDataManager Headers="HeaderData" HttpClientInstance="httpClient" Url="odata/acceptance" Adaptor="Adaptors.ODataV4Adaptor"></SfDataManager>
+            <SfDataManager AdaptorInstance="@typeof(AcceptanceAdaptor)" Adaptor="Adaptors.CustomAdaptor"></SfDataManager>
             <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModel"></GridEvents>
             <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
             <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>

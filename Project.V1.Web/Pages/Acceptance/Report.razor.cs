@@ -22,7 +22,7 @@ public partial class Report
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     protected SfGrid<RequestViewModel> Grid_Request { get; set; }
-    private Query QueryData = new Query().Sort("datecreated desc", "desc")
+    private Query QueryData = new Query().Sort("datecreated", "Descending")
         .Expand(new List<string> { "engineerassigned", "requester" });
     private Dictionary<string, string> HeaderData = new();
     protected SfGrid<RequestViewModel> Grid_RequestGroup { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace Project.V1.Web.Request
+﻿namespace Project.V1.Web.Requests
 {
     public class RequestListObject : IRequestListObject
     {

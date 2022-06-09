@@ -147,7 +147,7 @@ public class Startup
         services.AddScoped<ISummerConfig, SummerConfig>();
         services.AddScoped<IStaticReport, StaticReport>();
         services.AddScoped<IRequestListObject, RequestListObject>();
-
+        services.AddScoped<AcceptanceAdaptor>();
 
         services.ConfigureBlazorizeOptions();
         services.ConfigureCors();
