@@ -316,7 +316,9 @@ public partial class NewRequest : IDisposable
         {
             HUDRequest.FirstApprover.RequestId = HUDRequest.Id;
             HUDRequest.SecondApprover.RequestId = HUDRequest.Id;
-            HUDRequest.ThirdApprover.RequestId = HUDRequest.Id;
+
+            if (HUDRequest.ThirdApprover != null)
+                HUDRequest.ThirdApprover.RequestId = HUDRequest.Id;
         }
 
         HUDRequest.TechTypes = await ITechType.GetTracked(x => HUDRequest.TechTypeIds.Contains(x.Id));

@@ -12,6 +12,14 @@
             return request.TransitionState(new ToUpdateRequest<T>(), requests, variables, null);
         }
 
+        public override bool Complete(IRequestAction<T> request, T requests, Dictionary<string, object> variables)
+        {
+            if (requests.IsForceMajeure)
+                return request.TransitionState(new CompletedState<T>(), requests, variables, null);
+
+            return false;
+        }
+
         public override bool Disapprove(IRequestAction<T> request, T requests, Dictionary<string, object> variables, RequestApproverModel ActionedBy)
         {
             return request.TransitionState(new DisapprovedState<T>(), requests, variables, ActionedBy);
@@ -49,8 +57,11 @@
             emailObj = GenerateMailBody("SAApprover", request, application);
             await SendNotification(request, emailObj, "SAApprover");
 
-            emailObj = GenerateMailBody("TAApprover", request, application);
-            await SendNotification(request, emailObj, "TAApprover");
+            if (request.ThirdApprover != null)
+            {
+                emailObj = GenerateMailBody("TAApprover", request, application);
+                await SendNotification(request, emailObj, "TAApprover");
+            }
         }
 
         private static SendEmailActionObj GenerateMailBody(string mailType, T request, string application)

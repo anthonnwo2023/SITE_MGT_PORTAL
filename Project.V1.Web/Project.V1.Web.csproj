@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazorise.Bootstrap" Version="1.0.4" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.4" />
+    <PackageReference Include="Blazorise.Bootstrap" Version="1.0.5" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.5" />
     <PackageReference Include="LocalStorage" Version="2.1.0" />
     <PackageReference Include="MailKit" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
@@ -61,7 +61,8 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Syncfusion.Blazor" Version="19.4.0.56" />
+    <PackageReference Include="Syncfusion.Blazor" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Pdf.Net.Core" Version="20.1.0.47" />
     <PackageReference Include="System.DirectoryServices" Version="6.0.0" />
     <PackageReference Include="System.DirectoryServices.Protocols" Version="6.0.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
@@ -76,6 +77,12 @@
     <Folder Include="Documents\EReport\" />
     <Folder Include="Documents\" />
     <Folder Include="Logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\images\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

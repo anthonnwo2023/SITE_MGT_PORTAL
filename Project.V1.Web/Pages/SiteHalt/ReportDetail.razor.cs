@@ -1,4 +1,7 @@
-﻿namespace Project.V1.Web.Pages.SiteHalt
+﻿using Microsoft.JSInterop;
+using System.IO;
+
+namespace Project.V1.Web.Pages.SiteHalt
 {
     public partial class ReportDetail
     {
@@ -9,6 +12,8 @@
         [Inject] public ICLogger Logger { get; set; }
         [Inject] public IHUDRequest IHUDRequest { get; set; }
         [Inject] protected IUser IUser { get; set; }
+        [Inject] HUDPDFExportService ExportService { get; set; }
+        [Inject] Microsoft.JSInterop.IJSRuntime JS { get; set; }
 
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }
@@ -112,6 +117,16 @@
                     Logger.LogError($"Error loading rejected requests", new { }, ex);
                     StateHasChanged();
                 }
+            }
+        }
+
+        protected async Task ExportToPdf()
+        {
+            ExportService.SetData(ReportRequest);
+
+            using (MemoryStream excelStream = ExportService.CreatePdf())
+            {
+                await JS.SaveAs($"{ReportRequest.UniqueId}-{DateTime.Now}.pdf", excelStream.ToArray());
             }
         }
     }

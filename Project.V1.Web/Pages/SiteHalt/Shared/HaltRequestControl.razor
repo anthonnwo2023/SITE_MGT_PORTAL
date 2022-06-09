@@ -45,9 +45,7 @@
     @if (!ShouldEnable && ShowCopyText)
     {
         <div class="col-12 mt-1 p-0 mb-0">
-
             <a href="javascript:void(0)" class="text-black float-right font-weight-bold" @onclick="CopyTextToClipboard">Copy to clipboard</a>
-
         </div>
     }
     <div class="col-12 mt-1 p-0 mb-3 @(!ShouldEnable ? "border" : "")">
@@ -98,6 +96,11 @@
     @if (HUDRequestModel.RequestAction != "UnHalt")
     {
         <div class="row col-12 mt-5">
+            <div class="col-md-6">
+                <SfCheckBox Disabled="@(!ShouldEnable)" Label="Is Force Majeure?" @bind-Checked="HUDRequestModel.IsForceMajeure"></SfCheckBox>
+            </div>
+        </div>
+        <div class="row col-12 mt-4">
             <div class="col-md-4">
                 @{
                     bool approverIsActioned = (HUDRequestModel.GetStatusString is null) ? false : HUDRequestModel.FirstApprover == null ? false : HUDRequestModel.GetStatusString.Contains("1 of 3");
@@ -120,17 +123,21 @@
                 </SfDropDownList>
                 <ValidationMessage For="@(() => HUDRequestModel.SecondApproverId)" />
             </div>
-            <div class="col-md-4">
-                @{
-                    approverIsActioned = (HUDRequestModel.GetStatusString is null) ? false : HUDRequestModel.ThirdApprover == null ? false : HUDRequestModel.GetStatusString.Contains("3 of 3");
-                }
-                <SfDropDownList Enabled="@(ShouldEnable && !approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver"
+            @if (HUDRequestModel.ThirdApprover != null)
+            {
+                <div class="col-md-4">
+                    @{
+                        approverIsActioned = (HUDRequestModel.GetStatusString is null) ? false : HUDRequestModel.ThirdApprover == null ? false : HUDRequestModel.GetStatusString.Contains("3 of 3");
+                    }
+                    <SfDropDownList Enabled="@(ShouldEnable && !approverIsActioned)" TValue="string" TItem="RequestApproverModel" FloatLabelType="@FloatLabelType.Auto" Placeholder="Third Approver"
                         DataSource="@ThirdLevelApprovers" @bind-Value="HUDRequestModel.ThirdApproverId">
-                    <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
-                    <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver3")'></DropDownListEvents>
-                </SfDropDownList>
-                <ValidationMessage For="@(() => HUDRequestModel.ThirdApproverId)" />
-            </div>
+                        <DropDownListFieldSettings Text="Fullname" Value="Id"></DropDownListFieldSettings>
+                        <DropDownListEvents TItem="RequestApproverModel" TValue="string" ValueChange='e => ChangeNonRFSMApprover(e, "approver3")'></DropDownListEvents>
+                    </SfDropDownList>
+                    <ValidationMessage For="@(() => HUDRequestModel.ThirdApproverId)" />
+                </div>
+
+            }
         </div>
     }
 }

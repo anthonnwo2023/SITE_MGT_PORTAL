@@ -79,7 +79,7 @@ public partial class EngineerWorklist
                 User = await IUser.GetUserByUsername(Principal.Identity.Name);
                 var userRegionIds = User.Regions.Select(x => x.Id);
 
-                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt") && x.Status != "Completed", x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
+                HUDEngineerRequests = (await IHUDRequest.Get(x => (x.ThirdApprover.IsApproved || x.RequestAction == "UnHalt" || (x.IsForceMajeure && x.SecondApprover.IsApproved)) && x.Status != "Completed", x => x.OrderByDescending(y => y.DateCreated), "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes")).ToList();
                 CompletingButtons = new bool[HUDEngineerRequests.Count];
                 UpdateButtons = new bool[HUDEngineerRequests.Count];
 
@@ -230,6 +230,8 @@ public partial class EngineerWorklist
         try
         {
             await IHUDRequest.SetState(request, "SiteHalt");
+
+            request.CompletedBy = User.UserName;
 
             if (ProcessAction(request, IHUDRequest))
             {

@@ -154,7 +154,7 @@ public class Startup
         services.ConfigureBasicAuthenticationHandler();
         services.ConfigureIdentityOption();
         services.ConfigureValidators();
-        services.AddSyncfusionBlazor();
+        services.AddSyncfusionBlazor(option => option.IgnoreScriptIsolation = false);
 
         // register the scope authorization handler
         services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
@@ -193,6 +193,7 @@ public class Startup
 
         services.AddServerSideBlazor();
         services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
+        services.AddScoped<HUDPDFExportService>();
         services.AddDatabaseDeveloperPageExceptionFilter();
     }
 
@@ -249,7 +250,7 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
     {
-        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTk4ODMzQDMxMzkyZTM0MmUzMGcxaWNmQjlVUDJrSGZSS3cwU2w1dU43aExreVhPZzZGTDRzUTg1L01OaEU9");
+        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjUyNzQ0QDMyMzAyZTMxMmUzMENHemJ6dTk1RFdkWXE2Y2wvVGwvb3dERDdNNzlUUDNyUklTNGNaWk9lbDg9");
 
         ServiceActivator.Configure(app.ApplicationServices);
 
@@ -310,7 +311,9 @@ public class Startup
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapControllers();
+            endpoints.MapControllerRoute(
+                name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
             endpoints.MapBlazorHub();
             endpoints.MapFallbackToPage("/_Host");
         });

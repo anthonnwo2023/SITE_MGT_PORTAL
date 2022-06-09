@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.5" />
-    <PackageReference Include="Syncfusion.Blazor" Version="19.4.0.56" />
+    <PackageReference Include="Syncfusion.Blazor" Version="20.1.0.47" />
   </ItemGroup>
 
 </Project>

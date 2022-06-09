@@ -2,7 +2,7 @@
 @namespace Project.V1.Web.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-      Layout = null;
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -23,7 +23,7 @@
 
     <script src="~/lib/jquery/jquery.js"></script>
     <style type="text/css">
-       !important.zoom {
+        !important.zoom {
             zoom: 1.0;
             -moz-transform: scale(1);
             -moz-transform-origin: 0 0;
@@ -83,6 +83,27 @@
             /* Alert the copied text */
             alert("Copied the text: " + strContent);
             return;
+        }
+
+        function saveAsFile(filename, bytesBase64) {
+            if (navigator.msSaveBlob) {
+                //Download document in Edge browser
+                var data = window.atob(bytesBase64);
+                var bytes = new Uint8Array(data.length);
+                for (var i = 0; i < data.length; i++) {
+                    bytes[i] = data.charCodeAt(i);
+                }
+                var blob = new Blob([bytes.buffer], { type: "application/octet-stream" });
+                navigator.msSaveBlob(blob, filename);
+            }
+            else {
+                var link = document.createElement('a');
+                link.download = filename;
+                link.href = "data:application/octet-stream;base64," + bytesBase64;
+                document.body.appendChild(link); // Needed for Firefox
+                link.click();
+                document.body.removeChild(link);
+            }
         }
     </script>
     @*<script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>*@

@@ -88,7 +88,8 @@ public partial class RequestDetail
                 RequestToApprove = await IHUDRequest.GetById(x => x.Id == Id, null, "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes");
                 RequestToApprove.FirstApproverId = RequestToApprove.FirstApprover.Id;
                 RequestToApprove.SecondApproverId = RequestToApprove.SecondApprover.Id;
-                RequestToApprove.ThirdApproverId = RequestToApprove.ThirdApprover.Id;
+                if (RequestToApprove.ThirdApprover != null)
+                    RequestToApprove.ThirdApproverId = RequestToApprove.ThirdApprover.Id;
 
                 GetApproverClass();
 
@@ -142,10 +143,11 @@ public partial class RequestDetail
 
                 BaseThirdLevelApprovers.ForEach(x =>
                 {
-                    if (x.Username == RequestToApprove.ThirdApprover.Username)
-                    {
-                        x.Id = RequestToApprove.ThirdApprover.Id;
-                    }
+                    if (RequestToApprove.ThirdApprover != null)
+                        if (x.Username == RequestToApprove.ThirdApprover.Username)
+                        {
+                            x.Id = RequestToApprove.ThirdApprover.Id;
+                        }
 
                     x.ApproverType = "TA";
                 });

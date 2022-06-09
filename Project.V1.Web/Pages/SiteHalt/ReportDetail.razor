@@ -78,7 +78,7 @@
 
 <div class="col-sm-12 m-0 p-0" style="background: url('images/celltower-black.jpg'); background-size: cover; background-position: center right;">
     <div class="display-4 text-white" style="padding: 4rem 2rem;">
-        Request Detail
+        Report Detail
     </div>
 </div>
 
@@ -93,6 +93,7 @@ else
 {
     <EditForm Model="@ReportRequest">
         <ObjectGraphDataAnnotationsValidator />
+        <button class="btn btn-primary" @onclick="@ExportToPdf">Export to PDF</button>
         <div class="col-md-12" style="">
             <div class="col-md 12 row">
                 <HaltRequestControl ShouldEnable="false" HUDRequestModel="@ReportRequest"

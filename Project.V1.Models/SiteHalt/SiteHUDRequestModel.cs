@@ -47,9 +47,15 @@ public class SiteHUDRequestModel : IDisposable
 
     public string Status { get; set; } = "";
 
+    public string CompletedBy { get; set; }
+
     public bool ShouldRequireApprovers { get; set; }
 
     public bool HasLargeSiteIdCount { get; set; }
+
+    public bool IsForceMajeure { get; set; }
+
+    public bool IsNotForceMajureAndRequired => !IsForceMajeure && ShouldRequireApprovers;
 
     [Required(ErrorMessage = "The Technology field is required.")]
     [NotMapped]
@@ -84,20 +90,21 @@ public class SiteHUDRequestModel : IDisposable
     {
         var message = check ? "Approved" : "Disapproved";
         var extra = string.Empty;
+        var approverCount = (ThirdApprover == null) ? 2 : 3;
 
         if (Status.StartsWith("FA"))
         {
-            extra = $" By {FirstApprover.Fullname} (1 of 3)";
+            extra = $" By {FirstApprover.Fullname} (1 of {approverCount})";
         }
 
         if (Status.StartsWith("SA"))
         {
-            extra = $" By {SecondApprover.Fullname} (2 of 3)";
+            extra = $" By {SecondApprover.Fullname} (2 of {approverCount})";
         }
 
         if (Status.StartsWith("TA") && RequestAction != "UnHalt")
         {
-            extra = $" By {ThirdApprover.Fullname} (3 of 3)";
+            extra = $" By {ThirdApprover.Fullname} (3 of {approverCount})";
         }
 
         return message + extra;
@@ -178,7 +185,7 @@ public class SiteHUDRequestModel : IDisposable
     [ForeignKey(nameof(SecondApproverId))]
     public virtual RequestApproverModel SecondApprover { get; set; }
 
-    [RequiredWhen(nameof(ShouldRequireApprovers), true, AllowEmptyStrings = false, ErrorMessage = "The Approver is required.")]
+    [RequiredWhen(nameof(IsNotForceMajureAndRequired), true, AllowEmptyStrings = false, ErrorMessage = "The Approver is required.")]
     public string ThirdApproverId { get; set; }
 
     [ForeignKey(nameof(ThirdApproverId))]
