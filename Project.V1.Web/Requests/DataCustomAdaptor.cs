@@ -14,6 +14,9 @@ public class AcceptanceAdaptor : DataCustomAdaptor<RequestViewModel>
         HttpContextAccessor httpContextAccessor = new();
         LoggedInUser = httpContextAccessor.HttpContext?.User.Identity.Name;
 
+        if (LoggedInUser == null)
+            return;
+
         _request = ServiceActivator.GetScope().ServiceProvider.GetService<IRequest>();
 
         GetData().GetAwaiter().GetResult();
@@ -32,15 +35,18 @@ public class AcceptanceAdaptor : DataCustomAdaptor<RequestViewModel>
 
         if (user.ShowAllRegionReport)
         {
-            RequestData = await _request.Get(x => x.Id != null, null, new RequestViewModel().Navigations);
+            RequestData = await _request.Get(x => x.Id != null, x => x.OrderByDescending(y => y.DateCreated), new RequestViewModel().Navigations);
+            Count = await _request.Count(x => x.Id != null);
         }
         else if (vendor.Name == "MTN Nigeria" || (await LoginObject.UserManager.IsInRoleAsync(user, "User")))
         {
-            RequestData = await _request.Get(x => user.Regions.Select(x => x.Id).Contains(x.RegionId), null, new RequestViewModel().Navigations);
+            RequestData = await _request.Get(x => user.Regions.Select(x => x.Id).Contains(x.RegionId), x => x.OrderByDescending(y => y.DateCreated), new RequestViewModel().Navigations);
+            Count = await _request.Count(x => user.Regions.Select(x => x.Id).Contains(x.RegionId));
         }
         else
         {
             RequestData = await _request.Get(x => x.Requester.VendorId == user.VendorId, x => x.OrderByDescending(y => y.DateCreated), new RequestViewModel().Navigations);
+            Count = await _request.Count(x => x.Requester.VendorId == user.VendorId);
         }
     }
 
@@ -49,11 +55,12 @@ public class AcceptanceAdaptor : DataCustomAdaptor<RequestViewModel>
 public class DataCustomAdaptor<T> : DataAdaptor where T : class
 {
     public IQueryable<T> RequestData { get; set; }
+    public int Count { get; set; }
 
     // Performs data Read operation
     public override object Read(DataManagerRequest dm, string key = null)
     {
-        IEnumerable<T> DataSource = RequestData;
+        IQueryable<T> DataSource = RequestData;
 
         if (dm.Search != null && dm.Search.Count > 0)
         {
@@ -71,7 +78,7 @@ public class DataCustomAdaptor<T> : DataAdaptor where T : class
             DataSource = DataOperations.PerformFiltering(DataSource, dm.Where, dm.Where[0].Operator);
         }
 
-        int count = DataSource.Cast<T>().Count();
+        //int count = DataSource.Cast<T>().Count();
         if (dm.Skip != 0)
         {
             //Paging
@@ -82,7 +89,7 @@ public class DataCustomAdaptor<T> : DataAdaptor where T : class
             DataSource = DataOperations.PerformTake(DataSource, dm.Take);
         }
 
-        return dm.RequiresCounts ? new DataResult() { Result = DataSource, Count = count } : (object)DataSource;
+        return dm.RequiresCounts ? new DataResult() { Result = DataSource.ToList(), Count = Count } : (object)DataSource.ToList();
     }
 
     // Performs Insert operation

@@ -25,7 +25,7 @@ public partial class SSCReport : IDisposable
 
     [Inject] public HttpClient HttpClient { get; set; }
     protected SfGrid<SSCUpdatedCell> Grid_SSRequest { get; set; }
-    private Query QueryData = new Query().Sort("datecreated desc", "desc");
+    private Syncfusion.Blazor.Data.Query QueryData = new Syncfusion.Blazor.Data.Query().Sort("datecreated desc", "desc");
     private Dictionary<string, string> HeaderData = new();
     public bool UserIsAdmin { get; set; }
     protected bool[] CompleteButtons { get; set; }

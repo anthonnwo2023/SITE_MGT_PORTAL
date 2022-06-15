@@ -36,7 +36,7 @@ else
         <SfGrid ID="ReportTable" TValue="RequestViewModel" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Query="@QueryData"
             AllowFiltering="true" Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true" AllowExcelExport="true"
             Width="100%">
-            <SfDataManager AdaptorInstance="@typeof(AcceptanceAdaptor)" Adaptor="Adaptors.CustomAdaptor"></SfDataManager>
+            <SfDataManager Url="api/Acceptance" Adaptor="Adaptors.WebApiAdaptor"></SfDataManager>
             <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModel"></GridEvents>
             <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
             <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
@@ -53,7 +53,7 @@ else
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.BulkBatchNumber)" HeaderText="Batch Number" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.Vendor)" HeaderText="Vendor" TextAlign="TextAlign.Left" AllowSearching="true"
+                <GridColumn Visible="false" Field="@(nameof(RequestViewModel.Requester) + "." + nameof(RequesterData.Vendor) + "." + nameof(VendorModel.Name))" HeaderText="Vendor" TextAlign="TextAlign.Left"
                         Width="150" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
                 <GridColumn Field="@nameof(RequestViewModel.SiteId)" HeaderText="Site Id" TextAlign="TextAlign.Left"
@@ -134,7 +134,7 @@ else
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.CarrierAggregation)" HeaderText="Carrier Aggregation" TextAlign="TextAlign.Center"
                         Width="190" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.Engineer)" HeaderText="Engineer" TextAlign="TextAlign.Left"
+                <GridColumn Visible="false" AllowFiltering="false" AllowSearching="false" Field="@nameof(RequestViewModel.Engineer)" HeaderText="Engineer" TextAlign="TextAlign.Left"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
                 </GridColumn>
                 @*<GridColumn Field="@nameof(RequestViewModel.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left">
@@ -150,17 +150,17 @@ else
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                         Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
-                <GridColumn Field="@nameof(RequestViewModel.DateActioned)" HeaderText="Date Actioned" TextAlign="TextAlign.Center"
+                <GridColumn Field="@nameof(RequestViewModel.DateActioned)" AllowFiltering="false" AllowSearching="false" HeaderText="Date Actioned" TextAlign="TextAlign.Center"
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                         Width="160" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.RequesterName)" HeaderText="Requester" TextAlign="TextAlign.Left"
+                <GridColumn Visible="false" Field="@(nameof(RequestViewModel.Requester) + "." + nameof(RequesterData.Name))" HeaderText="Requester" TextAlign="TextAlign.Left"
                         Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
                 <GridColumn Visible="false" Field="@nameof(RequestViewModel.RequesterComment)" HeaderText="Requester Comment" TextAlign="TextAlign.Left"
                         Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.EngineerComment)" HeaderText="Engineer Comment" TextAlign="TextAlign.Left"
+                <GridColumn Visible="false" Field="@nameof(RequestViewModel.EngineerComment)" AllowFiltering="false" AllowSearching="false" HeaderText="Engineer Comment" TextAlign="TextAlign.Left"
                         Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
                 </GridColumn>
                 <GridColumn Visible="false" HeaderText="Bulk" Width="100" AllowFiltering="false">

@@ -167,11 +167,12 @@ public class Startup
             opts.Filters.Add<SerilogLoggingActionFilter>();
             opts.Filters.Add<SerilogLoggingPageFilter>();
         })
-        .AddOData(option => option.AddRouteComponents("odata", GetEdmModel()).Count().Filter().OrderBy().Expand().SetMaxTop(null).Select())
+        //.AddOData(option => option.AddRouteComponents("odata", GetEdmModel()).Count().Filter().OrderBy().Expand().SetMaxTop(null).Select())
         //.AddODataNewtonsoftJson()
             .AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             })
         .AddRazorRuntimeCompilation();
 
@@ -184,6 +185,7 @@ public class Startup
             .AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             })
             .AddRazorRuntimeCompilation()
             ;
@@ -197,55 +199,55 @@ public class Startup
         services.AddDatabaseDeveloperPageExceptionFilter();
     }
 
-    static IEdmModel GetEdmModel()
-    {
-        ODataConventionModelBuilder builder = new();
+    //static IEdmModel GetEdmModel()
+    //{
+    //    ODataConventionModelBuilder builder = new();
 
-        //ComplexTypeConfiguration<RequestApproverModel> approverType = builder.ComplexType<RequestApproverModel>();
-        //approverType.Property(p => p.Id);
-        //approverType.Property(p => p.IsApproved);
-        //approverType.Property(p => p.DateApproved);
-        //approverType.Property(p => p.Fullname);
-        //approverType.Property(p => p.ApproverComment);
+    //    //ComplexTypeConfiguration<RequestApproverModel> approverType = builder.ComplexType<RequestApproverModel>();
+    //    //approverType.Property(p => p.Id);
+    //    //approverType.Property(p => p.IsApproved);
+    //    //approverType.Property(p => p.DateApproved);
+    //    //approverType.Property(p => p.Fullname);
+    //    //approverType.Property(p => p.ApproverComment);
 
-        ComplexTypeConfiguration<VendorModel> vendorType = builder.ComplexType<VendorModel>();
-        vendorType.Property(p => p.Id);
-        vendorType.Property(p => p.Name);
-        vendorType.Property(p => p.IsActive);
-        vendorType.Property(p => p.DateCreated);
+    //    ComplexTypeConfiguration<VendorModel> vendorType = builder.ComplexType<VendorModel>();
+    //    vendorType.Property(p => p.Id);
+    //    vendorType.Property(p => p.Name);
+    //    vendorType.Property(p => p.IsActive);
+    //    vendorType.Property(p => p.DateCreated);
 
-        //ComplexTypeConfiguration<RequesterData> requesterType = builder.ComplexType<RequesterData>();
-        //requesterType.Property(p => p.Id);
-        //requesterType.Property(p => p.Name);
-        //requesterType.Property(p => p.Department);
-        //requesterType.Property(p => p.Email);
-        //requesterType.Property(p => p.Username);
-        //requesterType.Property(p => p.VendorId);
-        //requesterType.Property(p => p.Phone);
-        //requesterType.ComplexProperty(p => p.Vendor);
+    //    //ComplexTypeConfiguration<RequesterData> requesterType = builder.ComplexType<RequesterData>();
+    //    //requesterType.Property(p => p.Id);
+    //    //requesterType.Property(p => p.Name);
+    //    //requesterType.Property(p => p.Department);
+    //    //requesterType.Property(p => p.Email);
+    //    //requesterType.Property(p => p.Username);
+    //    //requesterType.Property(p => p.VendorId);
+    //    //requesterType.Property(p => p.Phone);
+    //    //requesterType.ComplexProperty(p => p.Vendor);
 
-        //EntityTypeConfiguration<RequestViewModel> acceptanceType = builder.EntityType<RequestViewModel>();
-        //acceptanceType.HasKey(p => p.Id);
-        //acceptanceType.ComplexProperty(p => p.EngineerAssigned);
-        //acceptanceType.ComplexProperty(p => p.Requester);
+    //    //EntityTypeConfiguration<RequestViewModel> acceptanceType = builder.EntityType<RequestViewModel>();
+    //    //acceptanceType.HasKey(p => p.Id);
+    //    //acceptanceType.ComplexProperty(p => p.EngineerAssigned);
+    //    //acceptanceType.ComplexProperty(p => p.Requester);
 
-        //builder.EntitySet<RequestApproverModel>("EngineerAssigned");
-        //builder.EntitySet<VendorModel>("Vendors");
-        //builder.EntitySet<RequesterData>("Requester");
-        builder.EntitySet<RequestViewModel>("Acceptance");
-        builder.EntitySet<SSCUpdatedCell>("SSCRequest");
+    //    //builder.EntitySet<RequestApproverModel>("EngineerAssigned");
+    //    //builder.EntitySet<VendorModel>("Vendors");
+    //    //builder.EntitySet<RequesterData>("Requester");
+    //    builder.EntitySet<RequestViewModel>("Acceptance");
+    //    builder.EntitySet<SSCUpdatedCell>("SSCRequest");
 
-        //BuildFunction(builder);
-        return builder.GetEdmModel();
-    }
+    //    //BuildFunction(builder);
+    //    return builder.GetEdmModel();
+    //}
 
-    static void BuildFunction(ODataConventionModelBuilder builder)
-    {
-        var function = builder.EntityType<RequestViewModel>().Collection.Function("GetAcceptances").Returns<IQueryable<RequestViewModel>>();
-        function.Parameter<string>("userName");
-        function.Parameter<string>("vendorName");
-        function.Parameter<bool>("showAllRegionReport");
-    }
+    //static void BuildFunction(ODataConventionModelBuilder builder)
+    //{
+    //    var function = builder.EntityType<RequestViewModel>().Collection.Function("GetAcceptances").Returns<IQueryable<RequestViewModel>>();
+    //    function.Parameter<string>("userName");
+    //    function.Parameter<string>("vendorName");
+    //    function.Parameter<bool>("showAllRegionReport");
+    //}
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)

@@ -1,5 +1,9 @@
-﻿namespace Project.V1.Web.Controllers;
+﻿using Microsoft.Extensions.Primitives;
 
+namespace Project.V1.Web.Controllers;
+
+[Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+[ApiController]
 public class AcceptanceController : Controller
 {
     private readonly IRequest _request;
@@ -12,17 +16,18 @@ public class AcceptanceController : Controller
     }
 
     [HttpGet]
-    [EnableQuery]
-    public async Task<IQueryable<RequestViewModel>> Get()
+    public async Task<object> Get()
     {
+        var queryString = Request.Query;
         var httpRequest = HttpContext.Request;
         var requestModel = new RequestViewModel();
 
         var Requests = Array.Empty<RequestViewModel>().AsQueryable();
 
-        var username = httpRequest.Headers["User"].ToString();
-        var isAuthenticated = Convert.ToBoolean(httpRequest.Headers["IsAuthenticated"]);
-        var claims = httpRequest.Headers["Claims"]!.ToString().Split(", ", StringSplitOptions.RemoveEmptyEntries);
+        var username = queryString.TryGetValue("User", out StringValues User) ? User[0] : null;
+        var isAuthenticated = queryString.TryGetValue("IsAuthenticated", out StringValues IsAuth) ? Convert.ToBoolean(IsAuth[0]) : false;
+        var claimStr = queryString.TryGetValue("Claims", out StringValues Claims) ? Claims[0] : String.Empty;
+        var claims = claimStr.Split(", ", StringSplitOptions.RemoveEmptyEntries);
 
         if (!isAuthenticated || !claims.Contains("Can:ViewReport"))
         {
@@ -49,6 +54,18 @@ public class AcceptanceController : Controller
             Requests = await _request.Get(x => x.Requester.VendorId == user.VendorId, x => x.OrderByDescending(y => y.DateCreated), requestModel.Navigations);
         }
 
-        return Requests.AsQueryable();
+        var count = Requests.Count();
+
+        if (queryString.Keys.Contains("$inlinecount"))
+        {
+            int skip = queryString.TryGetValue("$skip", out StringValues Skip) ? Convert.ToInt32(Skip[0]) : 0;
+            int top = queryString.TryGetValue("$top", out StringValues Take) ? Convert.ToInt32(Take[0]) : Requests.Count();
+
+            return new { Items = Requests.Skip(skip).Take(top), Count = count };
+        }
+        else
+        {
+            return Requests;
+        }
     }
 }

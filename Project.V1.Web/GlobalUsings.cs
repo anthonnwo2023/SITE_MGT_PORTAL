@@ -71,4 +71,5 @@ global using System.Threading.Tasks;
 global using Project.V1.DLL.Services;
 global using Syncfusion.Blazor.Data;
 global using System.Net.Http;
-global using Project.V1.Web.Requests;
+global using Radzen;
+global using Radzen.Blazor;

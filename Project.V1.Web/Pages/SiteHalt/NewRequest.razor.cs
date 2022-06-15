@@ -111,7 +111,7 @@ public partial class NewRequest : IDisposable
         return;
     }
 
-    private async Task<bool> OnFileUploadChange(UploadChangeEventArgs args, string type)
+    private async Task<bool> OnFileUploadChange(Syncfusion.Blazor.Inputs.UploadChangeEventArgs args, string type)
     {
         UploadFiles UploadFile = args.Files.FirstOrDefault();
 

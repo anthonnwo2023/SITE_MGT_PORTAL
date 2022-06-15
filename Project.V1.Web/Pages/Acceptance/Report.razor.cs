@@ -22,8 +22,7 @@ public partial class Report
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     protected SfGrid<RequestViewModel> Grid_Request { get; set; }
-    private Query QueryData = new Query().Sort("datecreated", "Descending")
-        .Expand(new List<string> { "engineerassigned", "requester" });
+    private Syncfusion.Blazor.Data.Query QueryData { get; set; }
     private Dictionary<string, string> HeaderData = new();
     protected SfGrid<RequestViewModel> Grid_RequestGroup { get; set; }
 
@@ -133,15 +132,22 @@ public partial class Report
                     return;
                 }
 
-                httpClient = HttpClientFactory.CreateClient("RequestClient");
-                httpClient.BaseAddress = new Uri(NavMan.BaseUri);
-                HeaderData.Add("User", Context.HttpContext.User.Identity.Name);
-                HeaderData.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
-                HeaderData.Add("Claims", string.Join(", ", Context.HttpContext.User.Claims.Select(x => x.Value)));
+                //httpClient = HttpClientFactory.CreateClient("RequestClient");
+                //httpClient.BaseAddress = new Uri(NavMan.BaseUri);
+                //HeaderData.Add("User", Context.HttpContext.User.Identity.Name);
+                //HeaderData.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
+                //HeaderData.Add("Claims", string.Join(", ", Context.HttpContext.User.Claims.Select(x => x.Value)));
                 //httpClient.DefaultRequestHeaders.Add("User", Context.HttpContext.User.Identity.Name);
                 //httpClient.DefaultRequestHeaders.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
                 //httpClient.DefaultRequestHeaders.Add("Claims", Context.HttpContext.User.Claims.Select(x => x.Value));
                 Principal = (await AuthenticationStateTask).User;
+
+                QueryData = new Syncfusion.Blazor.Data.Query().Sort("datecreated", "desc")
+                    .AddParams("User", Principal.Identity.Name)
+                    .AddParams("IsAuthenticated", Principal.Identity.IsAuthenticated)
+                    .AddParams("Claims", string.Join(", ", Context.HttpContext.User.Claims.Select(x => x.Value)))
+                    .Expand(new List<string> { "engineerassigned", "requester" });
+
                 //User = await IUser.GetUserByUsername(Principal.Identity.Name);
                 //Vendor = await IVendor.GetById(x => x.Id == User.VendorId);
 

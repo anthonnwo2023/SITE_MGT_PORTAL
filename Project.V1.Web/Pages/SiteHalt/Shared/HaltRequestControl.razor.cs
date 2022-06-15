@@ -16,7 +16,7 @@ public partial class HaltRequestControl
     [Parameter] public EventCallback<bool> OnCheckValidButton { get; set; }
     [Parameter] public EventCallback<ClearingEventArgs> OnClear { get; set; }
     [Parameter] public EventCallback<RemovingEventArgs> OnRemove { get; set; }
-    [Parameter] public EventCallback<UploadChangeEventArgs> OnFileSSVUploadChange { get; set; }
+    [Parameter] public EventCallback<Syncfusion.Blazor.Inputs.UploadChangeEventArgs> OnFileSSVUploadChange { get; set; }
     [Parameter] public List<RequestApproverModel> BaseFirstLevelApprovers { get; set; } = new();
     [Parameter] public List<RequestApproverModel> BaseSecondLevelApprovers { get; set; } = new();
     [Parameter] public List<RequestApproverModel> BaseThirdLevelApprovers { get; set; } = new();

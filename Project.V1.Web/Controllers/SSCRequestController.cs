@@ -1,5 +1,7 @@
 ﻿namespace Project.V1.Web.Controllers;
 
+[Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+[ApiController]
 public class SSCRequestController : Controller
 {
     private readonly ISSCRequestUpdate _request;
@@ -12,7 +14,6 @@ public class SSCRequestController : Controller
     }
 
     [HttpGet]
-    [EnableQuery]
     public async Task<IQueryable<SSCUpdatedCell>> Get()
     {
         var httpRequest = HttpContext.Request;

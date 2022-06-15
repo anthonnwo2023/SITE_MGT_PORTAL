@@ -148,7 +148,7 @@
             }
         }
 
-        private async Task OnFileUploadChange(UploadChangeEventArgs args, string type)
+        private async Task OnFileUploadChange(Syncfusion.Blazor.Inputs.UploadChangeEventArgs args, string type)
         {
             await Task.CompletedTask;
         }

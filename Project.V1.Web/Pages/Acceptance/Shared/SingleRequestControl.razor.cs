@@ -12,7 +12,7 @@
         [Parameter] public EventCallback<bool> OnCheckValidButton { get; set; }
         [Parameter] public EventCallback<ClearingEventArgs> OnClear { get; set; }
         [Parameter] public EventCallback<RemovingEventArgs> OnRemove { get; set; }
-        [Parameter] public EventCallback<UploadChangeEventArgs> OnFileSSVUploadChange { get; set; }
+        [Parameter] public EventCallback<Syncfusion.Blazor.Inputs.UploadChangeEventArgs> OnFileSSVUploadChange { get; set; }
 
 
         [Inject] public ICLogger Logger { get; set; }

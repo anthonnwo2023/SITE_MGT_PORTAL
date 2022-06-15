@@ -758,7 +758,7 @@
             return isValidUploads;
         }
 
-        private async Task<bool> OnFileUploadChange(UploadChangeEventArgs args, string type, int uploadIndex)
+        private async Task<bool> OnFileUploadChange(Syncfusion.Blazor.Inputs.UploadChangeEventArgs args, string type, int uploadIndex)
         {
             try
             {
@@ -870,7 +870,7 @@
             }
         }
 
-        private async Task<bool> OnFileSSVUploadChange(UploadChangeEventArgs args, string type)
+        private async Task<bool> OnFileSSVUploadChange(Syncfusion.Blazor.Inputs.UploadChangeEventArgs args, string type)
         {
             List<UploadFiles> UploadFiles = args.Files;
 
@@ -930,7 +930,7 @@
             return await Task.Run(() => true);
         }
 
-        private async Task<bool> OnFileSSVRRUUploadChange(UploadChangeEventArgs args, string type)
+        private async Task<bool> OnFileSSVRRUUploadChange(Syncfusion.Blazor.Inputs.UploadChangeEventArgs args, string type)
         {
             UploadFiles UploadFile = args.Files.First();
 
