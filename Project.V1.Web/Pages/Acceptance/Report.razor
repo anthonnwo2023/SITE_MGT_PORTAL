@@ -28,191 +28,194 @@
 
 @*@if (Requests == null)
 {
-    <PageLoading />
+<PageLoading />
 }
 else
 {*@
-    <div style="width:calc(100vw - 20rem); ">
-        <SfGrid ID="ReportTable" TValue="RequestViewModel" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Query="@QueryData"
+<span class="error">@ErrorDetails</span>
+<div style="width:calc(100vw - 20rem); ">
+    <SfGrid ID="ReportTable" TValue="RequestViewModelDTO" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Query="@QueryData"
             AllowFiltering="true" Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true" AllowExcelExport="true"
             Width="100%">
-            <SfDataManager Url="api/Acceptance" Adaptor="Adaptors.WebApiAdaptor"></SfDataManager>
-            <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModel"></GridEvents>
-            <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="300" Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
-            <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
-            <GridSearchSettings></GridSearchSettings>
-            <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
-            <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
-            <GridColumns>
-                <GridForeignColumn Field="@nameof(RequestViewModel.TechTypeId)" HeaderText="Tech" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.TechTypes" EditType="EditType.DropDownEdit"
+        <SfDataManager @ref="dm" Headers="HeaderData" HttpClientInstance="httpClient" Url="odata/Acceptance" Adaptor="Adaptors.ODataV4Adaptor"></SfDataManager>
+        <GridEvents ExportComplete="ExportCompleteHandler" OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModelDTO" OnActionFailure="@ActionFailure"></GridEvents>
+        <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="3000" Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+        <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
+        <GridSearchSettings></GridSearchSettings>
+        <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
+        <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
+        <GridColumns>
+            <GridColumn Field="@nameof(RequestViewModelDTO.TechType)" HeaderText="Tech"
                                Width="80" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.UniqueId)" HeaderText="Unique Id" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.UniqueId)" HeaderText="Unique Id" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.BulkBatchNumber)" HeaderText="Batch Number" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.BulkBatchNumber)" HeaderText="Batch Number" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@(nameof(RequestViewModel.Requester) + "." + nameof(RequesterData.Vendor) + "." + nameof(VendorModel.Name))" HeaderText="Vendor" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.VendorName)" HeaderText="Vendor" TextAlign="TextAlign.Left"
                         Width="150" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Field="@nameof(RequestViewModel.SiteId)" HeaderText="Site Id" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModelDTO.SiteId)" HeaderText="Site Id" TextAlign="TextAlign.Left"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.SiteName)" HeaderText="Site Name" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.SiteName)" HeaderText="Site Name" TextAlign="TextAlign.Left"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.RNCBSC)" HeaderText="RNC/BSC" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RNCBSC)" HeaderText="RNC/BSC" TextAlign="TextAlign.Left"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.RegionId)" HeaderText="Region" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.Regions" EditType="EditType.DropDownEdit"
-                               Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.SpectrumId)" HeaderText="Spectrum" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.Spectrums" EditType="EditType.DropDownEdit"
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModelDTO.Region)" HeaderText="Region" 
+                        Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModelDTO.Spectrum)" HeaderText="Spectrum"
                                Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.Bandwidth)" HeaderText="Bandwidth" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.Bandwidth)" HeaderText="Bandwidth" TextAlign="TextAlign.Left"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.Latitude)" HeaderText="Latitude" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.Latitude)" HeaderText="Latitude" TextAlign="TextAlign.Center"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.Longitude)" HeaderText="Longitude" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.Longitude)" HeaderText="Longitude" TextAlign="TextAlign.Center"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.AntennaMakeId)" HeaderText="Antenna Make" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.AntennaMakes" EditType="EditType.DropDownEdit"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.AntennaMake)" HeaderText="Antenna Make"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.AntennaTypeId)" HeaderText="Antenna Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.AntennaTypes" EditType="EditType.DropDownEdit"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.AntennaType)" HeaderText="Antenna Type"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.AntennaHeight)" HeaderText="Antenna Height" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.AntennaHeight)" HeaderText="Antenna Height" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.ETilt)" HeaderText="E Tilt" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.ETilt)" HeaderText="E Tilt" TextAlign="TextAlign.Left"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.Baseband)" HeaderText="Baseband"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.Baseband)" HeaderText="Baseband"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.RRUType)" HeaderText="RRU Type"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RRUType)" HeaderText="RRU Type"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.Power)" HeaderText="Power - (w)" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.Power)" HeaderText="Power - (w)" TextAlign="TextAlign.Left"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectNameId)" HeaderText="Project Name" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.Projects" EditType="EditType.DropDownEdit"
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModelDTO.ProjectName)" HeaderText="Project Name"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridForeignColumn Field="@nameof(RequestViewModel.ProjectTypeId)" HeaderText="Project Type" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.ProjectTypes" EditType="EditType.DropDownEdit"
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModelDTO.ProjectType)" HeaderText="Project Type"
                                Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridColumn Field="@nameof(RequestViewModel.ProjectYear)" HeaderText="Project Year" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModelDTO.ProjectYear)" HeaderText="Project Year" TextAlign="TextAlign.Center"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridForeignColumn Visible="false" Field="@nameof(RequestViewModel.SummerConfigId)" HeaderText="Summer Config" ForeignKeyField="Id" ForeignKeyValue="Name" ForeignDataSource="@IRequestList.SummerConfigs" EditType="EditType.DropDownEdit"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.SummerConfig)" HeaderText="Summer Config"
                                Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridForeignColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.SoftwareVersion)" HeaderText="Software Version" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.SoftwareVersion)" HeaderText="Software Version" TextAlign="TextAlign.Left"
                         Width="180" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.RRUPower)" HeaderText="RRU Power - (w)" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RRUPower)" HeaderText="RRU Power - (w)" TextAlign="TextAlign.Center"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.CSFBStatusGSM)" HeaderText="CSFB Status GSM" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.CSFBStatusGSM)" HeaderText="CSFB Status GSM" TextAlign="TextAlign.Center"
                         Width="190" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.CSFBStatusWCDMA)" HeaderText="CSFB Status WCDMA" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.CSFBStatusWCDMA)" HeaderText="CSFB Status WCDMA" TextAlign="TextAlign.Center"
                         Width="190" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.RETConfigured)" HeaderText="RET Configured" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RETConfigured)" HeaderText="RET Configured" TextAlign="TextAlign.Center"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.CarrierAggregation)" HeaderText="Carrier Aggregation" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.CarrierAggregation)" HeaderText="Carrier Aggregation" TextAlign="TextAlign.Center"
                         Width="190" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" AllowFiltering="false" AllowSearching="false" Field="@nameof(RequestViewModel.Engineer)" HeaderText="Engineer" TextAlign="TextAlign.Left"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.EngineerAssigned)" HeaderText="Engineer" TextAlign="TextAlign.Left"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                @*<GridColumn Field="@nameof(RequestViewModel.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left">
-                    </GridColumn>*@
-                <GridColumn Field="@nameof(RequestViewModel.Status)" HeaderText="Status" TextAlign="TextAlign.Left"
+            </GridColumn>
+            @*<GridColumn Field="@nameof(RequestViewModelDTO.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left">
+            </GridColumn>*@
+            <GridColumn Field="@nameof(RequestViewModelDTO.Status)" HeaderText="Status" TextAlign="TextAlign.Left"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.IntegratedDate)" HeaderText="Date Integrated" TextAlign="TextAlign.Center"
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.IntegratedDate)" HeaderText="Date Integrated" TextAlign="TextAlign.Center"
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
-                        Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.DateSubmitted)" HeaderText="Date Submitted" TextAlign="TextAlign.Center"
+                        Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.DateSubmitted)" HeaderText="Date Submitted" TextAlign="TextAlign.Center"
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
-                        Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
-                </GridColumn>
-                <GridColumn Field="@nameof(RequestViewModel.DateActioned)" AllowFiltering="false" AllowSearching="false" HeaderText="Date Actioned" TextAlign="TextAlign.Center"
+                        Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
+            </GridColumn>
+            <GridColumn Field="@nameof(RequestViewModelDTO.DateActioned)" HeaderText="Date Actioned" TextAlign="TextAlign.Center"
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
-                        Width="160" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@(nameof(RequestViewModel.Requester) + "." + nameof(RequesterData.Name))" HeaderText="Requester" TextAlign="TextAlign.Left"
-                        Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.RequesterComment)" HeaderText="Requester Comment" TextAlign="TextAlign.Left"
-                        Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
-                </GridColumn>
-                <GridColumn Visible="false" Field="@nameof(RequestViewModel.EngineerComment)" AllowFiltering="false" AllowSearching="false" HeaderText="Engineer Comment" TextAlign="TextAlign.Left"
-                        Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Excel })">
-                </GridColumn>
-                <GridColumn Visible="false" HeaderText="Bulk" Width="100" AllowFiltering="false">
-                    <Template>
-                        @{
-                        var request = (context as RequestViewModel);
+                        Width="160" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RequesterName)" HeaderText="Requester" TextAlign="TextAlign.Left"
+                        Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RequesterComment)" HeaderText="Requester Comment" TextAlign="TextAlign.Left"
+                        Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
+            </GridColumn>
+            <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.EngineerComment)" HeaderText="Engineer Comment" TextAlign="TextAlign.Left"
+                        Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
+            </GridColumn>
+            <GridColumn Visible="false" HeaderText="Bulk" Width="100" AllowFiltering="false">
+                <Template>
+                    @{
+                    var request = (context as RequestViewModelDTO);
 
-                        if (request.BulkuploadPath != null)
-                        {
-                            <a title="Uploaded Bulk" target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
-                        }
+                    if (request.BulkuploadPath != null)
+                    {
+                    <a title="Uploaded Bulk" target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
+                    }
                     }
                 </Template>
             </GridColumn>
             <GridColumn Visible="false" HeaderText="SSV" Width="80" AllowFiltering="false">
                 <Template>
                     @{
-                        var request = (context as RequestViewModel);
+                    var request = (context as RequestViewModelDTO);
 
-                        if (request.SSVReport != null)
-                        {
-                            var ext = Path.GetExtension(request.SSVReport);
-                            var title = ext switch
-                            {
-                                ".xls" or ".xlsx" or ".ppt" or ".pptx" => "SSV Report",
-                                ".eml" or ".msg" => "Waiver Email",
-                                _ => ""
-                            };
+                    if (request.SSVReport != null)
+                    {
+                    var ext = Path.GetExtension(request.SSVReport);
+                    var title = ext switch
+                    {
+                    ".xls" or ".xlsx" or ".ppt" or ".pptx" => "SSV Report",
+                    ".eml" or ".msg" => "Waiver Email",
+                    _ => ""
+                    };
 
-                            var ppts = new List<string> { ".ppt", ".pptx" };
+                    var ppts = new List
+                    <string>
+                        { ".ppt", ".pptx" };
 
-                            var ssvExt = Path.GetExtension(request.SSVReport);
-                            var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
+                        var ssvExt = Path.GetExtension(request.SSVReport);
+                        var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
 
-                            <a target="_blank" href="Documents/@((request.SSVReportIsWaiver) ? "Waiver" : "SSV")/@request.SSVReport" class="btn btn-warning">
-                                <i class="fas fa-fw @((request.SSVReportIsWaiver) ? "fa-envelope": icon)"></i>
-                            </a>
+                        <a target="_blank" href="Documents/@((request.SSVReportIsWaiver) ? " Waiver" : "SSV" ) /@request.SSVReport" class="btn btn-warning">
+                            <i class="fas fa-fw @((request.SSVReportIsWaiver) ? " fa-envelope": icon)"></i>
+                        </a>
                         }
-                    }
+                        }
                 </Template>
             </GridColumn>
             <GridColumn HeaderText="" Width="80" AllowFiltering="false">
                 <Template>
                     @{
-                        var request = (context as RequestViewModel);
+                    var request = (context as RequestViewModelDTO);
 
-                        <a title="View Details" href="acceptance/report/@request.Id" class="btn btn-warning"><i class="fas fa-eye fa-fw"></i></a>
+                    <a title="View Details" href="acceptance/report/@request.Id" class="btn btn-warning"><i class="fas fa-eye fa-fw"></i></a>
                     }
                 </Template>
             </GridColumn>
         </GridColumns>
     </SfGrid>
 </div>
-    <div class="my-4"></div>
+<div class="my-4"></div>
 @*}*@

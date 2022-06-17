@@ -1,43 +1,42 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using System;
 
 namespace Project.V1.Web.Controllers;
 
-[Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
-[ApiController]
 public class AcceptanceController : Controller
 {
     private readonly IRequest _request;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IVendor _vendor;
+    private readonly IMapper _mapper;
 
-    public AcceptanceController(IRequest request, UserManager<ApplicationUser> userManager, IVendor vendor)
+    public AcceptanceController(IRequest request, UserManager<ApplicationUser> userManager, IVendor vendor, IMapper mapper)
     {
-        (_request, _userManager, _vendor) = (request, userManager, vendor);
+        (_request, _userManager, _vendor, _mapper) = (request, userManager, vendor, mapper);
     }
 
     [HttpGet]
-    public async Task<object> Get()
+    public async Task<IQueryable<RequestViewModelDTO>> Get(ODataQueryOptions<RequestViewModelDTO> options)
     {
-        var queryString = Request.Query;
         var httpRequest = HttpContext.Request;
         var requestModel = new RequestViewModel();
 
         var Requests = Array.Empty<RequestViewModel>().AsQueryable();
 
-        var username = queryString.TryGetValue("User", out StringValues User) ? User[0] : null;
-        var isAuthenticated = queryString.TryGetValue("IsAuthenticated", out StringValues IsAuth) ? Convert.ToBoolean(IsAuth[0]) : false;
-        var claimStr = queryString.TryGetValue("Claims", out StringValues Claims) ? Claims[0] : String.Empty;
-        var claims = claimStr.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+        var username = httpRequest.Headers["User"].ToString();
+        var isAuthenticated = Convert.ToBoolean(httpRequest.Headers["IsAuthenticated"]);
+        var claims = httpRequest.Headers["Claims"]!.ToString().Split(", ", StringSplitOptions.RemoveEmptyEntries);
 
         if (!isAuthenticated || !claims.Contains("Can:ViewReport"))
         {
-            return Requests;
+            return Array.Empty<RequestViewModelDTO>().AsQueryable();
         }
 
         var user = await _userManager.FindByNameAsync(username);
 
         if (user == null)
-            return Requests;
+            return Array.Empty<RequestViewModelDTO>().AsQueryable();
 
         var vendor = await _vendor.GetById(x => x.Id == user.VendorId);
 
@@ -54,18 +53,39 @@ public class AcceptanceController : Controller
             Requests = await _request.Get(x => x.Requester.VendorId == user.VendorId, x => x.OrderByDescending(y => y.DateCreated), requestModel.Navigations);
         }
 
-        var count = Requests.Count();
+        var requestDTO = Requests.ProjectTo<RequestViewModelDTO>(_mapper.ConfigurationProvider);
+        var count = requestDTO.Count();
 
-        if (queryString.Keys.Contains("$inlinecount"))
+        if (options.Filter != null)
         {
-            int skip = queryString.TryGetValue("$skip", out StringValues Skip) ? Convert.ToInt32(Skip[0]) : 0;
-            int top = queryString.TryGetValue("$top", out StringValues Take) ? Convert.ToInt32(Take[0]) : Requests.Count();
+            requestDTO = options.Filter.ApplyTo(requestDTO, new ODataQuerySettings()).Cast<RequestViewModelDTO>();
+        }
 
-            return new { Items = Requests.Skip(skip).Take(top), Count = count };
-        }
-        else
+        var odataOptions = options.ApplyTo(requestDTO);
+
+        var countOpt = odataOptions.Count();
+        var odtOptParma = odataOptions.Parameter();
+        var odtOptQS = odataOptions.ToQueryString();
+
+        ((IQueryable<RequestViewModelDTO>)odataOptions).ToList().ForEach(x =>
         {
-            return Requests;
+            x.DateActioned = GetDateActioned(x);
+        });
+
+        return (IQueryable<RequestViewModelDTO>)odataOptions;
+    }
+
+    private DateTime? GetDateActioned(RequestViewModelDTO request)
+    {
+        if (request.Status != "Accepted" && request.Status != "Rejected")
+        {
+            return request.DateUserActioned.GetValueOrDefault();
         }
+        if (request.EngineerAssigned != null)
+        {
+            return (request.EngineerAssignedIsApproved) ? request.EngineerAssignedDateApproved : request.EngineerAssignedDateActioned;
+        }
+
+        return null;
     }
 }

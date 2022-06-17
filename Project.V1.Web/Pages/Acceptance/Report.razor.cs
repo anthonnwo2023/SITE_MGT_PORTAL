@@ -1,6 +1,6 @@
 ﻿namespace Project.V1.Web.Pages.Acceptance;
 
-public partial class Report
+public partial class Report : ComponentBase
 {
     public List<PathInfo> Paths { get; set; }
     [Inject] protected IUserAuthentication UserAuth { get; set; }
@@ -19,14 +19,16 @@ public partial class Report
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
     public VendorModel Vendor { get; set; }
+    public string ErrorDetails = "";
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    protected SfGrid<RequestViewModel> Grid_Request { get; set; }
+    protected SfGrid<RequestViewModelDTO> Grid_Request { get; set; }
     private Syncfusion.Blazor.Data.Query QueryData { get; set; }
     private Dictionary<string, string> HeaderData = new();
-    protected SfGrid<RequestViewModel> Grid_RequestGroup { get; set; }
+    protected SfGrid<RequestViewModelDTO> Grid_RequestGroup { get; set; }
 
     public List<string> ToolbarItems = new() { "Search", "ExcelExport", "ColumnChooser" };
+    public SfDataManager dm { get; set; }
 
     protected override void OnInitialized()
     {
@@ -35,6 +37,14 @@ public partial class Report
             new PathInfo { Name = $"Report", Link = "acceptance/reports/general" },
             new PathInfo { Name = $"Acceptance", Link = "acceptance" },
         };
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        RemoteOptions Rm = (dm.DataAdaptor as ODataV4Adaptor).Options;
+        Rm.EnableODataSearchFallback = true;
+        (dm.DataAdaptor as ODataV4Adaptor).Options = Rm;
     }
 
     public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
@@ -81,6 +91,7 @@ public partial class Report
             ExportProperties.FileName = $"General_Report{DateTimeOffset.UtcNow:ddMMyyyy.Hmmss}.xlsx";
             ExportProperties.IncludeHiddenColumn = false;
 
+            await Grid_Request.ShowSpinnerAsync();
             await Grid_Request.ExcelExport(ExportProperties);
             //await Grid_Request.HideColumnsAsync(hiddenCols);
         }
@@ -115,11 +126,23 @@ public partial class Report
             //};
 
             //await Grid_RequestGroup.ShowColumnsAsync(hiddenCols);
+            await Grid_RequestGroup.ShowSpinnerAsync();
             await Grid_RequestGroup.ExcelExport();
             //await Grid_RequestGroup.HideColumnsAsync(hiddenCols);
         }
     }
 
+    public async void ExportCompleteHandler(object args)
+    {
+        await Grid_Request.HideSpinnerAsync();
+        //await Grid_RequestGroup.HideSpinnerAsync();
+    }
+
+    public void ActionFailure(Syncfusion.Blazor.Grids.FailureEventArgs args)
+    {
+        this.ErrorDetails = $"Server Error Occured. {args.Error.Message} - {args.Error.InnerException} - {args.Error.StackTrace}";
+        StateHasChanged();
+    }
     protected async Task AuthenticationCheck(bool isAuthenticated)
     {
         if (isAuthenticated)
@@ -133,37 +156,15 @@ public partial class Report
                 }
 
                 //httpClient = HttpClientFactory.CreateClient("RequestClient");
-                //httpClient.BaseAddress = new Uri(NavMan.BaseUri);
-                //HeaderData.Add("User", Context.HttpContext.User.Identity.Name);
-                //HeaderData.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
-                //HeaderData.Add("Claims", string.Join(", ", Context.HttpContext.User.Claims.Select(x => x.Value)));
-                //httpClient.DefaultRequestHeaders.Add("User", Context.HttpContext.User.Identity.Name);
-                //httpClient.DefaultRequestHeaders.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
-                //httpClient.DefaultRequestHeaders.Add("Claims", Context.HttpContext.User.Claims.Select(x => x.Value));
+                httpClient.BaseAddress = new Uri(NavMan.BaseUri);
+                HeaderData.Add("User", Context.HttpContext.User.Identity.Name);
+                HeaderData.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
+                HeaderData.Add("Claims", string.Join(", ", Context.HttpContext.User.Claims.Select(x => x.Value)));
+                
                 Principal = (await AuthenticationStateTask).User;
 
-                QueryData = new Syncfusion.Blazor.Data.Query().Sort("datecreated", "desc")
-                    .AddParams("User", Principal.Identity.Name)
-                    .AddParams("IsAuthenticated", Principal.Identity.IsAuthenticated)
-                    .AddParams("Claims", string.Join(", ", Context.HttpContext.User.Claims.Select(x => x.Value)))
-                    .Expand(new List<string> { "engineerassigned", "requester" });
-
-                //User = await IUser.GetUserByUsername(Principal.Identity.Name);
-                //Vendor = await IVendor.GetById(x => x.Id == User.VendorId);
-
-                //if (User.ShowAllRegionReport)
-                //{
-                //    Requests = (await IRequest.Get(x => x.Id != null, x => x.OrderByDescending(y => y.DateCreated), "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType")).ToList();
-                //}
-                //else if (Vendor.Name == "MTN Nigeria" || (await UserManager.IsInRoleAsync(User, "User")))
-                //{
-                //    Requests = (await IRequest.Get(x => User.Regions.Select(x => x.Id).Contains(x.RegionId), x => x.OrderByDescending(y => y.DateCreated), "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType")).ToList();
-                //}
-                //else
-                //{
-                //    Requests = (await IRequest.Get(x => x.Requester.VendorId == User.VendorId, x => x.OrderByDescending(y => y.DateCreated), "EngineerAssigned,Requester.Vendor,AntennaMake,AntennaType")).ToList();
-                //}
-
+                QueryData = new Syncfusion.Blazor.Data.Query().Sort("datecreated desc", "");
+                
                 await IRequestList.Initialize(Principal, "SMPObject");
             }
             catch (Exception ex)

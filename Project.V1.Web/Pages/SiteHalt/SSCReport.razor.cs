@@ -25,7 +25,6 @@ public partial class SSCReport : IDisposable
 
     [Inject] public HttpClient HttpClient { get; set; }
     protected SfGrid<SSCUpdatedCell> Grid_SSRequest { get; set; }
-    private Syncfusion.Blazor.Data.Query QueryData = new Syncfusion.Blazor.Data.Query().Sort("datecreated desc", "desc");
     private Dictionary<string, string> HeaderData = new();
     public bool UserIsAdmin { get; set; }
     protected bool[] CompleteButtons { get; set; }
@@ -56,7 +55,7 @@ public partial class SSCReport : IDisposable
                     NavMan.NavigateTo("access-denied");
                 }
 
-                HttpClient = HttpClientFactory.CreateClient("RequestClient");
+                //HttpClient = HttpClientFactory.CreateClient("RequestClient");
                 HttpClient.BaseAddress = new Uri(NavMan.BaseUri);
                 HeaderData.Add("User", Context.HttpContext.User.Identity.Name);
                 HeaderData.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
