@@ -50,7 +50,7 @@ namespace Project.V1.Lib.Services
             {
                 foreach (var item in items)
                 {
-                    if (!_context.Requests.Any(x => x.SiteId == item.SiteId && x.SpectrumId == item.SpectrumId))
+                    if (!_context.Requests.Any(x => x.SiteId == item.SiteId && x.SpectrumId == item.SpectrumId && x.ProjectTypeId == item.ProjectTypeId))
                         valid.Add(item);
                     else
                         invalid.Add(item);

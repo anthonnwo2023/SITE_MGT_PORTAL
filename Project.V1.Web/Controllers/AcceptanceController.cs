@@ -17,7 +17,7 @@ public class AcceptanceController : Controller
     }
 
     [HttpGet]
-    public async Task<IQueryable<RequestViewModelDTO>> Get(ODataQueryOptions<RequestViewModelDTO> options)
+    public async Task<object> Get(ODataQueryOptions<RequestViewModelDTO> options)
     {
         var httpRequest = HttpContext.Request;
         var requestModel = new RequestViewModel();
@@ -54,7 +54,15 @@ public class AcceptanceController : Controller
         }
 
         var requestDTO = Requests.ProjectTo<RequestViewModelDTO>(_mapper.ConfigurationProvider);
-        var count = requestDTO.Count();
+
+        //Func<RequestViewModelDTO, RequestViewModelDTO> ManipulateDate = (requestDTOModel) =>
+        //{
+        //    requestDTOModel.DateActioned = GetDateActioned(requestDTOModel);
+
+        //    return requestDTOModel;
+        //};
+
+        //var requestDTODateAction = requestDTO.Select(x => ManipulateDate(x));
 
         if (options.Filter != null)
         {
@@ -63,27 +71,25 @@ public class AcceptanceController : Controller
 
         var odataOptions = options.ApplyTo(requestDTO);
 
-        var countOpt = odataOptions.Count();
-        var odtOptParma = odataOptions.Parameter();
-        var odtOptQS = odataOptions.ToQueryString();
+        //var countOpt = odataOptions.Count();
+        //var odtOptParma = odataOptions.Parameter();
+        //var odtOptQS = odataOptions.ToQueryString();
 
-        ((IQueryable<RequestViewModelDTO>)odataOptions).ToList().ForEach(x =>
-        {
-            x.DateActioned = GetDateActioned(x);
-        });
+        //var data = ((IQueryable<RequestViewModelDTO>)odataOptions).ToList()
+        //    .Select(x => { x.DateActioned = GetDateActioned(x); return x; } ).ToList();
 
-        return (IQueryable<RequestViewModelDTO>)odataOptions;
+        return odataOptions;
     }
 
     private DateTime? GetDateActioned(RequestViewModelDTO request)
     {
         if (request.Status != "Accepted" && request.Status != "Rejected")
         {
-            return request.DateUserActioned.GetValueOrDefault();
+            return request.DateUserActioned != null ? request.DateUserActioned.GetValueOrDefault()!.Date : request.DateSubmitted.Date;
         }
         if (request.EngineerAssigned != null)
         {
-            return (request.EngineerAssignedIsApproved) ? request.EngineerAssignedDateApproved : request.EngineerAssignedDateActioned;
+            return (request.EngineerAssignedIsApproved) ? request.EngineerAssignedDateApproved.Date : request.EngineerAssignedDateActioned.Date;
         }
 
         return null;

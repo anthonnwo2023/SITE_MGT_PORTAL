@@ -41,6 +41,11 @@ public partial class Report : ComponentBase
 
     protected override void OnAfterRender(bool firstRender)
     {
+        if (firstRender)
+        {
+            dm.DataAdaptor = new ODataClassHelper(dm);
+        }
+
         base.OnAfterRender(firstRender);
         RemoteOptions Rm = (dm.DataAdaptor as ODataV4Adaptor).Options;
         Rm.EnableODataSearchFallback = true;

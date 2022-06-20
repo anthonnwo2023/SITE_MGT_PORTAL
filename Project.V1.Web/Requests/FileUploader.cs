@@ -121,9 +121,7 @@
 
                     if (error.ErrorType.Length == 0)
                     {
-                        var (errorRequest, validRequests) = await GetRequestsFromDataTable(dt, error);
-                        List<RequestViewModel> requests = validRequests;
-                        return (errorRequest, requests);
+                        return await GetRequestsFromDataTable(dt, error);
                     }
 
                     Logger.LogError($"{error.ErrorDesc} : {error.ErrorType}", new { Created = error.CreatedBy, error.DateCreated });

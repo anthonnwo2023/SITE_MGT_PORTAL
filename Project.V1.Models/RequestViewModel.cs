@@ -177,23 +177,6 @@ public class RequestViewModel : IDisposable
     [ExcelColumnName("Carrier Aggregation")]
     public string CarrierAggregation { get; set; }
 
-    public DateTime? DateActioned
-    {
-        get
-        {
-            if (Status != "Accepted" && Status != "Rejected")
-            {
-                return DateUserActioned.GetValueOrDefault();
-            }
-            if (EngineerAssigned != null)
-            {
-                return (EngineerAssigned.IsApproved) ? EngineerAssigned.DateApproved : EngineerAssigned.DateActioned;
-            }
-
-            return null;
-        }
-    }
-
     public string Navigations
     {
         get

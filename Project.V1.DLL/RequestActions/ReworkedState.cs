@@ -55,13 +55,13 @@ namespace Project.V1.DLL.RequestActions
 
         private static async Task<SendEmailActionObj> GenerateMailBody(string mailType, T request, ApplicationUser user, string application, IEnumerable<SenderBody> regionEngineers)
         {
-            var vendorMailList = (user.VendorId != null) ? (await LoginObject.Vendor.GetById(x => x.Id == user.VendorId))?.MailList : null;
+            var vendorMailList = (user.VendorId != null) ? (await LoginObject.Vendor.Get()).FirstOrDefault(x => x.Id == user.VendorId)?.MailList : null;
 
             Dictionary<string, Func<SendEmailActionObj>> processMailBody = new()
             {
                 ["Requester"] = () =>
                 {
-                    return new SendEmailActionObj
+                    var emailObj = new SendEmailActionObj
                     {
                         Name = "Hello " + request.Requester.Name,
                         Title = "Update Notification on Request - See Below Request Details",
@@ -78,6 +78,9 @@ namespace Project.V1.DLL.RequestActions
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         }
                     };
+                    emailObj.CC.AddRange(HelperFunctions.ConvertMailStringToList(vendorMailList));
+
+                    return emailObj;
                 },
 
                 ["RF Team"] = () =>

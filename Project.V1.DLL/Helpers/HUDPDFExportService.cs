@@ -155,7 +155,7 @@ public class HUDPDFExportService
 
     private string GenerateApproverHtmlString(RequestApproverModel approver, string title)
     {
-        var date = approver.DateActioned.ToShortDateString();
+        var date = approver.DateActioned.Date.ToShortDateString();
 
         var approverHtml = $"<font color='#003366'><b>{title} </b></font>";
         approverHtml += $"<br/><br/><b>Name: </b>{approver.Fullname}";

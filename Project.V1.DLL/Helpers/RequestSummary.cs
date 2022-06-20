@@ -16,8 +16,8 @@ namespace Project.V1.DLL.Helpers
         public int LTEPhyCount { get; set; }
         public string ProjectType { get; set; }
         public string ProjectTypeName { get; set; }
-        public DateTime DateSubmitted { get; set; }
-        public DateTime? DateAccepted { get; set; }
+        public DateTimeOffset DateSubmitted { get; set; }
+        public DateTimeOffset? DateAccepted { get; set; }
         public string EngineerComment { get; set; }
         public string Status { get; set; }
     }

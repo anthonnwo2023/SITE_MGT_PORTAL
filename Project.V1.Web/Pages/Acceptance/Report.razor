@@ -27,11 +27,11 @@
 </style>
 
 @*@if (Requests == null)
-{
-<PageLoading />
-}
-else
-{*@
+    {
+    <PageLoading />
+    }
+    else
+    {*@
 <span class="error">@ErrorDetails</span>
 <div style="width:calc(100vw - 20rem); ">
     <SfGrid ID="ReportTable" TValue="RequestViewModelDTO" AllowPaging="true" AllowSorting="true" AllowTextWrap="true" Query="@QueryData"
@@ -46,7 +46,7 @@ else
         <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
         <GridColumns>
             <GridColumn Field="@nameof(RequestViewModelDTO.TechType)" HeaderText="Tech"
-                               Width="80" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                        Width="80" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.UniqueId)" HeaderText="Unique Id" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
@@ -66,11 +66,11 @@ else
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RNCBSC)" HeaderText="RNC/BSC" TextAlign="TextAlign.Left"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
-            <GridColumn Field="@nameof(RequestViewModelDTO.Region)" HeaderText="Region" 
+            <GridColumn Field="@nameof(RequestViewModelDTO.Region)" HeaderText="Region"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModelDTO.Spectrum)" HeaderText="Spectrum"
-                               Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                        Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.Bandwidth)" HeaderText="Bandwidth" TextAlign="TextAlign.Left"
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
@@ -82,10 +82,10 @@ else
                         Width="140" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.AntennaMake)" HeaderText="Antenna Make"
-                               Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                        Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.AntennaType)" HeaderText="Antenna Type"
-                               Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                        Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.AntennaHeight)" HeaderText="Antenna Height" TextAlign="TextAlign.Left"
                         Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
@@ -106,16 +106,16 @@ else
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModelDTO.ProjectName)" HeaderText="Project Name"
-                               Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                        Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModelDTO.ProjectType)" HeaderText="Project Type"
-                               Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                        Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Field="@nameof(RequestViewModelDTO.ProjectYear)" HeaderText="Project Year" TextAlign="TextAlign.Center"
                         Width="160" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.SummerConfig)" HeaderText="Summer Config"
-                               Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
+                        Width="170" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.SoftwareVersion)" HeaderText="Software Version" TextAlign="TextAlign.Left"
                         Width="180" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
@@ -139,7 +139,7 @@ else
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             @*<GridColumn Field="@nameof(RequestViewModelDTO.MTilt)" HeaderText="M Tilt" TextAlign="TextAlign.Left">
-            </GridColumn>*@
+                </GridColumn>*@
             <GridColumn Field="@nameof(RequestViewModelDTO.Status)" HeaderText="Status" TextAlign="TextAlign.Left"
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
@@ -151,9 +151,25 @@ else
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                         Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
             </GridColumn>
-            <GridColumn Field="@nameof(RequestViewModelDTO.DateActioned)" HeaderText="Date Actioned" TextAlign="TextAlign.Center"
+            <GridColumn HeaderText="Date Actioned" TextAlign="TextAlign.Center"
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                         Width="160" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
+                <Template>
+                    @{
+                        var request = (context as RequestViewModelDTO);
+
+                        if (request.Status != "Accepted" && request.Status != "Rejected")
+                        {
+                            var data = request.DateUserActioned != null ? @request.DateUserActioned.GetValueOrDefault()!.Date.ToShortDateString() : @request.DateSubmitted.Date.ToShortDateString();
+                            <span>@data</span>
+                        }
+                        else
+                        {
+                            var data = request.EngineerAssignedIsApproved ? @request.EngineerAssignedDateApproved.Date.ToShortDateString() : @request.EngineerAssignedDateActioned.Date.ToShortDateString();
+                            <span>@data</span>
+                        }
+                    }
+                </Template>
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RequesterName)" HeaderText="Requester" TextAlign="TextAlign.Left"
                         Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
@@ -167,50 +183,50 @@ else
             <GridColumn Visible="false" HeaderText="Bulk" Width="100" AllowFiltering="false">
                 <Template>
                     @{
-                    var request = (context as RequestViewModelDTO);
+                        var request = (context as RequestViewModelDTO);
 
-                    if (request.BulkuploadPath != null)
-                    {
-                    <a title="Uploaded Bulk" target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
-                    }
+                        if (request.BulkuploadPath != null)
+                        {
+                            <a title="Uploaded Bulk" target="_blank" href="Documents/Bulk/@request.BulkuploadPath" class="btn btn-warning"><i class="fas fa-file-download"></i></a>
+                        }
                     }
                 </Template>
             </GridColumn>
             <GridColumn Visible="false" HeaderText="SSV" Width="80" AllowFiltering="false">
                 <Template>
                     @{
-                    var request = (context as RequestViewModelDTO);
+                        var request = (context as RequestViewModelDTO);
 
-                    if (request.SSVReport != null)
-                    {
-                    var ext = Path.GetExtension(request.SSVReport);
-                    var title = ext switch
-                    {
-                    ".xls" or ".xlsx" or ".ppt" or ".pptx" => "SSV Report",
-                    ".eml" or ".msg" => "Waiver Email",
-                    _ => ""
-                    };
+                        if (request.SSVReport != null)
+                        {
+                            var ext = Path.GetExtension(request.SSVReport);
+                            var title = ext switch
+                            {
+                                ".xls" or ".xlsx" or ".ppt" or ".pptx" => "SSV Report",
+                                ".eml" or ".msg" => "Waiver Email",
+                                _ => ""
+                            };
 
-                    var ppts = new List
-                    <string>
-                        { ".ppt", ".pptx" };
+                            var ppts = new List
+                            <string>
+                    { ".ppt", ".pptx" };
 
-                        var ssvExt = Path.GetExtension(request.SSVReport);
-                        var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
+                            var ssvExt = Path.GetExtension(request.SSVReport);
+                            var icon = (ppts.Contains(ssvExt)) ? "fa-file-powerpoint" : "fa-file-excel";
 
-                        <a target="_blank" href="Documents/@((request.SSVReportIsWaiver) ? " Waiver" : "SSV" ) /@request.SSVReport" class="btn btn-warning">
-                            <i class="fas fa-fw @((request.SSVReportIsWaiver) ? " fa-envelope": icon)"></i>
-                        </a>
+                            <a target="_blank" href="Documents/@((request.SSVReportIsWaiver) ? " Waiver" : "SSV" ) /@request.SSVReport" class="btn btn-warning">
+                                <i class="fas fa-fw @((request.SSVReportIsWaiver) ? " fa-envelope": icon)"></i>
+                            </a>
                         }
-                        }
+                    }
                 </Template>
             </GridColumn>
             <GridColumn HeaderText="" Width="80" AllowFiltering="false">
                 <Template>
                     @{
-                    var request = (context as RequestViewModelDTO);
+                        var request = (context as RequestViewModelDTO);
 
-                    <a title="View Details" href="acceptance/report/@request.Id" class="btn btn-warning"><i class="fas fa-eye fa-fw"></i></a>
+                        <a title="View Details" href="acceptance/report/@request.Id" class="btn btn-warning"><i class="fas fa-eye fa-fw"></i></a>
                     }
                 </Template>
             </GridColumn>
