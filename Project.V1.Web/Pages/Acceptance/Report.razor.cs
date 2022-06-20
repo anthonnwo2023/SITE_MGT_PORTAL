@@ -160,7 +160,7 @@ public partial class Report : ComponentBase
                     return;
                 }
 
-                //httpClient = HttpClientFactory.CreateClient("RequestClient");
+                httpClient = HttpClientFactory.CreateClient("RequestClient");
                 httpClient.BaseAddress = new Uri(NavMan.BaseUri);
                 HeaderData.Add("User", Context.HttpContext.User.Identity.Name);
                 HeaderData.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
