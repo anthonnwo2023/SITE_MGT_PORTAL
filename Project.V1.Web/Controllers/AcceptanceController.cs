@@ -85,7 +85,7 @@ public class AcceptanceController : Controller
     {
         if (request.Status != "Accepted" && request.Status != "Rejected")
         {
-            return request.DateUserActioned != null ? request.DateUserActioned.GetValueOrDefault()!.Date : request.DateSubmitted.Date;
+            return request.DateUserActioned != null ? request.DateUserActioned.GetValueOrDefault()!.Date : Convert.ToDateTime(request.DateSubmitted);
         }
         if (request.EngineerAssigned != null)
         {

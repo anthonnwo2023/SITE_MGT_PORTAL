@@ -38,8 +38,8 @@
             AllowFiltering="true" Toolbar="@ToolbarItems" @ref="Grid_Request" ShowColumnChooser="true" AllowExcelExport="true"
             Width="100%">
         <SfDataManager @ref="dm" Headers="HeaderData" HttpClientInstance="httpClient" Url="odata/Acceptance" Adaptor="Adaptors.ODataV4Adaptor"></SfDataManager>
-        <GridEvents  ExcelQueryCellInfoEvent="ExcelQueryCellInfoHandler" ExportComplete="ExportCompleteHandler" OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModelDTO" OnActionFailure="@ActionFailure"></GridEvents>
-        <GridFilterSettings Mode="FilterBarMode.Immediate" ImmediateModeDelay="3000" Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+        <GridEvents ExcelQueryCellInfoEvent="ExcelQueryCellInfoHandler" ExportComplete="ExportCompleteHandler" OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModelDTO" OnActionFailure="@ActionFailure"></GridEvents>
+        <GridFilterSettings ShowFilterBarStatus="true" Mode="FilterBarMode.Immediate" ImmediateModeDelay="3000" Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
         <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
         <GridSearchSettings></GridSearchSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
@@ -157,19 +157,19 @@
                 <Template>
                     @{
                         var request = (context as RequestViewModelDTO);
-                        var data = string.Empty;
+                        DateTime data;
 
                         if (request.Status != "Accepted" && request.Status != "Rejected")
                         {
-                            data = request.DateUserActioned != null ? @request.DateUserActioned.GetValueOrDefault()!.Date.ToShortDateString() : @request.DateSubmitted.Date.ToShortDateString();
+                            data = request.DateUserActioned != null ? @request.DateUserActioned.GetValueOrDefault()!.Date : @request.DateSubmitted;
                         }
                         else
                         {
-                            data = request.EngineerAssignedIsApproved ? @request.EngineerAssignedDateApproved.Date.ToShortDateString() : @request.EngineerAssignedDateActioned.Date.ToShortDateString();   
+                            data = request.EngineerAssignedIsApproved ? @request.EngineerAssignedDateApproved.Date : @request.EngineerAssignedDateActioned.Date;   
                         }
                     }
 
-                    <span>@data</span>
+                    <span>@data!.ToString("dd-MMM-yyyy")</span>
                 </Template>
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RequesterName)" HeaderText="Requester" TextAlign="TextAlign.Left"

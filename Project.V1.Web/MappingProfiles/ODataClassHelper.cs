@@ -7,6 +7,16 @@ public class ODataClassHelper : ODataV4Adaptor
 
     }
 
+    public override void BeforeSend(HttpRequestMessage request)
+    {
+        base.BeforeSend(request);   
+    }
+
+    public override string OnPredicate(WhereFilter filter, DataManagerRequest query, bool requiresCast = false)
+    {
+        return base.OnPredicate(filter, query, requiresCast);
+    }
+
     public override object ProcessQuery(DataManagerRequest queries)
     {
         if (queries.Where != null && queries.Where[0].predicates != null)

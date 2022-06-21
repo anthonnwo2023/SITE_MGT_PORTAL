@@ -143,18 +143,18 @@ public partial class Report : ComponentBase
         if (args.Column.HeaderText == "Date Actioned")
         {
             var request = args.Data;
-            var data = string.Empty;
+            DateTime data;
 
             if (request.Status != "Accepted" && request.Status != "Rejected")
             {
-                data = request.DateUserActioned != null ? request.DateUserActioned.GetValueOrDefault()!.Date.ToShortDateString() : request.DateSubmitted.Date.ToShortDateString();
+                data = request.DateUserActioned != null ? request.DateUserActioned.GetValueOrDefault()!.Date : request.DateSubmitted;
             }
             else
             {
-                data = request.EngineerAssignedIsApproved ? request.EngineerAssignedDateApproved.Date.ToShortDateString() : request.EngineerAssignedDateActioned.Date.ToShortDateString();
+                data = request.EngineerAssignedIsApproved ? request.EngineerAssignedDateApproved.Date : request.EngineerAssignedDateActioned.Date;
             }
 
-            args.Cell.Value = data;
+            args.Cell.Value = data!.ToString("dd-MMM-yyyy");
         }
     }
 
