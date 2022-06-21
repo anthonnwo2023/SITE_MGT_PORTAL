@@ -95,6 +95,7 @@ public partial class Report : ComponentBase
             ExcelExportProperties ExportProperties = new();
             ExportProperties.FileName = $"General_Report{DateTimeOffset.UtcNow:ddMMyyyy.Hmmss}.xlsx";
             ExportProperties.IncludeHiddenColumn = false;
+            ExportProperties.IncludeTemplateColumn = true;
 
             await Grid_Request.ShowSpinnerAsync();
             await Grid_Request.ExcelExport(ExportProperties);
@@ -134,6 +135,26 @@ public partial class Report : ComponentBase
             await Grid_RequestGroup.ShowSpinnerAsync();
             await Grid_RequestGroup.ExcelExport();
             //await Grid_RequestGroup.HideColumnsAsync(hiddenCols);
+        }
+    }
+
+    public void ExcelQueryCellInfoHandler(ExcelQueryCellInfoEventArgs<RequestViewModelDTO> args)
+    {
+        if (args.Column.HeaderText == "Date Actioned")
+        {
+            var request = args.Data;
+            var data = string.Empty;
+
+            if (request.Status != "Accepted" && request.Status != "Rejected")
+            {
+                data = request.DateUserActioned != null ? request.DateUserActioned.GetValueOrDefault()!.Date.ToShortDateString() : request.DateSubmitted.Date.ToShortDateString();
+            }
+            else
+            {
+                data = request.EngineerAssignedIsApproved ? request.EngineerAssignedDateApproved.Date.ToShortDateString() : request.EngineerAssignedDateActioned.Date.ToShortDateString();
+            }
+
+            args.Cell.Value = data;
         }
     }
 
