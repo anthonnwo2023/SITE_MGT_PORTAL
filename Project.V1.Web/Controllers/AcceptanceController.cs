@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using System;
-
-namespace Project.V1.Web.Controllers;
+﻿namespace Project.V1.Web.Controllers;
 
 public class AcceptanceController : Controller
 {

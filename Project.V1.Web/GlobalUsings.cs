@@ -74,3 +74,6 @@ global using System.Net.Http;
 global using Radzen;
 global using Radzen.Blazor;
 global using Project.V1.Web.MappingProfiles;
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
+global using System;

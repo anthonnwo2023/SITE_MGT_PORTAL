@@ -25,5 +25,17 @@ public class RequestMapProfiles : Profile
             .ForMember(dest => dest.EngineerAssignedDateApproved, opt => opt.MapFrom(src => src.EngineerAssigned.DateApproved.Date))
             .ForMember(dest => dest.EngineerAssignedDateActioned, opt => opt.MapFrom(src => src.EngineerAssigned.DateActioned.Date))
             .ForMember(dest => dest.EngineerAssigned, opt => opt.MapFrom(src => src.EngineerAssigned.Fullname));
+
+        CreateProjection<SiteHUDRequestModel, SiteHUDRequestModelDTO>()
+            .ForMember(dest => dest.TechTypes, opt => opt.MapFrom(src => string.Join(",", src.TechTypes.Select(x => x.Name))))
+            .ForMember(dest => dest.RequesterName, opt => opt.MapFrom(src => src.Requester.Name))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+            .ForMember(dest => dest.FirstApproverName, opt => opt.MapFrom(src => src.FirstApprover.Fullname))
+            .ForMember(dest => dest.SecondApproverName, opt => opt.MapFrom(src => src.SecondApprover.Fullname))
+            .ForMember(dest => dest.ThirdApproverName, opt => opt.MapFrom(src => src.ThirdApprover.Fullname))
+            .ForMember(dest => dest.FirstApproverComment, opt => opt.MapFrom(src => src.FirstApprover.ApproverComment))
+            .ForMember(dest => dest.SecondApproverComment, opt => opt.MapFrom(src => src.SecondApprover.ApproverComment))
+            .ForMember(dest => dest.ThirdApproverComment, opt => opt.MapFrom(src => src.ThirdApprover.ApproverComment))
+            ;
     }
 }

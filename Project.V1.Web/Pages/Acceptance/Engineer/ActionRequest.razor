@@ -143,6 +143,17 @@ else
                         <ValidationMessage For="@(() => RequestModel.DateCreated)" />
                     </div>
                 </div>
+
+                @if(RequestModel.EngineerComment!.Trim().Length > 0)
+                {
+                    <div class="col-md-3 mt-3">
+                        <div class="form-group">
+                            <SfTextBox Enabled="false" Placeholder="Previous Engineer Comment" Value="@RequestModel.EngineerComment" FloatLabelType="@FloatLabelType.Auto">
+                            </SfTextBox>
+                        </div>
+                    </div>
+                }
+
                 @if (EnableSpecial)
                 {
                     <div class="col-md-3 mt-3">

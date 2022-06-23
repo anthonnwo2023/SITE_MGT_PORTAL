@@ -5,15 +5,15 @@ public class SSCRequestController : Controller
     private readonly ISSCRequestUpdate _request;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IVendor _vendor;
+    private readonly IMapper _mapper;
 
-    public SSCRequestController(ISSCRequestUpdate request, UserManager<ApplicationUser> userManager, IVendor vendor)
+    public SSCRequestController(ISSCRequestUpdate request, UserManager<ApplicationUser> userManager, IVendor vendor, IMapper mapper)
     {
-        (_request, _userManager, _vendor) = (request, userManager, vendor);
+        (_request, _userManager, _vendor, _mapper) = (request, userManager, vendor, mapper);
     }
 
     [HttpGet]
-    [EnableQuery]
-    public async Task<IQueryable<SSCUpdatedCell>> Get()
+    public async Task<object> Get(ODataQueryOptions<SSCUpdatedCell> options)
     {
         var httpRequest = HttpContext.Request;
         var requestModel = new SSCUpdatedCell();
@@ -38,6 +38,8 @@ public class SSCRequestController : Controller
 
         Requests = await _request.Get(x => x.ID != 0, x => x.OrderByDescending(y => y.DATECREATED), "");
 
-        return Requests.AsQueryable();
+        var odataOptions = options.ApplyTo(Requests);
+
+        return odataOptions;
     }
 }

@@ -123,7 +123,7 @@
                 </SfDropDownList>
                 <ValidationMessage For="@(() => HUDRequestModel.SecondApproverId)" />
             </div>
-            @if (HUDRequestModel.ThirdApprover != null)
+            @if (HUDRequestModel.ThirdApprover != null || ShouldEnable)
             {
                 <div class="col-md-4">
                     @{
