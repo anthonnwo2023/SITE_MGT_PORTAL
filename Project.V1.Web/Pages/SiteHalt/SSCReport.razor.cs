@@ -55,7 +55,7 @@ public partial class SSCReport : IDisposable
                     NavMan.NavigateTo("access-denied");
                 }
 
-                //HttpClient = HttpClientFactory.CreateClient("RequestClient");
+                HttpClient = HttpClientFactory.CreateClient("RequestClient");
                 HttpClient.BaseAddress = new Uri(NavMan.BaseUri);
                 HeaderData.Add("User", Context.HttpContext.User.Identity.Name);
                 HeaderData.Add("IsAuthenticated", Context.HttpContext.User.Identity.IsAuthenticated.ToString());
