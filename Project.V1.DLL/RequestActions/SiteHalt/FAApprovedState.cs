@@ -87,6 +87,7 @@
                         Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved</b></font> - See Details below:",
                         Comment = (request as dynamic).FirstApprover.ApproverComment,
                         Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Body = $"<p> Approver 1 : <b>{(request as dynamic).FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>",
                         BodyType = "",
                         M2Uname = (request as dynamic).FirstApprover.Username.ToLower().Trim(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
