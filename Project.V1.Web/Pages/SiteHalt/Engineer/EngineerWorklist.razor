@@ -280,6 +280,15 @@ else
             <Template>
                 @{
                     var request = (context as SiteHUDRequestModel);
+
+                    <a title="Action Request" href="hud/reports/general/@request.Id" class="btn btn-warning"><i class="fas fa-bars"></i></a>
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="" Width="80">
+            <Template>
+                @{
+                    var request = (context as SiteHUDRequestModel);
                     CompleteIndex = HUDEngineerRequests.IndexOf(request);
 
                     //if (HUDEngineerRequests.Count() > 0)

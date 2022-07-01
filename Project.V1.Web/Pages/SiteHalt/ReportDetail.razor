@@ -1,4 +1,5 @@
 ﻿@page "/hud/reports/general/{id}"
+
 @layout MainLayoutHalt
 
 <PageTitlePat Title="SMP (Halt | Unhalt | Decom) - Request Detail" />
@@ -93,7 +94,21 @@ else
 {
     <EditForm Model="@ReportRequest">
         <ObjectGraphDataAnnotationsValidator />
-        <button class="btn btn-primary" @onclick="@ExportToPdf">Export to PDF</button>
+        @if(ReportRequest.ThirdApproverId == null)
+        {
+            @if(ReportRequest.Status == "SAApproved")
+            {
+                <button class="btn btn-primary" @onclick="@ExportToPdf">Export to PDF</button>   
+            }
+        }
+        else
+        {
+            @if (ReportRequest.Status == "TAApproved")
+           {
+               <button class="btn btn-primary" @onclick="@ExportToPdf">Export to PDF</button>   
+           }
+        }
+
         <div class="col-md-12" style="">
             <div class="col-md 12 row">
                 <HaltRequestControl ShouldEnable="false" HUDRequestModel="@ReportRequest"
