@@ -275,7 +275,7 @@ public partial class NewRequest : IDisposable
         HUDRequest.TempStatus = "Pending";
         HUDRequest.TempComment = " ";
 
-        BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD RF SM")).Select(x => new RequestApproverModel
+        BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver")).Select(x => new RequestApproverModel
         {
             Id = Guid.NewGuid().ToString(),
             Fullname = x.Fullname,
@@ -286,19 +286,13 @@ public partial class NewRequest : IDisposable
             Title = x.JobTitle,
         }).ToList();
 
-        BaseSecondLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver"))
-            .Where(x => !BaseFirstLevelApprovers.Select(y => y.Username).Contains(x.UserName)).Select(x => new RequestApproverModel
-            {
-                Id = Guid.NewGuid().ToString(),
-                Fullname = x.Fullname,
-                ApproverType = "SA",
-                Email = x.Email,
-                PhoneNo = x.PhoneNumber,
-                Username = x.UserName,
-                Title = x.JobTitle,
-            }).ToList();
+        BaseSecondLevelApprovers = BaseFirstLevelApprovers;
+        BaseSecondLevelApprovers.ForEach(approver =>
+        {
+            approver.ApproverType = "SA";
+        });
 
-        BaseThirdLevelApprovers = BaseSecondLevelApprovers;
+        BaseThirdLevelApprovers = BaseFirstLevelApprovers;
         BaseThirdLevelApprovers.ForEach(approver =>
         {
             approver.ApproverType = "TA";
