@@ -195,11 +195,26 @@ public partial class HaltRequestControl
     {
         if (!ShouldEnable) return;
 
+        FirstLevelApprovers = BaseFirstLevelApprovers.ToList();
         SecondLevelApprovers = BaseSecondLevelApprovers.ToList();
         ThirdLevelApprovers = BaseThirdLevelApprovers.ToList();
 
         if (approver.Equals("approver1"))
         {
+            var approver2 = (!string.IsNullOrWhiteSpace(HUDRequestModel.SecondApproverId))
+                ? BaseSecondLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.SecondApproverId)
+                : new RequestApproverModel();
+
+            var approver3 = (!string.IsNullOrWhiteSpace(HUDRequestModel.ThirdApproverId))
+                ? BaseThirdLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.ThirdApproverId)
+                : new RequestApproverModel();
+
+            SecondLevelApprovers.Remove(args.ItemData);
+            ThirdLevelApprovers.Remove(args.ItemData);
+
+            FirstLevelApprovers.Remove(approver3);
+            FirstLevelApprovers.Remove(approver2);
+
             HUDRequestModel.FirstApprover = args.ItemData;
         }
 
@@ -208,17 +223,34 @@ public partial class HaltRequestControl
             var approver3 = (!string.IsNullOrWhiteSpace(HUDRequestModel.ThirdApproverId))
                 ? BaseThirdLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.ThirdApproverId)
                 : new RequestApproverModel();
+
+            var approver1 = (!string.IsNullOrWhiteSpace(HUDRequestModel.FirstApproverId))
+                ? BaseFirstLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.FirstApproverId)
+                : new RequestApproverModel();
+
+            FirstLevelApprovers.Remove(args.ItemData);
             ThirdLevelApprovers.Remove(args.ItemData);
+
             SecondLevelApprovers.Remove(approver3);
+            SecondLevelApprovers.Remove(approver1);
 
             HUDRequestModel.SecondApprover = args.ItemData;
         }
+
         if (approver.Equals("approver3"))
         {
+            var approver1 = (!string.IsNullOrWhiteSpace(HUDRequestModel.FirstApproverId))
+                ? BaseFirstLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.FirstApproverId)
+                : new RequestApproverModel();
+
             var approver2 = (!string.IsNullOrWhiteSpace(HUDRequestModel.SecondApproverId))
                 ? BaseSecondLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.SecondApproverId)
                 : new RequestApproverModel();
+
+            FirstLevelApprovers.Remove(args.ItemData);
             SecondLevelApprovers.Remove(args.ItemData);
+
+            ThirdLevelApprovers.Remove(approver1);
             ThirdLevelApprovers.Remove(approver2);
 
             HUDRequestModel.ThirdApprover = args.ItemData;
