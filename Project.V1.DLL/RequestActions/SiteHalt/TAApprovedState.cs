@@ -123,8 +123,13 @@
                         BodyType = "",
                         M2Uname = (request.RequestAction != "UnHalt") ? request.ThirdApprover.Username.ToLower().Trim() : "",
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{request.Id}",
+                        
                         To = new List<SenderBody> {
-                            new SenderBody { Name = "", Address = "Copy@mtn.com" },
+                            new SenderBody { Name = "", Address = "#NWGRTMs.NG@mtn.com" },
+                            new SenderBody { Name = "", Address = "#RFPlanning&Optimization.NG@mtn.com" },
+                            new SenderBody { Name = "", Address = "#NIDPSOReports.NG@mtn.com" },
+                            new SenderBody { Name = "", Address = "NetworkBusinessPerformance.NG@mtn.com" },
+                            new SenderBody { Name = "", Address = "NIDPSOReports.NG@mtn.com" },
                         },
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
