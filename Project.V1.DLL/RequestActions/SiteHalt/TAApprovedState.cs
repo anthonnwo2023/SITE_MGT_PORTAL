@@ -114,7 +114,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
 
                 ["Stakeholders"] = () =>
                 {
-                    var stakeholders = LoginObject.Stakeholder.Get(null, x => x.OrderBy(y => y.Name)).GetAwaiter().GetResult().ToList()
+                    var stakeholders = LoginObject.Stakeholder.Get(x => x.IsActive, x => x.OrderBy(y => y.Name)).GetAwaiter().GetResult().ToList()
                     .Select(x => new SenderBody
                     {
                         Name = "",
