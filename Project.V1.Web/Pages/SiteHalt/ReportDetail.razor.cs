@@ -62,7 +62,7 @@ namespace Project.V1.Web.Pages.SiteHalt
 
                     ReportRequest.TechTypeIds = ReportRequest.TechTypes.Select(x => x.Id).ToArray();
 
-                    BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD RF SM")).Select(x => new RequestApproverModel
+                    BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver")).Select(x => new RequestApproverModel
                     {
                         Id = Guid.NewGuid().ToString(),
                         Fullname = x.Fullname,
@@ -81,17 +81,7 @@ namespace Project.V1.Web.Pages.SiteHalt
                         }
                     });
 
-                    BaseSecondLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver"))
-                        .Where(x => !BaseFirstLevelApprovers.Select(y => y.Username).Contains(x.UserName)).Select(x => new RequestApproverModel
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Fullname = x.Fullname,
-                            ApproverType = "SA",
-                            Email = x.Email,
-                            PhoneNo = x.PhoneNumber,
-                            Username = x.UserName,
-                            Title = x.JobTitle,
-                        }).ToList();
+                    BaseSecondLevelApprovers = BaseFirstLevelApprovers;
 
                     BaseSecondLevelApprovers.ForEach(x =>
                     {
@@ -99,6 +89,7 @@ namespace Project.V1.Web.Pages.SiteHalt
                         {
                             x.Id = ReportRequest.SecondApprover.Id;
                         }
+                        x.ApproverType = "SA";
                     });
 
                     BaseThirdLevelApprovers = BaseSecondLevelApprovers;
