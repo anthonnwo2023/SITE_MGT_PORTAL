@@ -69,6 +69,7 @@
     <Compile Include="Services\Interfaces\IUser.cs" />
     <Compile Include="Services\Interfaces\IVendor.cs" />
     <Compile Include="Services\Interfaces\SiteHalt\IHUDRequest.cs" />
+    <Compile Include="Services\Interfaces\SiteHalt\IStakeholder.cs" />
   </ItemGroup>
 
   <ItemGroup>

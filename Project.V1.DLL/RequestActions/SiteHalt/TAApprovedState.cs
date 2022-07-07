@@ -1,4 +1,6 @@
-﻿namespace Project.V1.DLL.RequestActions.SiteHalt
+﻿using Project.V1.DLL.Helpers;
+
+namespace Project.V1.DLL.RequestActions.SiteHalt
 {
     public class TAApprovedState<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
     {
@@ -72,7 +74,7 @@
                     {
                         Name = "Hello " + request.Requester.Name.Trim(),
                         Title = "Update Notification on Request - See Below Request Details",
-                        Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Request Approved{ ((request.RequestAction != "UnHalt") ? $" by ({request.ThirdApprover.Fullname})" : "")}</b></font>, awaiting task to be completed - See Details below:",
+                        Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Request Approved{((request.RequestAction != "UnHalt") ? $" by ({request.ThirdApprover.Fullname})" : "")}</b></font>, awaiting task to be completed - See Details below:",
                         Comment = (request.RequestAction != "UnHalt") ? request.ThirdApprover?.ApproverComment : "",
                         Subject = ($"{request.RequestAction} Request: {request.UniqueId} Update Notice"),
                         Body = (request.RequestAction != "UnHalt") ? $"<p> Approver 1 : <b>{request.FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{request.SecondApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p><p> Approver 3 : <b>{request.ThirdApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>" : "",
@@ -112,25 +114,26 @@
 
                 ["Stakeholders"] = () =>
                 {
+                    var stakeholders = LoginObject.Stakeholder.Get(null, x => x.OrderBy(y => y.Name)).GetAwaiter().GetResult().ToList()
+                    .Select(x => new SenderBody
+                    {
+                        Name = "",
+                        Address = x.Name
+                    }).ToList();
+
                     return new SendEmailActionObj
                     {
                         Name = "Hello Team",
                         Title = "Update Notification on Request - See Below Request Details",
-                        Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Final Request Approval done{ ((request.RequestAction != "UnHalt") ? $" by ({request.ThirdApprover.Fullname})" : "")}</b></font>, awaiting task to be completed - See Details below:",
+                        Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Final Request Approval done{((request.RequestAction != "UnHalt") ? $" by ({request.ThirdApprover.Fullname})" : "")}</b></font>, awaiting task to be completed - See Details below:",
                         Comment = (request.RequestAction != "UnHalt") ? request.ThirdApprover.ApproverComment : "",
                         Subject = ($"{request.RequestAction} Request: {request.UniqueId} Action Notice"),
                         Body = (request.RequestAction != "UnHalt") ? $"<p> Approver 1 : <b>{request.FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{request.SecondApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p><p> Approver 3 : <b>{request.ThirdApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>" : "",
                         BodyType = "",
                         M2Uname = (request.RequestAction != "UnHalt") ? request.ThirdApprover.Username.ToLower().Trim() : "",
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{request.Id}",
-                        
-                        To = new List<SenderBody> {
-                            new SenderBody { Name = "", Address = "#NWGRTMs.NG@mtn.com" },
-                            new SenderBody { Name = "", Address = "#RFPlanning&Optimization.NG@mtn.com" },
-                            new SenderBody { Name = "", Address = "#NIDPSOReports.NG@mtn.com" },
-                            new SenderBody { Name = "", Address = "NetworkBusinessPerformance.NG@mtn.com" },
-                            new SenderBody { Name = "", Address = "NIDPSOReports.NG@mtn.com" },
-                        },
+
+                        To = stakeholders,
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         }

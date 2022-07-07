@@ -111,7 +111,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfTextBox Enabled="ShouldEnable" Placeholder="Site Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SiteName)">
+            <SfTextBox Enabled="ShouldEnable" Placeholder="Site Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.SiteName)" CssClass="@((ShowRequired) ? "required-field" : "")">
             </SfTextBox>
             <ValidationMessage For="@(() => RequestModel.SiteName)" />
         </div>
@@ -138,7 +138,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfDropDownList Enabled="@ShouldEnable" TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="" FloatLabelType="@FloatLabelType.Auto"
+            <SfDropDownList Enabled="@ShouldEnable" TItem="NigerianState" DataSource="@NigerianStates" TValue="string" CssClass="@((ShowRequired) ? "required-field" : "")" FloatLabelType="@FloatLabelType.Auto"
                         Placeholder="State" style="font-size: 10px;" @bind-Value="RequestModel.State">
                 <DropDownListFieldSettings Text="Name" Value="Name"></DropDownListFieldSettings>
             </SfDropDownList>
@@ -263,7 +263,7 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="form-group">
-            <SfTextBox Enabled="ShouldEnable" Placeholder="RRU Type" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.RRUType)">
+            <SfTextBox Enabled="ShouldEnable" Placeholder="RRU Type" FloatLabelType="@FloatLabelType.Auto" @bind-Value="@(RequestModel.RRUType)" CssClass="@((ShowRequired) ? "required-field" : "")">
             </SfTextBox>
             <ValidationMessage For="@(() => RequestModel.RRUType)" />
         </div>

@@ -20,3 +20,8 @@ global using Microsoft.AspNetCore.WebUtilities;
 global using System.Text;
 global using System.Text.Json;
 global using Project.V1.Lib.Interfaces;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.Configuration;
+global using Project.V1.DLL.Interface;
+global using Project.V1.DLL.Services.Interfaces.FormSetup;
+global using Project.V1.DLL.Services.Interfaces.SiteHalt;

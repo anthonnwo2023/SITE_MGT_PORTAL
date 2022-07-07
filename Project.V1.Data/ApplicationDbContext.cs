@@ -73,5 +73,6 @@ namespace Project.V1.Data
         public DbSet<TechTypeModel> TechTypes { get; set; }
         public DbSet<ClaimViewModel> Claims { get; set; }
         public DbSet<ClaimCategoryModel> ClaimCategories { get; set; }
+        public DbSet<SiteHUDStakeholder> Stakeholders { get; set; }
     }
 }

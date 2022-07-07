@@ -1,5 +1,3 @@
-using Project.V1.Web.MappingProfiles;
-
 namespace Project.V1.Web;
 
 public class Startup
@@ -162,6 +160,7 @@ public class Startup
         services.AddScoped<ISummerConfig, SummerConfig>();
         services.AddScoped<IStaticReport, StaticReport>();
         services.AddScoped<IRequestListObject, RequestListObject>();
+        services.AddScoped<IStakeholder, StakeHolder>();
         services.AddScoped<AcceptanceAdaptor>();
 
         services.ConfigureBlazorizeOptions();

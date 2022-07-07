@@ -87,7 +87,8 @@ namespace Project.V1.DLL.Crons
 
                 var regionMonthRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                         && Statuses.Contains(x.Status), null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum"))
-                                         .Select(x => new AcceptanceDTO
+                                        .ToList() 
+                                        .Select(x => new AcceptanceDTO
                                          {
                                              SiteId = x.SiteId,
                                              Region = x.Region.Name,

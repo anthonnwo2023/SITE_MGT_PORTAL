@@ -4,6 +4,7 @@
     {
         private bool collapseNavMenu = true;
 
+        private bool expandHUDRequestSubNav;
         private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
         public ClaimsPrincipal Principal { get; set; }
         public ApplicationUser User { get; set; }

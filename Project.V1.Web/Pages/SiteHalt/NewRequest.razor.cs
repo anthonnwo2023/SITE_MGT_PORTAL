@@ -259,7 +259,7 @@ public partial class NewRequest : IDisposable
 
     protected void ChangeRequestType()
     {
-        HUDRequest = HUDRequest.CopyTo(new HUDRequest(IHUDRequest, IRequestList.User));
+        HUDRequest = HUDRequest.CopyTo(new Request.HUDRequest(IHUDRequest, IRequestList.User));
         HUDRequest.User = IRequestList.User;
     }
 
@@ -271,9 +271,11 @@ public partial class NewRequest : IDisposable
 
         await IRequestList.Initialize(Principal, "HUDObject");
 
-        HUDRequest = new();
-        HUDRequest.TempStatus = "Pending";
-        HUDRequest.TempComment = " ";
+        HUDRequest = new()
+        {
+            TempStatus = "Pending",
+            TempComment = " "
+        };
 
         BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver")).Select(x => new RequestApproverModel
         {
