@@ -134,67 +134,71 @@
             RequestModel.TempStatus = "TStatus";
             RequestModel.User = User;
 
-            BaseFirstLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD RF SM")).Select(x => new RequestApproverModel
-            {
-                Id = Guid.NewGuid().ToString(),
-                Fullname = x.Fullname,
-                ApproverType = "FA",
-                Email = x.Email,
-                PhoneNo = x.PhoneNumber,
-                Username = x.UserName,
-                Title = x.JobTitle,
-                RequestId = RequestModel.Id
-            }).ToList();
-
-            if (RequestModel.FirstApprover is not null)
-            {
-                BaseFirstLevelApprovers.ForEach(x =>
-                {
-                    if (x.Username == RequestModel.FirstApprover.Username)
-                    {
-                        x.Id = RequestModel.FirstApprover.Id;
-                    }
-                });
-            }
-
-            BaseSecondLevelApprovers = (await UserManager.GetUsersInRoleAsync("HUD Approver"))
-                .Where(x => !BaseFirstLevelApprovers.Select(y => y.Username).Contains(x.UserName)).Select(x => new RequestApproverModel
+            var Approvers = (await UserManager.GetUsersInRoleAsync("HUD Approver"))
+                .Select(x => new RequestApproverModel
                 {
                     Id = Guid.NewGuid().ToString(),
                     Fullname = x.Fullname,
-                    ApproverType = "SA",
+                    ApproverType = "FA",
                     Email = x.Email,
                     PhoneNo = x.PhoneNumber,
                     Username = x.UserName,
                     Title = x.JobTitle,
                     RequestId = RequestModel.Id
-                }).ToList();
+                });
+
+            var ApproverList = Approvers.Select(approver =>
+            {
+                if (RequestModel.FirstApprover is not null)
+                    if (approver.Username == RequestModel.FirstApprover.Username)
+                    {
+                        approver.Id = RequestModel.FirstApprover.Id;
+                    }
+
+                if (RequestModel.SecondApprover is not null)
+                    if (approver.Username == RequestModel.SecondApprover.Username)
+                    {
+                        approver.Id = RequestModel.SecondApprover.Id;
+                    }
+
+                if (RequestModel.ThirdApprover is not null)
+                    if (approver.Username == RequestModel.ThirdApprover.Username)
+                    {
+                        approver.Id = RequestModel.ThirdApprover.Id;
+                    }
+
+                return approver;
+
+            }).ToList();
+
+            BaseFirstLevelApprovers = ApproverList;
+
+            BaseSecondLevelApprovers = ApproverList;
 
             if (RequestModel.SecondApprover is not null)
             {
                 BaseSecondLevelApprovers.ForEach(x =>
                 {
-                    if (x.Username == RequestModel.SecondApprover.Username)
-                    {
-                        x.Id = RequestModel.SecondApprover.Id;
-                    }
+                    x.ApproverType = "SA";
                 });
             }
 
-            BaseThirdLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.SecondApproverId)).ToList();
+            BaseThirdLevelApprovers = ApproverList;
 
             if (RequestModel.ThirdApprover is not null)
             {
                 BaseThirdLevelApprovers.ForEach(x =>
                 {
-                    if (x.Username == RequestModel.ThirdApprover.Username)
-                    {
-                        x.Id = RequestModel.ThirdApprover.Id;
-                    }
+                    x.ApproverType = "TA";
                 });
+
+                BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestModel.ThirdApprover.Id)).ToList();
+                BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.ThirdApprover.Id)).ToList();
             }
 
-            BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.ThirdApproverId)).ToList();
+            BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestModel.SecondApprover.Id).ToList()).ToList();
+            BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.FirstApprover.Id)).ToList();
+            BaseThirdLevelApprovers = BaseThirdLevelApprovers.Except(BaseThirdLevelApprovers.Where(x => x.Id == RequestModel.FirstApprover.Id || x.Id == RequestModel.SecondApprover.Id)).ToList();
 
             RequestUniqueId = RequestModel?.UniqueId;
 
@@ -211,16 +215,6 @@
             if (RequestModel.ThirdApprover is not null)
             {
                 RequestModel.ThirdApproverId = RequestModel.ThirdApprover.Id;
-            }
-
-            if (RequestModel.ThirdApprover != null)
-            {
-                SecondLevelApprovers.Remove(SecondLevelApprovers.FirstOrDefault(x => x.Username == RequestModel.ThirdApprover.Username));
-            }
-
-            if (RequestModel.SecondApprover != null)
-            {
-                ThirdLevelApprovers.Remove(ThirdLevelApprovers.FirstOrDefault(x => x.Username == RequestModel.SecondApprover.Username));
             }
 
             FirstLevelApprovers = BaseFirstLevelApprovers.ToList();
