@@ -210,7 +210,10 @@ public partial class HaltRequestControl
                 : new RequestApproverModel();
 
             SecondLevelApprovers.Remove(args.ItemData);
+            SecondLevelApprovers.Remove(approver3);
+
             ThirdLevelApprovers.Remove(args.ItemData);
+            ThirdLevelApprovers.Remove(approver2);
 
             FirstLevelApprovers.Remove(approver3);
             FirstLevelApprovers.Remove(approver2);
@@ -229,7 +232,10 @@ public partial class HaltRequestControl
                 : new RequestApproverModel();
 
             FirstLevelApprovers.Remove(args.ItemData);
+            FirstLevelApprovers.Remove(approver3);
+
             ThirdLevelApprovers.Remove(args.ItemData);
+            ThirdLevelApprovers.Remove(approver1);
 
             SecondLevelApprovers.Remove(approver3);
             SecondLevelApprovers.Remove(approver1);
@@ -247,7 +253,10 @@ public partial class HaltRequestControl
                 ? BaseSecondLevelApprovers.FirstOrDefault(x => x.Id == HUDRequestModel.SecondApproverId)
                 : new RequestApproverModel();
 
+            FirstLevelApprovers.Remove(approver2);
             FirstLevelApprovers.Remove(args.ItemData);
+
+            SecondLevelApprovers.Remove(approver1);
             SecondLevelApprovers.Remove(args.ItemData);
 
             ThirdLevelApprovers.Remove(approver1);

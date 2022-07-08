@@ -86,10 +86,10 @@ public partial class RequestDetail
                 User = await IUser.GetUserByUsername(Principal.Identity.Name);
 
                 RequestToApprove = await IHUDRequest.GetById(x => x.Id == Id, null, "Requester.Vendor,FirstApprover,SecondApprover,ThirdApprover,TechTypes");
-                RequestToApprove.FirstApproverId = RequestToApprove.FirstApprover.Id;
-                RequestToApprove.SecondApproverId = RequestToApprove.SecondApprover.Id;
+                RequestToApprove.FirstApproverId = RequestToApprove?.FirstApprover?.Id;
+                RequestToApprove.SecondApproverId = RequestToApprove?.SecondApprover?.Id;
                 if (RequestToApprove.ThirdApprover != null)
-                    RequestToApprove.ThirdApproverId = RequestToApprove.ThirdApprover.Id;
+                    RequestToApprove.ThirdApproverId = RequestToApprove?.ThirdApprover?.Id;
 
                 GetApproverClass();
 
@@ -116,19 +116,19 @@ public partial class RequestDetail
                     if (RequestToApprove.FirstApprover is not null)
                         if (approver.Username == RequestToApprove.FirstApprover.Username)
                         {
-                            approver.Id = RequestToApprove.FirstApprover.Id;
+                            approver.Id = RequestToApprove?.FirstApprover?.Id;
                         }
 
                     if (RequestToApprove.SecondApprover is not null)
                         if (approver.Username == RequestToApprove.SecondApprover.Username)
                         {
-                            approver.Id = RequestToApprove.SecondApprover.Id;
+                            approver.Id = RequestToApprove?.SecondApprover?.Id;
                         }
 
                     if (RequestToApprove.ThirdApprover is not null)
                         if (approver.Username == RequestToApprove.ThirdApprover.Username)
                         {
-                            approver.Id = RequestToApprove.ThirdApprover.Id;
+                            approver.Id = RequestToApprove?.ThirdApprover?.Id;
                         }
 
                     return approver;
@@ -156,13 +156,13 @@ public partial class RequestDetail
                         x.ApproverType = "TA";
                     });
 
-                    BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestToApprove.ThirdApprover.Id)).ToList();
-                    BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestToApprove.ThirdApprover.Id)).ToList();
+                    BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestToApprove?.ThirdApprover?.Id)).ToList();
+                    BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestToApprove?.ThirdApprover?.Id)).ToList();
                 }
 
-                BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestToApprove.SecondApprover.Id).ToList()).ToList();
-                BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestToApprove.FirstApprover.Id)).ToList();
-                BaseThirdLevelApprovers = BaseThirdLevelApprovers.Except(BaseThirdLevelApprovers.Where(x => x.Id == RequestToApprove.FirstApprover.Id || x.Id == RequestToApprove.SecondApprover.Id)).ToList();
+                BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestToApprove?.SecondApprover?.Id).ToList()).ToList();
+                BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestToApprove?.FirstApprover?.Id)).ToList();
+                BaseThirdLevelApprovers = BaseThirdLevelApprovers.Except(BaseThirdLevelApprovers.Where(x => x.Id == RequestToApprove?.FirstApprover?.Id || x.Id == RequestToApprove?.SecondApprover?.Id)).ToList();
             }
             catch (Exception ex)
             {

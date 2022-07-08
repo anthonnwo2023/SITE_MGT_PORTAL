@@ -192,19 +192,19 @@
                     x.ApproverType = "TA";
                 });
 
-                BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestModel.ThirdApprover.Id)).ToList();
-                BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.ThirdApprover.Id)).ToList();
+                BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestModel?.ThirdApprover?.Id)).ToList();
+                BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel?.ThirdApprover?.Id)).ToList();
             }
 
-            BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestModel.SecondApprover.Id).ToList()).ToList();
-            BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel.FirstApprover.Id)).ToList();
-            BaseThirdLevelApprovers = BaseThirdLevelApprovers.Except(BaseThirdLevelApprovers.Where(x => x.Id == RequestModel.FirstApprover.Id || x.Id == RequestModel.SecondApprover.Id)).ToList();
+            BaseFirstLevelApprovers = BaseFirstLevelApprovers.Except(BaseFirstLevelApprovers.Where(x => x.Id == RequestModel?.SecondApprover?.Id).ToList()).ToList();
+            BaseSecondLevelApprovers = BaseSecondLevelApprovers.Except(BaseSecondLevelApprovers.Where(x => x.Id == RequestModel?.FirstApprover?.Id)).ToList();
+            BaseThirdLevelApprovers = BaseThirdLevelApprovers.Except(BaseThirdLevelApprovers.Where(x => x.Id == RequestModel?.FirstApprover?.Id || x.Id == RequestModel?.SecondApprover?.Id)).ToList();
 
             RequestUniqueId = RequestModel?.UniqueId;
 
             if (RequestModel.FirstApprover is not null)
             {
-                RequestModel.FirstApproverId = RequestModel.FirstApprover.Id;
+                RequestModel.FirstApproverId = RequestModel?.FirstApprover?.Id;
             }
 
             if (RequestModel.SecondApprover is not null)
