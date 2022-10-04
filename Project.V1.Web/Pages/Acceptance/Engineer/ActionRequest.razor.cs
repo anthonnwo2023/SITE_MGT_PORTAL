@@ -313,6 +313,7 @@
             }
             catch
             {
+              //  Log.Error()
                 return false;
             }
         }
