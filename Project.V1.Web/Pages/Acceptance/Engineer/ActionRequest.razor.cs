@@ -304,16 +304,20 @@
                 {
                     requestObj.EngineerAssigned.DateApproved = (requestObj.EngineerAssigned.DateApproved.Date == DateTime.Now.Date) ? DateTimeOffset.UtcNow.DateTime : requestObj.EngineerAssigned.DateApproved;
 
+                    Log.Information("Approved Block =>" + requestObj + " " + "Variables =>" + variables + " " + "Request =>" + " " + request);
+
                     return request.Accept(requestObj, variables);
                 }
 
                 requestObj.EngineerAssigned.DateApproved = DateTime.MinValue;
 
+                Log.Information("Reject Block =>" + requestObj + " " + "Variables =>" + variables + " " + "Request =>" + " " + request);
+
                 return request.Reject(requestObj, variables, requestObj.EngineerAssigned.ApproverComment);
             }
-            catch
+            catch (Exception ex)
             {
-              //  Log.Error()
+                Log.Error("Ex =>" + ex + " " + "InnerException =>" + ex.InnerException + " " + "StackTrace =>" + " " + ex.StackTrace);
                 return false;
             }
         }

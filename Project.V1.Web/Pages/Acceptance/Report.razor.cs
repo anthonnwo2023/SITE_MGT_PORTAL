@@ -29,7 +29,8 @@ public partial class Report : ComponentBase
 
     public List<string> ToolbarItems = new() { "Search", "ExcelExport", "ColumnChooser" };
     public SfDataManager dm { get; set; }
-
+    public int pagesize { get; set; } = 20; 
+    public object[] pagesizes = new object[] { 10, 20, 25,50,100, "All" };
     protected override void OnInitialized()
     {
         Paths = new()

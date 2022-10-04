@@ -40,7 +40,7 @@
         <SfDataManager @ref="dm" Headers="HeaderData" HttpClientInstance="httpClient" Url="odata/Acceptance" Adaptor="Adaptors.ODataV4Adaptor"></SfDataManager>
         <GridEvents ExcelQueryCellInfoEvent="ExcelQueryCellInfoHandler" ExportComplete="ExportCompleteHandler" OnToolbarClick="ToolbarClickHandler" TValue="RequestViewModelDTO" OnActionFailure="@ActionFailure"></GridEvents>
         <GridFilterSettings ShowFilterBarStatus="true" Mode="FilterBarMode.Immediate" ImmediateModeDelay="3000" Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
-        <GridPageSettings PageSize="10" PageSizes="true" EnableQueryString="true"></GridPageSettings>
+        <GridPageSettings PageSize="@pagesize" PageSizes="@pagesizes" EnableQueryString="true"></GridPageSettings>
         <GridSearchSettings></GridSearchSettings>
         <GridTextWrapSettings WrapMode="WrapMode.Content"></GridTextWrapSettings>
         <GridEditSettings AllowAdding="false" AllowEditing="false" AllowDeleting="false" Mode="EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
@@ -144,14 +144,17 @@
                         Width="120" FilterSettings="@(new FilterSettings{ Operator = Operator.Contains })">
             </GridColumn>
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.IntegratedDate)" HeaderText="Date Integrated" TextAlign="TextAlign.Center"
-                        Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
+                        Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false" AllowFiltering="false"
                         Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
             </GridColumn>
+
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.DateSubmitted)" HeaderText="Date Submitted" TextAlign="TextAlign.Center"
-                        Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
+                        Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false" AllowFiltering="false"
                         Width="180" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
             </GridColumn>
-            <GridColumn HeaderText="Date Actioned" TextAlign="TextAlign.Center" AllowFiltering="true"
+
+
+               <GridColumn  Field="@nameof(RequestViewModelDTO.EngineerAssignedDateApproved)" HeaderText="Date Actioned" TextAlign="TextAlign.Center" AllowFiltering="false"
                         Format="dd-MMM-yyyy" Type="ColumnType.Date" EditType="EditType.DatePickerEdit" AllowEditing="false"
                         Width="160" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
                 <Template>
@@ -159,19 +162,25 @@
                         var request = (context as RequestViewModelDTO);
                         DateTime data;
 
-                        if (request.Status != "Accepted" && request.Status != "Rejected")
-                        {
-                            data = request.DateUserActioned != null ? @request.DateUserActioned.GetValueOrDefault()!.Date : @request.DateSubmitted;
-                        }
-                        else
-                        {
-                            data = request.EngineerAssignedIsApproved ? @request.EngineerAssignedDateApproved.Date : @request.EngineerAssignedDateActioned.Date;   
-                        }
-                    }
+                        //if (request.Status != "Accepted" && request.Status != "Rejected")
+                        //{
+                        //    data = request.DateUserActioned != null ? @request.DateUserActioned.GetValueOrDefault()!.Date : @request.DateSubmitted;
+                        //}
+                        //else
+                        //{
+                        //    data = request.EngineerAssignedIsApproved ? @request.EngineerAssignedDateApproved.Date : @request.EngineerAssignedDateActioned.Date;   
+                        //}
+                                           
+                        data = @request.EngineerAssignedDateApproved.Date;
+                    }                  
 
-                    <span>@data!.ToString("dd-MMM-yyyy")</span>
+                   @* <span>@data!.ToString("dd-MMM-yyyy")</span>*@
+                     <span>@data!.ToString("dd-MMM-yyyy").Replace("01-Jan-0001","")</span>
+
                 </Template>
             </GridColumn>
+
+
             <GridColumn Visible="false" Field="@nameof(RequestViewModelDTO.RequesterName)" HeaderText="Requester" TextAlign="TextAlign.Left"
                         Width="190" FilterSettings="@(new FilterSettings{ Type = Syncfusion.Blazor.Grids.FilterType.Menu })">
             </GridColumn>
