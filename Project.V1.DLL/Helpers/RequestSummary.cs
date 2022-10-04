@@ -95,6 +95,7 @@ namespace Project.V1.DLL.Helpers
                 "L800" => "800M",
                 "L1800" => "1800M",
                 "L2600" => "2600M",
+                "N3500" => "N3500",
                 _ => spectrum
             };
         }
@@ -125,6 +126,7 @@ namespace Project.V1.DLL.Helpers
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "2600M", ProjectType = projectType });
                 requests.Add(new AcceptanceDTO { UMTSPhyCount = 0, Spectrum = "3G PHY", ProjectType = projectType });
                 requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", ProjectType = projectType });
+                requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "N3500", ProjectType = projectType });
             }
 
             requests.AddRange(Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
@@ -166,6 +168,7 @@ namespace Project.V1.DLL.Helpers
                 requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "2600M", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { UMTSPhyCount = 0, Spectrum = "3G PHY", Vendor = vendor.Name });
                 requests.Add(new AcceptanceDTO { LTEPhyCount = 0, Spectrum = "4G PHY", Vendor = vendor.Name });
+                requests.Add(new AcceptanceDTO { AcceptanceCount = 0, Spectrum = "N3500", Vendor = vendor.Name });
             }
 
             requests.AddRange(Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
