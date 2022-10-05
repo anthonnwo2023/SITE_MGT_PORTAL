@@ -26,7 +26,8 @@ namespace Project.V1.DLL.Crons
             { "700M", 0 },
             { "800M", 0 },
             { "1800M", 0 },
-            { "2600M", 0 }
+            { "2600M", 0 },
+            { "N3500", 0 }
         };
         private readonly string ENV = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -140,11 +141,11 @@ namespace Project.V1.DLL.Crons
 
             var devRecipient = new List<SenderBody>
             {
-                new SenderBody { Name = "", Address = "Adekunle.Adeyemi@mtn.com" },
+                new SenderBody { Name = "", Address = "Anthony.Nwosu@mtn.com" },
             };
             var devCCRecipient = new List<SenderBody>
             {
-                new SenderBody { Name = "", Address = "Adekunle.Adeyemi@mtn.com" },
+               // new SenderBody { Name = "", Address = "Adekunle.Adeyemi@mtn.com" },
                 new SenderBody { Name = "", Address = "Anthony.Nwosu@mtn.com" },
                 new SenderBody { Name = "", Address = "Kehinde.Ayoola-Oni@mtn.com" },
             };
