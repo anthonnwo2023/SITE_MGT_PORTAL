@@ -93,7 +93,6 @@ namespace Project.V1.DLL.Crons
 
                 var summaryTableHeader = TotalRowInit.Select(x => x.Key).Distinct().ToList();
 
-
                 var table = GenerateSummaryTable(VendorDailyRequest, summaryTableHeader, yesterDay, "vendor", "day");
                 table += GenerateSummaryTable(ProjectMthRequest, summaryTableHeader, yesterDay);
                 table += GenerateSummaryTable(VendorMthRequest, summaryTableHeader, yesterDay, "vendor");

@@ -47,6 +47,7 @@ public class Startup
                 tp.MaxConcurrency = 20;
             });
 
+
             // configure jobs with code
             var jobKey = new JobKey("Daily Report job", "SMP group");
 
@@ -97,7 +98,11 @@ public class Startup
                 //.WithCronSchedule(CronScheduleBuilder.MonthlyOnDayAndHourAndMinute(1, 7, 30))
                 .WithDescription("Daily Report Reminder Trigger")
             );
+
+
         });
+
+
 
         // ASP.NET Core hosting
         services.AddQuartzServer(options =>
