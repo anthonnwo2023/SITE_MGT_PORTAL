@@ -100,7 +100,7 @@ namespace Project.V1.DLL.Crons
 
                 var yesterdaysRequests = (await _request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                     && x.EngineerAssigned.DateApproved.Date == yesterDay.Date
-                                    && !x.Spectrum.Name.Contains("MOD")
+                                    && !x.Spectrum.Name.Contains("MOD") && x.Status == "Accepted"
                                     && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell", null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum"))
                                     .ToList()
                                     .Select(x => new AcceptanceDTO
