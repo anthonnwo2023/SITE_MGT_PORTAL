@@ -120,6 +120,7 @@ namespace Project.V1.DLL.Crons
                     }
                 }
 
+              //  SendNotification(table, "Anthony.Nwosu@mtn.com", $"Awaiting Acceptance as at {DateTime.UtcNow:dd MMMM, yyyy HH:mm}");
 
                 SendNotification(table, engineerRecipientCSV, $"Awaiting Acceptance as at {DateTime.UtcNow:dd MMMM, yyyy HH:mm}");
             }
