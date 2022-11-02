@@ -132,7 +132,7 @@ namespace Project.V1.DLL.Helpers
             requests.AddRange(Request.Get(x => !string.IsNullOrEmpty(x.EngineerAssigned.Fullname.Trim())
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
                                 && x.Requester.Vendor.ShouldSummerize
-                                && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
+                                && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD") && x.Status == "Accepted"
                                 && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell", null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum").GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
                                 {
@@ -175,7 +175,7 @@ namespace Project.V1.DLL.Helpers
                                 && x.EngineerAssigned.DateApproved.Date >= MinDateTime && x.EngineerAssigned.DateApproved.Date < MaxDateTime
                                 && x.Requester.Vendor.ShouldSummerize
                                 //&& !x.Spectrum.Name.Contains("RT")
-                                && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD")
+                                && !x.Spectrum.Name.Contains("MOD") && !x.ProjectType.Name.Contains("MOD") && x.Status == "Accepted"
                                 && x.ProjectType.Name != "Layer Expansion" && x.ProjectType.Name != "Small Cell"
                                 , null, "EngineerAssigned,Region,Requester.Vendor,ProjectType,TechType,Spectrum").GetAwaiter().GetResult()
                                 .Select(x => new AcceptanceDTO
