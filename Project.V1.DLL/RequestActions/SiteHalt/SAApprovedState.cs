@@ -1,4 +1,6 @@
-﻿namespace Project.V1.DLL.RequestActions.SiteHalt
+﻿using Project.V1.DLL.Helpers;
+
+namespace Project.V1.DLL.RequestActions.SiteHalt
 {
     public class SAApprovedState<T> : RequestStateBase<T> where T : SiteHUDRequestModel, IDisposable
     {
@@ -51,17 +53,32 @@
 
         public async Task SendEmail(string application, T request)
         {
-            SendEmailActionObj emailObj = GenerateMailBody("Requester", request, application);
-            await SendNotification(request, emailObj, "");
-
-            emailObj = GenerateMailBody("SAApprover", request, application);
-            await SendNotification(request, emailObj, "SAApprover");
-
-            if (request.ThirdApprover != null)
+            if (request.IsForceMajeure)
             {
-                emailObj = GenerateMailBody("TAApprover", request, application);
-                await SendNotification(request, emailObj, "TAApprover");
+                SendEmailActionObj emailObj = GenerateMailBody("RequesterForceMajeure", request, application);
+                await SendNotification(request, emailObj, "");
+
+                emailObj = GenerateMailBody("SAApprover", request, application);
+                await SendNotification(request, emailObj, "SAApprover");
+
+                emailObj = GenerateMailBody("Stakeholders", request, application);
+                await SendNotification(request, emailObj, "Stakeholders");
             }
+            else
+            {
+                SendEmailActionObj emailObj = GenerateMailBody("Requester", request, application);
+                await SendNotification(request, emailObj, "");
+
+                emailObj = GenerateMailBody("SAApprover", request, application);
+                await SendNotification(request, emailObj, "SAApprover");
+
+                if (request.ThirdApprover != null)
+                {
+                    emailObj = GenerateMailBody("TAApprover", request, application);
+                    await SendNotification(request, emailObj, "TAApprover");
+                }
+            }
+
         }
 
         private static SendEmailActionObj GenerateMailBody(string mailType, T request, string application)
@@ -85,10 +102,34 @@
                             new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         }
                     };
                 },
+
+
+                ["RequesterForceMajeure"] = () =>
+                {
+                    return new SendEmailActionObj
+                    {
+                        Name = "Hello " + request.Requester.Name.Trim(),
+                        Title = "Update Notification on Request - See Below Request Details",
+                        Greetings = $"HUD {(request as dynamic).RequestAction} Request : <font color='orange'><b>Request Approved by ({(request as dynamic).SecondApprover.Fullname})</b></font> , awaiting task to be completed - See Details below:",
+                        Comment = (request as dynamic).SecondApprover.ApproverComment,
+                        Subject = ($"{(request as dynamic).RequestAction} Request: {((dynamic)request).UniqueId} Update Notice"),
+                        Body = (request.RequestAction != "UnHalt") ? $"<p> Approver 1 : <b>{request.FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{request.SecondApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>" : "",
+                        BodyType = "",
+                        M2Uname = request.Requester.Username.ToLower().Trim(),
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/report/{(request as dynamic).Id}",
+                        To = new List<SenderBody> {
+                            new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email  },
+                        },
+                        CC = new List<SenderBody> {
+                            new SenderBody {  Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
+                        }
+                    };
+                },
+
 
                 ["SAApprover"] = () =>
                 {
@@ -107,7 +148,7 @@
                             new SenderBody { Name = (request as dynamic).SecondApprover.Fullname, Address = (request as dynamic).SecondApprover.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         }
                     };
                 },
@@ -129,10 +170,55 @@
                             new SenderBody { Name = (request as dynamic).ThirdApprover.Fullname, Address = (request as dynamic).ThirdApprover.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com"  },
                         }
                     };
+                },
+
+                ["Stakeholders"] = () =>
+                {
+                    var stakeholders = LoginObject.Stakeholder.Get(x => x.IsActive, x => x.OrderBy(y => y.Name)).GetAwaiter().GetResult().ToList()
+                    .Select(x => new SenderBody
+                    {
+                        Name = "",
+                        Address = x.Name
+                    }).ToList();
+
+                    return new SendEmailActionObj
+                    {
+                        Name = "Hello Team",
+                        Title = "Update Notification on Request - See Below Request Details",
+                        Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Final Request Approval done{((request.RequestAction != "UnHalt") ? $" by ({request.SecondApprover.Fullname})" : "")}</b></font>, awaiting task to be completed - See Details below:",
+                        Comment = (request.RequestAction != "UnHalt") ? request.SecondApprover.ApproverComment : "",
+                        Subject = ($"{request.RequestAction} Request: {request.UniqueId} Action Notice"),
+                        Body = (request.RequestAction != "UnHalt") ? $"<p> Approver 1 : <b>{request.FirstApprover.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{request.SecondApprover.Fullname} </b> <font color='green'><b>Approved</b></font></p>" : "",
+                        BodyType = "",
+                        M2Uname = (request.RequestAction != "UnHalt") ? request.SecondApprover.Username.ToLower().Trim() : "",
+                        Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{request.Id}",
+
+
+                        To = stakeholders,
+
+                        //To = new List<SenderBody> {
+                        //    new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com"  },
+                        //},
+
+
+                        CC = new List<SenderBody> {
+                              new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com"  },
+                              //new SenderBody {Name = "Anthony Nwosu", Address = "adewale.banigbe@mtn.com"  },
+                              //new SenderBody {Name = "kehinde Ayoola-oni", Address = "kehinde.ayoola-oni@mtn.com"  },
+                        }
+
+                    };
                 }
+
+
+
+
+
+
+                //
             };
 
             return processMailBody[mailType].Invoke();

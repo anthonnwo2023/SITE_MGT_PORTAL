@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Project.V1.Web.Requests;
 
 namespace Project.V1.Web.Pages.SiteHalt.Shared;
@@ -29,7 +30,7 @@ public partial class HaltRequestControl
     [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
     [Inject] protected IJSRuntime JSRuntime { get; set; }
 
-
+    public string ThirdApprovalDisplay { get; set; }
     public string ShowRqdClass { get; set; } = "inline-block";
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
@@ -127,6 +128,7 @@ public partial class HaltRequestControl
             HUDRequestModel.ShouldRequireApprovers = !value.Equals("UnHalt");
 
             HUDRequestModel.RequestAction = value;
+            HUDRequestModel.IsForceMajeure = false;
 
             await OnRequestTypeChange.InvokeAsync(HUDRequestModel);
 
@@ -272,4 +274,21 @@ public partial class HaltRequestControl
     {
         HUDRequestModel.TechTypeIds = args?.Value;
     }
+
+    private async void onChange(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+        if ((bool)(args.Value))
+        {
+            ThirdApprovalDisplay = "hide-obj";          
+        }
+        else
+        {
+            ThirdApprovalDisplay = "show-obj";
+        }
+
+        string ChkValue = args.Value.ToString();
+
+        await Task.CompletedTask;
+    }
+
 }

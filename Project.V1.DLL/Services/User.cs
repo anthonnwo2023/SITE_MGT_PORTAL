@@ -234,11 +234,13 @@ public class UserService : GenericRepo<ApplicationUser>, IUser, IDisposable
     {
         try
         {
-            List<ApplicationUser> users = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
+            List<ApplicationUser> users = await _userManager.Users.Where(x => x.IsActive == true).Include(x => x.Vendor).Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
+            //List<ApplicationUser> users = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
             if (isActive == false)
             {
                 users = await _userManager.Users.Include(x => x.Vendor).Include(x => x.Regions).Include(x => x.Vendor).AsNoTracking().ToListAsync();
             }
+
 
             users.ForEach(async (user) =>
             {

@@ -58,7 +58,7 @@
                             new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         }
                     };
                 },
@@ -80,7 +80,7 @@
                             new SenderBody { Name = ActionedBy.Fullname, Address = ActionedBy.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         }
                     };
                 }

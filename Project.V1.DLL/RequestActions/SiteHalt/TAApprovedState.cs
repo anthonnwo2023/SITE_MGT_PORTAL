@@ -85,7 +85,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                             new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com"  },
                         }
                     };
                 },
@@ -107,7 +107,7 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                             new SenderBody { Name = request.ThirdApprover.Fullname, Address = request.ThirdApprover.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com"  },
                         }
                     };
                 },
@@ -133,10 +133,22 @@ namespace Project.V1.DLL.RequestActions.SiteHalt
                         M2Uname = (request.RequestAction != "UnHalt") ? request.ThirdApprover.Username.ToLower().Trim() : "",
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{request.Id}",
 
+
                         To = stakeholders,
+
+                        //To = new List<SenderBody> {
+                        //    new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com"  },
+                        //},
+
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                              new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com"  },
+                              //new SenderBody {Name = "Anthony Nwosu", Address = "adewale.banigbe@mtn.com"  },
+                              //new SenderBody {Name = "kehinde Ayoola-oni", Address = "kehinde.ayoola-oni@mtn.com"  },
                         }
+
+
+
+
                     };
                 }
             };

@@ -1,4 +1,26 @@
-﻿@if (HUDRequestModel != null)
+﻿
+<style type="text/css">
+
+    .hide-file-uploader {
+           display: none;
+       }
+
+       .show-file-uploader {
+           display: block;
+       }
+
+       .hide-obj {
+           display: none;
+       }
+
+       .show-obj {
+           display: block;
+       }
+
+</style>
+
+
+@if (HUDRequestModel != null)
 {
     <div class="multiline col-12 p-0 mt-3">
         <div class="col-md-12 row" style="">
@@ -93,11 +115,13 @@
             <ValidationMessage For="@(() => HUDRequestModel.TechTypeIds)" />
         </div>
     </div>
+
+
     @if (HUDRequestModel.RequestAction != "UnHalt")
     {
         <div class="row col-12 mt-5">
             <div class="col-md-6">
-                <SfCheckBox Disabled="@(!ShouldEnable)" Label="Is Force Majeure?" @bind-Checked="HUDRequestModel.IsForceMajeure"></SfCheckBox>
+                <SfCheckBox Disabled="@(!ShouldEnable)" Label="Is Force Majeure?" @bind-Checked="HUDRequestModel.IsForceMajeure" @onchange="onChange"></SfCheckBox>
             </div>
         </div>
         <div class="row col-12 mt-4">
@@ -123,9 +147,11 @@
                 </SfDropDownList>
                 <ValidationMessage For="@(() => HUDRequestModel.SecondApproverId)" />
             </div>
+
             @if (HUDRequestModel.ThirdApprover != null || ShouldEnable)
             {
-                <div class="col-md-4">
+
+                <div class="col-md-4 @ThirdApprovalDisplay">
                     @{
                         approverIsActioned = (HUDRequestModel.GetStatusString is null) ? false : HUDRequestModel.ThirdApprover == null ? false : HUDRequestModel.GetStatusString.Contains("3 of 3");
                     }
@@ -136,6 +162,7 @@
                     </SfDropDownList>
                     <ValidationMessage For="@(() => HUDRequestModel.ThirdApproverId)" />
                 </div>
+
 
             }
         </div>

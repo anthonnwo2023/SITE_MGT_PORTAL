@@ -11,6 +11,7 @@ public partial class RequestDetail
     [Inject] public IHUDRequest IHUDRequest { get; set; }
     [Inject] protected IUser IUser { get; set; }
 
+
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }
     public SiteHUDRequestModel RequestToApprove { get; set; }
@@ -295,7 +296,9 @@ public partial class RequestDetail
                 return request.Disapprove(requestObj, RequestToApprove.Variables, requestObj.ThirdApprover);
             }
 
+
             return false;
+
         }
         catch
         {

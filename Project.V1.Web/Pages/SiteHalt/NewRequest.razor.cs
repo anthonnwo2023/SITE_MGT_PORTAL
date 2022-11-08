@@ -13,7 +13,7 @@ public partial class NewRequest : IDisposable
     [Inject] protected UserManager<ApplicationUser> UserManager { get; set; }
 
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
-
+    public string ThirdApprover { get; set; }
     public string RequestSiteIds { get; set; }
     public ClaimsPrincipal Principal { get; set; }
     public ApplicationUser User { get; set; }

@@ -72,7 +72,7 @@ namespace Project.V1.DLL.RequestActions
                             new SenderBody { Name = user.Fullname, Address = user.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         }
                     };
                     emailObj.CC.AddRange(HelperFunctions.ConvertMailStringToList(vendorMailList));
@@ -94,7 +94,7 @@ namespace Project.V1.DLL.RequestActions
                         To = regionEngineers.ToList(),
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/{request.Id}",
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         }
                     };
 

@@ -74,7 +74,7 @@ namespace Project.V1.DLL.RequestActions
                             new SenderBody { Name = user.Fullname, Address = user.Email },
                         },
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         },
                         Attachment = bulkAttach
                     };
@@ -97,7 +97,7 @@ namespace Project.V1.DLL.RequestActions
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist",
                         To = regionEngineers.ToList(),
                         CC = new List<SenderBody> {
-                            new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                            new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         },
                         Attachment = bulkAttach
                     };

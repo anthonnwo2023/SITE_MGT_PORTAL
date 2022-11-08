@@ -46,7 +46,7 @@ public class CompletedState<T> : RequestStateBase<T> where T : SiteHUDRequestMod
                 {
                     Name = "Hello " + request.Requester.Name.Trim(),
                     Title = "Update Notification on Request - See Below Request Details",
-                    Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Request Completed on TNIS by ({request.User.Fullname})</b></font> - See Details below:",
+                    Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b> Request actioned on Planning Database by ({request.User.Fullname})</b></font> - See Details below:",
                     Comment = (request.RequestAction != "UnHalt") ? request.ThirdApprover?.ApproverComment : "",
                     Body = (request.RequestAction != "UnHalt") ? $"<p> Approver 1 : <b>{request.FirstApprover?.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{request.SecondApprover?.Fullname} </b> <font color='green'><b>Approved</b></font></p><p> Approver 3 : <b>{request.ThirdApprover?.Fullname} </b> <font color='green'><b>Approved</b></font></p>" : "",
                     Subject = ($"{request.RequestAction} Request: {request.UniqueId} Update Notice"),
@@ -57,7 +57,7 @@ public class CompletedState<T> : RequestStateBase<T> where T : SiteHUDRequestMod
                         new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
                     },
                     CC = new List<SenderBody> {
-                        new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                        new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                     }
                 };
             },
@@ -68,7 +68,7 @@ public class CompletedState<T> : RequestStateBase<T> where T : SiteHUDRequestMod
                 {
                     Name = "Hello " + request.User.Fullname,
                     Title = "Update Notification on Request - See Below Request Details",
-                    Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Request Completed on TNIS</b></font> - See Details below:",
+                    Greetings = $"HUD {request.RequestAction} Request : <font color='orange'><b>Request actioned on Planning Database </b></font> - See Details below:",
                     Comment = (request.RequestAction != "UnHalt") ? request.ThirdApprover?.ApproverComment : "",
                     Body = (request.RequestAction != "UnHalt") ? $"<p> Approver 1 : <b>{request.FirstApprover?.Fullname} </b> <font color='green'><b>Approved</b></font> </p><p> Approver 2 : <b>{request.SecondApprover?.Fullname} </b> <font color='green'><b>Approved</b></font></p><p> Approver 3 : <b>{request.ThirdApprover?.Fullname} </b> <font color='green'><b>Approved</b></font></p>" : "",
                     Subject = ($"{request.RequestAction} Request: {request.UniqueId} Update Notice"),
@@ -79,7 +79,7 @@ public class CompletedState<T> : RequestStateBase<T> where T : SiteHUDRequestMod
                         new SenderBody { Name = request.User.Fullname, Address = request.User.Email },
                     },
                     CC = new List<SenderBody> {
-                        new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                        new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                     }
                 };
             }
