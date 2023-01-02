@@ -189,13 +189,36 @@
                         RequestModel = await IRequest.GetById(x => x.Id == Id, null, RequestModel.Navigations);
                         RequestModel.EngineerAssigned.DateApproved = DateTime.UtcNow;
 
-                        DateTime dt = DateTime.Now;
-                        //EnableSpecial = (dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month));
-                        int lastDayOfPrevMth = DateTime.DaysInMonth(dt.Year, dt.Month - 1);
-                        EnableSpecial = Enumerable.Range(1, 2).Contains(dt.Day);
+                        //DateTime dt = DateTime.Now;
+                        ////EnableSpecial = (dt.Day == DateTime.DaysInMonth(dt.Year, dt.Month));                      
+                        //int lastDayOfPrevMth = DateTime.DaysInMonth(dt.Year, dt.Month - 1);
+                        //EnableSpecial = Enumerable.Range(1, 2).Contains(dt.Day);
 
-                        MinDateTime = new DateTime(dt.Year, dt.Month - 1, lastDayOfPrevMth);
-                        MaxDateTime = new DateTime(dt.Year, dt.Month, 2);
+                        //MinDateTime = new DateTime(dt.Year, dt.Month - 1, lastDayOfPrevMth);
+                        //MaxDateTime = new DateTime(dt.Year, dt.Month, 2);
+
+
+                        DateTime dt = DateTime.Now;                     
+                        EnableSpecial = Enumerable.Range(1, 2).Contains(dt.Day);
+                      
+                        int lastDayOfPrevMth = 0;
+                        if (DateTime.Now.Month == 1 && EnableSpecial == true)
+                        {
+                            int YearNo = int.Parse(dt.AddYears(-1).ToString("yyyy"));
+                            int MonthNo = 12;
+
+                            lastDayOfPrevMth = DateTime.DaysInMonth(YearNo, MonthNo);
+                            MinDateTime = new DateTime(YearNo, MonthNo, lastDayOfPrevMth);
+                            MaxDateTime = new DateTime(dt.Year, dt.Month, 2);
+                        }
+                        else
+                        { 
+                            lastDayOfPrevMth = DateTime.DaysInMonth(dt.Year, dt.Month - 1);
+                            EnableSpecial = Enumerable.Range(1, 2).Contains(dt.Day);
+
+                            MinDateTime = new DateTime(dt.Year, dt.Month - 1, lastDayOfPrevMth);
+                            MaxDateTime = new DateTime(dt.Year, dt.Month, 2);
+                        }
 
                         return;
                     }
