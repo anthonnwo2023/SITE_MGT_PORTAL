@@ -17,6 +17,7 @@ namespace Project.V1.Web.Pages.Acceptance
         [Inject] protected ITechType ITechType { get; set; }
         [Inject] protected IBaseBand IBaseBand { get; set; }
         [Inject] public IVendor IVendor { get; set; }
+        [Inject] public IScheduleJobRecipient IscheduleJobRecipient { get; set; }
 
 
         [Inject] protected NavigationManager NavMan { get; set; }
@@ -33,6 +34,7 @@ namespace Project.V1.Web.Pages.Acceptance
         public List<ProjectTypeModel> ProjectTypes { get; set; }
         public List<TechTypeModel> TechTypes { get; set; }
         public List<BaseBandModel> BaseBands { get; set; }
+        public List<ScheduleJobRecipientModel> ScheduleJobRecipientList { get; set; }
 
         protected SfGrid<RegionViewModel> Grid_Region { get; set; }
         protected SfGrid<SpectrumViewModel> Grid_Spectrum { get; set; }
@@ -42,6 +44,7 @@ namespace Project.V1.Web.Pages.Acceptance
         protected SfGrid<ProjectTypeModel> Grid_ProjectType { get; set; }
         protected SfGrid<TechTypeModel> Grid_TechType { get; set; }
         protected SfGrid<BaseBandModel> Grid_BaseBand { get; set; }
+        protected SfGrid<ScheduleJobRecipientModel> Grid_ScheduleJobRecipient { get; set; }
 
         public List<string> ToolbarItems = new() { "Add", "Search" };
 
@@ -218,6 +221,19 @@ namespace Project.V1.Web.Pages.Acceptance
                         return;
                     }
                 },
+
+                ["ScheduleJobRecipientModel"] = async (data) =>
+                {
+                    try
+                    {
+                        await ProcessReset(IscheduleJobRecipient, data as ScheduleJobRecipientModel, ScheduleJobRecipientList);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                },
+
             };
 
             await Task.Run(() => processor[model](data));
@@ -323,6 +339,20 @@ namespace Project.V1.Web.Pages.Acceptance
                         return false;
                     }
                 },
+
+                ["ScheduleJobRecipientModel"] = (Id) =>
+                {
+                    try
+                    {
+                        Grid_ScheduleJobRecipient.DeleteRow(Id);
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                },
+
             };
 
             return await Task.Run(() => processor[model](Id));
@@ -495,6 +525,21 @@ namespace Project.V1.Web.Pages.Acceptance
                         return null;
                     }
                 },
+
+                ["ScheduleJobRecipientModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessDelete(IscheduleJobRecipient, data as ScheduleJobRecipientModel, Grid_ScheduleJobRecipient);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+
             };
 
             return await Task.Run(() => processor[model](data));
@@ -610,6 +655,22 @@ namespace Project.V1.Web.Pages.Acceptance
                         return null;
                     }
                 },
+
+                ["ScheduleJobRecipientModel"] = async (data) =>
+                {
+                    try
+                    {
+                        // var dataObj = data as ProjectTypeModel;
+                        var result = await ProcessAdd(IscheduleJobRecipient, data as ScheduleJobRecipientModel, Grid_ScheduleJobRecipient, x => x.Name == (data as ScheduleJobRecipientModel).Name);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
+
             };
 
             return await Task.Run(() => processor[model](data));
@@ -723,6 +784,19 @@ namespace Project.V1.Web.Pages.Acceptance
                         return null;
                     }
                 },
+                ["ScheduleJobRecipientModel"] = async (data) =>
+                {
+                    try
+                    {
+                        var result = await ProcessUpdate(IscheduleJobRecipient, data as ScheduleJobRecipientModel, Grid_ScheduleJobRecipient, Id);
+
+                        return result as T;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                },
             };
 
             return await Task.Run(() => processor[model](data));
@@ -802,6 +876,12 @@ namespace Project.V1.Web.Pages.Acceptance
             {
                 Spectrums = (await ISpectrum.Get(null, x => x.OrderBy(y => y.Name))).ToList();
             }
+
+            if (model == null || model == "ScheduleJobRecipientModel")
+            {
+                ScheduleJobRecipientList = (await IscheduleJobRecipient.Get(null, x => x.OrderBy(y => y.EmailCategory))).ToList();
+            }
+
         }
 
         public async Task ActionBegin<T>(ActionEventArgs<T> args, string model = null) where T : class

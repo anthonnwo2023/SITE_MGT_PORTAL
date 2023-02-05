@@ -62,6 +62,7 @@
     <Compile Include="Services\Interfaces\IClaim.cs" />
     <Compile Include="Services\Interfaces\IClaimCategory.cs" />
     <Compile Include="Services\Interfaces\ILTERequest.cs" />
+    <Compile Include="Services\Interfaces\IScheduleJobRecipient.cs" />
     <Compile Include="Services\Interfaces\ISSCRequestUpdate.cs" />
     <Compile Include="Services\Interfaces\IStaticReport.cs" />
     <Compile Include="Services\Interfaces\IRequest.cs" />

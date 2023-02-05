@@ -169,6 +169,7 @@ public class Startup
         services.AddScoped<IRequestListObject, RequestListObject>();
         services.AddScoped<IStakeholder, StakeHolder>();
         services.AddScoped<AcceptanceAdaptor>();
+        services.AddScoped<IScheduleJobRecipient, ScheduleJobRecipient>();
 
         services.ConfigureBlazorizeOptions();
         services.ConfigureCors();

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using Project.V1.Data;
@@ -11,9 +12,10 @@ using Project.V1.Data;
 namespace Project.V1.Data.Migrations.Staging
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230118222932_AddedScheduleJobRecipient")]
+    partial class AddedScheduleJobRecipient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,7 +196,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_ANTENNA_MAKES", (string)null);
+                    b.ToTable("TBL_RFACCEPT_ANTENNA_MAKES");
                 });
 
             modelBuilder.Entity("Project.V1.Models.AntennaTypeModel", b =>
@@ -217,7 +219,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_ANTENNA_TYPES", (string)null);
+                    b.ToTable("TBL_RFACCEPT_ANTENNA_TYPES");
                 });
 
             modelBuilder.Entity("Project.V1.Models.ApplicationUser", b =>
@@ -347,7 +349,7 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("TBL_RFACCEPT_BASEBANDS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_BASEBANDS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.ClaimCategoryModel", b =>
@@ -370,7 +372,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_CLAIM_CATEGORIES", (string)null);
+                    b.ToTable("TBL_RFACCEPT_CLAIM_CATEGORIES");
                 });
 
             modelBuilder.Entity("Project.V1.Models.ClaimViewModel", b =>
@@ -403,7 +405,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name", "Value")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_CLAIMS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_CLAIMS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.ProjectModel", b =>
@@ -428,7 +430,7 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("TBL_RFACCEPT_PROJECTS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_PROJECTS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.ProjectTypeModel", b =>
@@ -451,7 +453,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_PROJECTTYPES", (string)null);
+                    b.ToTable("TBL_RFACCEPT_PROJECTTYPES");
                 });
 
             modelBuilder.Entity("Project.V1.Models.RegionViewModel", b =>
@@ -487,7 +489,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_REGIONS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_REGIONS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.RequestApproverModel", b =>
@@ -536,7 +538,7 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.HasKey("Id");
 
-                    b.ToTable("TBL_RFACCEPT_APPROVER", (string)null);
+                    b.ToTable("TBL_RFACCEPT_APPROVER");
                 });
 
             modelBuilder.Entity("Project.V1.Models.RequesterData", b =>
@@ -574,7 +576,7 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("TBL_RFACCEPT_REQUEST_REQUESTER", (string)null);
+                    b.ToTable("TBL_RFACCEPT_REQUEST_REQUESTER");
                 });
 
             modelBuilder.Entity("Project.V1.Models.RequestViewModel", b =>
@@ -751,7 +753,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("SiteId", "SpectrumId", "ProjectTypeId")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_REQUESTS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_REQUESTS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.ScheduleJobRecipientModel", b =>
@@ -783,7 +785,7 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.HasKey("Id");
 
-                    b.ToTable("TBL_RFACCEPT_SCHEDULEJOBRECIPIENT", (string)null);
+                    b.ToTable("TBL_RFACCEPT_SCHEDULEJOBRECIPIENT");
                 });
 
             modelBuilder.Entity("Project.V1.Models.SiteHalt.SiteHUDRequestModel", b =>
@@ -852,7 +854,7 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.HasIndex("ThirdApproverId");
 
-                    b.ToTable("TBL_RFHUD_REQUESTS", (string)null);
+                    b.ToTable("TBL_RFHUD_REQUESTS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.SiteHUDStakeholder", b =>
@@ -875,7 +877,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_STAKEHOLDERS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_STAKEHOLDERS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.SpectrumViewModel", b =>
@@ -904,7 +906,7 @@ namespace Project.V1.Data.Migrations.Staging
                         .IsUnique()
                         .HasFilter("\"TechTypeId\" IS NOT NULL");
 
-                    b.ToTable("TBL_RFACCEPT_SPECTRUM", (string)null);
+                    b.ToTable("TBL_RFACCEPT_SPECTRUM");
                 });
 
             modelBuilder.Entity("Project.V1.Models.StaticReportModel", b =>
@@ -962,7 +964,7 @@ namespace Project.V1.Data.Migrations.Staging
 
                     b.HasKey("Id");
 
-                    b.ToTable("TBL_RFACCEPT_STATICREPORT", (string)null);
+                    b.ToTable("TBL_RFACCEPT_STATICREPORT");
                 });
 
             modelBuilder.Entity("Project.V1.Models.SummerConfigModel", b =>
@@ -985,7 +987,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_SUMMERCONFIGS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_SUMMERCONFIGS");
                 });
 
             modelBuilder.Entity("Project.V1.Models.TechTypeModel", b =>
@@ -1008,7 +1010,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_TECHTYPES", (string)null);
+                    b.ToTable("TBL_RFACCEPT_TECHTYPES");
                 });
 
             modelBuilder.Entity("Project.V1.Models.VendorModel", b =>
@@ -1037,7 +1039,7 @@ namespace Project.V1.Data.Migrations.Staging
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("TBL_RFACCEPT_VENDORS", (string)null);
+                    b.ToTable("TBL_RFACCEPT_VENDORS");
                 });
 
             modelBuilder.Entity("SiteHUDRequestModelTechTypeModel", b =>

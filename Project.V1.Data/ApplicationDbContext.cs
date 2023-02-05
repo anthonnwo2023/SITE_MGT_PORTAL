@@ -74,5 +74,6 @@ namespace Project.V1.Data
         public DbSet<ClaimViewModel> Claims { get; set; }
         public DbSet<ClaimCategoryModel> ClaimCategories { get; set; }
         public DbSet<SiteHUDStakeholder> Stakeholders { get; set; }
+        public DbSet<ScheduleJobRecipientModel> ScheduleJobRecipientModel { get; set; }
     }
 }

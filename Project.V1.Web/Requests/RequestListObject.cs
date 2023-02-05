@@ -39,9 +39,11 @@
             IUser = User;
         }
 
+
         public async Task Initialize(ClaimsPrincipal Principal, string objType)
         {
             User = await IUser.GetUserByUsername(Principal.Identity.Name);
+            IList<string> userRoles = await User.UserRoles;
             TechTypes = (await ITechType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
 
             if (objType == "SMPObject")
@@ -49,7 +51,7 @@
                 Regions = (await IRegion.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
                 SummerConfigs = (await ISummerConfig.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
                 ProjectTypes = (await IProjectType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
-                Projects = (((User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get(x => x.IsActive, x => x.OrderBy(x => x.Name)) : await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId, x => x.OrderBy(x => x.Name)))).ToList();
+                Projects = (((User.Vendor.Name == "MTN Nigeria" || userRoles.Contains("Engineer")) ? await IProjects.Get(x => x.IsActive, x => x.OrderBy(x => x.Name)) : await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId, x => x.OrderBy(x => x.Name)))).ToList();
                 AntennaMakes = (await IAntennaMake.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
                 AntennaTypes = (await IAntennaType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
                 Spectrums = (await ISpectrum.Get(x => x.IsActive, x => x.OrderBy(y => y.Name), "TechType")).ToList();
@@ -58,5 +60,29 @@
                     : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId, null, "Vendor")).OrderBy(x => x.Name).ToList();
             }
         }
+       
+        //public async Task Initialize(ClaimsPrincipal Principal, string objType)
+        //{
+        //    User = await IUser.GetUserByUsername(Principal.Identity.Name);
+        //    TechTypes = (await ITechType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
+
+        //    if (objType == "SMPObject")
+        //    {
+        //        Regions = (await IRegion.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
+        //        SummerConfigs = (await ISummerConfig.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
+        //        ProjectTypes = (await IProjectType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
+        //        Projects = (((User.Vendor.Name == "MTN Nigeria") ? await IProjects.Get(x => x.IsActive, x => x.OrderBy(x => x.Name)) : await IProjects.Get(x => x.IsActive && x.VendorId == User.VendorId, x => x.OrderBy(x => x.Name)))).ToList();
+        //        AntennaMakes = (await IAntennaMake.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
+        //        AntennaTypes = (await IAntennaType.Get(x => x.IsActive, x => x.OrderBy(y => y.Name))).ToList();
+        //        Spectrums = (await ISpectrum.Get(x => x.IsActive, x => x.OrderBy(y => y.Name), "TechType")).ToList();
+        //        Basebands = (Principal.IsInRole("Super Admin"))
+        //            ? (await IBaseBand.Get(x => x.IsActive, null, "Vendor")).OrderBy(x => x.Name).ToList()
+        //            : (await IBaseBand.Get(x => x.IsActive && x.VendorId == User.VendorId, null, "Vendor")).OrderBy(x => x.Name).ToList();
+        //    }
+        //}
+
+
+
+
     }
 }

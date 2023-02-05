@@ -94,17 +94,17 @@ public class SiteHUDRequestModel : IDisposable
 
         if (Status.StartsWith("FA"))
         {
-            extra = $" By {FirstApprover.Fullname} (1 of {approverCount})";
+            extra = $" By {FirstApprover?.Fullname} (1 of {approverCount})";
         }
 
         if (Status.StartsWith("SA"))
         {
-            extra = $" By {SecondApprover.Fullname} (2 of {approverCount})";
+            extra = $" By {SecondApprover?.Fullname} (2 of {approverCount})";
         }
 
         if (Status.StartsWith("TA") && RequestAction != "UnHalt")
         {
-            extra = $" By {ThirdApprover.Fullname} (3 of {approverCount})";
+            extra = $" By {ThirdApprover?.Fullname} (3 of {approverCount})";
         }
 
         return message + extra;
@@ -118,17 +118,17 @@ public class SiteHUDRequestModel : IDisposable
 
         if (FirstApprover?.IsActioned == true)
         {
-            comment = FirstApprover.ApproverComment;
+            comment = FirstApprover?.ApproverComment;
         }
 
         if (SecondApprover?.IsActioned == true)
         {
-            comment = SecondApprover.ApproverComment;
+            comment = SecondApprover?.ApproverComment;
         }
 
         if (ThirdApprover?.IsActioned == true)
         {
-            comment = ThirdApprover.ApproverComment;
+            comment = ThirdApprover?.ApproverComment;
         }
 
         return comment;
@@ -143,7 +143,7 @@ public class SiteHUDRequestModel : IDisposable
                 return null;
             }
 
-            return FirstApprover.Fullname;
+            return FirstApprover?.Fullname;
         }
     }
 
@@ -156,7 +156,7 @@ public class SiteHUDRequestModel : IDisposable
                 return null;
             }
 
-            return SecondApprover.Fullname;
+            return SecondApprover?.Fullname;
         }
     }
 
@@ -169,7 +169,7 @@ public class SiteHUDRequestModel : IDisposable
                 return null;
             }
 
-            return ThirdApprover.Fullname;
+            return ThirdApprover?.Fullname;
         }
     }
 

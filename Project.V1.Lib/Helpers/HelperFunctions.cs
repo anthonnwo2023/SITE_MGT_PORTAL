@@ -479,12 +479,12 @@ public class HelperFunctionFactory<T> where T : class, IDisposable
 
         foreach (SenderBody to in mailObject.To.ToList())
         {
-            message.To.Add(new MailboxAddress(to.Name, to.Address));
+            message.To.Add(new MailboxAddress(to.Name.Trim(), to.Address.Trim()));
         }
 
         foreach (SenderBody cc in mailObject.CC.ToList())
         {
-            message.Cc.Add(new MailboxAddress(cc.Name, cc.Address));
+            message.Cc.Add(new MailboxAddress(cc.Name.Trim(), cc.Address.Trim()));
         }
 
         message.From.Add(new MailboxAddress(mailObject.From.Name, mailObject.From.Address));
