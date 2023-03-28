@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Project.V1.DLL.Helpers;
+using System.IO;
 
 namespace Project.V1.DLL.RequestActions
 {
@@ -44,14 +45,37 @@ namespace Project.V1.DLL.RequestActions
         }
 
         private static SendEmailActionObj GenerateMailBody(string mailType, T request, string application)
-        {
+        {           
+            ApplicationUser user = LoginObject.User.GetUserByUsername(request.Requester.Username).GetAwaiter().GetResult();
+            var vendorMailList = (user.VendorId != null) ? (LoginObject.Vendor.Get()).GetAwaiter().GetResult().FirstOrDefault(x => x.Id == user.VendorId)?.MailList : null;
+
+
             string bulkAttach = Path.Combine(Directory.GetCurrentDirectory(), $"Documents\\EReport\\{request.BulkuploadPath}");
 
             Dictionary<string, Func<SendEmailActionObj>> processMailBody = new()
             {
                 ["Requester"] = () =>
                 {
-                    return new SendEmailActionObj
+                    //return new SendEmailActionObj
+                    //{
+                    //    Name = "Hello " + request.Requester.Name,
+                    //    Title = "Update Notification on Request - See Below Request Details",
+                    //    Greetings = $"Site Acceptance Request : <font color='red'><b>Request Rejected</b></font> - See Details below:",
+                    //    Comment = request.EngineerAssigned.ApproverComment,
+                    //    Subject = ($"Site Acceptance Request ({(request as dynamic).Region.Name}) - {(request as dynamic).UniqueId} Notice").Replace("  ", " "),
+                    //    BodyType = "",
+                    //    M2Uname = request.Requester.Username.ToLower().Trim(),
+                    //    Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/worklist/{request.Id}",
+                    //    To = new List<SenderBody> {
+                    //        new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
+                    //    },
+                    //    CC = new List<SenderBody> {
+                    //        new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
+                    //    },
+                    //    Attachment = bulkAttach
+                    //};
+
+                    var emailObj = new SendEmailActionObj
                     {
                         Name = "Hello " + request.Requester.Name,
                         Title = "Update Notification on Request - See Below Request Details",
@@ -69,6 +93,10 @@ namespace Project.V1.DLL.RequestActions
                         },
                         Attachment = bulkAttach
                     };
+
+                    emailObj.CC.AddRange(HelperFunctions.ConvertMailStringToList(vendorMailList));
+                    return emailObj;
+
                 },
 
                 ["Engineer"] = () =>
@@ -85,7 +113,8 @@ namespace Project.V1.DLL.RequestActions
                         Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/engineer/worklist/detail/{request.Id}",
                         To = new List<SenderBody>
                         {
-                            new SenderBody { Name = request.EngineerAssigned.Fullname, Address = request.EngineerAssigned.Email },
+                           new SenderBody { Name = request.EngineerAssigned.Fullname, Address = request.EngineerAssigned.Email },
+                           //new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
                         },
                         CC = new List<SenderBody> {
                             new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },

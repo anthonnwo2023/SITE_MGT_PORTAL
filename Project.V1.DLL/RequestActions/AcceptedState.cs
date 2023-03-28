@@ -1,4 +1,6 @@
-﻿namespace Project.V1.DLL.RequestActions
+﻿using Project.V1.DLL.Helpers;
+
+namespace Project.V1.DLL.RequestActions
 {
     public class AcceptedState<T> : RequestStateBase<T> where T : RequestViewModel, IDisposable
     {
@@ -37,14 +39,38 @@
 
         private static SendEmailActionObj GenerateMailBody(string mailType, T request, string application)
         {
+            ApplicationUser user = LoginObject.User.GetUserByUsername(request.Requester.Username).GetAwaiter().GetResult();
+            var vendorMailList = (user.VendorId != null) ? (LoginObject.Vendor.Get()).GetAwaiter().GetResult().FirstOrDefault(x => x.Id == user.VendorId)?.MailList : null;
+
+
             Dictionary<string, Func<SendEmailActionObj>> processMailBody = new()
             {
                 ["Requester"] = () =>
                 {
-                    return new SendEmailActionObj
+                    //return new SendEmailActionObj
+                    //{
+                    //    Name = "Hello " + request.Requester.Name,
+                    //    Title = "Update Notification on Request - See Below Request Details",
+                    //    Greetings = $"Site Acceptance Request : <font color='green'><b>Request Accepted</b></font> - See Details below:",
+                    //    Comment = request.EngineerAssigned.ApproverComment,
+                    //    Subject = ($"Site Acceptance Request ({request.Region.Name}) - {request.UniqueId} Notice").Replace("  ", " "),
+                    //    BodyType = "",
+                    //    M2Uname = request.Requester.Username.ToLower().Trim(),
+                    //    Link = $"https://ojtssapp1/smp/Identity/Account/Login?ReturnUrl={application}/worklist/{request.Id}",
+                    //    To = new List<SenderBody> {
+                    //        new SenderBody { Name = request.Requester.Name, Address = request.Requester.Email },
+                    //    },
+                    //    CC = new List<SenderBody> {
+                    //        new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
+                    //    },
+
+                    //};
+
+
+                    var emailObj = new SendEmailActionObj
                     {
                         Name = "Hello " + request.Requester.Name,
-                        Title = "Update Notification on Request - See Below Request Details",
+                        Title = "Update Notification on Request - See Below Request Details Requester",
                         Greetings = $"Site Acceptance Request : <font color='green'><b>Request Accepted</b></font> - See Details below:",
                         Comment = request.EngineerAssigned.ApproverComment,
                         Subject = ($"Site Acceptance Request ({request.Region.Name}) - {request.UniqueId} Notice").Replace("  ", " "),
@@ -56,8 +82,12 @@
                         },
                         CC = new List<SenderBody> {
                             new SenderBody { Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
-                        }
+                            //new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                        },
+
                     };
+                    emailObj.CC.AddRange(HelperFunctions.ConvertMailStringToList(vendorMailList));
+                    return emailObj;
                 },
 
                 ["Engineer"] = () =>
@@ -65,7 +95,7 @@
                     return new SendEmailActionObj
                     {
                         Name = "Hello " + request.EngineerAssigned.Fullname,
-                        Title = "Update Notification on Request - See Below Request Details",
+                        Title = "Update Notification on Request - See Below Request Details Engineer",
                         Greetings = $"Site Acceptance Request : <font color='green'><b>Request Accepted</b></font> - See Details below:",
                         Comment = request.EngineerAssigned.ApproverComment,
                         Subject = ($"Site Acceptance Request ({request.Region.Name}) - {request.UniqueId} Engineer Notice").Replace("  ", " "),
@@ -78,6 +108,8 @@
                         },
                         CC = new List<SenderBody> {
                             new SenderBody {Name = "Anthony Nwosu", Address = "Anthony.Nwosu@mtn.com" },
+                             //new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
+                             // new SenderBody { Name = "Adekunle Adeyemi", Address = "Adekunle.Adeyemi@mtn.com" },
                         }
                     };
                 }
